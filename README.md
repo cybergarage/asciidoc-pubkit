@@ -1,4 +1,5 @@
 ![](https://img.shields.io/badge/status-Work%20In%20Progress-8A2BE2)
+[![Gem Version](https://img.shields.io/gem/v/asciidoc-pubkit.svg)](https://rubygems.org/gems/asciidoc-pubkit)
 
 # asciidoc-pubkit
 
@@ -112,7 +113,7 @@ asciidoc-pubkit review scan book.adoc --attribute edition=print --base-dir .
 
 An entrypoint or a standalone chapter can be scanned. Includes and conditionals
 are processed by Asciidoctor. Match the publishing build's attributes and base
-directory to review the intended edition. `--only` selects one included source
+ directory to review the intended edition. `--only` selects one included source
 file while retaining the book's attributes and heading hierarchy. Its path is
 relative to the current working directory, as are other CLI path arguments.
 
