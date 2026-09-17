@@ -18,12 +18,11 @@ rewrite manuscripts, or publish books. EPUB, image, and book scaffolding command
 are planned extensions, not available features.
 
 Ruby 3.2 or later is required. Asciidoctor is installed as a gem dependency.
-Starting with version 0.2.0, the default review backend requires the external MeCab
+Starting with version 0.1.1, the default review backend requires the external MeCab
 command and a UTF-8 IPADIC dictionary. Node.js and textlint are not required.
 Explicit `--tokenizer literal` mode provides limited phrase matching without MeCab.
 
-The current development version is 0.2.0. Until it is published, install from
-source to use morphological analysis; RubyGems version 0.1.0 uses literal matching.
+Version 0.1.1 includes morphological analysis. Version 0.1.0 uses literal matching.
 
 ## Install from RubyGems
 
@@ -37,7 +36,7 @@ asciidoc-pubkit --help
 
 Ruby 3.2 or later is required. RubyGems installs the required Ruby dependencies;
 no repository clone or Node.js installation is needed. MeCab and IPADIC must be
-installed separately when using version 0.2.0 or later in the default mode.
+installed separately when using version 0.1.1 or later in the default mode.
 
 Run the review workflow from your manuscript directory:
 
@@ -60,7 +59,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.1.0' # Published release; use 0.2.x after release
+gem 'asciidoc-pubkit', '~> 0.1.1'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -82,7 +81,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.2.0.gem
+gem install ./asciidoc-pubkit-0.1.1.gem
 asciidoc-pubkit --version
 ```
 
@@ -93,7 +92,7 @@ For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
 unchanged.
 
-## Install the morphological analyzer (0.2.0 and later)
+## Install the morphological analyzer (0.1.1 and later)
 
 On macOS with Homebrew:
 
@@ -269,6 +268,7 @@ use an absolute path for an explicit executable override.
 | --- | --- | --- |
 | `abstract-reference` | hint | Ask what an abstract noun refers to |
 | `weak-predicate` | hint | Ask whether an operation's purpose or result is clear |
+| `contextual-phrase` | hint | Review referents, assumptions, and qualifications while preserving negation |
 | `generic-framing` | hint | Review generic introductions and emphasis |
 | `vague-degree` | hint | Ask what depth, level, scope, or comparison is intended |
 | `repeated-ending` | info | Identify three consecutive sentences with the same detected ending |
@@ -281,7 +281,10 @@ sahen nouns are not treated as verbal predicates. Auxiliary sequences retain
 negation, past tense, passive forms, and progressive forms in the reported surface.
 The added reach predicate is negative-only; the existing handling predicate is
 reviewed in both affirmative and negative forms. Glossary variants and generic
-framing phrases continue to use literal matching.
+framing phrases continue to use literal matching. Contextual phrases also use
+literal matching and suppress overlapping morphological candidates. Compound
+nouns are matched across adjacent noun tokens. Selection and narrowing verbs
+include potential forms; predicate surfaces also preserve causative auxiliaries.
 
 Morphological candidates include `lemma`, `part_of_speech`, `negative`, and
 `detector` alongside the original `match`, line, and column. Negation detection
@@ -295,12 +298,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from 0.1.0 are not compatible with 0.2.0. Keep the original baseline for
+Sessions from 0.1.0 are not compatible with 0.1.1. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.2.0
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.1.1
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship

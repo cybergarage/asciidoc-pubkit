@@ -1,7 +1,8 @@
 # Changelog
 
-## 0.2.0 — Unreleased
+## 0.1.1 — Released
 
+- Add contextual phrases, compound nouns, and potential and causative verb forms.
 - Add requested abstract nouns, degree adjectives, and vague predicates.
 - Use MeCab with UTF-8 IPADIC by default to match inflected predicates and adjectives.
 - Preserve original surfaces, dictionary forms, and negative auxiliary information.

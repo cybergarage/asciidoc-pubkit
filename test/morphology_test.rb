@@ -21,6 +21,24 @@ class MorphologyTest < Minitest::Test
     expected.each { |surface| assert_equal 1, findings.count { |f| f['match'] == surface }, surface }
   end
 
+  def test_additional_requested_expressions_in_both_modes
+    expressions = %w[これらを であることだけでは 役割 一続き 根拠 部品 開発者 選べます 扱います あるものとします わけではありません 成り立たせています 確かめます 書き換える 絞れます 渡します あります]
+    %w[mecab literal].each do |mode|
+      findings = scan(expressions.join('。') + '。', @settings.merge('tokenizer' => mode))
+      expressions.each { |surface| assert_equal 1, findings.count { |f| f['match'] == surface }, "#{mode}: #{surface}" }
+      assert_equal expressions.length, findings.count { |f| %w[abstract-reference weak-predicate contextual-phrase].include?(f['rule']) }
+    end
+  end
+
+  def test_additional_inflections_and_compound_boundaries
+    findings = scan('選べなかった。成り立たせていた。確かめた。書き換えない。絞れた。渡した。あった。')
+    assert_equal %w[選ぶ 成り立つ 確かめる 書き換える 絞る 渡す ある], findings.map { |f| f['lemma'] }
+    assert findings.first['negative']
+    assert_equal '成り立たせていた', findings[1]['match']
+    assert_empty scan('開発 者。一`code`続き。「開発者」。`これらを`。')
+    assert_empty scan('開発者。一続き。わけではありません。', @settings.merge('allows' => %w[開発者 一続き わけではありません]))
+  end
+
   def test_inflected_verbs_are_matched_by_dictionary_form
     findings = scan('結果が変わった。動作を把握した。役割を分けられた。表記をそろえた。説明がまとまっていた。条件を加えない。項目を探せば、値がそろった。')
     expected = %w[変わる 把握する 分ける そろえる まとまる 加える 探す そろう]
