@@ -1,0 +1,18 @@
+= Review Example
+:lang: ja
+
+== Input Validation
+
+重要なのは、境界を整理することです。
+検証結果を利用します。
+
+関数は整数を受け取り、負の値に対してエラーを返します。
+
+[source,ruby]
+----
+raise ArgumentError, 'Expected a nonnegative value' if value.negative?
+----
+
+== Repeated Endings
+
+入力を確認します。出力を確認します。結果を確認します。
