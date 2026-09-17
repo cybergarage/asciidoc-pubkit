@@ -93,6 +93,34 @@ For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
 unchanged.
 
+## Run from a local checkout
+
+Use the `run` Make target to execute the checkout without installing the
+asciidoc-pubkit gem. Ruby dependencies and, for the default tokenizer, MeCab and
+UTF-8 IPADIC must already be installed.
+
+```sh
+make run ARGS="--version"
+make run ARGS="review scan examples/book.adoc"
+make run ARGS='review scan "manuscripts/my book.adoc"'
+```
+
+With no `ARGS`, `make run` displays CLI help. Set `RUBY` to choose another Ruby
+executable. `ARGS` is shell command-line text; quote paths containing spaces and
+use only trusted arguments.
+
+To run from a manuscript directory, select the checkout's Makefile with `-f`.
+Relative manuscript paths and output paths remain relative to your current
+working directory:
+
+```sh
+make -f "$HOME/Src/asciidoc-pubkit/Makefile" run ARGS="review scan book.adoc"
+```
+
+Use `ARGS` instead of `make review scan book.adoc`: Make interprets positional
+words as build targets, not CLI arguments. Avoid `make -C` when manuscript paths
+should remain relative to the current directory, because it changes directories.
+
 ## Install the morphological analyzer (0.1.1 and later)
 
 On macOS with Homebrew:
