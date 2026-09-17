@@ -1,3 +1,5 @@
+![](https://img.shields.io/badge/status-Work%20In%20Progress-8A2BE2)
+
 # asciidoc-pubkit
 
 A toolkit for authoring, reviewing, and publishing AsciiDoc books.
