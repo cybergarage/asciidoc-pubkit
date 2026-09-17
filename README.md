@@ -17,6 +17,56 @@ Ruby 3.2 or later is required. Asciidoctor is installed as a gem dependency.
 Node.js, textlint, and a morphological analyzer are not required in this release.
 The built-in rules use literal phrase matching and simple sentence heuristics.
 
+## Install from RubyGems
+
+After a release is published on RubyGems, install the CLI with:
+
+```sh
+gem install asciidoc-pubkit
+asciidoc-pubkit --version
+asciidoc-pubkit --help
+```
+
+Ruby 3.2 or later is required. RubyGems installs the required Ruby dependencies;
+no repository clone or Node.js installation is needed. If no release is available
+on RubyGems yet, use the source installation instructions below.
+
+Run the review workflow from your manuscript directory:
+
+```sh
+asciidoc-pubkit review scan book.adoc --output .pubkit/review
+asciidoc-pubkit review prompt .pubkit/review --output review-prompt.md
+# Ask your agent to review the prompt and edit the referenced manuscript.
+asciidoc-pubkit review verify .pubkit/review --output verification.json
+```
+
+To update an existing installation:
+
+```sh
+gem update asciidoc-pubkit
+```
+
+### Use Bundler in a manuscript project
+
+Add the gem to your project's `Gemfile` to manage its version with Bundler:
+
+```ruby
+source 'https://rubygems.org'
+gem 'asciidoc-pubkit', '~> 0.1.0'
+```
+
+Then install dependencies and run the CLI through Bundler:
+
+```sh
+bundle install
+bundle exec asciidoc-pubkit review scan book.adoc --output .pubkit/review
+bundle exec asciidoc-pubkit review prompt .pubkit/review --output review-prompt.md
+bundle exec asciidoc-pubkit review verify .pubkit/review --output verification.json
+```
+
+Commit `Gemfile` and `Gemfile.lock` in the manuscript project to keep the selected
+version reproducible. Use `bundle update asciidoc-pubkit` to update it deliberately.
+
 ## Install from source
 
 ```sh
@@ -28,7 +78,6 @@ gem install ./asciidoc-pubkit-0.1.0.gem
 asciidoc-pubkit --version
 ```
 
-These instructions do not assume that the gem has been published on RubyGems.
 The gem name and CLI name are `asciidoc-pubkit`; the Ruby require path is
 `asciidoc_pubkit`, and the namespace is `AsciidocPubkit`.
 
