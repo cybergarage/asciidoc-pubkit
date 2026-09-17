@@ -19,7 +19,7 @@ The built-in rules use literal phrase matching and simple sentence heuristics.
 
 ## Install from RubyGems
 
-After a release is published on RubyGems, install the CLI with:
+Install the CLI from [RubyGems](https://rubygems.org/gems/asciidoc-pubkit):
 
 ```sh
 gem install asciidoc-pubkit
@@ -28,8 +28,7 @@ asciidoc-pubkit --help
 ```
 
 Ruby 3.2 or later is required. RubyGems installs the required Ruby dependencies;
-no repository clone or Node.js installation is needed. If no release is available
-on RubyGems yet, use the source installation instructions below.
+no repository clone or Node.js installation is needed.
 
 Run the review workflow from your manuscript directory:
 

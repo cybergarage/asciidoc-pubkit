@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — Unreleased
+## 0.1.0 — Released
 
 - Add AsciiDoc running-prose extraction with checked source locations.
 - Add Japanese review candidates and configurable terminology checks.
