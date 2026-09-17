@@ -14,7 +14,9 @@ module AsciidocPubkit
       end
       destination = File.expand_path(options.fetch(:output, '.pubkit/review'))
       raise Error, "Output already exists: #{destination}" if File.exist?(destination)
-      findings = Rules.scan(document.paragraphs, settings.data)
+      tokenizer = settings.data['tokenizer'] == 'mecab' ? Morphology.new(settings.data) : nil
+      analysis = tokenizer ? tokenizer.identity : { 'engine' => 'literal' }
+      findings = Rules.scan(document.paragraphs, settings.data, tokenizer: tokenizer)
       parent = File.dirname(destination)
       FileUtils.mkdir_p(parent)
       staging = Dir.mktmpdir('.pubkit-', parent)
@@ -29,6 +31,7 @@ module AsciidocPubkit
           'schema_version' => SCHEMA, 'tool_version' => VERSION,
           'entry' => File.realpath(entry), 'only' => options[:only] && File.realpath(options[:only]),
           'settings' => settings.data, 'sources' => sources,
+          'analysis' => analysis,
           'protected' => protected_content(document),
           'numeric_tokens' => numeric_tokens(document)
         }
@@ -43,7 +46,8 @@ module AsciidocPubkit
         FileUtils.remove_entry(staging) if File.exist?(staging)
       end
       { 'session' => destination, 'paragraphs' => document.paragraphs.length,
-        'findings' => findings.length, 'coverage_notices' => document.coverage.length }
+        'findings' => findings.length, 'coverage_notices' => document.coverage.length,
+        'tokenizer' => settings.data['tokenizer'] }
     end
 
     def self.write_json(path, value)
@@ -126,6 +130,13 @@ module AsciidocPubkit
 
         #{JSON.pretty_generate(@manifest['settings'])}
 
+        ## Analysis backend
+
+        #{JSON.pretty_generate(@manifest['analysis'])}
+
+        Morphological findings include a dictionary form and the original inflected surface.
+        A negative form must not be rewritten as an affirmative assertion. Keep the original polarity and uncertainty.
+
         ## Coverage
 
         Only source-mapped running-prose paragraphs are reviewed. Inline macros and literal spans are masked by a conservative heuristic.
@@ -176,10 +187,15 @@ module AsciidocPubkit
       changed = @manifest['sources'].filter_map do |source|
         source['path'] if document.sources[source['path']] && AsciidocPubkit.hash_text(document.sources[source['path']]) != source['sha256']
       end
+      tokenizer = @manifest['settings']['tokenizer'] == 'mecab' ? Morphology.new(@manifest['settings']) : nil
+      analysis = tokenizer ? tokenizer.identity : { 'engine' => 'literal' }
+      if analysis != @manifest['analysis']
+        issues << { 'kind' => 'analyzer-changed', 'message' => 'The MeCab version or dictionary changed. Finish verification with the original analyzer or start a new review pass.' }
+      end
       {
         'passed' => issues.empty?, 'meaning_verified' => false, 'changed_files' => changed,
         'issues' => issues, 'notices' => notices, 'coverage' => document.coverage,
-        'findings' => Rules.scan(document.paragraphs, @manifest['settings'])
+        'analysis' => analysis, 'findings' => Rules.scan(document.paragraphs, @manifest['settings'], tokenizer: tokenizer)
       }
     rescue Error, Errno::ENOENT => e
       { 'passed' => false, 'meaning_verified' => false, 'issues' => [{ 'kind' => 'verification-error', 'message' => e.message }],

@@ -18,8 +18,12 @@ rewrite manuscripts, or publish books. EPUB, image, and book scaffolding command
 are planned extensions, not available features.
 
 Ruby 3.2 or later is required. Asciidoctor is installed as a gem dependency.
-Node.js, textlint, and a morphological analyzer are not required in this release.
-The built-in rules use literal phrase matching and simple sentence heuristics.
+Starting with version 0.2.0, the default review backend requires the external MeCab
+command and a UTF-8 IPADIC dictionary. Node.js and textlint are not required.
+Explicit `--tokenizer literal` mode provides limited phrase matching without MeCab.
+
+The current development version is 0.2.0. Until it is published, install from
+source to use morphological analysis; RubyGems version 0.1.0 uses literal matching.
 
 ## Install from RubyGems
 
@@ -32,7 +36,8 @@ asciidoc-pubkit --help
 ```
 
 Ruby 3.2 or later is required. RubyGems installs the required Ruby dependencies;
-no repository clone or Node.js installation is needed.
+no repository clone or Node.js installation is needed. MeCab and IPADIC must be
+installed separately when using version 0.2.0 or later in the default mode.
 
 Run the review workflow from your manuscript directory:
 
@@ -55,7 +60,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.1.0'
+gem 'asciidoc-pubkit', '~> 0.1.0' # Published release; use 0.2.x after release
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -77,7 +82,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.1.0.gem
+gem install ./asciidoc-pubkit-0.2.0.gem
 asciidoc-pubkit --version
 ```
 
@@ -87,6 +92,36 @@ The gem name and CLI name are `asciidoc-pubkit`; the Ruby require path is
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
 unchanged.
+
+## Install the morphological analyzer (0.2.0 and later)
+
+On macOS with Homebrew:
+
+```sh
+brew install mecab mecab-ipadic
+mecab -D
+```
+
+On Ubuntu or Debian:
+
+```sh
+sudo apt-get update
+sudo apt-get install mecab mecab-ipadic-utf8
+mecab -D
+```
+
+Use a UTF-8 IPADIC dictionary. If the default dictionary is different, configure
+`review.mecab_dictionary` with the IPADIC directory reported by your package
+manager. UniDic and other feature layouts are rejected explicitly. MeCab and
+IPADIC are separately installed dependencies, not bundled inside this gem.
+
+The tool checks MeCab availability, dictionary encoding, and feature layout.
+It never silently falls back to literal matching. To deliberately run without
+morphological analysis:
+
+```sh
+asciidoc-pubkit review scan book.adoc --tokenizer literal --output .pubkit/literal-review
+```
 
 ## Review workflow
 
@@ -193,6 +228,10 @@ The initial release loads one configuration file, not merged book/repository fil
 review:
   language: ja
   style: desu-masu
+  tokenizer: mecab
+  # Optional overrides (dictionary paths are relative to this file):
+  # mecab_command: /opt/homebrew/bin/mecab
+  # mecab_dictionary: /opt/homebrew/lib/mecab/dic/ipadic
   base_dir: .
   glossary: glossary.yml
   exclude:
@@ -216,10 +255,13 @@ JavaScript:
   - Java Script
 ```
 
-Variants are review candidates, not automatic replacement instructions. `allows`
-suppresses exact terms from the built-in phrase rules; it does not disable glossary
-checks. Regex patterns are not interpreted in glossary or allow-list entries.
-Unknown configuration keys are rejected.
+Variants are review candidates, not automatic replacement instructions. In MeCab
+mode, `allows` can suppress a canonical dictionary form (all its inflections) or
+an exact matched surface (that occurrence's form only). In literal mode it
+suppresses exact dictionary entries. It does not disable glossary checks.
+Regex patterns are not interpreted in glossary or allow-list entries. Unknown
+configuration keys are rejected. A bare `mecab_command` is resolved through PATH;
+use an absolute path for an explicit executable override.
 
 ## Rules and coverage
 
@@ -228,9 +270,38 @@ Unknown configuration keys are rejected.
 | `abstract-reference` | hint | Ask what an abstract noun refers to |
 | `weak-predicate` | hint | Ask whether an operation's purpose or result is clear |
 | `generic-framing` | hint | Review generic introductions and emphasis |
+| `vague-degree` | hint | Ask what depth, level, scope, or comparison is intended |
 | `repeated-ending` | info | Identify three consecutive sentences with the same detected ending |
 | `glossary-variant` | warning | Identify project-specific terminology variants |
 | `style-candidate` | hint | Check selected polite/plain endings against an explicit style |
+
+MeCab mode matches noun and adjective tokens and dictionary forms of verbs.
+Sahen predicates are matched as a noun followed by the verb for "do"; standalone
+sahen nouns are not treated as verbal predicates. Auxiliary sequences retain
+negation, past tense, passive forms, and progressive forms in the reported surface.
+The added reach predicate is negative-only; the existing handling predicate is
+reviewed in both affirmative and negative forms. Glossary variants and generic
+framing phrases continue to use literal matching.
+
+Morphological candidates include `lemma`, `part_of_speech`, `negative`, and
+`detector` alongside the original `match`, line, and column. Negation detection
+covers common IPADIC negative auxiliaries; it is not full semantic analysis of
+negation scope or double negatives. Unknown tokens are not guessed. Kana/kanji
+variants of the alignment and gathering verbs have explicit canonical mappings;
+other spelling variants are not automatically normalized.
+
+The session records the MeCab version and dictionary file hashes. Verification
+reports analyzer changes instead of treating results from different dictionaries
+as directly comparable. Prompt generation uses saved evidence and does not need
+MeCab. Changed rules or dictionary settings require a new scan.
+
+Sessions from 0.1.0 are not compatible with 0.2.0. Keep the original baseline for
+an ongoing review and finish it with the original version, or start a new review
+pass in a different directory:
+
+```sh
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.2.0
+```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship
 score and no requirement to eliminate every match.
@@ -257,7 +328,9 @@ gem build asciidoc-pubkit.gemspec
 ```
 
 The tests exercise include-boundary mapping, inline masking, configuration,
-contextual prompts, stale inputs, and protected-content verification.
+contextual prompts, stale inputs, protected-content verification, and real MeCab
+analysis of inflections, negative predicates, Unicode positions, and long lines.
+Install MeCab and UTF-8 IPADIC before running the complete test suite.
 GitHub Actions is configured for Ruby 3.2, 3.3, 3.4, and 4.0 on Linux.
 
 ## License

@@ -9,7 +9,7 @@ require 'pathname'
 require 'optparse'
 
 module AsciidocPubkit
-  VERSION = '0.1.0'
+  VERSION = '0.2.0'
   class Error < StandardError; end
 
   def self.hash_text(text)
@@ -25,6 +25,7 @@ end
 
 require_relative 'asciidoc_pubkit/settings'
 require_relative 'asciidoc_pubkit/document'
+require_relative 'asciidoc_pubkit/morphology'
 require_relative 'asciidoc_pubkit/rules'
 require_relative 'asciidoc_pubkit/session'
 require_relative 'asciidoc_pubkit/cli'

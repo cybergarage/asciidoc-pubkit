@@ -38,6 +38,7 @@ module AsciidocPubkit
           opts.on('--config FILE', 'Use an explicit YAML configuration') { |v| options[:config] = v }
           opts.on('--base-dir DIR', 'Set the Asciidoctor base directory') { |v| options[:base_dir] = v }
           opts.on('--lang LANG', 'Prose language (ja only)') { |v| options[:language] = v }
+          opts.on('--tokenizer NAME', 'mecab (default) or literal (limited phrase matching)') { |v| options[:tokenizer] = v }
           opts.on('--style STYLE', 'preserve (default), desu-masu, or dearu') { |v| options[:style] = v }
           opts.on('-a', '--attribute NAME=VALUE', 'Set an Asciidoctor attribute; repeat as needed') do |v|
             key, value = v.split('=', 2)
@@ -58,6 +59,7 @@ module AsciidocPubkit
       if command == 'scan'
         result = Session.scan(args.first, options)
         out.puts "Scanned #{result['paragraphs']} paragraphs; found #{result['findings']} review candidates."
+        out.puts "Tokenizer: #{result['tokenizer']}#{result['tokenizer'] == 'literal' ? ' (limited phrase matching; no morphological analysis)' : ' (UTF-8 IPADIC)'}"
         out.puts "Coverage notices: #{result['coverage_notices']}. See document.json for limitations."
         out.puts "Review session: #{result['session']}"
         return 0

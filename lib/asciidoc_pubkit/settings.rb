@@ -23,9 +23,9 @@ module AsciidocPubkit
       reject_keys(config, ['review'], 'configuration')
       review = config.fetch('review', {})
       raise Error, 'review must be a mapping.' unless review.is_a?(Hash)
-      reject_keys(review, %w[language style glossary exclude allows attributes base_dir], 'review')
+      reject_keys(review, %w[language style glossary exclude allows attributes base_dir tokenizer mecab_command mecab_dictionary], 'review')
       raise Error, 'attributes must be a mapping.' unless review.fetch('attributes', {}).is_a?(Hash)
-      %w[base_dir glossary].each do |key|
+      %w[base_dir glossary mecab_command mecab_dictionary].each do |key|
         raise Error, "#{key} must be a nonempty path string." if review.key?(key) && (!review[key].is_a?(String) || review[key].empty?)
       end
       base = @path ? File.dirname(@path) : File.dirname(File.expand_path(entry))
@@ -34,11 +34,15 @@ module AsciidocPubkit
         'style' => options[:style] || review.fetch('style', 'preserve'),
         'exclude' => review.fetch('exclude', []),
         'allows' => review.fetch('allows', []),
+        'tokenizer' => options[:tokenizer] || review.fetch('tokenizer', 'mecab'),
+        'mecab_command' => review.fetch('mecab_command', 'mecab'),
+        'mecab_dictionary' => review['mecab_dictionary'] && File.expand_path(review['mecab_dictionary'], base),
         'attributes' => review.fetch('attributes', {}).merge(options.fetch(:attributes, {})),
         'base_dir' => File.expand_path(options[:base_dir] || review.fetch('base_dir', base), options[:base_dir] ? Dir.pwd : base),
         'glossary' => {}
       }
       raise Error, 'Only Japanese (ja) is supported in this release.' unless @data['language'] == 'ja'
+      raise Error, 'tokenizer must be mecab or literal.' unless %w[mecab literal].include?(@data['tokenizer'])
       raise Error, 'style must be preserve, desu-masu, or dearu.' unless %w[preserve desu-masu dearu].include?(@data['style'])
       %w[exclude allows].each do |key|
         raise Error, "#{key} must be an array of strings." unless @data[key].is_a?(Array) && @data[key].all? { |v| v.is_a?(String) }

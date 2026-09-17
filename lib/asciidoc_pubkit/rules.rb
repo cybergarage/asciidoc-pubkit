@@ -4,21 +4,35 @@ module AsciidocPubkit
   class Rules
     INLINE = /`[^`\n]*`|\+\+\+.*?\+\+\+|\+\+[^\n]*?\+\+|(?<!\w)\+[^+\n]+\+|「[^」\n]*」|『[^』\n]*』|\{[^}\n]+\}|<<[^>\n]+>>|\[\[[^\]\n]+\]\]|(?:link|xref|image|footnote|pass):[^\s\[]*\[[^\]\n]*\]|https?:\/\/[^\s\[\]<>]+(?:\[[^\]\n]*\])?/m
     TERMS = {
-      'abstract-reference' => [%w[コスト 境界 契約 観点 土台 橋渡し], 'Identify the concrete referent, components, or measurable work. Keep established technical meanings.'],
-      'weak-predicate' => [%w[利用します 整理します 扱います 示します], 'Check whether the purpose, operation, or result is clear from the surrounding paragraph.'],
+      'abstract-reference' => [%w[コスト 境界 契約 観点 土台 橋渡し 入口 記述 場所 意図], 'Identify the concrete referent, components, or measurable work. Keep established technical meanings.'],
+      'weak-predicate' => [%w[利用します 整理します 扱います 示します 変わります 把握します 分けられます そろえます まとまっています 加えます 探します 到達しません 扱いません そろいます], 'Check whether the purpose, operation, or result is clear from the surrounding paragraph. Preserve negation and conditions.'],
+      'vague-degree' => [%w[浅い 深い], 'Identify the concrete depth, level, scope, or comparison. Keep literal measurements and established technical meanings.'],
       'generic-framing' => [%w[重要なのは ポイントは 本章では ここでは まとめると], 'Check whether this framing adds useful scope or information instead of repeating the explanation.']
     }.freeze
+    VERBS = {
+      '扱う' => %w[扱う], '示す' => %w[示す], '変わる' => %w[変わる],
+      '分ける' => %w[分ける], 'そろえる' => %w[そろえる 揃える],
+      'まとまる' => %w[まとまる 纏まる], '加える' => %w[加える],
+      '探す' => %w[探す], 'そろう' => %w[そろう 揃う]
+    }.freeze
+    SAHEN = %w[利用 整理 把握 到達].freeze
 
     def self.mask(text)
       # Keep character offsets stable while excluding common inline constructs.
       text.gsub(INLINE) { |match| match.gsub(/[^\n]/, ' ') }
     end
 
-    def self.scan(paragraphs, settings)
+    def self.scan(paragraphs, settings, tokenizer: nil)
       findings = []
-      paragraphs.each do |paragraph|
+      if settings.fetch('tokenizer', 'mecab') == 'mecab'
+        tokenizer ||= Morphology.new(settings)
+      end
+      token_groups = tokenizer ? tokenize_paragraphs(paragraphs, tokenizer) : []
+      paragraphs.each_with_index do |paragraph, index|
         text = mask(paragraph.fetch('text'))
+        scan_morphemes(findings, paragraph, text, token_groups[index], settings) if tokenizer
         TERMS.each do |rule, (terms, question)|
+          next if tokenizer && rule != 'generic-framing'
           terms.each do |term|
             next if settings.fetch('allows').include?(term)
             find_term(findings, paragraph, text, term, rule, 'hint', question)
@@ -47,6 +61,80 @@ module AsciidocPubkit
         end
       end
       findings
+    end
+
+    def self.tokenize_paragraphs(paragraphs, tokenizer)
+      text = +''
+      spans = paragraphs.map do |paragraph|
+        start = text.length
+        text << mask(paragraph['text'])
+        finish = text.length
+        text << "\n"
+        [start, finish]
+      end
+      tokens = tokenizer.tokenize(text)
+      cursor = 0
+      spans.map do |start, finish|
+        group = []
+        while cursor < tokens.length && tokens[cursor]['offset'] < finish
+          token = tokens[cursor]
+          raise Error, 'A morphological token crossed a paragraph boundary.' if token['offset'] < start || token['end_offset'] > finish
+          group << token.merge('offset' => token['offset'] - start, 'end_offset' => token['end_offset'] - start)
+          cursor += 1
+        end
+        group
+      end
+    end
+
+    def self.scan_morphemes(findings, paragraph, text, tokens, settings)
+      tokens.each_with_index do |token, index|
+        next if token['unknown']
+        lemma = token['lemma']
+        rule = nil
+        finish_index = index
+        if token['pos'] == '名詞' && TERMS['abstract-reference'][0].include?(lemma)
+          rule = 'abstract-reference'
+        elsif token['pos'] == '形容詞' && TERMS['vague-degree'][0].include?(lemma)
+          rule = 'vague-degree'
+          finish_index = predicate_end(tokens, index, text)
+        elsif token['pos'] == '動詞' && (entry = VERBS.find { |_canonical, forms| forms.include?(lemma) })
+          lemma = entry[0]
+          rule = 'weak-predicate'
+          finish_index = predicate_end(tokens, index, text)
+        elsif token['pos'] == '名詞' && token['pos_detail'] == 'サ変接続' && SAHEN.include?(lemma)
+          following = tokens[index + 1]
+          next unless following && following['pos'] == '動詞' && following['lemma'] == 'する' && adjacent?(token, following, text)
+          lemma += 'する'
+          rule = 'weak-predicate'
+          finish_index = predicate_end(tokens, index + 1, text)
+        end
+        next unless rule
+        members = tokens[index..finish_index]
+        negative = members.any? { |member| member['pos'] == '助動詞' && %w[ない ぬ ん].include?(member['lemma']) }
+        next if lemma == '到達する' && !negative
+        surface = text[token['offset']...tokens[finish_index]['end_offset']]
+        allows = settings.fetch('allows')
+        next if [lemma, token['lemma'], surface, surface + '。'].any? { |form| allows.include?(form) }
+        add(findings, paragraph, text, token['offset'], surface, rule, 'hint', TERMS.fetch(rule)[1])
+        findings.last.merge!('lemma' => lemma, 'part_of_speech' => token['pos'], 'negative' => negative,
+                             'detector' => 'mecab-ipadic')
+      end
+    end
+
+    def self.adjacent?(left, right, text)
+      text[left['end_offset']...right['offset']].match?(/\A\n?\z/)
+    end
+
+    def self.predicate_end(tokens, index, text)
+      finish = index
+      while (following = tokens[finish + 1]) && adjacent?(tokens[finish], following, text)
+        auxiliary = following['pos'] == '助動詞'
+        dependent_verb = following['pos'] == '動詞' && %w[非自立 接尾].include?(following['pos_detail'])
+        connector = following['pos'] == '助詞' && following['pos_detail'] == '接続助詞' && %w[て で].include?(following['lemma'])
+        break unless auxiliary || dependent_verb || connector
+        finish += 1
+      end
+      finish
     end
 
     def self.find_term(findings, paragraph, text, term, rule, severity, question)

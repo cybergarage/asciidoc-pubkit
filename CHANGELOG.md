@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0 — Unreleased
+
+- Add requested abstract nouns, degree adjectives, and vague predicates.
+- Use MeCab with UTF-8 IPADIC by default to match inflected predicates and adjectives.
+- Preserve original surfaces, dictionary forms, and negative auxiliary information.
+- Record analyzer and dictionary fingerprints in review sessions.
+- Add an explicit literal mode for environments without MeCab.
+- Reject incompatible dictionaries and unavailable analyzers with setup guidance.
+- Require a new review session when upgrading from 0.1.0.
+
 ## 0.1.0 — Released
 
 - Add AsciiDoc running-prose extraction with checked source locations.

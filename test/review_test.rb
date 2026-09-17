@@ -60,7 +60,7 @@ class ReviewTest < Minitest::Test
   def test_scan_resolves_include_sources_and_masks_protected_inline_content
     scan
     findings = json('findings.json')
-    assert_equal 3, findings.length
+    assert_equal 4, findings.length
     assert findings.all? { |f| f['file'] == @chapter }
     boundary = findings.find { |f| f['match'] == '境界' }
     assert_equal 3, boundary['line']
@@ -277,5 +277,33 @@ class ReviewTest < Minitest::Test
     File.open(@book, 'a') { |file| file.puts "\ninclude::other.adoc[]" }
     scan
     assert json('document.json')['coverage'].any? { |notice| notice['reason'].include?('unambiguously') }
+  end
+
+  def test_verification_reports_analyzer_drift
+    scan
+    manifest = json('manifest.json')
+    manifest['analysis']['version'] = 'a different analyzer version'
+    File.write(File.join(@session, 'manifest.json'), JSON.generate(manifest))
+    code, report = verify
+    assert_equal 1, code
+    assert report['issues'].any? { |issue| issue['kind'] == 'analyzer-changed' }
+  end
+
+  def test_saved_prompt_does_not_need_mecab_but_verification_does
+    scan
+    manifest = json('manifest.json')
+    manifest['settings']['mecab_command'] = '/not-installed/pubkit-mecab'
+    File.write(File.join(@session, 'manifest.json'), JSON.generate(manifest))
+    assert_equal 0, cli('review', 'prompt', @session).first
+    code, report = verify
+    assert_equal 1, code
+    assert_includes report['issues'].last['message'], 'MeCab is not installed'
+  end
+
+  def test_explicit_literal_override_works_without_a_mecab_installation
+    File.write(File.join(@dir, '.asciidoc-pubkit.yml'), "review:\n  mecab_command: /not-installed/pubkit-mecab\n")
+    scan('--tokenizer', 'literal')
+    assert_equal({ 'engine' => 'literal' }, json('manifest.json')['analysis'])
+    assert_equal 0, verify.first
   end
 end
