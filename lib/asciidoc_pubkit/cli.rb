@@ -36,6 +36,7 @@ module AsciidocPubkit
         if command == 'scan'
           opts.on('--only FILE', 'Review one included file in the book context') { |v| options[:only] = v }
           opts.on('--config FILE', 'Use an explicit YAML configuration') { |v| options[:config] = v }
+          opts.on('--rules FILE', 'Replace default review rules with a YAML rule set') { |v| options[:rules] = v }
           opts.on('--base-dir DIR', 'Set the Asciidoctor base directory') { |v| options[:base_dir] = v }
           opts.on('--lang LANG', 'Prose language (ja only)') { |v| options[:language] = v }
           opts.on('--tokenizer NAME', 'mecab (default) or literal (limited phrase matching)') { |v| options[:tokenizer] = v }

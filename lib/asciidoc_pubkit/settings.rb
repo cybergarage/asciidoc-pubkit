@@ -23,13 +23,16 @@ module AsciidocPubkit
       reject_keys(config, ['review'], 'configuration')
       review = config.fetch('review', {})
       raise Error, 'review must be a mapping.' unless review.is_a?(Hash)
-      reject_keys(review, %w[language style glossary exclude allows attributes base_dir tokenizer mecab_command mecab_dictionary], 'review')
+      reject_keys(review, %w[language style glossary exclude allows attributes base_dir tokenizer mecab_command mecab_dictionary rules], 'review')
       raise Error, 'attributes must be a mapping.' unless review.fetch('attributes', {}).is_a?(Hash)
-      %w[base_dir glossary mecab_command mecab_dictionary].each do |key|
+      %w[base_dir glossary mecab_command mecab_dictionary rules].each do |key|
         raise Error, "#{key} must be a nonempty path string." if review.key?(key) && (!review[key].is_a?(String) || review[key].empty?)
       end
       base = @path ? File.dirname(@path) : File.dirname(File.expand_path(entry))
+      rules_path = options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet::DEFAULT_PATH)
       @data = {
+        'rules' => RuleSet.load(rules_path),
+        'rules_path' => rules_path,
         'language' => options[:language] || review.fetch('language', 'ja'),
         'style' => options[:style] || review.fetch('style', 'preserve'),
         'exclude' => review.fetch('exclude', []),

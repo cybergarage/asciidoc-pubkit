@@ -23,6 +23,7 @@ module AsciidocPubkit
   end
 end
 
+require_relative 'asciidoc_pubkit/rule_set'
 require_relative 'asciidoc_pubkit/settings'
 require_relative 'asciidoc_pubkit/document'
 require_relative 'asciidoc_pubkit/morphology'

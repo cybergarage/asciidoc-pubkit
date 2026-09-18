@@ -62,6 +62,16 @@ class MorphologyTest < Minitest::Test
     assert_equal ['到達しません', '到達しなかった', '到達せず'], negative.map { |f| f['match'] }
   end
 
+  def test_custom_morphological_rules_use_configured_lemmas_and_polarity
+    rules = AsciidocPubkit::RuleSet.load
+    rules['verbs']['読む'] = ['読む']
+    rules['negative_only'] << '読む'
+    findings = scan('読んだ。読まなかった。', @settings.merge('rules' => rules))
+    assert_equal ['読まなかった'], findings.map { |f| f['match'] }
+    assert_equal '読む', findings.first['lemma']
+    assert findings.first['negative']
+  end
+
   def test_negative_meaning_rule_preserves_polarity
     findings = scan('意味する。意味します。意味した。意味しません。意味しなかった。意味せずに終わる。').select { |f| f['rule'] == 'weak-predicate' }
     assert_equal %w[意味しません 意味しなかった 意味せず], findings.map { |f| f['match'] }

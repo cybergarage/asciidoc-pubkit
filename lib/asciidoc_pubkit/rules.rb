@@ -3,30 +3,14 @@
 module AsciidocPubkit
   class Rules
     INLINE = /`[^`\n]*`|\+\+\+.*?\+\+\+|\+\+[^\n]*?\+\+|(?<!\w)\+[^+\n]+\+|「[^」\n]*」|『[^』\n]*』|\{[^}\n]+\}|<<[^>\n]+>>|\[\[[^\]\n]+\]\]|(?:link|xref|image|footnote|pass):[^\s\[]*\[[^\]\n]*\]|https?:\/\/[^\s\[\]<>]+(?:\[[^\]\n]*\])?/m
-    TERMS = {
-      'abstract-reference' => [%w[コスト 境界 契約 観点 土台 橋渡し 入口 記述 場所 意図 役割 一続き 根拠 部品 開発者 概念], 'Identify the concrete referent, components, or measurable work. Keep established technical meanings.'],
-      'weak-predicate' => [%w[利用します 整理します 扱います 示します 変わります 把握します 分けられます そろえます まとまっています 加えます 探します 到達しません 扱いません そろいます 選べます 成り立たせています 確かめます 書き換える 絞れます 渡します あります 意味しません], 'Check whether the purpose, operation, or result is clear from the surrounding paragraph. Preserve negation and conditions.'],
-      'vague-degree' => [%w[浅い 深い], 'Identify the concrete depth, level, scope, or comparison. Keep literal measurements and established technical meanings.'],
-      'contextual-phrase' => [%w[これらを であることだけでは あるものとします わけではありません 別です], 'Check the referent, assumption, or qualification against the surrounding explanation. Preserve conditions and negation.'],
-      'generic-framing' => [%w[重要なのは ポイントは 本章では ここでは まとめると], 'Check whether this framing adds useful scope or information instead of repeating the explanation.']
-    }.freeze
-    VERBS = {
-      '扱う' => %w[扱う], '示す' => %w[示す], '変わる' => %w[変わる],
-      '分ける' => %w[分ける], 'そろえる' => %w[そろえる 揃える],
-      'まとまる' => %w[まとまる 纏まる], '加える' => %w[加える],
-      '探す' => %w[探す], 'そろう' => %w[そろう 揃う],
-      '選ぶ' => %w[選ぶ 選べる], '成り立つ' => %w[成り立つ],
-      '確かめる' => %w[確かめる], '書き換える' => %w[書き換える],
-      '絞る' => %w[絞る 絞れる], '渡す' => %w[渡す], 'ある' => %w[ある]
-    }.freeze
-    SAHEN = %w[利用 整理 把握 到達 意味].freeze
-
     def self.mask(text)
       # Keep character offsets stable while excluding common inline constructs.
       text.gsub(INLINE) { |match| match.gsub(/[^\n]/, ' ') }
     end
 
     def self.scan(paragraphs, settings, tokenizer: nil)
+      rules = RuleSet.validate(settings.fetch('rules') { RuleSet.load })
+      terms = rules.fetch('terms').transform_values { |entry| entry.values_at('terms', 'question') }
       findings = []
       if settings.fetch('tokenizer', 'mecab') == 'mecab'
         tokenizer ||= Morphology.new(settings)
@@ -34,8 +18,8 @@ module AsciidocPubkit
       token_groups = tokenizer ? tokenize_paragraphs(paragraphs, tokenizer) : []
       paragraphs.each_with_index do |paragraph, index|
         text = mask(paragraph.fetch('text'))
-        scan_morphemes(findings, paragraph, text, token_groups[index], settings) if tokenizer
-        TERMS.each do |rule, (terms, question)|
+        scan_morphemes(findings, paragraph, text, token_groups[index], settings, rules, terms) if tokenizer
+        terms.each do |rule, (terms, question)|
           next if tokenizer && !%w[generic-framing contextual-phrase].include?(rule)
           terms.each do |term|
             next if settings.fetch('allows').include?(term)
@@ -90,8 +74,8 @@ module AsciidocPubkit
       end
     end
 
-    def self.scan_morphemes(findings, paragraph, text, tokens, settings)
-      phrase_ranges = TERMS['contextual-phrase'][0].flat_map do |phrase|
+    def self.scan_morphemes(findings, paragraph, text, tokens, settings, rules, terms)
+      phrase_ranges = terms['contextual-phrase'][0].flat_map do |phrase|
         text.to_enum(:scan, Regexp.new(Regexp.escape(phrase))).map do
           match = Regexp.last_match
           match.begin(0)...match.end(0)
@@ -102,26 +86,34 @@ module AsciidocPubkit
         lemma = token['lemma']
         rule = nil
         finish_index = index
-        compound = %w[一続き 開発者].find do |term|
-          following = tokens[index + 1]
-          following && token['pos'] == '名詞' && following['pos'] == '名詞' &&
-            !following['unknown'] && token['end_offset'] == following['offset'] &&
-            token['surface'] + following['surface'] == term
+        compound = rules.fetch('compound_nouns').find do |term|
+          surface = +''
+          cursor = index
+          while (member = tokens[cursor]) && member['pos'] == '名詞' && !member['unknown']
+            break if cursor > index && tokens[cursor - 1]['end_offset'] != member['offset']
+            surface << member['surface']
+            break unless term.start_with?(surface)
+            if surface == term
+              finish_index = cursor
+              break
+            end
+            cursor += 1
+          end
+          surface == term
         end
         if compound
           lemma = compound
-          finish_index = index + 1
           rule = 'abstract-reference'
-        elsif token['pos'] == '名詞' && TERMS['abstract-reference'][0].include?(lemma)
+        elsif token['pos'] == '名詞' && terms['abstract-reference'][0].include?(lemma)
           rule = 'abstract-reference'
-        elsif token['pos'] == '形容詞' && TERMS['vague-degree'][0].include?(lemma)
+        elsif token['pos'] == '形容詞' && terms['vague-degree'][0].include?(lemma)
           rule = 'vague-degree'
           finish_index = predicate_end(tokens, index, text)
-        elsif token['pos'] == '動詞' && (entry = VERBS.find { |_canonical, forms| forms.include?(lemma) })
+        elsif token['pos'] == '動詞' && (entry = rules.fetch('verbs').find { |_canonical, forms| forms.include?(lemma) })
           lemma = entry[0]
           rule = 'weak-predicate'
           finish_index = predicate_end(tokens, index, text)
-        elsif token['pos'] == '名詞' && token['pos_detail'] == 'サ変接続' && SAHEN.include?(lemma)
+        elsif token['pos'] == '名詞' && token['pos_detail'] == 'サ変接続' && rules.fetch('sahen').include?(lemma)
           following = tokens[index + 1]
           next unless following && following['pos'] == '動詞' && following['lemma'] == 'する' && adjacent?(token, following, text)
           lemma += 'する'
@@ -131,11 +123,11 @@ module AsciidocPubkit
         next unless rule
         members = tokens[index..finish_index]
         negative = members.any? { |member| member['pos'] == '助動詞' && %w[ない ぬ ん].include?(member['lemma']) }
-        next if %w[到達する 意味する].include?(lemma) && !negative
+        next if rules.fetch('negative_only').include?(lemma) && !negative
         surface = text[token['offset']...tokens[finish_index]['end_offset']]
         allows = settings.fetch('allows')
         next if [lemma, token['lemma'], surface, surface + '。'].any? { |form| allows.include?(form) }
-        add(findings, paragraph, text, token['offset'], surface, rule, 'hint', TERMS.fetch(rule)[1])
+        add(findings, paragraph, text, token['offset'], surface, rule, 'hint', terms.fetch(rule)[1])
         findings.last.merge!('lemma' => lemma, 'part_of_speech' => token['pos'], 'negative' => negative,
                              'detector' => 'mecab-ipadic')
       end

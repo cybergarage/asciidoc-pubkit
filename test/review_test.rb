@@ -57,6 +57,56 @@ class ReviewTest < Minitest::Test
     [result[0], JSON.parse(result[1])]
   end
 
+  def test_custom_rules_replace_defaults_and_survive_file_removal
+    rules = AsciidocPubkit::RuleSet.load
+    rules['terms'].each_value { |entry| entry['terms'] = [] }
+    rules['verbs'] = {}
+    rules['sahen'] = []
+    rules['negative_only'] = []
+    rules['compound_nouns'] = []
+    rules['terms']['abstract-reference']['terms'] = ['入力']
+    rules['terms']['abstract-reference']['question'] = 'Explain this input.'
+    path = File.join(@dir, 'rules.yml')
+    File.write(path, rules.to_yaml)
+    scan('--rules', path)
+    assert_equal ['入力'], json('findings.json').map { |f| f['match'] }
+    assert_equal rules, json('manifest.json')['settings']['rules']
+    File.unlink(path)
+    code, result = verify
+    assert_equal 0, code
+    assert_equal ['入力'], result['findings'].map { |f| f['match'] }
+    prompt = cli('review', 'prompt', @session)
+    assert_equal 0, prompt[0]
+    assert_includes prompt[1], 'Explain this input.'
+  end
+
+  def test_rule_config_paths_and_cli_precedence
+    rules_path = File.join(@dir, 'rules.yml')
+    File.write(rules_path, AsciidocPubkit::RuleSet.load.to_yaml)
+    config = File.join(@dir, '.asciidoc-pubkit.yml')
+    File.write(config, { 'review' => { 'rules' => 'rules.yml' } }.to_yaml)
+    assert_equal rules_path, AsciidocPubkit::Settings.new(@book, {}).data['rules_path']
+    File.write(config, { 'review' => { 'rules' => 'missing.yml' } }.to_yaml)
+    scan('--rules', rules_path, '--tokenizer', 'literal')
+    assert_equal rules_path, json('manifest.json')['settings']['rules_path']
+  end
+
+  def test_invalid_rules_fail_before_creating_a_session
+    path = File.join(@dir, 'invalid.yml')
+    ["schema_version: 99", "--- !ruby/object:Object {}", "x: &x [*x]"].each do |content|
+      File.write(path, content)
+      result = cli('review', 'scan', @book, '--output', @session, '--rules', path)
+      assert_equal 2, result[0]
+      refute File.exist?(@session)
+    end
+    rules = AsciidocPubkit::RuleSet.load
+    rules['terms']['abstract-reference']['terms'] = [nil]
+    assert_raises(AsciidocPubkit::Error) { AsciidocPubkit::RuleSet.validate(rules) }
+    rules = AsciidocPubkit::RuleSet.load
+    rules['negative_only'] << 'unconfigured'
+    assert_raises(AsciidocPubkit::Error) { AsciidocPubkit::RuleSet.validate(rules) }
+  end
+
   def test_scan_resolves_include_sources_and_masks_protected_inline_content
     scan
     findings = json('findings.json')
