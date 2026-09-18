@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.2 — Released
+
+- Package default Japanese review rules as a validated UTF-8 YAML file.
+- Support custom rule files through `review scan --rules` and `review.rules`.
+- Save resolved rules in sessions for reproducible prompts and verification.
+- Add concept, distinction, and negative meaning review candidates.
+- Add a Make target for running a local checkout with arbitrary CLI arguments.
+- Require a new review session when upgrading from earlier tool versions.
+
 ## 0.1.1 — Released
 
 - Add contextual phrases, compound nouns, and potential and causative verb forms.
