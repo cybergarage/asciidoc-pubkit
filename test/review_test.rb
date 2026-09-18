@@ -35,10 +35,10 @@ class ReviewTest < Minitest::Test
     FileUtils.remove_entry(@dir)
   end
 
-  def cli(*args)
+  def cli(*args, input: StringIO.new)
     out = StringIO.new
     err = StringIO.new
-    code = AsciidocPubkit::CLI.run(args, out: out, err: err)
+    code = AsciidocPubkit::CLI.run(args, out: out, err: err, input: input)
     [code, out.string, err.string]
   end
 
@@ -213,11 +213,110 @@ class ReviewTest < Minitest::Test
     assert_equal 1, verify.first
   end
 
-  def test_scan_never_overwrites_an_existing_session
+  def test_scan_noninteractive_default_keeps_an_existing_session
     scan
     code, _, error = cli('review', 'scan', @book, '--output', @session)
     assert_equal 2, code
     assert_includes error, 'already exists'
+  end
+
+  def terminal_input(text)
+    StringIO.new(text).tap { |input| input.define_singleton_method(:tty?) { true } }
+  end
+
+  def test_scan_confirms_replacement_and_refreshes_baseline
+    scan
+    File.write(File.join(@session, 'old-report.txt'), 'old')
+    File.write(@chapter, "== Chapter\n\n更新した文章です。\n")
+    code, _, error = cli('review', 'scan', @book, '--output', @session,
+                         input: terminal_input("Y\n"))
+    assert_equal 0, code, error
+    assert_includes error, 'Replace it? [y/N]'
+    refute File.exist?(File.join(@session, 'old-report.txt'))
+    assert_equal 0, verify.first
+    assert_equal 0, cli('review', 'prompt', @session).first
+  end
+
+  def test_scan_declines_empty_negative_invalid_and_eof_answers
+    scan
+    before = File.binread(File.join(@session, 'manifest.json'))
+    ["n\n", "\n", "maybe\n", ''].each do |answer|
+      code, _, error = cli('review', 'scan', @book, '--output', @session,
+                           input: terminal_input(answer))
+      assert_equal 2, code
+      assert_includes error, 'cancelled'
+      assert_equal before, File.binread(File.join(@session, 'manifest.json'))
+    end
+  end
+
+  def test_scan_batch_flags_never_read_input
+    scan
+    input = terminal_input('')
+    input.define_singleton_method(:gets) { raise 'Must not read input' }
+    code, _, error = cli('review', 'scan', @book, '--output', @session, '--no-input', input: input)
+    assert_equal 2, code
+    refute_includes error, '[y/N]'
+    [['--yes'], ['-y'], ['--yes', '--no-input'], ['--no-input', '--yes']].each do |flags|
+      code, _, error = cli('review', 'scan', @book, '--output', @session, *flags, input: input)
+      assert_equal 0, code, error
+      refute_includes error, '[y/N]'
+    end
+  end
+
+  def test_scan_does_not_consume_piped_yes
+    scan
+    input = StringIO.new("yes\n")
+    assert_equal 2, cli('review', 'scan', @book, '--output', @session, input: input).first
+    assert_equal 0, input.pos
+  end
+
+  def test_failed_replacement_keeps_existing_session
+    scan
+    before = File.binread(File.join(@session, 'manifest.json'))
+    File.write(File.join(@dir, '.asciidoc-pubkit.yml'), "review:\n  mecab_command: /missing/pubkit-mecab\n")
+    code, _, error = cli('review', 'scan', @book, '--output', @session, '--yes')
+    assert_equal 2, code
+    assert_includes error, 'MeCab is not installed'
+    assert_equal before, File.binread(File.join(@session, 'manifest.json'))
+    assert_empty Dir.glob(File.join(@dir, '.pubkit-*'))
+  end
+
+  def test_failed_install_restores_previous_session
+    scan
+    before = File.binread(File.join(@session, 'manifest.json'))
+    rename = File.method(:rename)
+    session_path = @session
+    failing_rename = lambda do |source, destination|
+      if File.basename(source).start_with?('.pubkit-') && destination == session_path
+        raise Errno::EACCES, destination
+      end
+      rename.call(source, destination)
+    end
+    begin
+      File.define_singleton_method(:rename, failing_rename)
+      assert_equal 2, cli('review', 'scan', @book, '--output', @session, '--yes').first
+    ensure
+      File.define_singleton_method(:rename, rename)
+    end
+    assert_equal before, File.binread(File.join(@session, 'manifest.json'))
+    assert_empty Dir.glob(File.join(@dir, '.pubkit-*'))
+    assert_equal 0, verify.first
+  end
+
+  def test_scan_rejects_replacing_arbitrary_directories_and_symlinks
+    scan
+    [@dir, @book].each do |path|
+      assert_equal 2, cli('review', 'scan', @book, '--output', path, '--yes').first
+    end
+    link = File.join(@dir, 'session-link')
+    File.symlink(@session, link)
+    assert_equal 2, cli('review', 'scan', @book, '--output', link, '--yes').first
+    assert File.symlink?(link)
+    assert_equal 0, verify.first
+  end
+
+  def test_scan_no_input_allows_new_session
+    assert_equal 0, cli('review', 'scan', @book, '--output', @session, '--no-input').first
   end
 
   def test_missing_include_is_not_a_successful_scan

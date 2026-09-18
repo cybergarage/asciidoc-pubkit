@@ -17,7 +17,7 @@ module AsciidocPubkit
       No command edits manuscript files or invokes an AI service.
     TEXT
 
-    def self.run(arguments, out: $stdout, err: $stderr)
+    def self.run(arguments, out: $stdout, err: $stderr, input: $stdin)
       args = arguments.dup
       if args == ['--version']
         out.puts VERSION
@@ -34,6 +34,8 @@ module AsciidocPubkit
         opts.banner = "Usage: asciidoc-pubkit review #{command} [options] #{command == 'scan' ? 'FILE' : 'SESSION'}"
         opts.on('-o', '--output PATH', command == 'scan' ? 'New session directory (default: .pubkit/review)' : 'New output file (default: standard output)') { |v| options[:output] = v }
         if command == 'scan'
+          opts.on('-y', '--yes', 'Answer yes to replacement confirmation') { options[:yes] = true }
+          opts.on('--no-input', 'Never prompt; fail on existing output unless --yes') { options[:no_input] = true }
           opts.on('--only FILE', 'Review one included file in the book context') { |v| options[:only] = v }
           opts.on('--config FILE', 'Use an explicit YAML configuration') { |v| options[:config] = v }
           opts.on('--rules FILE', 'Replace default review rules with a YAML rule set') { |v| options[:rules] = v }
@@ -58,7 +60,19 @@ module AsciidocPubkit
       end
       raise Error, 'Exactly one input is required. Use --help.' unless args.length == 1
       if command == 'scan'
-        result = Session.scan(args.first, options)
+        result = Session.scan(args.first, options) do |destination|
+          if options[:yes]
+            true
+          elsif options[:no_input] || !input.tty?
+            raise Error, "Output already exists: #{destination}. Use --yes to replace it or --output for a new session."
+          else
+            err.print "Output already exists: #{destination}. Replace it? [y/N] "
+            err.flush
+            answer = input.gets
+            raise Error, 'Scan cancelled; existing session was kept.' unless answer && %w[y yes].include?(answer.strip.downcase)
+            true
+          end
+        end
         out.puts "Scanned #{result['paragraphs']} paragraphs; found #{result['findings']} review candidates."
         out.puts "Tokenizer: #{result['tokenizer']}#{result['tokenizer'] == 'literal' ? ' (limited phrase matching; no morphological analysis)' : ' (UTF-8 IPADIC)'}"
         out.puts "Coverage notices: #{result['coverage_notices']}. See document.json for limitations."

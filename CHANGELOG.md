@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Confirm replacement of existing review sessions in interactive scans.
+- Add `review scan --yes` (`-y`) and `--no-input` for batch execution.
+- Preserve previous sessions until replacement scan artifacts are ready.
+
 ## 0.1.2 — Released
 
 - Package default Japanese review rules as a validated UTF-8 YAML file.

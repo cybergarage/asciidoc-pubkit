@@ -13,7 +13,20 @@ module AsciidocPubkit
         raise Error, "Document diagnostics must be resolved before scanning:\n" + document.diagnostics.map { |d| "#{d['severity']}: #{d['message']}" }.join("\n")
       end
       destination = File.expand_path(options.fetch(:output, '.pubkit/review'))
-      raise Error, "Output already exists: #{destination}" if File.exist?(destination)
+      replacing = File.exist?(destination) || File.symlink?(destination)
+      if replacing
+        raise Error, "Output already exists: #{destination}" unless block_given?
+        # Never recursively replace arbitrary directories or linked destinations.
+        unless !File.symlink?(destination) && File.directory?(destination) &&
+               %w[manifest.json document.json findings.json].all? { |name| File.file?(File.join(destination, name)) } &&
+               File.directory?(File.join(destination, 'baseline'))
+          raise Error, "Output is not a review session directory: #{destination}"
+        end
+        if document.sources.keys.any? { |path| File.realpath(path).start_with?(File.realpath(destination) + '/') }
+          raise Error, "Output contains manuscript sources: #{destination}"
+        end
+        raise Error, 'Scan cancelled; existing session was kept.' unless yield(destination)
+      end
       tokenizer = settings.data['tokenizer'] == 'mecab' ? Morphology.new(settings.data) : nil
       analysis = tokenizer ? tokenizer.identity : { 'engine' => 'literal' }
       findings = Rules.scan(document.paragraphs, settings.data, tokenizer: tokenizer)
@@ -41,7 +54,24 @@ module AsciidocPubkit
           [name, Digest::SHA256.file(File.join(staging, name)).hexdigest]
         end
         write_json(File.join(staging, 'manifest.json'), manifest)
-        FileUtils.mv(staging, destination)
+        if replacing
+          backup = Dir.mktmpdir('.pubkit-backup-', parent)
+          begin
+            File.rename(destination, File.join(backup, 'session'))
+            begin
+              File.rename(staging, destination)
+            rescue SystemCallError
+              File.rename(File.join(backup, 'session'), destination)
+              raise
+            end
+          ensure
+            FileUtils.remove_entry(backup) if File.directory?(backup) && !File.exist?(File.join(backup, 'session'))
+          end
+          FileUtils.remove_entry(backup)
+        else
+          raise Error, "Output already exists: #{destination}" if File.exist?(destination) || File.symlink?(destination)
+          File.rename(staging, destination)
+        end
       ensure
         FileUtils.remove_entry(staging) if File.exist?(staging)
       end

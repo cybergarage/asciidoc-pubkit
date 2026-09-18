@@ -163,7 +163,7 @@ asciidoc-pubkit review verify .pubkit/review --output verification.json
 ```
 
 All three commands leave manuscript files unchanged. Only the agent edits them.
-Output paths must not already exist. Use a new session directory for a new pass.
+`prompt` and `verify` output files must not already exist.
 Without `--output`, `prompt` writes Markdown and `verify` writes JSON to stdout.
 `scan` defaults to `.pubkit/review` and prints a short summary.
 
@@ -174,6 +174,27 @@ asciidoc-pubkit review scan book.adoc --only chapters/introduction.adoc
 asciidoc-pubkit review scan chapter.adoc --style desu-masu
 asciidoc-pubkit review scan book.adoc --attribute edition=print --base-dir .
 ```
+
+If the session directory already exists, an interactive terminal asks
+`Replace it? [y/N]`. Only `y` or `yes` (case-insensitive) replaces it; any other
+answer or end of input cancels with exit status 2. Replacement resets the review
+baseline and removes old session contents. Use a different `--output` path to
+keep the previous review pass. The old session remains intact if scanning fails
+before the replacement is installed.
+
+For batch execution:
+
+```sh
+# Answer yes automatically and replace an existing review session.
+asciidoc-pubkit review scan book.adoc --yes  # short form: -y
+# Never ask; exit with status 2 if the output already exists.
+asciidoc-pubkit review scan book.adoc --no-input
+```
+
+Non-terminal stdin also disables prompting. `--yes --no-input` permits
+replacement without reading stdin. These options apply to `scan` only;
+regular files, symlinks, directories without a review session layout, and
+sessions containing the current manuscript sources cannot be replaced.
 
 An entrypoint or a standalone chapter can be scanned. Includes and conditionals
 are processed by Asciidoctor. Match the publishing build's attributes and base
