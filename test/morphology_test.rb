@@ -22,7 +22,7 @@ class MorphologyTest < Minitest::Test
   end
 
   def test_additional_requested_expressions_in_both_modes
-    expressions = %w[これらを であることだけでは 役割 一続き 根拠 部品 開発者 選べます 扱います あるものとします わけではありません 成り立たせています 確かめます 書き換える 絞れます 渡します あります]
+    expressions = %w[これらを であることだけでは 役割 一続き 根拠 部品 開発者 選べます 扱います あるものとします わけではありません 成り立たせています 確かめます 書き換える 絞れます 渡します あります 別です]
     %w[mecab literal].each do |mode|
       findings = scan(expressions.join('。') + '。', @settings.merge('tokenizer' => mode))
       expressions.each { |surface| assert_equal 1, findings.count { |f| f['match'] == surface }, "#{mode}: #{surface}" }

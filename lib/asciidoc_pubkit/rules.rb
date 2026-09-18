@@ -7,7 +7,7 @@ module AsciidocPubkit
       'abstract-reference' => [%w[コスト 境界 契約 観点 土台 橋渡し 入口 記述 場所 意図 役割 一続き 根拠 部品 開発者], 'Identify the concrete referent, components, or measurable work. Keep established technical meanings.'],
       'weak-predicate' => [%w[利用します 整理します 扱います 示します 変わります 把握します 分けられます そろえます まとまっています 加えます 探します 到達しません 扱いません そろいます 選べます 成り立たせています 確かめます 書き換える 絞れます 渡します あります], 'Check whether the purpose, operation, or result is clear from the surrounding paragraph. Preserve negation and conditions.'],
       'vague-degree' => [%w[浅い 深い], 'Identify the concrete depth, level, scope, or comparison. Keep literal measurements and established technical meanings.'],
-      'contextual-phrase' => [%w[これらを であることだけでは あるものとします わけではありません], 'Check the referent, assumption, or qualification against the surrounding explanation. Preserve conditions and negation.'],
+      'contextual-phrase' => [%w[これらを であることだけでは あるものとします わけではありません 別です], 'Check the referent, assumption, or qualification against the surrounding explanation. Preserve conditions and negation.'],
       'generic-framing' => [%w[重要なのは ポイントは 本章では ここでは まとめると], 'Check whether this framing adds useful scope or information instead of repeating the explanation.']
     }.freeze
     VERBS = {
