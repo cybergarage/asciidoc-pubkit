@@ -4,8 +4,8 @@ module AsciidocPubkit
   class Rules
     INLINE = /`[^`\n]*`|\+\+\+.*?\+\+\+|\+\+[^\n]*?\+\+|(?<!\w)\+[^+\n]+\+|「[^」\n]*」|『[^』\n]*』|\{[^}\n]+\}|<<[^>\n]+>>|\[\[[^\]\n]+\]\]|(?:link|xref|image|footnote|pass):[^\s\[]*\[[^\]\n]*\]|https?:\/\/[^\s\[\]<>]+(?:\[[^\]\n]*\])?/m
     TERMS = {
-      'abstract-reference' => [%w[コスト 境界 契約 観点 土台 橋渡し 入口 記述 場所 意図 役割 一続き 根拠 部品 開発者], 'Identify the concrete referent, components, or measurable work. Keep established technical meanings.'],
-      'weak-predicate' => [%w[利用します 整理します 扱います 示します 変わります 把握します 分けられます そろえます まとまっています 加えます 探します 到達しません 扱いません そろいます 選べます 成り立たせています 確かめます 書き換える 絞れます 渡します あります], 'Check whether the purpose, operation, or result is clear from the surrounding paragraph. Preserve negation and conditions.'],
+      'abstract-reference' => [%w[コスト 境界 契約 観点 土台 橋渡し 入口 記述 場所 意図 役割 一続き 根拠 部品 開発者 概念], 'Identify the concrete referent, components, or measurable work. Keep established technical meanings.'],
+      'weak-predicate' => [%w[利用します 整理します 扱います 示します 変わります 把握します 分けられます そろえます まとまっています 加えます 探します 到達しません 扱いません そろいます 選べます 成り立たせています 確かめます 書き換える 絞れます 渡します あります 意味しません], 'Check whether the purpose, operation, or result is clear from the surrounding paragraph. Preserve negation and conditions.'],
       'vague-degree' => [%w[浅い 深い], 'Identify the concrete depth, level, scope, or comparison. Keep literal measurements and established technical meanings.'],
       'contextual-phrase' => [%w[これらを であることだけでは あるものとします わけではありません 別です], 'Check the referent, assumption, or qualification against the surrounding explanation. Preserve conditions and negation.'],
       'generic-framing' => [%w[重要なのは ポイントは 本章では ここでは まとめると], 'Check whether this framing adds useful scope or information instead of repeating the explanation.']
@@ -19,7 +19,7 @@ module AsciidocPubkit
       '確かめる' => %w[確かめる], '書き換える' => %w[書き換える],
       '絞る' => %w[絞る 絞れる], '渡す' => %w[渡す], 'ある' => %w[ある]
     }.freeze
-    SAHEN = %w[利用 整理 把握 到達].freeze
+    SAHEN = %w[利用 整理 把握 到達 意味].freeze
 
     def self.mask(text)
       # Keep character offsets stable while excluding common inline constructs.
@@ -131,7 +131,7 @@ module AsciidocPubkit
         next unless rule
         members = tokens[index..finish_index]
         negative = members.any? { |member| member['pos'] == '助動詞' && %w[ない ぬ ん].include?(member['lemma']) }
-        next if lemma == '到達する' && !negative
+        next if %w[到達する 意味する].include?(lemma) && !negative
         surface = text[token['offset']...tokens[finish_index]['end_offset']]
         allows = settings.fetch('allows')
         next if [lemma, token['lemma'], surface, surface + '。'].any? { |form| allows.include?(form) }

@@ -22,7 +22,7 @@ class MorphologyTest < Minitest::Test
   end
 
   def test_additional_requested_expressions_in_both_modes
-    expressions = %w[これらを であることだけでは 役割 一続き 根拠 部品 開発者 選べます 扱います あるものとします わけではありません 成り立たせています 確かめます 書き換える 絞れます 渡します あります 別です]
+    expressions = %w[これらを であることだけでは 役割 一続き 根拠 部品 開発者 選べます 扱います あるものとします わけではありません 成り立たせています 確かめます 書き換える 絞れます 渡します あります 別です 概念 意味しません]
     %w[mecab literal].each do |mode|
       findings = scan(expressions.join('。') + '。', @settings.merge('tokenizer' => mode))
       expressions.each { |surface| assert_equal 1, findings.count { |f| f['match'] == surface }, "#{mode}: #{surface}" }
@@ -60,6 +60,14 @@ class MorphologyTest < Minitest::Test
     assert_equal 3, negative.length
     assert negative.all? { |f| f['negative'] }
     assert_equal ['到達しません', '到達しなかった', '到達せず'], negative.map { |f| f['match'] }
+  end
+
+  def test_negative_meaning_rule_preserves_polarity
+    findings = scan('意味する。意味します。意味した。意味しません。意味しなかった。意味せずに終わる。').select { |f| f['rule'] == 'weak-predicate' }
+    assert_equal %w[意味しません 意味しなかった 意味せず], findings.map { |f| f['match'] }
+    assert findings.all? { |f| f['lemma'] == '意味する' && f['negative'] }
+    assert_empty scan('意味しません。', @settings.merge('allows' => ['意味する']))
+    assert_empty scan('「概念」と`意味しません`。')
   end
 
   def test_existing_rules_cover_past_and_negative_forms_without_duplicates
