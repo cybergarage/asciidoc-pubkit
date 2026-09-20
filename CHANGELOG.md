@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reduce single-file review prompts by emitting each paragraph once, sharing
+  context metadata, and compacting JSON; retain all candidates and review settings.
 - Confirm replacement of existing review sessions in interactive scans.
 - Add `review scan --yes` (`-y`) and `--no-input` for batch execution.
 - Preserve previous sessions until replacement scan artifacts are ready.

@@ -131,8 +131,37 @@ class ReviewTest < Minitest::Test
     assert_equal 0, code, error
     assert_includes output, 'Do not edit files.'
     assert_includes output, 'needs-evidence'
-    assert_includes output, 'previous_paragraph'
+    assert_includes output, 'adjacent entries provide neighboring context'
     assert_includes output, '重要なのは'
+  end
+
+  def test_prompt_preserves_all_paragraphs_and_candidates_without_duplicate_context
+    scan
+    code, output, error = cli('review', 'prompt', @session)
+    assert_equal 0, code, error
+    blocks = output.scan(/^```json\n(.*?)\n```$/m).flatten.map { |data| JSON.parse(data) }
+    assert_equal json('manifest.json')['settings'], blocks[0]
+    assert_equal json('manifest.json')['analysis'], blocks[1]
+    contexts = blocks.select { |block| block.is_a?(Hash) && block.key?('headings') }
+    assert_equal json('document.json')['paragraphs'].map { |p| p.slice('file', 'headings') }.chunk { |c| c }.map(&:first), contexts
+    paragraphs = json('document.json')['paragraphs']
+    assert_equal paragraphs.map { |p| p['text'] }, output.scan(/^```text\n(.*?)\n```$/m).flatten
+    paragraphs.each do |paragraph|
+      assert_includes output, "### Paragraph #{paragraph['id']} — lines #{paragraph['line']}–#{paragraph['end_line']}"
+    end
+    expected = json('findings.json').map { |f| f.reject { |key, _| %w[file paragraph_id].include?(key) } }
+    assert_equal expected, blocks.select { |block| block.is_a?(Array) }.flatten
+    assert_includes output, 'Candidates: none.'
+    refute_includes output, 'previous_paragraph'
+    refute_includes output, 'next_paragraph'
+  end
+
+  def test_prompt_fences_cannot_be_closed_by_manuscript_backticks
+    File.write(@chapter, "== Chapter\n\n本文に ````` を含めます。\n")
+    scan('--tokenizer', 'literal')
+    code, output, error = cli('review', 'prompt', @session)
+    assert_equal 0, code, error
+    assert_includes output, "``````text\n#{json('document.json')['paragraphs'].first['text']}\n``````"
   end
 
   def test_prompt_rejects_stale_sources_and_modified_artifacts

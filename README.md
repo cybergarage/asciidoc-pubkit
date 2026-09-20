@@ -234,9 +234,15 @@ asciidoc-pubkit review prompt .pubkit/review --mode diagnose
 for findings and proposed revisions without editing. Both modes require the agent
 to distinguish **revise**, **keep**, and **needs-evidence** decisions.
 
-The Markdown includes every selected paragraph, neighboring selected paragraphs,
-heading context, candidates, saved settings, and preservation instructions. It
-also asks for contextual review of paragraphs with no machine matches. Initial
+The single Markdown output includes every selected paragraph once, in document
+order, with candidates, saved settings, and preservation instructions. Paragraph
+text uses fenced text blocks; metadata uses compact JSON. File and heading context
+is shared by consecutive paragraphs, and candidates inherit their file and
+paragraph ID. Adjacent entries provide neighboring context without repeating text.
+The prompt asks the agent to read manageable ranges with neighboring paragraphs
+at boundaries and track completed paragraph IDs and candidate decisions. It also
+requires review of paragraphs with no machine matches. Large manuscripts can
+still exceed a context window if the entire prompt is loaded at once. Initial
 support is for local prose correction, not chapter reorganization.
 
 Source hashes are checked before generating a prompt. Modified sources, modified
