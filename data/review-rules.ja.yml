@@ -3,48 +3,109 @@ schema_version: 1
 terms:
   abstract-reference:
     terms:
-    - コスト
-    - 境界
+    # Concepts, evidence, and explanatory frames.
     - 契約
     - 観点
+    - 意図
+    - 役割
+    - 根拠
+    - 概念
+    - 記述
+    # Components, actors, and hierarchical relationships.
+    - 構成要素
+    - 部品
+    - 開発者
+    - 祖先
+    - 子孫
+    # Scope, separation, and organization.
+    - 境界
     - 土台
     - 橋渡し
     - 入口
-    - 記述
     - 場所
-    - 意図
-    - 役割
     - 一続き
-    - 根拠
-    - 部品
-    - 開発者
-    - 概念
+    - 区別
+    - 単発
+    - 別枠
+    # Resources and preparation.
+    - コスト
+    - 予算
+    - 準備
+    # Review context before choosing a katakana technical term.
+    - 木
+    - 余白
     question: Identify the concrete referent, components, or measurable work. Keep
-      established technical meanings.
+      established technical meanings. For 木 and 余白, consider a context-appropriate
+      katakana term (such as ツリー or マージン) only when it names the intended concept.
   weak-predicate:
     terms:
+    # Use, interpretation, and understanding (literal-mode surfaces).
     - 利用します
-    - 整理します
     - 扱います
-    - 示します
-    - 変わります
-    - 把握します
-    - 分けられます
-    - そろえます
-    - まとまっています
-    - 加えます
-    - 探します
-    - 到達しません
     - 扱いません
-    - そろいます
-    - 選べます
-    - 成り立たせています
-    - 確かめます
-    - 書き換える
-    - 絞れます
-    - 渡します
-    - あります
     - 意味しません
+    - 把握します
+    - 捉えます
+    # Writing, representation, and inspection.
+    - 記述します
+    - 記述できます
+    - 書きます
+    - 示します
+    - 表します
+    - 表しません
+    - 読みます
+    - 調べます
+    - 調べられます
+    - 確かめます
+    - 探します
+    - 追えます
+    # Construction, preparation, and combination.
+    - 用意します
+    - 作ります
+    - 組み立てられます
+    - 組み合わせます
+    - 成り立たせています
+    # Organization, comparison, and selection.
+    - 整理します
+    - 分ける
+    - 分けて
+    - 分けています
+    - 分けません
+    - 分けられます
+    - 区別します
+    - 区別できます
+    - 混同しません
+    - 混ぜません
+    - そろえます
+    - そろいます
+    - まとまっています
+    - 選びます
+    - 選べます
+    - 絞れます
+    - 決まります
+    # Change, transfer, and retention.
+    - 変わります
+    - 書き換える
+    - 置き換えます
+    - 加えます
+    - 加わります
+    - 付けます
+    - 返す
+    - 返します
+    - 渡します
+    - 送れます
+    - 残します
+    - 持ちます
+    - 消しません
+    # Existence, sufficiency, requirements, and completion.
+    - あります
+    - 足りません
+    - 求めます
+    - 到達しません
+    - 避けられます
+    - 終えられます
+    - 抜けられます
+    - 解消する
     question: Check whether the purpose, operation, or result is clear from the surrounding
       paragraph. Preserve negation and conditions.
   vague-degree:
@@ -58,10 +119,36 @@ terms:
     - これらを
     - であることだけでは
     - あるものとします
+    # Retain this specific phrase for existing allow lists and fuller evidence.
     - わけではありません
     - 別です
+    # Compressed noun relationships; suggestions are not automatic replacements.
+    - 明示選択
+    - 欠落理由
+    # Referents, separation, evaluation, and sufficiency.
+    - よいこと
+    - おそれ
+    - 別の
+    - 別に
+    - 空の
+    - 別々に
+    - ことだけで
+    - 目安です
+    - 必要がありません
+    # Shared qualifications cover longer expressions without enumerating them.
+    - ではありません
+    - にはなりません
+    - にはできません
+    - にはしません
+    - ことはしません
+    - 代用にしません
+    - でもありません
+    - してはいけません
+    - 表してはいません
     question: Check the referent, assumption, or qualification against the surrounding
-      explanation. Preserve conditions and negation.
+      explanation. Preserve conditions and negation, including what is not implied,
+      permitted, sufficient, or proven. For 明示選択 and 欠落理由, consider making the
+      relationship explicit (明示的選択 and 欠落した理由) if that preserves the meaning.
   generic-framing:
     terms:
     - 重要なのは
@@ -107,6 +194,56 @@ verbs:
   - 絞れる
   渡す:
   - 渡す
+  決まる:
+  - 決まる
+  組み立てる:
+  - 組み立てる
+  組み合わせる:
+  - 組み合わせる
+  足りる:
+  - 足りる
+  置き換える:
+  - 置き換える
+  加わる:
+  - 加わる
+  返す:
+  - 返す
+  避ける:
+  - 避ける
+  求める:
+  - 求める
+  送る:
+  - 送る
+  - 送れる
+  読む:
+  - 読む
+  付ける:
+  - 付ける
+  残す:
+  - 残す
+  持つ:
+  - 持つ
+  表す:
+  - 表す
+  終える:
+  - 終える
+  消す:
+  - 消す
+  調べる:
+  - 調べる
+  作る:
+  - 作る
+  抜ける:
+  - 抜ける
+  捉える:
+  - 捉える
+  書く:
+  - 書く
+  混ぜる:
+  - 混ぜる
+  追う:
+  - 追う
+  - 追える
   ある:
   - ある
 sahen:
@@ -115,9 +252,15 @@ sahen:
 - 把握
 - 到達
 - 意味
+- 記述
+- 用意
+- 区別
+- 解消
+- 混同
 negative_only:
 - 到達する
 - 意味する
 compound_nouns:
 - 一続き
 - 開発者
+- 構成要素

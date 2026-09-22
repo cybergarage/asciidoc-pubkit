@@ -332,8 +332,9 @@ use an absolute path for an explicit executable override.
 | `style-candidate` | hint | Check selected polite/plain endings against an explicit style |
 
 MeCab mode matches noun and adjective tokens and dictionary forms of verbs.
-Sahen predicates are matched as a noun followed by the verb for "do"; standalone
-sahen nouns are not treated as verbal predicates. Auxiliary sequences retain
+Sahen predicates are matched as a noun followed by `する` or the potential
+`できる`; standalone sahen nouns are not treated as verbal predicates. A configured
+sahen predicate takes precedence over a matching standalone noun rule. Auxiliary sequences retain
 negation, past tense, passive forms, and progressive forms in the reported surface.
 The added reach predicate is negative-only; the existing handling predicate is
 reviewed in both affirmative and negative forms. Glossary variants and generic
@@ -341,6 +342,21 @@ framing phrases continue to use literal matching. Contextual phrases also use
 literal matching and suppress overlapping morphological candidates. Compound
 nouns are matched across adjacent noun tokens. Selection and narrowing verbs
 include potential forms; predicate surfaces also preserve causative auxiliaries.
+
+Default terms group components, actors, relationships, and resources under
+`abstract-reference`; operations under `weak-predicate`; and compressed noun
+relationships, referents, sufficiency, and negative qualifications under
+`contextual-phrase`. `木` and `余白` invite a context-dependent katakana terminology
+review, not mandatory replacement. `明示選択` and `欠落理由` invite checking whether
+`明示的選択` and `欠落した理由` clarify the intended relationship. Shared phrases such
+as `ではありません` cover longer qualifications without listing every sentence.
+Negation and technical meanings must remain intact.
+
+Literal term matching suppresses matches strictly contained in a longer matched
+term, across categories. The longer term also suppresses contained matches when
+it is allowed; separate occurrences remain candidates. Glossary and style checks
+are independent. In MeCab mode, predicates outside a contextual phrase can still
+be reported separately.
 
 Morphological candidates include `lemma`, `part_of_speech`, `negative`, and
 `detector` alongside the original `match`, line, and column. Negation detection
@@ -438,7 +454,7 @@ rejected. YAML aliases and object tags are not supported.
 | `schema_version` | Integer `1` |
 | `terms` | Mapping containing all five categories listed below |
 | `verbs` | Mapping from canonical verb forms to nonempty arrays of MeCab/IPADIC dictionary forms; each dictionary form belongs to only one canonical form |
-| `sahen` | Array of nouns matched with a following `する` verb |
+| `sahen` | Array of nouns matched with a following `する` or potential `できる` verb |
 | `negative_only` | Array of canonical predicates restricted to negative forms; use the noun plus `する` for sahen predicates |
 | `compound_nouns` | Array of terms matched across contiguous noun tokens; each must also appear in `abstract-reference.terms` |
 

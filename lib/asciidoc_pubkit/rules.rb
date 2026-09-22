@@ -19,13 +19,7 @@ module AsciidocPubkit
       paragraphs.each_with_index do |paragraph, index|
         text = mask(paragraph.fetch('text'))
         scan_morphemes(findings, paragraph, text, token_groups[index], settings, rules, terms) if tokenizer
-        terms.each do |rule, (terms, question)|
-          next if tokenizer && !%w[generic-framing contextual-phrase].include?(rule)
-          terms.each do |term|
-            next if settings.fetch('allows').include?(term)
-            find_term(findings, paragraph, text, term, rule, 'hint', question)
-          end
-        end
+        scan_literal_terms(findings, paragraph, text, terms, settings, morphological: !!tokenizer)
         settings.fetch('glossary').each do |canonical, variants|
           variants.each do |variant|
             find_term(findings, paragraph, text, variant, 'glossary-variant', 'warning', "Use #{canonical.inspect} when this variant refers to the same concept; preserve identifiers and quotations.")
@@ -104,6 +98,12 @@ module AsciidocPubkit
         if compound
           lemma = compound
           rule = 'abstract-reference'
+        elsif token['pos'] == '名詞' && token['pos_detail'] == 'サ変接続' && rules.fetch('sahen').include?(lemma) &&
+              (following = tokens[index + 1]) && following['pos'] == '動詞' &&
+              %w[する できる].include?(following['lemma']) && adjacent?(token, following, text)
+          lemma += 'する'
+          rule = 'weak-predicate'
+          finish_index = predicate_end(tokens, index + 1, text)
         elsif token['pos'] == '名詞' && terms['abstract-reference'][0].include?(lemma)
           rule = 'abstract-reference'
         elsif token['pos'] == '形容詞' && terms['vague-degree'][0].include?(lemma)
@@ -113,12 +113,6 @@ module AsciidocPubkit
           lemma = entry[0]
           rule = 'weak-predicate'
           finish_index = predicate_end(tokens, index, text)
-        elsif token['pos'] == '名詞' && token['pos_detail'] == 'サ変接続' && rules.fetch('sahen').include?(lemma)
-          following = tokens[index + 1]
-          next unless following && following['pos'] == '動詞' && following['lemma'] == 'する' && adjacent?(token, following, text)
-          lemma += 'する'
-          rule = 'weak-predicate'
-          finish_index = predicate_end(tokens, index + 1, text)
         end
         next unless rule
         members = tokens[index..finish_index]
@@ -147,6 +141,25 @@ module AsciidocPubkit
         finish += 1
       end
       finish
+    end
+
+    def self.scan_literal_terms(findings, paragraph, text, terms, settings, morphological:)
+      candidates = []
+      terms.each do |rule, (surfaces, question)|
+        next if morphological && !%w[generic-framing contextual-phrase].include?(rule)
+        surfaces.each do |surface|
+          text.to_enum(:scan, Regexp.new(Regexp.escape(surface))).each do
+            match = Regexp.last_match
+            candidates << [match.begin(0), match.end(0), surface, rule, question]
+          end
+        end
+      end
+      # Keep the most specific phrase, including when it is explicitly allowed.
+      candidates.each do |start, finish, surface, rule, question|
+        next if candidates.any? { |left, right, *_| left <= start && right >= finish && right - left > finish - start }
+        next if settings.fetch('allows').include?(surface)
+        add(findings, paragraph, text, start, surface, rule, 'hint', question)
+      end
     end
 
     def self.find_term(findings, paragraph, text, term, rule, severity, question)
