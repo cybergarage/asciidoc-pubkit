@@ -2,11 +2,12 @@
 
 ## Unreleased
 
+## 0.1.3 — 2026-09-29
+
 - Consolidate Japanese review candidates for terminology, compressed noun
   relationships, operations, and negative qualifications in the packaged rules.
 - Suppress literal candidates contained in longer matched terms, preserving
   allow-list handling, and recognize sahen potential forms before noun rules.
-
 - Reduce single-file review prompts by emitting each paragraph once, sharing
   context metadata, and compacting JSON; retain all candidates and review settings.
 - Confirm replacement of existing review sessions in interactive scans.

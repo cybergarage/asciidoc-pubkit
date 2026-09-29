@@ -60,7 +60,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.1.2'
+gem 'asciidoc-pubkit', '~> 0.1.3'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -82,7 +82,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.1.2.gem
+gem install ./asciidoc-pubkit-0.1.3.gem
 asciidoc-pubkit --version
 ```
 
@@ -370,12 +370,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.1.2. Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.1.3. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.1.2
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.1.3
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship
