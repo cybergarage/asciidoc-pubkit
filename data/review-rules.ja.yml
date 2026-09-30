@@ -145,10 +145,12 @@ terms:
     - でもありません
     - してはいけません
     - 表してはいません
-    question: Check the referent, assumption, or qualification against the surrounding
-      explanation. Preserve conditions and negation, including what is not implied,
-      permitted, sufficient, or proven. For 明示選択 and 欠落理由, consider making the
-      relationship explicit (明示的選択 and 欠落した理由) if that preserves the meaning.
+    question: Check whether the phrase adds a condition that changes the reader's
+      interpretation or action. If it only denies an overbroad reading already
+      excluded by the main claim, revise that claim or remove the qualification.
+      Preserve necessary negation, uncertainty, and technical boundaries. For
+      明示選択 and 欠落理由, consider making the relationship explicit (明示的選択 and
+      欠落した理由) if that preserves the meaning.
   generic-framing:
     terms:
     - 重要なのは
@@ -156,8 +158,11 @@ terms:
     - 本章では
     - ここでは
     - まとめると
-    question: Check whether this framing adds useful scope or information instead
-      of repeating the explanation.
+    - このように
+    - 要するに
+    question: Check whether this opening or recap adds a claim, scope, or consequence
+      beyond the surrounding prose. Keep useful framing; otherwise state the
+      substantive claim directly. Do not force a uniform sentence pattern.
 verbs:
   扱う:
   - 扱う

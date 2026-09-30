@@ -53,6 +53,13 @@ class DefaultRulesTest < Minitest::Test
       assert_empty scan('`木`。「明示選択」。`記述できます`。', mode)
       assert_equal ['contextual-phrase'], scan('欠落理由。', mode).map { |f| f['rule'] }
     end
+
+    define_method("test_generic_recaps_are_review_candidates_in_#{mode}") do
+      text = 'このように、処理します。要するに、結果を返します。'
+      matches = ->(allows) { scan(text, mode, allows: allows).select { |f| f['rule'] == 'generic-framing' }.map { |f| f['match'] } }
+      assert_equal %w[このように 要するに], matches.call([])
+      assert_equal ['要するに'], matches.call(['このように'])
+    end
   end
 
   def test_nouns_and_sahen_potential_predicates_are_distinct

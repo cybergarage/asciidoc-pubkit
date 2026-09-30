@@ -26,6 +26,11 @@ module AsciidocPubkit
           super(*args)
         end
         doc.parse
+        document_language = doc.attr('lang')
+        if document_language && document_language != settings.fetch('language')
+          Language.validate!(document_language, operation: 'review')
+          raise Error, "Document language #{document_language.inspect} does not match review language #{settings.fetch('language').inspect}."
+        end
         @line_index = Hash.new { |hash, key| hash[key] = [] }
         @source_lines = @sources.to_h do |path, raw|
           lines = raw.lines.map { |line| line.delete_suffix("\n").delete_suffix("\r") }

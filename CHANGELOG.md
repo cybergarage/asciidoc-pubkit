@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.6.0 — 2026-09-30
+
+- Add `writing criteria` and `writing prompt` commands backed by one packaged
+  Japanese technical prose guide. Include that guide in saved review prompts.
+- Organize the CLI into `writing` and `review` groups and accept `--lang ja` on
+  both. Reject unsupported languages explicitly, including document attributes.
+- Save the shared criteria and language with each review session, and update the
+  book writing and review skills to use the generated prompts.
+- Refine Japanese review questions for redundant qualifications and generic
+  recaps, and document the editorial sources and contextual limits.
+
 ## 0.1.3 — 2026-09-29
 
 - Consolidate Japanese review candidates for terminology, compressed noun

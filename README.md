@@ -5,16 +5,16 @@
 
 # asciidoc-pubkit
 
-A toolkit for authoring, reviewing, and publishing AsciiDoc books.
+A toolkit for authoring and reviewing AsciiDoc books.
 
-The initial release reviews Japanese running prose, generates contextual review
-prompts for coding agents, and checks edited manuscripts against a saved baseline.
+Version 0.6.0 provides shared Japanese technical writing criteria, an authoring
+prompt, contextual review prompts, and baseline verification for edited manuscripts.
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese text is retained in manuscript excerpts, rule dictionaries, and fixtures.
 
 ## Status
 
-This is an initial implementation. It does not invoke an AI service, automatically
+This release does not invoke an AI service, automatically
 rewrite manuscripts, or publish books. EPUB, image, and book scaffolding commands
 are planned extensions, not available features.
 
@@ -23,7 +23,15 @@ Starting with version 0.1.1, the default review backend requires the external Me
 command and a UTF-8 IPADIC dictionary. Node.js and textlint are not required.
 Explicit `--tokenizer literal` mode provides limited phrase matching without MeCab.
 
-Version 0.1.1 includes morphological analysis. Version 0.1.0 uses literal matching.
+Version 0.1.1 added morphological analysis. Version 0.1.0 used literal matching.
+
+The CLI has `writing` and `review` command groups. Both default to `--lang ja`.
+Language-specific criteria live under `data/writing/<language>/`; review rules
+use `data/review-rules.<language>.yml`. Writing and review have separate lists
+of supported languages, so a future writing language need not imply review
+support. Other languages are reserved for future implementations and now
+return an explicit error. A review session saves its language and the criteria
+used to generate its prompt.
 
 ## Install from RubyGems
 
@@ -38,6 +46,13 @@ asciidoc-pubkit --help
 Ruby 3.2 or later is required. RubyGems installs the required Ruby dependencies;
 no repository clone or Node.js installation is needed. MeCab and IPADIC must be
 installed separately when using version 0.1.1 or later in the default mode.
+
+Generate a writing prompt without an existing manuscript:
+
+```sh
+asciidoc-pubkit writing criteria --lang ja
+asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
+```
 
 Run the review workflow from your manuscript directory:
 
@@ -60,7 +75,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.1.3'
+gem 'asciidoc-pubkit', '~> 0.6.0'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -82,12 +97,31 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.1.3.gem
+gem install ./asciidoc-pubkit-0.6.0.gem
 asciidoc-pubkit --version
 ```
 
 The gem name and CLI name are `asciidoc-pubkit`; the Ruby require path is
 `asciidoc_pubkit`, and the namespace is `AsciidocPubkit`.
+
+## Writing commands
+
+`writing criteria` prints the packaged common criteria. `writing prompt` adds
+task instructions around those same criteria. Neither command needs an AsciiDoc
+file, a review session, MeCab, or network access. Both accept `--lang ja` and
+`--output FILE`; output defaults to stdout, and an existing output file is never
+overwritten. The prompt asks the agent to read project instructions and evidence;
+it does not supply source facts or authorize edits. Book-specific voice and
+format still come from the book. The OSS-only prose style profile remains with
+the book workflow, not the shared default.
+
+```sh
+asciidoc-pubkit writing criteria --lang ja
+asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
+```
+
+For example, `--lang en` exits with an unsupported-language error. No English
+review or writing criteria are shipped in 0.6.0.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
@@ -235,7 +269,8 @@ for findings and proposed revisions without editing. Both modes require the agen
 to distinguish **revise**, **keep**, and **needs-evidence** decisions.
 
 The single Markdown output includes every selected paragraph once, in document
-order, with candidates, saved settings, and preservation instructions. Paragraph
+order, with the shared criteria saved at scan time, candidates, saved settings,
+and preservation instructions. Paragraph
 text uses fenced text blocks; metadata uses compact JSON. File and heading context
 is shared by consecutive paragraphs, and candidates inherit their file and
 paragraph ID. Adjacent entries provide neighboring context without repeating text.
@@ -247,6 +282,10 @@ support is for local prose correction, not chapter reorganization.
 
 Source hashes are checked before generating a prompt. Modified sources, modified
 session artifacts, and incompatible session versions require a fresh scan.
+`review scan`, `review prompt`, and `review verify` accept `--lang ja`; prompt and
+verify check the value against the session language. A non-Japanese language in
+`--lang`, `review.language`, or an explicit AsciiDoc `:lang:` attribute is rejected.
+An omitted `:lang:` attribute uses the selected review language.
 
 ### Verify
 
@@ -324,8 +363,8 @@ use an absolute path for an explicit executable override.
 | --- | --- | --- |
 | `abstract-reference` | hint | Ask what an abstract noun refers to |
 | `weak-predicate` | hint | Ask whether an operation's purpose or result is clear |
-| `contextual-phrase` | hint | Review referents, assumptions, and qualifications while preserving negation |
-| `generic-framing` | hint | Review generic introductions and emphasis |
+| `contextual-phrase` | hint | Check whether a qualification changes interpretation or action; preserve necessary negation |
+| `generic-framing` | hint | Check whether an introduction or recap adds a claim, scope, or consequence |
 | `vague-degree` | hint | Ask what depth, level, scope, or comparison is intended |
 | `repeated-ending` | info | Identify three consecutive sentences with the same detected ending |
 | `glossary-variant` | warning | Identify project-specific terminology variants |
@@ -350,7 +389,23 @@ relationships, referents, sufficiency, and negative qualifications under
 review, not mandatory replacement. `明示選択` and `欠落理由` invite checking whether
 `明示的選択` and `欠落した理由` clarify the intended relationship. Shared phrases such
 as `ではありません` cover longer qualifications without listing every sentence.
-Negation and technical meanings must remain intact.
+`generic-framing` also flags `このように` and `要するに` as possible recaps.
+These are candidates for contextual review, not banned expressions. A necessary
+condition, uncertainty, or distinction must survive a revision; a redundant
+disclaimer can instead be removed or folded into a more precise main claim.
+
+### Editorial sources for the shared criteria and default candidates
+
+The shared criteria and default questions draw on [natural-japanese](https://github.com/coji/natural-japanese)
+for separating mechanical detection from contextual judgment and for spotting
+repetitive framing; [日本語技術文書の文章規範](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d)
+for paragraph logic, evidence scope, and preserving meaningful uncertainty; and
+[AI臭い文章とは何なのか](https://speakerdeck.com/nasuvitz/ai-kusai-bunshou-toha-nanina-no-ka)
+for the examples of unnecessary contrast, abstract referents, and paired short
+sentences. These sources differ on stylistic choices such as whether a heading
+should state its conclusion. The packaged rules therefore report candidate
+phrases and leave document structure, genre conventions, and final edits to the
+reviewer.
 
 Literal term matching suppresses matches strictly contained in a longer matched
 term, across categories. The longer term also suppresses contained matches when
@@ -370,12 +425,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.1.3. Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.6.0. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.1.3
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.0
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship

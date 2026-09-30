@@ -44,6 +44,7 @@ module AsciidocPubkit
           'schema_version' => SCHEMA, 'tool_version' => VERSION,
           'entry' => File.realpath(entry), 'only' => options[:only] && File.realpath(options[:only]),
           'settings' => settings.data, 'sources' => sources,
+          'writing_criteria' => Writing.prompt_criteria(settings.data['language']),
           'analysis' => analysis,
           'protected' => protected_content(document),
           'numeric_tokens' => numeric_tokens(document)
@@ -129,14 +130,22 @@ module AsciidocPubkit
       raise Error, "Invalid review session: #{e.message}"
     end
 
+    def language
+      @manifest.fetch('settings').fetch('language')
+    end
+
     def prompt(mode)
       raise Error, 'mode must be revise or diagnose.' unless %w[revise diagnose].include?(mode)
       stale = @manifest['sources'].select do |source|
         !File.file?(source['path']) || Digest::SHA256.file(source['path']).hexdigest != source['sha256']
       end
       raise Error, 'Sources have changed since scanning. Create a new scan before generating a prompt.' unless stale.empty?
+      language = Language.validate!(@manifest.fetch('settings').fetch('language'), operation: 'review')
+      criteria = @manifest.fetch('writing_criteria')
       instructions = <<~TEXT
         # Japanese manuscript review
+
+        Language: #{language}
 
         Mode: #{mode}
         #{mode == 'revise' ? 'Review the evidence and edit only the identified running-prose paragraphs in their source files.' : 'Do not edit files. Report findings and proposed paragraph revisions only.'}
@@ -155,6 +164,14 @@ module AsciidocPubkit
         Explain additional findings using source paths and lines. Do not manufacture a fixed number of findings.
         After editing, reread each paragraph in context. Report unresolved issues and do not claim publication readiness.
         Mechanical verification does not establish semantic correctness.
+
+        ## Shared prose criteria
+
+        Apply these criteria only within the running-prose edit scope above. Their
+        guidance on headings, figures, tables, and code does not authorize changes
+        to those protected elements in this review session.
+
+        #{criteria.rstrip}
 
         ## Saved review settings
 

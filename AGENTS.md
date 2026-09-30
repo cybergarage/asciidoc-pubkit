@@ -3,8 +3,9 @@
 ## Scope and sources of truth
 
 This repository provides the `asciidoc-pubkit` Ruby gem and CLI. Its implemented
-workflow scans Japanese AsciiDoc running prose, emits review prompts, and verifies
-edited manuscripts against a baseline. It does not call an AI service, rewrite
+workflow emits Japanese writing prompts, scans Japanese AsciiDoc running prose,
+emits review prompts, and verifies edited manuscripts against a baseline. It does
+not call an AI service, rewrite
 manuscripts, or publish books. Do not describe planned publishing features as
 available functionality.
 
@@ -63,6 +64,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | `lib/asciidoc_pubkit/morphology.rb` | MeCab execution, IPADIC validation, tokens, backend identity |
 | `lib/asciidoc_pubkit/rules.rb` | Candidate detection, inline masking, positions and polarity |
 | `lib/asciidoc_pubkit/rule_set.rb`, `data/review-rules.ja.yml` | Validated rule schema and packaged Japanese defaults |
+| `lib/asciidoc_pubkit/language.rb`, `lib/asciidoc_pubkit/writing.rb`, `data/writing/ja/criteria.md` | Language gate and canonical writing criteria/prompt |
 | `lib/asciidoc_pubkit/session.rb` | Baselines, artifact integrity, safe replacement, prompts, verification |
 | `test/review_test.rb`, `test/morphology_test.rb` | Workflow regression tests and real MeCab tests |
 
@@ -98,6 +100,11 @@ verification of a MeCab session requires the analyzer and reports backend drift.
   changes alone do not fail verification; numeric changes need manual review.
   Preserve exit codes: 0 for success, 1 for verification violations, 2 for invalid
   arguments/configuration/session/input/output failures.
+- `writing criteria` and `writing prompt` require no manuscript or analyzer.
+  They and all review commands accept `--lang ja`; reject unsupported languages
+  explicitly. Keep common criteria in the packaged language-specific file, not
+  duplicated in book skills or rule questions. Save the criteria used by each
+  review session and include them in its generated prompt.
 
 ## Validation and delivery
 
@@ -108,7 +115,7 @@ behavior. When asserting findings, select the intended rule rather than counting
 unrelated informational candidates such as `repeated-ending`.
 
 For packaging changes, also run `gem build asciidoc-pubkit.gemspec` and check that
-the packaged rules are included. Keep the version in `lib/asciidoc_pubkit.rb` and
+the packaged rules and writing criteria are included. Keep the version in `lib/asciidoc_pubkit.rb` and
 `asciidoc-pubkit.gemspec` consistent when a release is requested. CI configuration
 is maintained in [.github/workflows/test.yml](.github/workflows/test.yml).
 

@@ -6,6 +6,11 @@ module AsciidocPubkit
     CATEGORIES = %w[abstract-reference weak-predicate vague-degree contextual-phrase generic-framing].freeze
     KEYS = %w[schema_version terms verbs sahen negative_only compound_nouns].freeze
 
+    def self.default_path(language)
+      Language.validate!(language, operation: 'review')
+      File.expand_path("../../data/review-rules.#{language}.yml", __dir__)
+    end
+
     def self.load(path = DEFAULT_PATH)
       validate(YAML.safe_load(AsciidocPubkit.read_text(path), permitted_classes: [], aliases: false))
     rescue Psych::Exception => e

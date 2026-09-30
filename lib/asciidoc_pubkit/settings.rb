@@ -29,11 +29,12 @@ module AsciidocPubkit
         raise Error, "#{key} must be a nonempty path string." if review.key?(key) && (!review[key].is_a?(String) || review[key].empty?)
       end
       base = @path ? File.dirname(@path) : File.dirname(File.expand_path(entry))
-      rules_path = options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet::DEFAULT_PATH)
+      language = Language.validate!(options[:language] || review.fetch('language', Language::DEFAULT), operation: 'review')
+      rules_path = options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet.default_path(language))
       @data = {
         'rules' => RuleSet.load(rules_path),
         'rules_path' => rules_path,
-        'language' => options[:language] || review.fetch('language', 'ja'),
+        'language' => language,
         'style' => options[:style] || review.fetch('style', 'preserve'),
         'exclude' => review.fetch('exclude', []),
         'allows' => review.fetch('allows', []),
@@ -44,7 +45,6 @@ module AsciidocPubkit
         'base_dir' => File.expand_path(options[:base_dir] || review.fetch('base_dir', base), options[:base_dir] ? Dir.pwd : base),
         'glossary' => {}
       }
-      raise Error, 'Only Japanese (ja) is supported in this release.' unless @data['language'] == 'ja'
       raise Error, 'tokenizer must be mecab or literal.' unless %w[mecab literal].include?(@data['tokenizer'])
       raise Error, 'style must be preserve, desu-masu, or dearu.' unless %w[preserve desu-masu dearu].include?(@data['style'])
       %w[exclude allows].each do |key|
