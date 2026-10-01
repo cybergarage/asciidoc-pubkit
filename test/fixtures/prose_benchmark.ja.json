@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "id": "technical-prose-v1",
+  "provenance": "Original editorial examples deliberately exhibiting generated-prose patterns, with valid technical prose controls. These are not evidence of AI authorship or a published research dataset.",
+  "cases": [
+    {
+      "id": "retry-framing",
+      "text": "重要なのは、再送という強固な土台です。運用者は失敗した要求を3回まで再送します。この方針が地味に効きます。",
+      "facts": ["運用者が失敗した要求を再送する。", "再送の上限は3回である。", "再送の具体的な効果は記載されていない。"],
+      "targets": [{"kind": "generic-framing", "match": "重要なのは"}, {"kind": "metaphor-operation", "match": "地味に効きます"}]
+    },
+    {
+      "id": "selection-policy",
+      "text": "採否を判断できない項目は除外する側に倒します。このように、判断の解像度を上げます。",
+      "facts": ["採否を判断できない項目を除外する。"],
+      "targets": [{"kind": "metaphor-operation", "match": "側に倒します"}, {"kind": "generic-framing", "match": "このように"}]
+    },
+    {
+      "id": "investigation-time",
+      "text": "デバッグに丸一日時間を溶かした。要するに、手触りの改善を目指した。",
+      "facts": ["デバッグに丸一日を費やした。", "具体的な調査手順は記載されていない。"],
+      "targets": [{"kind": "metaphor-operation", "match": "時間を溶かした"}, {"kind": "generic-framing", "match": "要するに"}]
+    },
+    {
+      "id": "unconfirmed-logging",
+      "text": "キャッシュが失効すると静かに壊れます。失敗時のログ出力はまだ確認していません。",
+      "facts": ["キャッシュ失効時に失敗が起こる。", "失敗時のログ出力は未確認である。", "失敗の内部原因は記載されていない。"],
+      "targets": [{"kind": "metaphor-operation", "match": "静かに壊れます"}]
+    },
+    {
+      "id": "negative-inflection",
+      "text": "この設定は地味に効かなかった。計測結果では待機時間は短縮されませんでした。",
+      "facts": ["計測結果では設定による待機時間の短縮はなかった。"],
+      "targets": [{"kind": "metaphor-operation", "match": "地味に効かなかった"}]
+    },
+    {
+      "id": "past-inflection",
+      "text": "運用者は採否を判断できない項目を除外する側に倒しました。",
+      "facts": ["運用者が採否を判断できなかった項目を除外した。", "実施済みの操作である。"],
+      "targets": [{"kind": "metaphor-operation", "match": "側に倒しました"}]
+    },
+    {
+      "id": "repeated-ending-location",
+      "text": "最初に設定を検証します。検証が完了した場合に続行できます。受信側はIDを検証します。送信側もIDを検証します。中継側もIDを検証します。",
+      "facts": ["最初に設定を検証する。", "検証完了が続行の条件である。", "受信側、送信側、中継側の全てがIDを検証する。"],
+      "targets": [{"kind": "repeated-ending", "match": "検証します", "occurrence": 4}]
+    },
+    {
+      "id": "necessary-repetition",
+      "text": "受信側はIDを検証します。送信側もIDを検証します。中継側もIDを検証します。",
+      "facts": ["受信側、送信側、中継側の全てがIDを検証する。"],
+      "targets": [{"kind": "repeated-ending", "match": "検証します", "occurrence": 3}]
+    },
+    {
+      "id": "valid-technical-terms",
+      "text": "画像の解像度は1920×1080で、署名済み文書を正本とします。反応を促進する物質を触媒と呼びます。",
+      "facts": ["画像の解像度は1920×1080である。", "署名済み文書を正本とする。", "反応を促進する物質を触媒と呼ぶ。"],
+      "targets": []
+    },
+    {
+      "id": "literal-verbs",
+      "text": "薬が効きます。氷を溶かします。装置を倒して清掃します。",
+      "facts": ["薬に効果がある。", "氷を溶かす。", "装置を倒して清掃する。"],
+      "targets": []
+    },
+    {
+      "id": "concurrency-requirement",
+      "text": "受信側はIDをユニーク制約付きテーブルへ記録し、重複IDを拒否します。並行した要求でも同じIDを二重登録できないことが要件です。",
+      "facts": ["受信側がIDをテーブルへ記録する。", "テーブルにはユニーク制約が必要である。", "並行した要求でも同じIDを二重登録できない。"],
+      "targets": []
+    },
+    {
+      "id": "version-negation-and-behavior",
+      "text": "バージョン2.0では未認証の要求を受け付けません。起動時にサーバーが設定を読み込みます。",
+      "facts": ["バージョン2.0では未認証の要求を受け付けない。", "サーバーは起動時に設定を実際に読み込む。可能性や任意の操作の説明ではない。"],
+      "targets": []
+    },
+    {
+      "id": "protected-example",
+      "text": "文言の例は`静かに壊れます`です。この例から実際の障害の発生を判断できません。",
+      "facts": ["インラインコードは文言の例である。", "この例から実際の障害が発生したとは判断できない。"],
+      "targets": []
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../benchmark/prose'
+
+options = { tokenizer: 'mecab', repeats: 1, timeout: 300 }
+parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: bundle exec ruby script/evaluate-prose [options]'
+  opts.on('--tokenizer MODE', %w[mecab literal], 'Analyzer (default: mecab; no fallback)') { |v| options[:tokenizer] = v }
+  opts.on('--output DIR', 'Create a new result directory; never replace existing output') { |v| options[:output] = File.expand_path(v) }
+  opts.on('--compare REPORT', 'Compare with a saved report.json or checked-in baseline') { |v| options[:compare] = v }
+  opts.on('--agent NAME', %w[codex claude], 'Explicitly enable local CLI rewrite and evaluation') { |v| options[:agent] = v }
+  opts.on('--model NAME', 'Writer model; omitted uses the CLI default') { |v| options[:model] = v }
+  opts.on('--judge-agent NAME', %w[codex claude], 'Evaluator CLI (default: writer CLI)') { |v| options[:judge_agent] = v }
+  opts.on('--judge-model NAME', 'Evaluator model; omitted uses the CLI default') { |v| options[:judge_model] = v }
+  opts.on('--repeats N', Integer, 'Independent rewrite/judge trials (default: 1; recommend >=3)') { |v| options[:repeats] = v }
+  opts.on('--timeout SECONDS', Integer, 'Timeout for each local CLI invocation (default: 300)') { |v| options[:timeout] = v }
+  opts.on('-h', '--help', 'Show help') { puts opts; exit 0 }
+end
+
+begin
+  parser.parse!
+  raise OptionParser::InvalidArgument, "Unexpected arguments: #{ARGV.join(' ')}" unless ARGV.empty?
+  raise OptionParser::InvalidArgument, 'repeats must be 1..20; timeout must be 1..3600.' unless (1..20).cover?(options[:repeats]) && (1..3600).cover?(options[:timeout])
+  if !options[:agent] && %i[model judge_agent judge_model].any? { |key| options[key] }
+    raise OptionParser::InvalidArgument, 'Agent options require --agent.'
+  end
+  raise OptionParser::InvalidArgument, 'Local CLI evaluation requires --output DIR.' if options[:agent] && !options[:output]
+  raise OptionParser::InvalidArgument, 'Local CLI trials require --tokenizer mecab.' if options[:agent] && options[:tokenizer] != 'mecab'
+  if options[:output] && (File.exist?(options[:output]) || File.symlink?(options[:output]))
+    raise AsciidocPubkit::Error, 'Output already exists; choose a new directory.'
+  end
+  report, cases = ProseBenchmark.snapshot(options[:tokenizer])
+  before = options[:compare] && JSON.parse(File.read(options[:compare]))
+  report['detection_delta'] = ProseBenchmark.compare(before, report) if before
+  if options[:output]
+    FileUtils.mkdir_p(File.dirname(options[:output]))
+    Dir.mkdir(options[:output])
+  end
+  if options[:agent]
+    File.write(File.join(options[:output], 'detection.json'), JSON.pretty_generate(report) + "\n")
+    writer = ProseBenchmark::LocalAgent.new(options[:agent], model: options[:model], timeout: options[:timeout])
+    judge = ProseBenchmark::LocalAgent.new(options[:judge_agent] || options[:agent], model: options[:judge_model], timeout: options[:timeout])
+    trials = (1..options[:repeats]).map do |trial|
+      warn "Evaluation trial #{trial}/#{options[:repeats]}: local CLI rewrite and independent judge invocation."
+      ProseBenchmark.ai_trial(writer, cases, options[:output], trial, judge: judge)
+    end
+    report['ai'] = {
+      'writer' => writer.metadata, 'judge' => judge.metadata,
+      'rubric_sha256' => AsciidocPubkit.hash_text(ProseBenchmark::RUBRIC),
+      'calibration_sha256' => Digest::SHA256.file(ProseBenchmark::CALIBRATION).hexdigest,
+      'trials' => trials, 'summary' => ProseBenchmark.trial_summary(trials),
+      'mechanical_verification_pass_rate' => ProseBenchmark.mechanical_pass_rate(trials),
+      'same_model_judging' => writer.metadata.values_at('agent', 'actual_model') == judge.metadata.values_at('agent', 'actual_model'),
+      'meaning_verified' => false
+    }
+    report['ai_delta'] = ProseBenchmark.compare_ai(before, report) if before && before['ai']
+  end
+  result = JSON.pretty_generate(report) + "\n"
+  if options[:output]
+    File.write(File.join(options[:output], 'report.json'), result)
+    puts "Evaluation saved to #{File.join(options[:output], 'report.json')}"
+    puts "Detection: #{JSON.generate(report['detection'].slice('precision', 'recall', 'f1', 'location_accuracy'))}"
+    puts "AI evaluation: #{JSON.generate(report.dig('ai', 'summary'))}" if report['ai']
+    puts "Mechanical verification pass rate: #{report['ai']['mechanical_verification_pass_rate']}" if report['ai']
+  else
+    puts result
+  end
+rescue OptionParser::ParseError, AsciidocPubkit::Error, JSON::ParserError, KeyError, TypeError, SystemCallError => e
+  warn "Evaluation failed: #{e.message}"
+  warn 'Partial local evaluation artifacts are retained in the output directory.' if options[:output] && File.directory?(options[:output])
+  exit 2
+end

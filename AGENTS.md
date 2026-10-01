@@ -4,10 +4,11 @@
 
 This repository provides the `asciidoc-pubkit` Ruby gem and CLI. Its implemented
 workflow emits Japanese writing prompts, scans Japanese AsciiDoc running prose,
-emits review prompts, and verifies edited manuscripts against a baseline. It does
-not call an AI service, rewrite
-manuscripts, or publish books. Do not describe planned publishing features as
-available functionality.
+emits review prompts, scores running prose, and verifies edited manuscripts
+against a baseline. Only `review score --agent` invokes an installed Codex or
+Claude CLI for optional readability evaluation; that CLI may call its configured
+model provider. It does not rewrite manuscripts or publish books. Do not describe
+planned publishing features as available functionality.
 
 - [README.md](README.md) owns installation, command usage, configuration, rule
   schemas, coverage limits, and verification semantics. Update it when changing
@@ -66,10 +67,16 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | `lib/asciidoc_pubkit/rule_set.rb`, `data/review-rules.ja.yml` | Validated rule schema and packaged Japanese defaults |
 | `lib/asciidoc_pubkit/language.rb`, `lib/asciidoc_pubkit/writing.rb`, `data/writing/ja/criteria.md` | Language gate and canonical writing criteria/prompt |
 | `lib/asciidoc_pubkit/session.rb` | Baselines, artifact integrity, safe replacement, prompts, verification |
+| `lib/asciidoc_pubkit/score.rb`, `lib/asciidoc_pubkit/local_evaluator.rb` | Manuscript scoring and explicit local CLI evaluation |
 | `test/review_test.rb`, `test/morphology_test.rb` | Workflow regression tests and real MeCab tests |
 
 ## Contracts to preserve
 
+- Scoring uses the same prose scope as scanning. Keep candidate-density scores
+  distinct from optional model readability ratings and benchmark accuracy.
+  Invoke external model CLIs only with explicit `--agent`; no default test or
+  other gem command may invoke them. Scoring never edits manuscripts or replaces
+  existing output, and does not establish semantic correctness.
 - Findings are review candidates, not proven defects or automatic replacement
   instructions. Preserve negation, conditions, terminology, source text, and
   protected content. Columns are one-based Unicode character positions.

@@ -9,6 +9,7 @@ module AsciidocPubkit
         writing criteria      Print the shared Japanese prose criteria
         writing prompt        Generate a Japanese technical writing prompt
         review scan FILE       Collect Japanese prose and review candidates
+        review score FILE      Score Japanese prose; optionally use a local AI CLI
         review prompt SESSION  Generate an English review prompt with Japanese source excerpts
         review verify SESSION  Compare edited sources with the saved baseline
 
@@ -18,7 +19,8 @@ module AsciidocPubkit
 
       Use --lang ja with writing commands and review commands. Other review and
       writing languages are not supported yet and return an error.
-      No command edits manuscript files or invokes an AI service.
+      No command edits manuscripts. review score --agent explicitly invokes a
+      local Codex or Claude CLI, which may connect to its configured AI service.
     TEXT
 
     def self.run(arguments, out: $stdout, err: $stderr, input: $stdin)
@@ -32,18 +34,25 @@ module AsciidocPubkit
         return 0
       end
       group, command = args.shift(2)
-      valid = (group == 'review' && %w[scan prompt verify].include?(command)) ||
+      valid = (group == 'review' && %w[scan score prompt verify].include?(command)) ||
               (group == 'writing' && %w[criteria prompt].include?(command))
       raise Error, 'Unknown command. Use --help.' unless valid
       options = { attributes: {} }
       parser = OptionParser.new do |opts|
-        input_name = group == 'writing' ? '' : (command == 'scan' ? ' FILE' : ' SESSION')
+        input_name = group == 'writing' ? '' : (%w[scan score].include?(command) ? ' FILE' : ' SESSION')
         opts.banner = "Usage: asciidoc-pubkit #{group} #{command} [options]#{input_name}"
         opts.on('-o', '--output PATH', group == 'review' && command == 'scan' ? 'New session directory (default: .pubkit/review)' : 'New output file (default: standard output)') { |v| options[:output] = v }
         opts.on('--lang LANG', 'Language (ja only in this release)') { |v| options[:language] = v }
-        if group == 'review' && command == 'scan'
-          opts.on('-y', '--yes', 'Answer yes to replacement confirmation') { options[:yes] = true }
-          opts.on('--no-input', 'Never prompt; fail on existing output unless --yes') { options[:no_input] = true }
+        if group == 'review' && %w[scan score].include?(command)
+          if command == 'scan'
+            opts.on('-y', '--yes', 'Answer yes to replacement confirmation') { options[:yes] = true }
+            opts.on('--no-input', 'Never prompt; fail on existing output unless --yes') { options[:no_input] = true }
+          else
+            opts.on('--json', 'Print the complete score report as JSON') { options[:json] = true }
+            opts.on('--agent NAME', 'Invoke local codex or claude for readability scoring') { |v| options[:agent] = v }
+            opts.on('--model NAME', 'Local evaluator model (default: CLI default)') { |v| options[:model] = v }
+            opts.on('--timeout SECONDS', Integer, 'Local evaluator timeout (default: 300)') { |v| options[:timeout] = v }
+          end
           opts.on('--only FILE', 'Review one included file in the book context') { |v| options[:only] = v }
           opts.on('--config FILE', 'Use an explicit YAML configuration') { |v| options[:config] = v }
           opts.on('--rules FILE', 'Replace default review rules with a YAML rule set') { |v| options[:rules] = v }
@@ -74,6 +83,15 @@ module AsciidocPubkit
       end
       raise Error, 'Exactly one input is required. Use --help.' unless args.length == 1
       Language.validate!(options[:language], operation: 'review') if options[:language]
+      if command == 'score'
+        if options[:output] && (File.exist?(options[:output]) || File.symlink?(options[:output]))
+          raise Error, "Output already exists: #{options[:output]}"
+        end
+        report = Score.run(args.first, options)
+        text = options[:json] ? JSON.pretty_generate(report) + "\n" : Score.format(report)
+        output(text, options[:output], out)
+        return 0
+      end
       if command == 'scan'
         result = Session.scan(args.first, options) do |destination|
           if options[:yes]

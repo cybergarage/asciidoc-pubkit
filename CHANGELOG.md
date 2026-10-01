@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Add `review score FILE` for direct AsciiDoc manuscript scoring without a
+  session. Report a candidate-density indicator by default and optionally invoke
+  a local Codex or Claude CLI for readability ratings with `--agent`. Preserve
+  manuscript files, coverage limits, explicit tokenizer selection, and
+  `meaning_verified: false`.
+- Add a development-only prose benchmark with a fixed AsciiDoc corpus, scored
+  candidate coverage and locations, and a saved MeCab baseline before detector
+  changes. Keep quality judgments separate from detection performance.
+- Add explicit local Codex/Claude rewrite and judge trials with fact checklists,
+  blinded document labels, evaluator calibration, repeated-run statistics, and
+  compatibility checks for baseline comparisons. Keep benchmark AI trials
+  separate from manuscript scoring and the default test suite.
+
 - Extend the shared Japanese prose criteria with evidence-based metaphor review,
   distinctions between instructions, behavior, and capabilities, and separate
   checks for information loss and unsupported additions.

@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "benchmark_id": "technical-prose-v1",
+  "created_at": "2026-10-01T03:14:19Z",
+  "corpus_sha256": "dd5381f768ecc2ef42fa3f8791ca9f2aa2fc3c831caf2ba227091e47dba4e41c",
+  "document_sha256": "cd59cec244cd10ee9d47b4458ff37ef84ee07fb5f728b64ea57716ed8eb96a70",
+  "config_sha256": "89a7bf4e4f812a6dc7a6c48a05de389e47cae86c4a07794f3798b5b8450ac561",
+  "scoring_version": 1,
+  "tool_version": "0.6.0",
+  "git_revision": "5c0cfb82abf64b8a2b71c632f6e1f1d1bf1246db",
+  "source_sha256": "d7f303780cb5ceac8c46ac03cc939fed38075a231ff1f36f1cb1c9b630e3b28b",
+  "harness_sha256": "2f07360bd9caf9951fee4e6f8c2ae09116e31f55a02be21a9547c609bbc86e1c",
+  "rules_sha256": "d8b630076e1c7e5b7fc51c4d9ff029b3b4844b555e2cc349097b50077cc34560",
+  "criteria_sha256": "e397042237b212ab33246dc9f44c501526915c054fef275e22981a4fe4eefc5a",
+  "analysis": {
+    "engine": "mecab",
+    "version": "mecab of 0.996",
+    "feature_schema": "ipadic",
+    "dictionary_files": [
+      {
+        "name": "char.bin",
+        "sha256": "81bba502ae48fa005a374819f15e44452eb68086a8b323ec20a044d514400832"
+      },
+      {
+        "name": "dicrc",
+        "sha256": "add6bb131a75e69478961ea59712541ace3779f7c5daa4da80d281f097c9d4d1"
+      },
+      {
+        "name": "matrix.bin",
+        "sha256": "ee44d7350cdcb680ebd699f83e121be1dc63310f8832d55bcb537a068177611a"
+      },
+      {
+        "name": "sys.dic",
+        "sha256": "db63ac77a468ec0c2f7fe01748013b72a0f80d41058d1f50b9affd958ecc7fa0"
+      },
+      {
+        "name": "unk.dic",
+        "sha256": "0fe65cbed6237cd0ef8a5eeab67015586a554484b86f1168cfa3edc041f4627a"
+      }
+    ]
+  },
+  "meaning_verified": false,
+  "candidate_count_all_rules": 10,
+  "candidate_count_scored_rules": 9,
+  "detection": {
+    "true_positives": 9,
+    "false_positives": 0,
+    "false_negatives": 2,
+    "precision": 100.0,
+    "recall": 81.818,
+    "f1": 90.0,
+    "location_accuracy": 77.778,
+    "misses": [
+      {
+        "case_id": "negative-inflection",
+        "kind": "metaphor-operation",
+        "offset": 5,
+        "match": "地味に効かなかった"
+      },
+      {
+        "case_id": "past-inflection",
+        "kind": "metaphor-operation",
+        "offset": 20,
+        "match": "側に倒しました"
+      }
+    ],
+    "unexpected": [],
+    "mislocated": [
+      {
+        "expected": {
+          "case_id": "repeated-ending-location",
+          "kind": "repeated-ending",
+          "offset": 62,
+          "match": "検証します"
+        },
+        "actual": {
+          "case_id": "repeated-ending-location",
+          "kind": "repeated-ending",
+          "offset": 6,
+          "match": "検証します"
+        }
+      },
+      {
+        "expected": {
+          "case_id": "necessary-repetition",
+          "kind": "repeated-ending",
+          "offset": 33,
+          "match": "検証します"
+        },
+        "actual": {
+          "case_id": "necessary-repetition",
+          "kind": "repeated-ending",
+          "offset": 7,
+          "match": "検証します"
+        }
+      }
+    ]
+  },
+  "by_kind": {
+    "generic-framing": {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "location_accuracy": 100.0,
+      "misses": [],
+      "unexpected": [],
+      "mislocated": []
+    },
+    "metaphor-operation": {
+      "true_positives": 4,
+      "false_positives": 0,
+      "false_negatives": 2,
+      "precision": 100.0,
+      "recall": 66.667,
+      "f1": 80.0,
+      "location_accuracy": 100.0,
+      "misses": [
+        {
+          "case_id": "negative-inflection",
+          "kind": "metaphor-operation",
+          "offset": 5,
+          "match": "地味に効かなかった"
+        },
+        {
+          "case_id": "past-inflection",
+          "kind": "metaphor-operation",
+          "offset": 20,
+          "match": "側に倒しました"
+        }
+      ],
+      "unexpected": [],
+      "mislocated": []
+    },
+    "repeated-ending": {
+      "true_positives": 2,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "location_accuracy": 0.0,
+      "misses": [],
+      "unexpected": [],
+      "mislocated": [
+        {
+          "expected": {
+            "case_id": "repeated-ending-location",
+            "kind": "repeated-ending",
+            "offset": 62,
+            "match": "検証します"
+          },
+          "actual": {
+            "case_id": "repeated-ending-location",
+            "kind": "repeated-ending",
+            "offset": 6,
+            "match": "検証します"
+          }
+        },
+        {
+          "expected": {
+            "case_id": "necessary-repetition",
+            "kind": "repeated-ending",
+            "offset": 33,
+            "match": "検証します"
+          },
+          "actual": {
+            "case_id": "necessary-repetition",
+            "kind": "repeated-ending",
+            "offset": 7,
+            "match": "検証します"
+          }
+        }
+      ]
+    }
+  }
+}

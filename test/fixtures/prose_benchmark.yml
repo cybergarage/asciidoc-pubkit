@@ -1,0 +1,2 @@
+# Keep development evaluation independent of auto-discovered manuscript settings.
+review: {}

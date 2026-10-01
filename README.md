@@ -23,6 +23,12 @@ Starting with version 0.1.1, the default review backend requires the external Me
 command and a UTF-8 IPADIC dictionary. Node.js and textlint are not required.
 Explicit `--tokenizer literal` mode provides limited phrase matching without MeCab.
 
+The Unreleased checkout also provides `review score FILE` for a manuscript score.
+It uses local candidate analysis by default; `--agent codex` or `--agent claude`
+explicitly asks an installed CLI to evaluate readability and may connect to its
+configured model provider. This command is not included in the published 0.6.0
+release. No scoring mode edits manuscripts.
+
 Version 0.1.1 added morphological analysis. Version 0.1.0 used literal matching.
 
 The CLI has `writing` and `review` command groups. Both default to `--lang ja`.
@@ -126,6 +132,58 @@ review or writing criteria are shipped in 0.6.0.
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
 unchanged.
+
+## Score an AsciiDoc manuscript (Unreleased)
+
+Pass any AsciiDoc entry file directly; no review session or gold annotations are
+required. Output defaults to a short English report with a score out of 100.
+
+```sh
+asciidoc-pubkit review score book.adoc
+asciidoc-pubkit review score book.adoc --json --output score.json
+asciidoc-pubkit review score book.adoc --agent codex
+asciidoc-pubkit review score book.adoc --agent claude --json
+```
+
+Without `--agent`, `candidate-density-v1` reports a mechanical review indicator:
+`max(0, 100 - 5 * candidates * 1000 / characters)`, rounded to three decimals.
+Characters are non-whitespace Unicode characters in source-mapped running prose
+after inline masking. Every finding, including informational candidates, counts
+once. Lower scores indicate more detected review cues per 1,000 characters, not
+proven defects or AI authorship. Short texts are especially sensitive to a single
+candidate. No unmasked prose yields `null` rather than a perfect score.
+Successful scoring exits 0 regardless of the score; invalid input, configuration,
+analyzer, evaluator, or output failures exit 2. Verification exit codes are
+unchanged. The JSON report includes candidate counts, findings, coverage notices,
+analysis identity, and the formula. Rule, allow-list, and tokenizer changes can
+change the score even when the manuscript is unchanged.
+
+With `--agent`, `llm-readability-v1` displays an evaluator score instead. Sentence
+clarity and paragraph coherence are each rated 1–3 per paragraph and mapped to
+0, 50, and 100. The displayed score averages these two dimensions across scored
+paragraphs with equal paragraph weights. JSON also retains the individual
+ratings, English reasons, source locations, evaluator model and CLI version,
+rubric fingerprint, and the mechanical candidate-density score. These ordinal
+averages are descriptive summaries, not validated interval measurements. This
+single-document evaluation has no reference manuscript or evidence checklist;
+it does not measure fact retention, technical accuracy, or meaning preservation.
+`meaning_verified` remains `false` in both modes.
+
+Scoring uses the same configuration discovery, custom rules, glossary, allows,
+style, language, base directory, include handling, and prose coverage as scanning.
+It accepts `--only`, `--config`, `--rules`, `--base-dir`, `--tokenizer`, `--style`,
+`--lang ja`, and repeated `--attribute` options. Excluded, unmapped, and protected
+blocks are not prose-scored. Coverage notices remain important when interpreting
+a score. MeCab/IPADIC is the default; literal mode must be selected explicitly.
+
+AI evaluation requires an installed, authenticated Codex or Claude CLI, and may
+send the selected paragraph text and headings to its configured provider and
+consume account usage. It receives no candidate findings or source file paths.
+`--model` selects the evaluator model, and `--timeout` sets the invocation timeout
+(default 300 seconds); both require `--agent`. Temporary evaluation files are
+removed after scoring. Use `--json --output FILE` to retain the result. Output
+files are never overwritten, and existing output is rejected before invoking an
+evaluator. A file with no unmasked prose is not sent to an evaluator.
 
 ## Run from a local checkout
 
@@ -477,6 +535,110 @@ causes, implementation requirements, and necessary repetition. Record the
 model, prompt, source evidence, and human judgments when evaluating actual
 generated revisions; fewer findings alone do not establish an improvement.
 
+### Development prose benchmark
+
+The checkout provides `script/evaluate-prose` for measuring future detector and
+prompt changes. This is a development tool, not an installed gem command; the
+benchmark CLI calls are separate from the optional `review score --agent` path.
+The fixed
+[`prose_benchmark.ja.adoc`](test/fixtures/prose_benchmark.ja.adoc) contains 13
+original editorial paragraphs with intentionally vague framing and metaphors,
+inflection variants, and valid technical prose controls. Its
+[`annotations`](test/fixtures/prose_benchmark.ja.json) contain 11 review targets
+and separate source fact checklists. It is a small synthetic regression corpus,
+not an AI authorship dataset or a representative measure of prose quality.
+
+Run the deterministic benchmark before and after a change:
+
+```sh
+bundle exec ruby script/evaluate-prose --output .pubkit/evaluation/before
+# After changing the detector or prompt:
+bundle exec ruby script/evaluate-prose --output .pubkit/evaluation/after \
+  --compare .pubkit/evaluation/before/report.json
+```
+
+The report measures candidate precision, recall, F1, and location accuracy on a
+0–100 scale for `generic-framing`, metaphorical operations, and `repeated-ending`.
+Other rule findings are counted separately and are not judged against these
+annotations. Detection matches a target's paragraph and kind; location accuracy
+then checks the one-based source position, represented internally as a zero-based
+Unicode character offset within that paragraph. The annotated repeated-ending
+location is the matching ending of the third sentence in the consecutive run.
+A candidate can be correctly detected even when the reviewer should keep it.
+Zero denominators are reported as `null`, not perfect scores. Duplicate detections
+count as false positives. These scores measure the detector, not the manuscript.
+
+The checked-in [`MeCab baseline`](benchmark/baseline-mecab.json), captured before
+the planned detector changes, has precision 100, recall 81.818, F1 90, and location
+accuracy 77.778. It misses two inflected metaphor phrases and mislocates two
+repeated-ending candidates. Reports record source, criteria, rules, corpus, and
+dictionary fingerprints. Comparisons reject changed corpora, scoring versions,
+analyzers, or dictionaries. Reports with configuration fingerprints also reject
+changed benchmark configuration. A fixed empty configuration
+keeps these trials independent of auto-discovered manuscript settings.
+Record your own baseline when dictionary fingerprints
+differ. `--tokenizer literal` explicitly selects a separate limited-mode run;
+there is no automatic fallback, and literal results do not validate MeCab.
+
+### Optional local AI evaluation
+
+Use an installed, authenticated Codex or Claude CLI to perform rewrite and judge
+trials explicitly. A local CLI may call its configured remote model provider and
+consume account usage; this is not an offline model test. Normal `rake test`
+does not run either CLI. For example:
+
+```sh
+bundle exec ruby script/evaluate-prose --agent codex --repeats 3 \
+  --output .pubkit/evaluation/ai-before
+bundle exec ruby script/evaluate-prose --agent codex --repeats 3 \
+  --output .pubkit/evaluation/ai-after \
+  --compare .pubkit/evaluation/ai-before/report.json
+# Or use Claude:
+bundle exec ruby script/evaluate-prose --agent claude \
+  --output .pubkit/evaluation/claude-before
+```
+
+Each trial generates the actual saved review prompt, requests paragraph revisions
+as JSON, and runs the existing mechanical verifier. A fresh judge invocation
+evaluates both original and revised prose with neutral A/B labels, alternating
+their order across trials. The judge sees source evidence but no findings, tool
+revision labels, or expected calibration answers. The writer receives the source
+fact checklist in addition to the review prompt, so this measures an evidence-
+assisted workflow rather than every real-world manuscript review.
+
+Sentence clarity and paragraph coherence are separately rated 1–3 and displayed
+as 0, 50, or 100 before averaging. These ordinal averages are descriptive
+summaries, not validated interval measurements. Fact retention measures the
+percentage of annotated source facts preserved; addition-free and substitution-
+free paragraph percentages remain separate. Known acceptable, incorrect, and
+unsupported revisions from `prose_evaluation.ja.json` calibrate the judge using
+accuracy and balanced accuracy across the three dispositions. Inspect poor
+calibration before interpreting quality scores. No combined AI-likeness score or
+semantic pass is produced: `meaning_verified` remains `false`.
+Mechanical verification results and their pass rate are also reported separately.
+Quality scores from a trial with preservation violations remain visible for
+diagnosis; a completed evaluation does not authorize accepting that revision.
+
+One trial is a smoke test; use at least three to inspect variation. Reports retain
+individual scores, means, population standard deviations, and ranges. They do
+not perform a significance test. Same-model judging can favor the writer's style;
+`--judge-agent` and `--judge-model` select a separate evaluator. `--model` selects
+the writer model; omitted model options use each CLI's default. AI comparisons
+require the same reported writer and judge models, CLI versions, rubric, and
+calibration corpus. CLI defaults can change, so retain the recorded model IDs
+and use explicit model options for controlled comparisons. Score changes can
+reflect sampling variation as well as implementation changes.
+
+The runner uses argument arrays rather than shell interpolation, read-only Codex
+execution or tool-disabled Claude execution, and a per-invocation timeout
+(`--timeout`, default 300 seconds). The CLI may still load its user configuration;
+use consistent settings for comparisons. Current adapters require the flags
+shown by `codex exec --help` and `claude --help`; older CLI versions may need an
+update. Missing CLIs, authentication errors, timeouts, and malformed responses
+fail explicitly. Existing output directories are never replaced. Partial
+artifacts remain available after failures. Results, prompts, responses, and review
+sessions belong under ignored `.pubkit/`; do not commit private evaluation runs.
+
 ## Customize review rules
 
 The UTF-8 YAML file [`data/review-rules.ja.yml`](data/review-rules.ja.yml) is
@@ -565,10 +727,24 @@ structure, and final edits to the reviewer.
   provides examples of unnecessary contrast, abstract referents, and paired short
   sentences.
 
+The development evaluation adapts ideas from the following primary research;
+its engineering audience, corpus, and rubric do not reproduce those benchmarks.
+Research texts and datasets are not redistributed here.
+
+- [Evaluation of Document-Level Text Simplification in Japanese](https://aclanthology.org/2026.lrec-1.85/)
+  (Yamashita et al., LREC 2026): separates information preservation from sentence
+  and document simplicity and evaluates LLM judgments against human annotations.
+  Its elementary-school audience and Wikipedia corpus differ from this project.
+- [Evaluating Factuality in Text Simplification](https://aclanthology.org/2022.acl-long.506/)
+  (Devaraj et al., ACL 2022): distinguishes insertion, deletion, and substitution
+  errors, motivating separate checks for unsupported additions and lost facts.
+- [Evaluating Document Simplification: On the Importance of Separately Assessing Simplicity and Meaning Preservation](https://aclanthology.org/2024.readi-1.1/)
+  (Cripwell et al., READI 2024): motivates separate readability and preservation
+  scores rather than a single aggregate. SARI-style overlap metrics are not
+  adopted because lexical agreement alone is insufficient for this prose review.
+
 ## License
 
 Copyright 2026 CyberGarage.
 
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
-
-
