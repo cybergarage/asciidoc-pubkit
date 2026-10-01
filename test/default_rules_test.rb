@@ -31,6 +31,28 @@ class DefaultRulesTest < Minitest::Test
   end
 
   %w[mecab literal].each do |mode|
+    define_method("test_metaphor_corpus_in_#{mode}") do
+      corpus = JSON.parse(File.read(File.join(__dir__, 'fixtures/prose_evaluation.ja.json')))
+      corpus.fetch('detection_cases').each do |entry|
+        findings = scan(entry.fetch('text'), mode).select { |f| f['rule'] == 'contextual-phrase' }
+        # Other contextual cues remain independent of metaphor coverage.
+        metaphors = findings.select { |f| f['match'].match?(/地味に効|静かに壊れ|時間を溶か|側に倒/) }
+        assert_equal entry.fetch('metaphor_matches'), metaphors.map { |f| f['match'] }, entry.fetch('id')
+        metaphors.each do |finding|
+          assert_equal finding['match'], entry.fetch('text')[finding['column'] - 1, finding['match'].length]
+        end
+      end
+    end
+
+    define_method("test_metaphor_allow_lists_and_inline_exclusions_in_#{mode}") do
+      phrase = '静かに壊れます'
+      text = "😀失効すると#{phrase}。\n再実行すると#{phrase}。"
+      findings = scan(text, mode).select { |f| f['match'] == phrase }
+      assert_equal [[1, 7], [2, 7]], findings.map { |f| f.values_at('line', 'column') }
+      assert_empty scan(text, mode, allows: [phrase]).select { |f| f['match'] == phrase }
+      assert_empty scan("`#{phrase}`。「#{phrase}」。link:https://example.com[#{phrase}]。", mode)
+    end
+
     define_method("test_requested_expressions_are_covered_in_#{mode}") do
       EXPRESSIONS.each do |expression|
         findings = scan(expression + '。', mode)

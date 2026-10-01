@@ -1,0 +1,111 @@
+{
+  "description": "Original Japanese technical prose examples for candidate regression and manual semantic evaluation; no AI quality score is computed.",
+  "detection_cases": [
+    {
+      "id": "limited-exact-surfaces",
+      "text": "地味に効く。地味に効いて。静かに壊れる。静かに壊れて。時間を溶かす。時間を溶かします。側に倒す。側に倒して。",
+      "metaphor_matches": ["地味に効く", "地味に効いて", "静かに壊れる", "静かに壊れて", "時間を溶かす", "時間を溶かします", "側に倒す", "側に倒して"]
+    },
+    {
+      "id": "metaphorical-effect",
+      "text": "この設定が地味に効きます。",
+      "metaphor_matches": ["地味に効きます"]
+    },
+    {
+      "id": "failure-with-condition",
+      "text": "キャッシュが失効すると静かに壊れます。",
+      "metaphor_matches": ["静かに壊れます"]
+    },
+    {
+      "id": "selection-policy",
+      "text": "採否を判断できない項目は除外する側に倒します。",
+      "metaphor_matches": ["側に倒します"]
+    },
+    {
+      "id": "investigation-time",
+      "text": "デバッグに丸一日時間を溶かした。",
+      "metaphor_matches": ["時間を溶かした"]
+    },
+    {
+      "id": "valid-technical-terms",
+      "text": "画像の解像度は1920×1080です。触媒は反応を促進します。署名済み文書を正本とします。",
+      "metaphor_matches": []
+    },
+    {
+      "id": "literal-operations-and-system-subject",
+      "text": "サーバーが応答を返します。薬が効きます。氷を溶かします。装置を倒して清掃します。",
+      "metaphor_matches": []
+    },
+    {
+      "id": "necessary-negation-and-repetition",
+      "text": "未認証の要求には応答しません。受信側はIDを検証します。送信側もIDを検証します。中継側もIDを検証します。",
+      "metaphor_matches": []
+    }
+  ],
+  "manual_revision_cases": [
+    {
+      "id": "preserved-policy",
+      "source": "採否を判断できない項目は除外する側に倒します。",
+      "revision": "採否を判断できない項目は除外します。",
+      "expected_disposition": "accept",
+      "review_axes": ["condition", "action", "readability"],
+      "reason": "The revision states the same conditional exclusion policy directly."
+    },
+    {
+      "id": "preserved-time-and-work",
+      "source": "デバッグに丸一日時間を溶かした。",
+      "revision": "デバッグに丸一日を費やした。",
+      "expected_disposition": "accept",
+      "review_axes": ["duration", "action", "readability"],
+      "reason": "The duration and activity remain unchanged; no investigation steps are invented."
+    },
+    {
+      "id": "unsupported-logging-and-cause",
+      "source": "キャッシュが失効すると静かに壊れます。",
+      "revision": "キャッシュが失効すると、接続切断が原因でログを出さずに処理が失敗します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": ["condition", "cause", "unsupported-addition"],
+      "reason": "The source does not establish a connection failure or the absence of logs. Inspect implementation evidence before accepting these details."
+    },
+    {
+      "id": "lost-concurrency-requirement",
+      "source": "受信側はIDをユニーク制約付きテーブルへ記録し、重複IDを拒否します。",
+      "revision": "受信側はIDをテーブルへ記録し、重複IDを拒否します。",
+      "expected_disposition": "reject",
+      "review_axes": ["actor", "implementation-requirement", "information-loss"],
+      "reason": "The unique constraint requirement was removed even though the revised prose remains fluent."
+    },
+    {
+      "id": "behavior-changed-to-capability",
+      "source": "起動時にサーバーが設定を読み込みます。",
+      "revision": "起動時にサーバーが設定を読み込めます。",
+      "expected_disposition": "reject",
+      "review_axes": ["actor", "condition", "behavior-versus-capability"],
+      "reason": "An actual startup operation became an available capability."
+    },
+    {
+      "id": "lost-negation-and-version",
+      "source": "バージョン2.0では未認証の要求を受け付けません。",
+      "revision": "未認証の要求を受け付けます。",
+      "expected_disposition": "reject",
+      "review_axes": ["version", "negation", "information-loss"],
+      "reason": "The revision reverses polarity and removes the version scope."
+    },
+    {
+      "id": "changed-number-and-responsibility",
+      "source": "運用者は失敗した要求を3回まで再送します。",
+      "revision": "サーバーは失敗した要求を5回まで再送します。",
+      "expected_disposition": "reject",
+      "review_axes": ["actor", "number", "unsupported-addition"],
+      "reason": "The responsible actor and retry limit both changed without evidence."
+    },
+    {
+      "id": "keep-necessary-repetition",
+      "source": "受信側はIDを検証します。送信側もIDを検証します。中継側もIDを検証します。",
+      "revision": "受信側はIDを検証します。送信側もIDを検証します。中継側もIDを検証します。",
+      "expected_disposition": "accept",
+      "review_axes": ["actor", "necessary-repetition", "readability"],
+      "reason": "Repeated precise verbs identify the same responsibility for three distinct actors. An ending candidate alone is not a reason to rewrite."
+    }
+  ]
+}

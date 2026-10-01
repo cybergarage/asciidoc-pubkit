@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Extend the shared Japanese prose criteria with evidence-based metaphor review,
+  distinctions between instructions, behavior, and capabilities, and separate
+  checks for information loss and unsupported additions.
+- Add limited metaphorical-operation phrases as contextual review candidates,
+  with a Japanese evaluation corpus for detection and manual meaning review.
+- Introduce yomiyasu in the README references.
+
 ## 0.6.0 — 2026-09-30
 
 - Add `writing criteria` and `writing prompt` commands backed by one packaged

@@ -116,6 +116,19 @@ terms:
       measurements and established technical meanings.
   contextual-phrase:
     terms:
+    # Limited exact surfaces for metaphorical operations, not banned verbs.
+    - 地味に効く
+    - 地味に効きます
+    - 地味に効いて
+    - 静かに壊れる
+    - 静かに壊れます
+    - 静かに壊れて
+    - 時間を溶かす
+    - 時間を溶かします
+    - 時間を溶かした
+    - 側に倒す
+    - 側に倒します
+    - 側に倒して
     - これらを
     - であることだけでは
     - あるものとします
@@ -151,6 +164,9 @@ terms:
       Preserve necessary negation, uncertainty, and technical boundaries. For
       明示選択 and 欠落理由, consider making the relationship explicit (明示的選択 and
       欠落した理由) if that preserves the meaning.
+      For metaphorical operations, identify the actual effect, policy, work, or
+      failure state from evidence; do not invent logging behavior, causes, or
+      implementation details. Keep literal and established technical meanings.
   generic-framing:
     terms:
     - 重要なのは

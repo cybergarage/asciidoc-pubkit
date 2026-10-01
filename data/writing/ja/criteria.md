@@ -5,6 +5,8 @@
 - Start with the paragraph's technical purpose
 - Replace abstraction with the thing being discussed
 - Give weak predicates a concrete action or consequence
+- Explain metaphorical operations from evidence
+- Distinguish instructions, behavior, and capabilities
 - Make relationships explicit
 - Keep claims within their evidence and purpose
 - Remove generated-prose patterns without flattening the meaning
@@ -66,6 +68,34 @@ Prefer a precise action or consequence:
 
 Do not choose a more impressive synonym merely to vary sentence endings. Keep
 the technically correct verb when it names the real operation.
+
+## Explain metaphorical operations from evidence
+
+Inspect expressions such as `地味に効く`, `側に倒す`, `時間を溶かす`, and
+`静かに壊れる`. Identify the actual effect, selection policy, work that took
+time, or failure state before revising the paragraph. A system can be a valid
+subject: `サーバーが応答を返します` describes observable behavior. Repair
+personification only when it conceals who acts or what happens.
+
+Concrete wording must not invent facts. `静かに壊れる` does not by itself establish
+whether an exception, warning, or log is emitted. `地味に効く` does not establish
+which failure a setting prevents. Check the surrounding explanation, code, or
+primary documentation; when evidence is missing, record what needs confirmation
+instead of supplying a plausible implementation or effect.
+
+For example, `採否を判断できない項目は除外する側に倒します` can become
+`採否を判断できない項目は除外します` if that is the stated policy. Retain its
+condition and action. Keep literal meanings and established technical terms;
+`解像度`, `触媒`, and `正本` are not inherently defects.
+
+## Distinguish instructions, behavior, and capabilities
+
+Identify whether a sentence asks the reader to act, describes an actual system
+operation, or states an available capability. Use `〜してください` for an
+instruction when that fits the document's voice. Do not change `〜します` to
+`〜できます` merely to make the subject clearer: automatic execution and an
+optional capability are different claims. Name the actor when context does not
+identify it, without repeating an already clear subject in every sentence.
 
 ## Make relationships explicit
 
@@ -148,6 +178,10 @@ glossary, and primary documentation before changing it.
 
 Natural Japanese must not erase a technical distinction. If the original claim
 is ambiguous, inspect the code or authoritative documentation before editing.
+Preserve numerical values, versions, settings, responsibility, causal claims,
+and implementation requirements. Do not add an actor, cause, mechanism, or
+effect that the source evidence does not establish. Making prose more specific
+requires evidence, not a guess.
 
 ## Revise the complete paragraph
 
@@ -156,6 +190,17 @@ that every sentence connects to the next. Do not paste an isolated suggested
 sentence into the manuscript without adjusting its context. After editing,
 read the paragraph as continuous prose and verify subject, object, modifier,
 condition, cause, and effect.
+
+Assess readability and meaning preservation separately. Compare the source and
+revision for both missing information and unsupported additions, including
+conditions, negation, numbers, actors, causes, and implementation requirements.
+For example, removing a unique constraint from a duplicate-message check can
+lose a concurrency requirement even when the revised paragraph sounds clearer.
+Record unresolved evidence and keep necessary repetition or qualifications.
+No candidate count or mechanical verification result proves semantic correctness.
+Sentence length, punctuation, and list density can help locate passages to read;
+they are not fixed acceptance thresholds. Keep lists for parallel items and
+ordered procedures, and prose for connected explanations.
 
 
 ## Headings and the relation to figures and code

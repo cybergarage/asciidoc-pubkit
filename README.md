@@ -394,18 +394,20 @@ These are candidates for contextual review, not banned expressions. A necessary
 condition, uncertainty, or distinction must survive a revision; a redundant
 disclaimer can instead be removed or folded into a more precise main claim.
 
-### Editorial sources for the shared criteria and default candidates
+Metaphorical-operation candidates include limited exact surfaces of
+`地味に効く`, `静かに壊れる`, `時間を溶かす`, and `側に倒す`, including selected polite,
+past, and connective forms listed in the packaged YAML. They use contextual
+phrase matching in both tokenizers; this is not complete inflection coverage or
+syntactic analysis. Bare verbs such as `効く`, `壊れる`, `溶かす`, and `倒す` are
+not added as general metaphor candidates. Identify the actual effect, policy,
+work, or failure state from evidence rather than applying a fixed replacement.
+Keep valid technical meanings and necessary negation.
 
-The shared criteria and default questions draw on [natural-japanese](https://github.com/coji/natural-japanese)
-for separating mechanical detection from contextual judgment and for spotting
-repetitive framing; [日本語技術文書の文章規範](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d)
-for paragraph logic, evidence scope, and preserving meaningful uncertainty; and
-[AI臭い文章とは何なのか](https://speakerdeck.com/nasuvitz/ai-kusai-bunshou-toha-nanina-no-ka)
-for the examples of unnecessary contrast, abstract referents, and paired short
-sentences. These sources differ on stylistic choices such as whether a heading
-should state its conclusion. The packaged rules therefore report candidate
-phrases and leave document structure, genre conventions, and final edits to the
-reviewer.
+The shared criteria distinguish reader instructions, actual system behavior,
+and available capabilities. They also separate readability from checks for
+missing information and unsupported additions. Sentence length, punctuation,
+and list density are contextual cues, not fixed acceptance thresholds. These
+updates are in Unreleased; start a new session to use updated criteria and rules.
 
 Literal term matching suppresses matches strictly contained in a longer matched
 term, across categories. The longer term also suppresses contained matches when
@@ -462,6 +464,18 @@ contextual prompts, stale inputs, protected-content verification, and real MeCab
 analysis of inflections, negative predicates, Unicode positions, and long lines.
 Install MeCab and UTF-8 IPADIC before running the complete test suite.
 GitHub Actions is configured for Ruby 3.2, 3.3, 3.4, and 4.0 on Linux.
+
+[`test/fixtures/prose_evaluation.ja.json`](test/fixtures/prose_evaluation.ja.json)
+contains original Japanese technical prose for candidate regression and manual
+revision evaluation. Automated tests check metaphor candidates in both
+tokenizers, source positions, inline exclusions, and allow lists. The revision
+pairs are manual evaluation cases, not an automated semantic checker or a
+measured AI benchmark. Compare source and revision separately for readability,
+information loss, and unsupported additions, using each case's review axes and
+expected disposition. Cover conditions, negation, numbers, versions, actors,
+causes, implementation requirements, and necessary repetition. Record the
+model, prompt, source evidence, and human judgments when evaluating actual
+generated revisions; fewer findings alone do not establish an improvement.
 
 ## License
 
@@ -534,3 +548,25 @@ Prompt generation and verification use the saved contents, even if the original
 YAML file is subsequently edited or removed. Start a new session to apply rule
 changes. Older sessions without a rule snapshot fall back to the currently
 installed default file; start a new session for reproducible custom-rule reviews.
+
+## References
+
+The shared criteria and default questions draw on the following editorial
+sources. Their stylistic choices differ, including whether headings should state
+conclusions. Candidate detection therefore leaves contextual judgment, document
+structure, and final edits to the reviewer.
+
+- [natural-japanese](https://github.com/coji/natural-japanese): separates mechanical
+  detection from contextual judgment and identifies repetitive framing.
+- [日本語技術文書の文章規範](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d):
+  informs paragraph logic, evidence scope, and meaningful uncertainty.
+- [AI臭い文章とは何なのか](https://speakerdeck.com/nasuvitz/ai-kusai-bunshou-toha-nanina-no-ka):
+  provides examples of unnecessary contrast, abstract referents, and paired short
+  sentences.
+- [https://github.com/nanaism/yomiyasu](https://github.com/nanaism/yomiyasu)
+  (MIT License, Copyright 2026 nanaism): informs evidence-based review of
+  metaphorical operations, distinctions between instructions and capabilities,
+  and separate assessment of meaning preservation and readability. The criteria
+  and regression examples here are independently written; the upstream skill,
+  Python linter, and benchmark passages are not bundled. Fixed style thresholds
+  and an AI-likeness score are not adopted.
