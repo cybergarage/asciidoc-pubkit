@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Summarize review and scoring features at the start of the README architecture
+  section, including AsciiDoc parsing, separate scopes, source-aligned static
+  analysis, Japanese morphology, contextual prompts and baseline verification.
+
 - Add separate `review scan --scope headings` sessions with packaged heading
   criteria and strict custom heading rules. Keep prose as the default and
   scoring scope; supply the full outline and read-only body evidence in one

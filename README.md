@@ -443,6 +443,47 @@ or release readiness: `meaning_verified` is always `false`.
 
 ## How review and scoring work
 
+### Features
+
+- **Structure-aware AsciiDoc parsing.** Asciidoctor parses local includes,
+  conditionals, attributes and section hierarchy before review targets are
+  selected. Prose selection distinguishes paragraphs from lists, tables,
+  quotations and code blocks; supported inline constructs are masked rather
+  than treated as ordinary prose.
+- **Separate heading and prose review (Unreleased).** Each scan selects one
+  scope with its own rules, prompt and edit permissions. Heading review uses
+  the outline and body as context while protecting body text; prose review
+  protects headings. Mixed heading forms are accepted by default. See
+  [Heading review](#heading-review-unreleased).
+- **Source-aligned static analysis.** Candidates identify the original source
+  file, line and one-based Unicode column, with a rule ID and review question.
+  Source text is checked against parser locations; unresolved mappings produce
+  coverage notices instead of guessed edit targets. Matches locate passages
+  for review, not proven defects.
+- **Japanese morphological analysis.** MeCab with UTF-8 IPADIC recognizes
+  configured inflected predicates and adjectives, retaining original surfaces,
+  dictionary forms and negative-form information in morphological prose
+  findings. Literal matching is available only through explicit selection.
+- **Contextual review in one prompt.** A single Markdown file carries saved
+  criteria, settings, candidates and manuscript evidence. All selected prose
+  paragraphs appear once, including those without candidates, with heading and
+  neighboring context. The reviewer records decisions and checks meaning;
+  generating the prompt does not edit the manuscript or invoke a model.
+- **Book-specific rules and terminology.** Strict YAML rule sets, a glossary,
+  allow lists and exclusions adapt candidate detection to the manuscript.
+  Heading rules can express a book's preferred form while allowing justified
+  exceptions. Resolved rules and criteria are saved with each session.
+- **Baseline-based preservation checks.** Source snapshots and artifact hashes
+  make the review baseline reproducible and detect stale or altered evidence.
+  Verification checks protected content, source membership, structure and
+  analyzer identity after external edits. It keeps `meaning_verified: false`;
+  semantic correctness remains a review judgment.
+- **Local analysis and distinct scoring paths.** Default analysis runs locally
+  without a model call. Prose scoring reports candidate density; explicit
+  `review score --agent` optionally invokes an installed Codex or Claude CLI
+  for readability ratings. Candidate density, model judgments and development
+  benchmark accuracy remain separate measures.
+
 ### Concept
 
 The goal is Japanese technical prose that readers can understand, use, and
