@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Support nested local `imports` in replacement rules, resolving paths relative
+  to each importing file and accepting import-only files and `path` mappings.
+  Deduplicate physical files, reject cycles and unsupported import options, and
+  preserve validation, conflict detection, and prose-only replacement scope.
+
 ## 0.8.0 — 2026-10-01
 
 - Add explicit `replace check`, `replace diff`, and `replace apply` commands for

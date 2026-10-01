@@ -799,7 +799,10 @@ rules:
       - '／'
 ```
 
-The root contains exactly `version: 1` and `rules`. Each rule requires a string
+The root requires `version: 1` and accepts optional `rules` and `imports` arrays.
+Imports and omission of arrays require the unreleased checkout; version 0.8.0
+requires `rules` and rejects `imports`. Omitted arrays default to empty in the
+checkout. Each rule requires a string
 `expected` (empty strings permit deletion) and exactly one of `pattern` (a
 nonempty string) or `patterns` (a nonempty array of nonempty strings). Optional
 `specs` is an array of exact `from`/`to` string pairs, validated on load. Specs
@@ -818,9 +821,42 @@ as an escaped regex, for example `/\//`. Zero-length matches are rejected.
 Replacement strings support `$1` through `$99` for existing capture groups and
 `$$` for a literal dollar sign. Unsupported dollar references are rejected when
 matched. Missing optional captures expand to empty strings. YAML single quotes
-are recommended to keep backslashes literal. Unknown fields, including `imports`,
-`options`, and `regexpMustEmpty`, and omitted patterns are rejected rather than
+are recommended to keep backslashes literal. Unknown fields, including
+`options` and `regexpMustEmpty`, and omitted patterns are rejected rather than
 ignored. Regex flags and prh's automatic pattern generation are not supported.
+
+### Importing replacement rules (unreleased)
+
+The checkout additionally supports nested `imports`; this is not available in
+published version 0.8.0. For example:
+
+```yaml
+version: 1
+imports:
+  - ../../rules/prh.yml
+  - path: ./terminology.yml
+rules:
+  - expected: '®'
+    pattern: '&reg;'
+```
+
+Each entry is a nonempty local file path string or a mapping containing exactly
+`path`. Relative paths resolve from the importing YAML file, including nested
+imports, independently of the working directory and manuscript base directory.
+Absolute local paths are also accepted; URL imports are rejected. An import-only
+file may omit `rules`. Every imported file must use version 1 and pass the same
+strict rule validation and specs as the entry file.
+
+Imports are loaded in listed order, recursively before each file's own rules.
+Each physical file is loaded once per plan, including repeated paths, symlink
+aliases, and shared dependencies. Rule IDs are assigned across the flattened
+set. Cycles (including symlink aliases), missing files, and import chains deeper
+than 100 files fail rather than silently omitting rules. Imported and local rules
+are combined, not overridden: overlapping replacement candidates remain errors
+and replacements are still calculated only against the original text.
+
+Import options such as `ignoreRules` and `disableImports` remain unsupported and
+are rejected. Source selection and protection are unchanged by imports.
 
 ### Selection and preservation
 

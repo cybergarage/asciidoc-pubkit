@@ -7,11 +7,7 @@ require 'open3'
 module AsciidocPubkit
   class ReplacementRules
     def self.load(path)
-      data = YAML.safe_load(AsciidocPubkit.read_text(path), permitted_classes: [], aliases: false)
-      RuleSet.mapping(data, %w[version rules], 'Replacement rules')
-      raise Error, 'Replacement version must be integer 1.' unless data['version'].is_a?(Integer) && data['version'] == 1
-      raise Error, 'rules must be an array.' unless data['rules'].is_a?(Array)
-      data['rules'].each_with_index.map do |rule, index|
+      collect(path, [], {}).each_with_index.map do |rule, index|
         unless rule.is_a?(Hash) && (rule.keys - %w[expected pattern patterns specs]).empty? &&
                rule['expected'].is_a?(String) && (rule.key?('pattern') ^ rule.key?('patterns'))
           raise Error, "Rule #{index + 1} requires expected and exactly one of pattern or patterns; unsupported keys are rejected."
@@ -54,6 +50,40 @@ module AsciidocPubkit
       end
     rescue RegexpError, Regexp::TimeoutError => e
       raise Error, "Invalid replacement regex: #{e.message}"
+    end
+
+    def self.collect(path, active, visited)
+      path = File.realpath(path)
+      if active.include?(path)
+        raise Error, "Circular replacement imports: #{(active + [path]).join(' -> ')}"
+      end
+      return [] if visited[path]
+      raise Error, 'Replacement imports exceed the maximum depth of 100 files.' if active.length >= 100
+      data = YAML.safe_load(AsciidocPubkit.read_text(path), permitted_classes: [], aliases: false)
+      unless data.is_a?(Hash) && data.key?('version') && (data.keys - %w[version rules imports]).empty?
+        raise Error, "Replacement rules in #{path} require version and accept only rules and imports."
+      end
+      unless data['version'].is_a?(Integer) && data['version'] == 1
+        raise Error, "Replacement version in #{path} must be integer 1."
+      end
+      rules = data.fetch('rules', [])
+      imports = data.fetch('imports', [])
+      raise Error, "rules in #{path} must be an array." unless rules.is_a?(Array)
+      raise Error, "imports in #{path} must be an array." unless imports.is_a?(Array)
+      imported = imports.flat_map do |entry|
+        if entry.is_a?(Hash)
+          RuleSet.mapping(entry, ['path'], "Replacement import in #{path}")
+          entry = entry['path']
+        end
+        unless entry.is_a?(String) && !entry.strip.empty? && !entry.match?(/\A[a-z][a-z0-9+.-]*:/i)
+          raise Error, "Replacement imports in #{path} must specify nonempty local file paths."
+        end
+        collect(File.expand_path(entry, File.dirname(path)), active + [path], visited)
+      end
+      visited[path] = true
+      imported + rules
+    rescue Psych::Exception => e
+      raise Error, "Invalid replacement YAML in #{path}: #{e.message}"
     end
 
     def self.expand(template, match)

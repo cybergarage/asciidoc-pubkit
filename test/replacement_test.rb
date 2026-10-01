@@ -149,6 +149,110 @@ class ReplacementTest < Minitest::Test
     assert_raises(AsciidocPubkit::Error) { AsciidocPubkit::Replacement.new(link, rules: @rules) }
   end
 
+  def write_import_file(path, data)
+    FileUtils.mkdir_p(File.dirname(path))
+    File.write(path, { 'version' => 1 }.merge(data).to_yaml)
+  end
+
+  def test_nested_imports_resolve_from_each_file_and_assign_unique_ids
+    common = File.join(@dir, 'shared', 'common.yml')
+    parent = File.join(@dir, 'nested', 'parent.yml')
+    write_import_file(common, 'rules' => [{ 'expected' => 'B', 'pattern' => 'A' }])
+    write_import_file(parent, 'imports' => ['../shared/common.yml'],
+                      'rules' => [{ 'expected' => 'D', 'pattern' => 'C' }])
+    write_import_file(@rules, 'imports' => [{ 'path' => 'nested/parent.yml' }],
+                      'rules' => [{ 'expected' => 'F', 'pattern' => 'E' }])
+    File.write(@book, "本文ACEと`ACE`。\n")
+    replacement = Dir.chdir(File.dirname(@dir)) { plan }
+    assert_equal %w[rule-1 rule-2 rule-3], replacement.candidates.map { |edit| edit[:rule] }
+    replacement.apply
+    assert_equal "本文BDFと`ACE`。\n", File.read(@book)
+  end
+
+  def test_shared_imports_and_symlink_aliases_load_each_physical_file_once
+    shared = File.join(@dir, 'shared.yml')
+    left = File.join(@dir, 'left.yml')
+    right = File.join(@dir, 'right.yml')
+    alias_path = File.join(@dir, 'alias.yml')
+    write_import_file(shared, 'rules' => [{ 'expected' => '/', 'pattern' => '／' }])
+    File.symlink(shared, alias_path)
+    write_import_file(left, 'imports' => ['shared.yml'])
+    write_import_file(right, 'imports' => ['alias.yml'])
+    write_import_file(@rules, 'imports' => ['left.yml', 'right.yml', shared])
+    File.write(@book, "本文／。\n")
+    assert_equal 1, AsciidocPubkit::ReplacementRules.load(@rules).length
+    plan.apply
+    assert_equal "本文/。\n", File.read(@book)
+  end
+
+  def test_import_cycles_include_aliases_and_fail_before_writing
+    File.write(@book, "本文／。\n")
+    alias_path = File.join(@dir, 'alias.yml')
+    File.symlink(@rules, alias_path)
+    write_import_file(@rules, 'imports' => ['alias.yml'])
+    error = assert_raises(AsciidocPubkit::Error) { plan }
+    assert_includes error.message, 'Circular replacement imports'
+    parent = File.join(@dir, 'parent.yml')
+    write_import_file(@rules, 'imports' => ['parent.yml'])
+    write_import_file(parent, 'imports' => ['rules.yml'])
+    assert_raises(AsciidocPubkit::Error) { plan }
+    assert_equal "本文／。\n", File.read(@book)
+  end
+
+  def test_import_validation_and_specs_are_not_bypassed
+    File.write(@book, "本文／。\n")
+    child = File.join(@dir, 'child.yml')
+    write_import_file(@rules, 'imports' => ['child.yml'])
+    [
+      { 'version' => 2 },
+      { 'rules' => nil },
+      { 'imports' => 'file.yml' },
+      { 'imports' => [nil] },
+      { 'imports' => [''] },
+      { 'imports' => ['https://example.com/rules.yml'] },
+      { 'imports' => [{ 'path' => 'file.yml', 'ignoreRules' => [] }] },
+      { 'imports' => [{ 'path' => 'file.yml', 'disableImports' => true }] },
+      { 'targets' => [] },
+      { 'rules' => [{ 'expected' => 'X', 'pattern' => 'Y',
+                     'specs' => [{ 'from' => 'Y', 'to' => 'wrong' }] }] }
+    ].each do |data|
+      write_import_file(child, data)
+      assert_raises(AsciidocPubkit::Error, data.inspect) { plan }
+    end
+    File.write(child, "version: [\n")
+    error = assert_raises(AsciidocPubkit::Error) { plan }
+    assert_includes error.message, child
+    File.unlink(child)
+    out = StringIO.new
+    err = StringIO.new
+    assert_equal 2, AsciidocPubkit::CLI.run(['replace', 'apply', @book, '--rules', @rules], out: out, err: err)
+    assert_includes err.string, 'child.yml'
+    assert_equal "本文／。\n", File.read(@book)
+  end
+
+  def test_imported_rules_still_conflict_with_local_rules
+    File.write(@book, "本文／。\n")
+    child = File.join(@dir, 'child.yml')
+    write_import_file(child, 'rules' => [{ 'expected' => '/', 'pattern' => '／' }])
+    write_import_file(@rules, 'imports' => ['child.yml'],
+                      'rules' => [{ 'expected' => '-', 'pattern' => '／' }])
+    assert_raises(AsciidocPubkit::Error) { plan }
+    assert_equal "本文／。\n", File.read(@book)
+  end
+
+  def test_import_depth_limit_and_empty_configuration
+    write_import_file(@rules, {})
+    assert_empty AsciidocPubkit::ReplacementRules.load(@rules)
+    101.times do |index|
+      write_import_file(File.join(@dir, "depth-#{index}.yml"),
+                        index == 100 ? {} : { 'imports' => ["depth-#{index + 1}.yml"] })
+    end
+    error = assert_raises(AsciidocPubkit::Error) do
+      AsciidocPubkit::ReplacementRules.load(File.join(@dir, 'depth-0.yml'))
+    end
+    assert_includes error.message, 'maximum depth'
+  end
+
   def test_cli_exit_codes_and_no_overwrite
     File.write(@book, "本文／。\n")
     rules([{ 'expected' => '/', 'pattern' => '／' }])
