@@ -68,6 +68,7 @@ module AsciidocPubkit
         raise Error, "Replacement version in #{path} must be integer 1."
       end
       rules = data.fetch('rules', [])
+      rules = [] if rules.nil?
       imports = data.fetch('imports', [])
       raise Error, "rules in #{path} must be an array." unless rules.is_a?(Array)
       raise Error, "imports in #{path} must be an array." unless imports.is_a?(Array)

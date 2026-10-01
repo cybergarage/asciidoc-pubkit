@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Treat null replacement `rules`, including bare `rules:`, as an empty local
+  rule set while retaining imported rules and rejecting other non-array values.
+
 - Accept nonempty string arrays in replacement `pattern` as an alias for
   `patterns`, retaining strict validation, specs, protection, and conflict checks.
 

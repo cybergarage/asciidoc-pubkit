@@ -863,8 +863,10 @@ Absolute local paths are also accepted; URL imports are rejected. An import-only
 file may omit `rules`. A file containing only `version: 1` is also valid and
 contributes no rules. With no imported or local rules, `check`, `diff`, and
 `apply` succeed without changing manuscript sources, and `diff` emits no patch.
-Omission differs from an explicit `rules: null` (including a bare `rules:`),
-which remains invalid; use `rules: []` to specify an empty array explicitly.
+In the unreleased checkout, a bare `rules:`, `rules: null`, and `rules: ~`
+also contribute no local rules, just like omission or `rules: []`; imported rules
+are still loaded. Other non-array values remain invalid. This normalization
+applies only to `rules`, not to `imports` or individual rule fields.
 Every imported file must use version 1 and pass the same
 strict rule validation and specs as the entry file.
 

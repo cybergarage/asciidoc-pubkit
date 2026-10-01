@@ -239,7 +239,9 @@ class ReplacementTest < Minitest::Test
     write_import_file(@rules, 'imports' => ['child.yml'])
     [
       { 'version' => 2 },
-      { 'rules' => nil },
+      { 'rules' => false },
+      { 'rules' => 'invalid' },
+      { 'rules' => {} },
       { 'imports' => 'file.yml' },
       { 'imports' => [nil] },
       { 'imports' => [''] },
@@ -304,6 +306,40 @@ class ReplacementTest < Minitest::Test
       end
       assert_equal original.b, File.binread(@book)
     end
+  end
+
+  def test_null_rules_are_a_cli_no_op_and_do_not_discard_imported_rules
+    original = "本文／と`コード／`。\r\n"
+    File.binwrite(@book, original)
+    child = File.join(@dir, 'child.yml')
+    write_import_file(child, 'rules' => [{ 'expected' => '/', 'pattern' => '／' }])
+    ["rules:", "rules: null", "rules: ~"].each do |declaration|
+      File.write(@rules, "version: 1\n#{declaration}\n")
+      %w[check diff apply].each do |command|
+        out = StringIO.new
+        err = StringIO.new
+        assert_equal 0, AsciidocPubkit::CLI.run(['replace', command, @book, '--rules', @rules], out: out, err: err), err.string
+        assert_empty err.string
+        assert_equal original.b, File.binread(@book)
+      end
+      File.write(@rules, "version: 1\nimports:\n  - child.yml\n#{declaration}\n")
+      replacement = plan
+      assert_equal 1, replacement.candidates.length
+      replacement.apply
+      assert_equal original.sub('本文／', '本文/').b, File.binread(@book)
+      File.binwrite(@book, original)
+    end
+  end
+
+  def test_null_rules_in_imported_file_preserve_nested_imports
+    File.write(@book, "本文／。\n")
+    child = File.join(@dir, 'child.yml')
+    leaf = File.join(@dir, 'leaf.yml')
+    write_import_file(@rules, 'imports' => ['child.yml'])
+    write_import_file(child, 'imports' => ['leaf.yml'], 'rules' => nil)
+    write_import_file(leaf, 'rules' => [{ 'expected' => '/', 'pattern' => '／' }])
+    plan.apply
+    assert_equal "本文/。\n", File.read(@book)
   end
 
   def test_cli_applies_imported_rules_when_entry_and_intermediate_rules_are_omitted
