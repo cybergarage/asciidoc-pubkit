@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Report replacement rule errors with the original YAML filename and one-based
+  line number on the first line and the existing reason on the following line.
+  Track imported rules, pattern arrays, specs, and runtime replacement references
+  without changing exit codes or applying invalid plans.
+
 ## 0.8.1 — 2026-10-01
 
 - Add an opening README feature table and describe prose replacements before

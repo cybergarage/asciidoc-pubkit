@@ -180,6 +180,19 @@ authorizes source replacement without prompting. Successful diff/apply commands
 return 0; invalid rules, conflicts, unsafe edits, and input/output failures return
 2. Check/diff accept `--output` for a new file only; apply rejects `--output`.
 
+In the unreleased checkout, invalid rule files report their original YAML file
+and one-based line number on the first error line, followed by the existing
+reason on the next line. Imported files and entries in pattern arrays retain
+their own source locations. For example:
+
+```text
+Error: /path/to/prh.yml:162
+Unsupported regex flags; only optional i is supported (all matches are collected).
+```
+
+Rules are validated before any manuscript is replaced. All replacement commands
+stop with exit code 2 on invalid rules, including errors found in imported files.
+
 All three accept `--lang ja`, `--base-dir`, `--config`, and `--only` (an included
 source file). Normal configuration discovery and `review.base_dir`, `language`,
 `attributes`, and `exclude` control parsing and selection. `--rules` is required;

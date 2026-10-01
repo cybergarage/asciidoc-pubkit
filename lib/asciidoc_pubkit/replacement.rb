@@ -5,56 +5,82 @@ require 'tempfile'
 require 'open3'
 
 module AsciidocPubkit
+  class ReplacementRuleError < Error
+    def initialize(path, node, message, line: nil)
+      super("#{path}:#{line || (node ? node.start_line + 1 : 1)}\n#{message}")
+    end
+  end
+
   class ReplacementRules
+    def self.field(node, name)
+      return unless node.is_a?(Psych::Nodes::Mapping)
+      pair = node.children.each_slice(2).find { |key, _| key.respond_to?(:value) && key.value == name }
+      pair && pair.last
+    end
+
+    def self.item(node, index)
+      node.is_a?(Psych::Nodes::Sequence) ? node.children[index] : node
+    end
+
     def self.load(path)
-      collect(path, [], {}).each_with_index.map do |rule, index|
-        unless rule.is_a?(Hash) && (rule.keys - %w[expected pattern patterns specs]).empty? &&
-               rule['expected'].is_a?(String) && (rule.key?('pattern') ^ rule.key?('patterns'))
-          raise Error, "Rule #{index + 1} requires expected and exactly one of pattern or patterns; unsupported keys are rejected."
-        end
-        patterns = rule.key?('pattern') ? rule['pattern'] : rule['patterns']
-        patterns = [patterns] if rule.key?('pattern') && patterns.is_a?(String)
-        unless patterns.is_a?(Array) && !patterns.empty? && patterns.all? { |p| p.is_a?(String) && !p.empty? }
-          raise Error, 'Replacement patterns must be nonempty strings.'
-        end
-        compiled = patterns.map do |pattern|
-          if pattern.start_with?('/')
-            match = pattern.match(%r{\A/(.*)/([a-z]*)\z}m)
-            unless match && ['', 'i'].include?(match[2])
-              raise Error, 'Unsupported regex flags; only optional i is supported (all matches are collected).'
-            end
-            body = match[1]
-            # Deliberately small common JavaScript/Ruby subset; Ruby-only escapes
-            # and engine-specific groups must not silently change JS semantics.
-            if body.match?(/\\[^\\\/.*+?()\[\]{}^$|nrtdDsSwWbB-]/) || body.match?(/\(\?(?![:=!]|<[=!])/) || body.include?('&&')
-              raise Error, 'Unsupported regex syntax in replacement rule.'
-            end
-            ignore_case = match[2] == 'i'
-            body = javascript_boundaries(body, ignore_case: ignore_case)
-            Regexp.new(body.gsub('\\/', '/'), ignore_case ? Regexp::IGNORECASE : 0, timeout: 0.1)
-          else
-            Regexp.new(Regexp.escape(pattern), timeout: 0.1)
-          end
-        end
-        compiled.each do |regex|
-          regex.match('') # Detect common empty matches; runtime checks cover contextual ones.
-          raise Error, 'Zero-length replacement matches are unsupported.' if regex.match('')
-        end
-        specs = rule.fetch('specs', [])
-        raise Error, 'specs must be an array.' unless specs.is_a?(Array)
-        specs.each do |spec|
-          RuleSet.mapping(spec, %w[from to], 'Replacement spec')
-          raise Error, 'Spec from/to must be strings.' unless spec.values.all? { |v| v.is_a?(String) }
-          result = spec['from'].dup
-          edits = matches(spec['from'], compiled, rule['expected'])
-          reject_overlaps!(edits)
-          edits.reverse_each { |edit| result[edit[:start]...edit[:finish]] = edit[:after] }
-          raise Error, "Replacement spec failed for rule #{index + 1}." unless result == spec['to']
-        end
-        { id: "rule-#{index + 1}", patterns: compiled, expected: rule['expected'] }
+      collect(path, [], {}).each_with_index.map { |source, index| compile(source, index) }
+    end
+
+    def self.compile(source, index)
+      rule = source[:value]
+      location = source[:node]
+      unless rule.is_a?(Hash) && (rule.keys - %w[expected pattern patterns specs]).empty? &&
+             rule['expected'].is_a?(String) && (rule.key?('pattern') ^ rule.key?('patterns'))
+        raise Error, "Rule #{index + 1} requires expected and exactly one of pattern or patterns; unsupported keys are rejected."
       end
+      pattern_node = field(source[:node], rule.key?('pattern') ? 'pattern' : 'patterns')
+      location = pattern_node
+      patterns = rule.key?('pattern') ? rule['pattern'] : rule['patterns']
+      patterns = [patterns] if rule.key?('pattern') && patterns.is_a?(String)
+      unless patterns.is_a?(Array) && !patterns.empty? && patterns.all? { |p| p.is_a?(String) && !p.empty? }
+        raise Error, 'Replacement patterns must be nonempty strings.'
+      end
+      compiled = patterns.each_with_index.map do |pattern, pattern_index|
+        location = item(pattern_node, pattern_index)
+        regex = if pattern.start_with?('/')
+                  match = pattern.match(%r{\A/(.*)/([a-z]*)\z}m)
+                  unless match && ['', 'i'].include?(match[2])
+                    raise Error, 'Unsupported regex flags; only optional i is supported (all matches are collected).'
+                  end
+                  body = match[1]
+                  # Deliberately small common JavaScript/Ruby subset; Ruby-only escapes
+                  # and engine-specific groups must not silently change JS semantics.
+                  if body.match?(/\\[^\\\/.*+?()\[\]{}^$|nrtdDsSwWbB-]/) || body.match?(/\(\?(?![:=!]|<[=!])/) || body.include?('&&')
+                    raise Error, 'Unsupported regex syntax in replacement rule.'
+                  end
+                  ignore_case = match[2] == 'i'
+                  body = javascript_boundaries(body, ignore_case: ignore_case)
+                  Regexp.new(body.gsub('\\/', '/'), ignore_case ? Regexp::IGNORECASE : 0, timeout: 0.1)
+                else
+                  Regexp.new(Regexp.escape(pattern), timeout: 0.1)
+                end
+        raise Error, 'Zero-length replacement matches are unsupported.' if regex.match('')
+        regex
+      end
+      location = field(source[:node], 'specs') || source[:node]
+      specs = rule.fetch('specs', [])
+      raise Error, 'specs must be an array.' unless specs.is_a?(Array)
+      specs.each_with_index do |spec, spec_index|
+        location = item(field(source[:node], 'specs'), spec_index)
+        RuleSet.mapping(spec, %w[from to], 'Replacement spec')
+        raise Error, 'Spec from/to must be strings.' unless spec.values.all? { |v| v.is_a?(String) }
+        result = spec['from'].dup
+        edits = matches(spec['from'], compiled, rule['expected'])
+        reject_overlaps!(edits)
+        edits.reverse_each { |edit| result[edit[:start]...edit[:finish]] = edit[:after] }
+        raise Error, "Replacement spec failed for rule #{index + 1}." unless result == spec['to']
+      end
+      { id: "rule-#{index + 1}", patterns: compiled, expected: rule['expected'],
+        path: source[:path], node: source[:node], pattern_node: pattern_node }
     rescue RegexpError, Regexp::TimeoutError => e
-      raise Error, "Invalid replacement regex: #{e.message}"
+      raise ReplacementRuleError.new(source[:path], location, "Invalid replacement regex: #{e.message}")
+    rescue Error => e
+      raise ReplacementRuleError.new(source[:path], location, e.message)
     end
 
     # prh uses Unicode JS regexes: word characters are ASCII letters/digits/_;
@@ -92,25 +118,35 @@ module AsciidocPubkit
     end
 
     def self.collect(path, active, visited)
+      path = File.expand_path(path)
+      location = nil
       path = File.realpath(path)
       if active.include?(path)
         raise Error, "Circular replacement imports: #{(active + [path]).join(' -> ')}"
       end
       return [] if visited[path]
       raise Error, 'Replacement imports exceed the maximum depth of 100 files.' if active.length >= 100
-      data = YAML.safe_load(AsciidocPubkit.read_text(path), permitted_classes: [], aliases: false)
+      text = AsciidocPubkit.read_text(path)
+      tree = Psych.parse_stream(text, filename: path)
+      root = tree.children.first&.root
+      location = root
+      data = YAML.safe_load(text, permitted_classes: [], aliases: false)
       unless data.is_a?(Hash) && data.key?('version') && (data.keys - %w[version rules imports]).empty?
         raise Error, "Replacement rules in #{path} require version and accept only rules and imports."
       end
+      location = field(root, 'version')
       unless data['version'].is_a?(Integer) && data['version'] == 1
         raise Error, "Replacement version in #{path} must be integer 1."
       end
       rules = data.fetch('rules', [])
       rules = [] if rules.nil?
       imports = data.fetch('imports', [])
+      location = field(root, 'rules')
       raise Error, "rules in #{path} must be an array." unless rules.is_a?(Array)
+      location = field(root, 'imports')
       raise Error, "imports in #{path} must be an array." unless imports.is_a?(Array)
-      imported = imports.flat_map do |entry|
+      imported = imports.each_with_index.flat_map do |entry, index|
+        location = item(field(root, 'imports'), index)
         if entry.is_a?(Hash)
           RuleSet.mapping(entry, ['path'], "Replacement import in #{path}")
           entry = entry['path']
@@ -121,9 +157,14 @@ module AsciidocPubkit
         collect(File.expand_path(entry, File.dirname(path)), active + [path], visited)
       end
       visited[path] = true
-      imported + rules
+      imported + rules.each_with_index.map { |rule, index| { value: rule, path: path, node: item(field(root, 'rules'), index) } }
+    rescue ReplacementRuleError
+      raise
     rescue Psych::Exception => e
-      raise Error, "Invalid replacement YAML in #{path}: #{e.message}"
+      raise ReplacementRuleError.new(path, location, "Invalid replacement YAML in #{path}: #{e.message}",
+                                     line: e.respond_to?(:line) ? e.line : nil)
+    rescue Error, SystemCallError => e
+      raise ReplacementRuleError.new(path, location, e.message)
     end
 
     def self.expand(template, match)
@@ -138,16 +179,23 @@ module AsciidocPubkit
       end
     end
 
-    def self.matches(text, patterns, expected)
-      patterns.flat_map do |regex|
-        text.to_enum(:scan, regex).map do
-          match = Regexp.last_match
-          raise Error, 'Zero-length replacement matches are unsupported.' if match.begin(0) == match.end(0)
-          { start: match.begin(0), finish: match.end(0), before: match[0], after: expand(expected, match) }
+    def self.matches(text, patterns, expected, source: nil)
+      patterns.each_with_index.flat_map do |regex, index|
+        begin
+          text.to_enum(:scan, regex).map do
+            match = Regexp.last_match
+            raise Error, 'Zero-length replacement matches are unsupported.' if match.begin(0) == match.end(0)
+            { start: match.begin(0), finish: match.end(0), before: match[0], after: expand(expected, match) }
+          end
+        rescue Error, Regexp::TimeoutError => e
+          message = e.is_a?(Regexp::TimeoutError) ? 'Replacement regex timed out.' : e.message
+          if source
+            location = message.start_with?('Unsupported replacement reference:') ? field(source[:node], 'expected') : item(source[:pattern_node], index)
+            raise ReplacementRuleError.new(source[:path], location, message)
+          end
+          raise Error, message
         end
       end.reject { |edit| edit[:before] == edit[:after] }.uniq.sort_by { |edit| edit[:start] }
-    rescue Regexp::TimeoutError
-      raise Error, 'Replacement regex timed out.'
     end
 
     def self.reject_overlaps!(edits)
@@ -181,7 +229,7 @@ module AsciidocPubkit
         line_offsets = [0]
         lines.each { |line| line_offsets << line_offsets.last + line.length }
         rules.each do |rule|
-          ReplacementRules.matches(text, rule[:patterns], rule[:expected]).each do |edit|
+          ReplacementRules.matches(text, rule[:patterns], rule[:expected], source: rule).each do |edit|
             next if protected_ranges.any? { |range| edit[:start] < range.end && edit[:finish] > range.begin }
             # Keep physical line boundaries intact, including CRLF.
             raise Error, 'Replacement matches and results must stay on one line.' if (edit[:before] + edit[:after]).match?(/[\r\n]/)

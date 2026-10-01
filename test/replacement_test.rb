@@ -413,6 +413,64 @@ class ReplacementTest < Minitest::Test
     assert_equal "本文/と`コード／`。\n", File.read(@book)
   end
 
+  def test_cli_errors_locate_imported_array_patterns_and_stop_all_commands
+    child = File.join(@dir, 'child.yml')
+    write_import_file(@rules, 'imports' => ['child.yml'])
+    File.write(child, <<~YAML)
+      version: 1
+      rules:
+        # Keep the comment in source line numbering.
+        - expected: X
+          pattern:
+            - '文'
+            - '/文/m'
+    YAML
+    original = "本文です。\n"
+    File.write(@book, original)
+    %w[check diff apply].each do |command|
+      out = StringIO.new
+      err = StringIO.new
+      assert_equal 2, AsciidocPubkit::CLI.run(['replace', command, @book, '--rules', @rules], out: out, err: err)
+      assert_equal ["Error: #{child}:7", 'Unsupported regex flags; only optional i is supported (all matches are collected).'], err.string.lines.map(&:chomp)
+      assert_empty out.string
+      assert_equal original, File.read(@book)
+    end
+  end
+
+  def test_rule_errors_locate_specs_invalid_regexes_and_runtime_references
+    File.write(@book, "本文です。\n")
+    [
+      ["version: 1\nrules:\n  - expected: X\n    pattern: '/[/'\n", 4, 'Invalid replacement regex:'],
+      ["version: 1\nrules:\n  - expected: X\n    pattern: '文'\n    specs:\n      - from: 文\n        to: wrong\n", 6, 'Replacement spec failed for rule 1.'],
+      ["version: 1\nrules:\n  - expected: '$2'\n    pattern: '/(文)/'\n", 3, 'Unsupported replacement reference: $2'],
+      ["# Comment\nversion: 2\nrules: []\n", 2, 'Replacement version'],
+      ["version: 1\n# Comment\nrules: false\n", 3, 'must be an array.'],
+      ["version: 1\nimports:\n  - path: child.yml\n    ignoreRules: []\n", 3, 'must contain exactly these keys: path.']
+    ].each do |yaml, line, message|
+      File.write(@rules, yaml)
+      out = StringIO.new
+      err = StringIO.new
+      assert_equal 2, AsciidocPubkit::CLI.run(['replace', 'apply', @book, '--rules', @rules], out: out, err: err)
+      assert_equal "Error: #{@rules}:#{line}", err.string.lines.first.chomp
+      assert_includes err.string.lines[1], message
+      assert_equal "本文です。\n", File.read(@book)
+    end
+  end
+
+  def test_yaml_syntax_errors_retain_parser_line_numbers
+    File.write(@book, "本文です。\n")
+    File.write(@rules, "version: 1\nrules:\n  - expected: X\n    pattern: [\n")
+    begin
+      Psych.parse_stream(File.read(@rules))
+      flunk 'Expected invalid YAML'
+    rescue Psych::SyntaxError => syntax
+      err = StringIO.new
+      assert_equal 2, AsciidocPubkit::CLI.run(['replace', 'check', @book, '--rules', @rules], out: StringIO.new, err: err)
+      assert_equal "Error: #{@rules}:#{syntax.line}", err.string.lines.first.chomp
+      assert_includes err.string.lines[1], 'Invalid replacement YAML'
+    end
+  end
+
   def test_cli_exit_codes_and_no_overwrite
     File.write(@book, "本文／。\n")
     rules([{ 'expected' => '/', 'pattern' => '／' }])
