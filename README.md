@@ -306,6 +306,8 @@ are frozen into the session; scan again after changing them.
 
 Review headings and prose in separate sessions. The default scan scope remains
 `prose`; `--scope headings` selects section titles. There is no combined scope.
+Default output directories are `.pubkit/review` for prose and `.pubkit/headings`
+for headings, so separate scans do not replace each other by default.
 The scope is saved at scan time; `prompt` and `verify` use that saved scope.
 Neither scan nor prompt invokes an AI CLI or edits a manuscript. Give the generated
 prompt to your reviewer separately.
@@ -342,8 +344,8 @@ agreement are contextual reviewer judgments, not mechanically proven findings.
 
 Only plain ATX section titles whose source cursor and original title match are
 editable. Document titles, old-style underlined headings, attribute-expanded
-and converted inline titles remain protected; unresolved section titles receive
-coverage notices. Verification permits only selected title text changes while
+and converted inline titles and physical title lines reused by multiple includes remain protected.
+Unresolved section titles receive coverage notices. Verification permits only selected title text changes while
 protecting the body, title markers, hierarchy, order, section IDs, references,
 attributes, includes and other protected content. A title-derived section ID
 change fails verification. Establish stable explicit IDs before scanning when
@@ -357,7 +359,9 @@ finish an ongoing review with its original tool before establishing a new baseli
 
 Heading rules use `--heading-rules FILE`, then configuration
 `review.heading_rules`, then `data/heading-rules.ja.yml`. A custom file replaces
-the entire heading rule set. `--heading-rules` requires `--scope headings`;
+the entire heading rule set. Each scan loads only the rules for its selected
+scope; an unavailable rule file for the other scope does not prevent it.
+`--heading-rules` requires `--scope headings`;
 prose `--rules` and `--style` cannot be passed to a heading scan.
 
 ```yaml
@@ -472,7 +476,7 @@ the code can detect or verify it.
 | Keep claims within their evidence and preserve meaning | Review guidance asks for implementation, test, or primary-source evidence and checks omissions and unsupported additions; unresolved facts remain unresolved | [Evidence and scope](data/writing/ja/criteria.md#keep-claims-within-their-evidence-and-purpose), [Paragraph revision](data/writing/ja/criteria.md#revise-the-complete-paragraph) |
 | Preserve technical distinctions, terminology, and justified prose choices | Criteria protect identifiers, values, conditions, negation, and necessary repetition; glossary rules, allow lists, and contextual questions support project terminology | [Terminology](data/writing/ja/criteria.md#preserve-exact-technical-terminology), [Packaged rules](data/review-rules.ja.yml), [Settings](lib/asciidoc_pubkit/settings.rb) |
 | Review generated-prose patterns without mechanical deletion | Framing, contextual phrases, style, and repeated-ending checks produce candidates; shared criteria reject fixed sentence-length targets and needless synonym changes | [Generated-prose patterns](data/writing/ja/criteria.md#remove-generated-prose-patterns-without-flattening-the-meaning), [Rules](lib/asciidoc_pubkit/rules.rb) |
-| Keep headings, illustrations, tables, and code consistent with the explanation | Writing criteria address scope, comparisons, identifiers, and conceptual simplifications; review prompts keep these protected elements outside the prose edit scope | [Headings, figures, and code](data/writing/ja/criteria.md#headings-and-the-relation-to-figures-and-code), [Review scope](lib/asciidoc_pubkit/session.rb) |
+| Keep headings, illustrations, tables, and code consistent with the explanation | Writing criteria address scope, comparisons, identifiers, and conceptual simplifications; review prompts constrain edits to the selected scope and protect other elements | [Headings, figures, and code](data/writing/ja/criteria.md#headings-and-the-relation-to-figures-and-code), [Review scope](lib/asciidoc_pubkit/session.rb) |
 | Make detection traceable and coverage explicit | Asciidoctor source mapping, offset-preserving inline masking, and MeCab/IPADIC produce source-aligned evidence; ambiguous or excluded passages have coverage notices | [Document](lib/asciidoc_pubkit/document.rb), [Morphology](lib/asciidoc_pubkit/morphology.rb), [Rules](lib/asciidoc_pubkit/rules.rb) |
 | Preserve a reproducible and safe review baseline | Sessions save source snapshots, resolved rules, criteria, and analyzer identity; integrity checks and verification protect content outside editable prose | [Session](lib/asciidoc_pubkit/session.rb), [Rule validation](lib/asciidoc_pubkit/rule_set.rb) |
 | Keep manuscript indicators, readability judgments, and detector accuracy distinct | Default scoring measures candidate density; optional local CLI evaluation judges readability; annotated development benchmarks measure detection and evaluate preservation separately | [Score](lib/asciidoc_pubkit/score.rb), [Local evaluator](lib/asciidoc_pubkit/local_evaluator.rb), [Development benchmark](benchmark/prose.rb) |

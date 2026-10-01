@@ -12,7 +12,8 @@ module AsciidocPubkit
       unless document.diagnostics.empty?
         raise Error, "Document diagnostics must be resolved before scanning:\n" + document.diagnostics.map { |d| "#{d['severity']}: #{d['message']}" }.join("\n")
       end
-      destination = File.expand_path(options.fetch(:output, '.pubkit/review'))
+      default_output = settings.data['scope'] == 'headings' ? '.pubkit/headings' : '.pubkit/review'
+      destination = File.expand_path(options.fetch(:output, default_output))
       replacing = File.exist?(destination) || File.symlink?(destination)
       if replacing
         raise Error, "Output already exists: #{destination}" unless block_given?
@@ -309,6 +310,7 @@ module AsciidocPubkit
         inline tokens, title markers, and all content outside the selected title spans.
         Title-derived section IDs can change after a title edit. Keep IDs unchanged;
         otherwise report the concern and leave the title for a separate ID migration.
+        Preserve the configured fixed section names; do not rename them merely for variety.
         Automated findings are review candidates, not proven defects.
         Do not invent facts, guarantees, implementation mechanisms or benefits.
         Review every selected heading, including those without candidates, in the complete outline

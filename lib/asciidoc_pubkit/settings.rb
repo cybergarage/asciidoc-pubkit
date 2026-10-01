@@ -42,9 +42,9 @@ module AsciidocPubkit
       rules_path = options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet.default_path(language))
       @data = {
         'scope' => scope,
-        'heading_rules' => HeadingRuleSet.load(heading_rules_path),
+        'heading_rules' => scope == 'headings' ? HeadingRuleSet.load(heading_rules_path) : nil,
         'heading_rules_path' => heading_rules_path,
-        'rules' => RuleSet.load(rules_path),
+        'rules' => scope == 'prose' ? RuleSet.load(rules_path) : nil,
         'rules_path' => rules_path,
         'language' => language,
         'style' => options[:style] || review.fetch('style', 'preserve'),

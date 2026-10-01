@@ -11,6 +11,8 @@
   protecting body text, structure and section IDs. Report unsupported title
   mapping, retain stale-source and artifact checks, and require fresh sessions
   for schema 2. Generated section ID changes fail mechanical verification.
+  Use separate default output directories for prose and heading sessions and
+  protect physical titles reused by multiple includes.
 
 - Introduce the review and scoring concepts before the architecture diagrams,
   with a table linking prose principles, implementation mechanisms, and their

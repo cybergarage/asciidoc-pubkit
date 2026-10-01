@@ -4,7 +4,8 @@
 
 This repository provides the `asciidoc-pubkit` Ruby gem and CLI. Its implemented
 workflow emits Japanese writing prompts, scans Japanese AsciiDoc running prose,
-emits review prompts, scores running prose, and verifies edited manuscripts
+reviews section headings in separate sessions, emits review prompts, scores
+running prose, and verifies edited manuscripts
 against a baseline. Only `review score --agent` invokes an installed Codex or
 Claude CLI for optional readability evaluation; that CLI may call its configured
 model provider. It does not rewrite manuscripts or publish books. Do not describe
@@ -64,6 +65,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | `lib/asciidoc_pubkit/document.rb` | Asciidoctor parsing, source mapping, prose selection, structure |
 | `lib/asciidoc_pubkit/morphology.rb` | MeCab execution, IPADIC validation, tokens, backend identity |
 | `lib/asciidoc_pubkit/rules.rb` | Candidate detection, inline masking, positions and polarity |
+| `lib/asciidoc_pubkit/heading_rules.rb`, `data/heading-rules.ja.yml`, `data/writing/ja/headings.md` | Separate heading candidates, book format preferences, and heading criteria |
 | `lib/asciidoc_pubkit/rule_set.rb`, `data/review-rules.ja.yml` | Validated rule schema and packaged Japanese defaults |
 | `lib/asciidoc_pubkit/language.rb`, `lib/asciidoc_pubkit/writing.rb`, `data/writing/ja/criteria.md` | Language gate and canonical writing criteria/prompt |
 | `lib/asciidoc_pubkit/session.rb` | Baselines, artifact integrity, safe replacement, prompts, verification |
@@ -72,11 +74,16 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 
 ## Contracts to preserve
 
-- Scoring uses the same prose scope as scanning. Keep candidate-density scores
+- Scoring uses the same prose scope as default prose scanning. Keep candidate-density scores
   distinct from optional model readability ratings and benchmark accuracy.
   Invoke external model CLIs only with explicit `--agent`; no default test or
   other gem command may invoke them. Scoring never edits manuscripts or replaces
   existing output, and does not establish semantic correctness.
+- Keep prose and heading scan scopes separate. Prose is the default; heading
+  sessions use body text as read-only evidence. Only source-mapped plain ATX
+  section title spans are editable in heading sessions; retain structure and
+  section IDs, including generated IDs. Unsupported or reused source titles stay
+  protected. Do not impose one heading form or length limit on every book.
 - Findings are review candidates, not proven defects or automatic replacement
   instructions. Preserve negation, conditions, terminology, source text, and
   protected content. Columns are one-based Unicode character positions.

@@ -39,6 +39,7 @@ module AsciidocPubkit
   class HeadingRules
     def self.scan(headings, settings, tokenizer: nil)
       rules = HeadingRuleSet.validate(settings.fetch('heading_rules'))
+      tokenizer ||= Morphology.new(settings) if settings.fetch('tokenizer', 'mecab') == 'mecab'
       findings = []
       duplicates = headings.group_by { |h| [h['parent_index'], h['text']] }
       # Use the configured analyzer; never silently substitute literal analysis.

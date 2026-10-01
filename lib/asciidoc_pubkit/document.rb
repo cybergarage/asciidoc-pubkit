@@ -55,6 +55,14 @@ module AsciidocPubkit
         end
         @section_indexes = nodes.each_with_index.to_h
         nodes.each_with_index { |node, index| collect_heading(node, index) if node.context == :section && node != doc.header }
+        # One physical title reused by includes cannot be edited independently.
+        reused = @headings.group_by { |h| [h['file'], h['line']] }.select { |_, group| group.length > 1 }
+        @headings.reject! do |heading|
+          next false unless reused.key?([heading['file'], heading['line']])
+          @coverage << { 'context' => 'heading', 'file' => heading['file'], 'line' => heading['line'],
+                         'reason' => 'The source title is reused by multiple sections and cannot be edited independently.' }
+          true
+        end
         nodes.each { |node| collect(node) }
       ensure
         Asciidoctor::LoggerManager.logger = previous_logger

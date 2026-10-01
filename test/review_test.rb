@@ -186,6 +186,107 @@ class ReviewTest < Minitest::Test
     assert report['notices'].any? { |n| n['kind'] == 'numbers-changed' }
   end
 
+  def test_heading_exclusions_keep_titles_protected
+    config = File.join(@dir, 'config.yml')
+    File.write(config, { 'review' => { 'exclude' => ['chapter.adoc'] } }.to_yaml)
+    heading_scan('--config', config)
+    assert_empty json('document.json')['headings']
+    assert json('document.json')['coverage'].any? { |c| c['context'] == 'heading' && c['reason'] == 'Excluded by configuration.' }
+    File.write(@chapter, File.read(@chapter).sub('Introduction', 'Changed'))
+    assert_equal 1, verify.first
+  end
+
+  def test_heading_identical_titles_in_distinct_include_sources_keep_exact_locations
+    other = File.join(@dir, 'other.adoc')
+    File.write(@chapter, "[[first]]\n== シームレスな実行\n\n最初の本文です。\n")
+    File.write(other, "[[second]]\n== シームレスな実行\n\n次の本文です。\n")
+    File.write(@book, File.read(@book) + "\ninclude::other.adoc[]\n")
+    heading_scan
+    findings = json('findings.json').select { |f| f['rule'] == 'heading-promotion' }
+    assert_equal [@chapter, other], findings.map { |f| f['file'] }
+    assert_equal [2, 2], findings.map { |f| f['line'] }
+    File.write(other, File.read(other).sub('シームレスな実行', '実行の流れ'))
+    assert_equal 0, verify.first
+  end
+
+  def test_reused_physical_heading_sources_remain_protected
+    File.write(@chapter, "== 入力\n\n本文です。\n")
+    File.write(@book, "= Test Book\n:sectids!:\n\ninclude::chapter.adoc[]\n\ninclude::chapter.adoc[]\n")
+    heading_scan
+    assert_empty json('document.json')['headings']
+    assert_equal 2, json('document.json')['coverage'].count { |c| c['reason'].include?('reused') }
+    File.write(@chapter, File.read(@chapter).sub('入力', '出力'))
+    assert_equal 1, verify.first
+  end
+
+  def test_heading_references_markers_and_order_remain_protected
+    original = "[[first]]\n== 入力\n\n<<second>>を参照します。\n\n[[second]]\n== 出力\n\n本文です。\n"
+    File.write(@chapter, original)
+    heading_scan
+    File.write(@chapter, original.sub('<<second>>', '<<first>>'))
+    assert_equal 1, verify.first
+    File.write(@chapter, original.sub('== 入力', '==  入力'))
+    assert_equal 1, verify.first
+    File.write(@chapter, "[[second]]\n== 出力\n\n本文です。\n\n[[first]]\n== 入力\n\n<<second>>を参照します。\n")
+    assert_equal 1, verify.first
+  end
+
+  def test_heading_rules_configuration_precedence_and_strict_yaml
+    first = AsciidocPubkit::HeadingRuleSet.load(AsciidocPubkit::HeadingRuleSet.default_path('ja'))
+    first['terms'] = { 'config-topic' => { 'terms' => ['Introduction'], 'question' => 'Configured question.' } }
+    second = Marshal.load(Marshal.dump(first))
+    second['terms'] = { 'cli-topic' => { 'terms' => ['Section'], 'question' => 'CLI question.' } }
+    File.write(File.join(@dir, 'headings.yml'), first.to_yaml)
+    override = File.join(@dir, 'override.yml')
+    File.write(override, second.to_yaml)
+    config = File.join(@dir, 'config.yml')
+    File.write(config, { 'review' => { 'heading_rules' => 'headings.yml' } }.to_yaml)
+    heading_scan('--config', config, '--heading-rules', override)
+    assert_equal ['cli-topic'], json('findings.json').map { |f| f['rule'] }
+    heading_scan('--config', config, '--yes')
+    assert_equal ['config-topic'], json('findings.json').map { |f| f['rule'] }
+    File.write(override, "schema_version: 1\nterms: &terms {}\nfixed_titles: *terms\nduplicate_siblings: true\nstyle: mixed\n")
+    code, _, error = cli('review', 'scan', @book, '--scope', 'headings', '--heading-rules', override, '--output', File.join(@dir, 'invalid'))
+    assert_equal 2, code
+    assert_includes error, 'Invalid heading rule YAML'
+    assert_equal 0, verify.first
+  end
+
+  def test_heading_artifact_integrity_and_schema_compatibility
+    heading_scan
+    path = File.join(@session, 'document.json')
+    File.write(path, File.read(path) + " ")
+    assert_equal 2, cli('review', 'prompt', @session)[0]
+    heading_scan('--yes')
+    path = File.join(@session, 'manifest.json')
+    manifest = json('manifest.json')
+    manifest['schema_version'] = 1
+    File.write(path, JSON.generate(manifest))
+    assert_equal 2, cli('review', 'prompt', @session)[0]
+  end
+
+  def test_heading_and_prose_default_outputs_are_separate
+    Dir.chdir(@dir) do
+      assert_equal 0, cli('review', 'scan', @book)[0]
+      assert_equal 0, cli('review', 'scan', @book, '--scope', 'headings')[0]
+      prose_manifest = JSON.parse(File.read('.pubkit/review/manifest.json'))
+      heading_manifest = JSON.parse(File.read('.pubkit/headings/manifest.json'))
+      assert_equal 'prose', prose_manifest['settings']['scope']
+      assert_equal 'headings', heading_manifest['settings']['scope']
+    end
+  end
+
+  def test_each_scope_loads_only_its_own_rule_file
+    config = File.join(@dir, 'config.yml')
+    File.write(config, { 'review' => { 'rules' => 'missing-prose.yml' } }.to_yaml)
+    heading_scan('--config', config)
+    assert_nil json('manifest.json')['settings']['rules']
+    File.write(config, { 'review' => { 'heading_rules' => 'missing-headings.yml' } }.to_yaml)
+    scan('--scope', 'prose', '--config', config, '--yes')
+    assert_nil json('manifest.json')['settings']['heading_rules']
+    assert_equal 0, cli('review', 'score', @book, '--config', config)[0]
+  end
+
   def test_custom_rules_replace_defaults_and_survive_file_removal
     rules = AsciidocPubkit::RuleSet.load
     rules['terms'].each_value { |entry| entry['terms'] = [] }

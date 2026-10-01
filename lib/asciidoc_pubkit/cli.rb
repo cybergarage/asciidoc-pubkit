@@ -41,7 +41,7 @@ module AsciidocPubkit
       parser = OptionParser.new do |opts|
         input_name = group == 'writing' ? '' : (%w[scan score].include?(command) ? ' FILE' : ' SESSION')
         opts.banner = "Usage: asciidoc-pubkit #{group} #{command} [options]#{input_name}"
-        opts.on('-o', '--output PATH', group == 'review' && command == 'scan' ? 'New session directory (default: .pubkit/review)' : 'New output file (default: standard output)') { |v| options[:output] = v }
+        opts.on('-o', '--output PATH', group == 'review' && command == 'scan' ? 'New session directory (default: .pubkit/review for prose, .pubkit/headings for headings)' : 'New output file (default: standard output)') { |v| options[:output] = v }
         opts.on('--lang LANG', 'Language (ja only in this release)') { |v| options[:language] = v }
         if group == 'review' && %w[scan score].include?(command)
           if command == 'scan'
