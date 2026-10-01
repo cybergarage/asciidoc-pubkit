@@ -196,7 +196,7 @@ Use `ARGS` instead of `make review scan book.adoc`: Make interprets positional
 words as build targets, not CLI arguments. Avoid `make -C` when manuscript paths
 should remain relative to the current directory, because it changes directories.
 
-## Install the morphological analyzer (0.1.1 and later)
+## Install the morphological analyzer
 
 On macOS with Homebrew:
 
