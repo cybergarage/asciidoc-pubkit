@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Introduce the review and scoring concepts before the architecture diagrams,
+  with a table linking prose principles, implementation mechanisms, and their
+  source files. Distinguish prompt guidance from mechanical guarantees.
+
 ## 0.6.2 — 2026-10-01
 
 - Explain review and scoring architecture, flows, and algorithms in a separate

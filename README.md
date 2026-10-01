@@ -354,6 +354,45 @@ or release readiness: `meaning_verified` is always `false`.
 
 ## How review and scoring work
 
+### Concept
+
+The goal is Japanese technical prose that readers can understand, use, and
+verify, with claims bounded by evidence and technical meaning preserved.
+Clarity includes a paragraph's purpose, concrete operations and referents,
+actors and objects, conditions and consequences, logical connections, and its
+relationship to headings, figures, tables, and code. "Who does what" is one
+part of that goal. Clear prose also retains precise terminology, necessary
+negation, uncertainty, and implementation constraints.
+
+The toolkit supports that goal through shared writing criteria, contextual
+review prompts, source-aligned candidate detection, baseline verification,
+and distinct scoring and development evaluation paths. Mechanical rules locate
+passages to inspect; the reviewer judges their meaning from context and source
+evidence. The writing and review prompts guide a human or external agent in
+planning and revising complete paragraphs. They do not automatically reconstruct
+subjects and objects or rewrite manuscripts. Model-based readability evaluation
+is available only through explicit `review score --agent`.
+
+The table identifies both implemented mechanisms and guidance carried by the
+prompts. A criterion in a prompt is a review instruction, not a guarantee that
+the code can detect or verify it.
+
+| Supported principle or behavior | How it is realized | Implementation or criteria |
+| --- | --- | --- |
+| Write for a technical purpose and the reader's decisions | Shared criteria ask what a paragraph explains and what an engineer can decide or verify; writing prompts include those criteria | [Paragraph purpose](data/writing/ja/criteria.md#start-with-the-paragraphs-technical-purpose), [Writing](lib/asciidoc_pubkit/writing.rb) |
+| Make actors, objects, actions, conditions, and results recoverable | Review instructions ask the reviewer to resolve omitted elements from context, while allowing unambiguous omission | [Paragraph revision](data/writing/ja/criteria.md#revise-the-complete-paragraph), [Review prompt](lib/asciidoc_pubkit/session.rb) |
+| Replace vague abstraction, weak predicates, and metaphors with concrete explanations | Rules locate limited terms and inflected predicates; the criteria require identifying the actual referent, operation, policy, or effect before revising | [Concrete referents](data/writing/ja/criteria.md#replace-abstraction-with-the-thing-being-discussed), [Metaphor criteria](data/writing/ja/criteria.md#explain-metaphorical-operations-from-evidence), [Rules](lib/asciidoc_pubkit/rules.rb) |
+| Distinguish reader instructions, actual behavior, and available capabilities | The shared criteria preserve the difference between requests, automatic execution, and optional operations | [Instructions, behavior, and capabilities](data/writing/ja/criteria.md#distinguish-instructions-behavior-and-capabilities) |
+| Connect claims into coherent paragraphs | Prompts include all selected paragraphs and neighboring context; criteria require explicit referents, comparisons, causal relationships, and complete paragraph revision | [Relationships](data/writing/ja/criteria.md#make-relationships-explicit), [Review prompt](lib/asciidoc_pubkit/session.rb) |
+| Keep claims within their evidence and preserve meaning | Review guidance asks for implementation, test, or primary-source evidence and checks omissions and unsupported additions; unresolved facts remain unresolved | [Evidence and scope](data/writing/ja/criteria.md#keep-claims-within-their-evidence-and-purpose), [Paragraph revision](data/writing/ja/criteria.md#revise-the-complete-paragraph) |
+| Preserve technical distinctions, terminology, and justified prose choices | Criteria protect identifiers, values, conditions, negation, and necessary repetition; glossary rules, allow lists, and contextual questions support project terminology | [Terminology](data/writing/ja/criteria.md#preserve-exact-technical-terminology), [Packaged rules](data/review-rules.ja.yml), [Settings](lib/asciidoc_pubkit/settings.rb) |
+| Review generated-prose patterns without mechanical deletion | Framing, contextual phrases, style, and repeated-ending checks produce candidates; shared criteria reject fixed sentence-length targets and needless synonym changes | [Generated-prose patterns](data/writing/ja/criteria.md#remove-generated-prose-patterns-without-flattening-the-meaning), [Rules](lib/asciidoc_pubkit/rules.rb) |
+| Keep headings, illustrations, tables, and code consistent with the explanation | Writing criteria address scope, comparisons, identifiers, and conceptual simplifications; review prompts keep these protected elements outside the prose edit scope | [Headings, figures, and code](data/writing/ja/criteria.md#headings-and-the-relation-to-figures-and-code), [Review scope](lib/asciidoc_pubkit/session.rb) |
+| Make detection traceable and coverage explicit | Asciidoctor source mapping, offset-preserving inline masking, and MeCab/IPADIC produce source-aligned evidence; ambiguous or excluded passages have coverage notices | [Document](lib/asciidoc_pubkit/document.rb), [Morphology](lib/asciidoc_pubkit/morphology.rb), [Rules](lib/asciidoc_pubkit/rules.rb) |
+| Preserve a reproducible and safe review baseline | Sessions save source snapshots, resolved rules, criteria, and analyzer identity; integrity checks and verification protect content outside editable prose | [Session](lib/asciidoc_pubkit/session.rb), [Rule validation](lib/asciidoc_pubkit/rule_set.rb) |
+| Keep manuscript indicators, readability judgments, and detector accuracy distinct | Default scoring measures candidate density; optional local CLI evaluation judges readability; annotated development benchmarks measure detection and evaluate preservation separately | [Score](lib/asciidoc_pubkit/score.rb), [Local evaluator](lib/asciidoc_pubkit/local_evaluator.rb), [Development benchmark](benchmark/prose.rb) |
+| Make automation explicit and its limits visible | Default analysis runs locally with no model call; only explicit scoring requests invoke an external CLI. Manuscripts are not edited, and verification retains `meaning_verified: false` | [CLI](lib/asciidoc_pubkit/cli.rb), [Local evaluator](lib/asciidoc_pubkit/local_evaluator.rb), [Session](lib/asciidoc_pubkit/session.rb) |
+
 This section explains the implementation independently of command syntax.
 [Review workflow](#review-workflow) covers commands and session handling;
 [Score an AsciiDoc manuscript](#score-an-asciidoc-manuscript) covers scoring options.
