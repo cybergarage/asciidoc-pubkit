@@ -253,6 +253,43 @@ class ReplacementTest < Minitest::Test
     assert_includes error.message, 'maximum depth'
   end
 
+  def test_version_only_rules_file_is_a_successful_cli_no_op
+    original = "本文／と`コード／`。\r\n"
+    File.binwrite(@book, original)
+    write_import_file(@rules, {})
+    %w[check diff apply].each do |command|
+      out = StringIO.new
+      err = StringIO.new
+      result = AsciidocPubkit::CLI.run(['replace', command, @book, '--rules', @rules], out: out, err: err)
+      assert_equal 0, result, err.string
+      assert_empty err.string
+      if command == 'diff'
+        assert_empty out.string
+      else
+        assert_includes out.string, '0 replacements'
+      end
+      assert_equal original.b, File.binread(@book)
+    end
+  end
+
+  def test_cli_applies_imported_rules_when_entry_and_intermediate_rules_are_omitted
+    child = File.join(@dir, 'child.yml')
+    leaf = File.join(@dir, 'leaf.yml')
+    empty = File.join(@dir, 'empty.yml')
+    write_import_file(@rules, 'imports' => ['child.yml'])
+    write_import_file(child, 'imports' => ['empty.yml', 'leaf.yml'])
+    write_import_file(empty, {})
+    write_import_file(leaf, 'rules' => [{ 'expected' => '/', 'pattern' => '／' }])
+    File.write(@book, "本文／と`コード／`。\n")
+    out = StringIO.new
+    err = StringIO.new
+    args = [@book, '--rules', @rules]
+    assert_equal 1, AsciidocPubkit::CLI.run(['replace', 'check', *args], out: out, err: err)
+    assert_equal 0, AsciidocPubkit::CLI.run(['replace', 'apply', *args], out: out, err: err)
+    assert_empty err.string
+    assert_equal "本文/と`コード／`。\n", File.read(@book)
+  end
+
   def test_cli_exit_codes_and_no_overwrite
     File.write(@book, "本文／。\n")
     rules([{ 'expected' => '/', 'pattern' => '／' }])

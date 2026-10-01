@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Document omitted replacement `rules` as an empty set, including version-only
+  files, and verify CLI no-op behavior and application through import-only chains.
+
 - Support nested local `imports` in replacement rules, resolving paths relative
   to each importing file and accepting import-only files and `path` mappings.
   Deduplicate physical files, reject cycles and unsupported import options, and

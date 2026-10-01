@@ -844,7 +844,12 @@ Each entry is a nonempty local file path string or a mapping containing exactly
 `path`. Relative paths resolve from the importing YAML file, including nested
 imports, independently of the working directory and manuscript base directory.
 Absolute local paths are also accepted; URL imports are rejected. An import-only
-file may omit `rules`. Every imported file must use version 1 and pass the same
+file may omit `rules`. A file containing only `version: 1` is also valid and
+contributes no rules. With no imported or local rules, `check`, `diff`, and
+`apply` succeed without changing manuscript sources, and `diff` emits no patch.
+Omission differs from an explicit `rules: null` (including a bare `rules:`),
+which remains invalid; use `rules: []` to specify an empty array explicitly.
+Every imported file must use version 1 and pass the same
 strict rule validation and specs as the entry file.
 
 Imports are loaded in listed order, recursively before each file's own rules.
