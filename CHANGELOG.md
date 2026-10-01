@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add an opening README feature table and describe prose replacements before
+  scoring and review, distinguishing released commands from checkout additions.
+
 - Support replacement regex `/i` with Ruby case-insensitive matching and translate
   `\b`/`\B` assertions to limited ECMAScript Unicode word boundaries. Preserve
   capture numbering, source positions, protected spans, and backspace-in-class
