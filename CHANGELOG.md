@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.3 — 2026-10-01
 
 - Summarize review and scoring features at the start of the README architecture
   section, including AsciiDoc parsing, separate scopes, source-aligned static

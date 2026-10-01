@@ -7,17 +7,16 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.6.2 provides shared Japanese technical writing criteria, an authoring
-prompt, contextual review prompts, manuscript scoring, and baseline verification
-for edited manuscripts.
+Version 0.6.3 provides shared Japanese technical writing criteria, an authoring
+prompt, separate prose and heading review prompts, manuscript scoring, and
+baseline verification for edited manuscripts.
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese text is retained in manuscript excerpts, rule dictionaries, and fixtures.
 
 ## Status
 
-The current checkout adds separate heading review with `review scan --scope
-headings`. This is an Unreleased feature, not functionality in the published
-0.6.2 gem. See [Heading review](#heading-review-unreleased).
+Version 0.6.3 adds separate heading review with `review scan --scope headings`.
+See [Heading review](#heading-review).
 
 The CLI does not automatically rewrite manuscripts or publish books. EPUB, image,
 and book scaffolding commands are planned extensions, not available features.
@@ -84,7 +83,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.6.2'
+gem 'asciidoc-pubkit', '~> 0.6.3'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -106,7 +105,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.6.2.gem
+gem install ./asciidoc-pubkit-0.6.3.gem
 asciidoc-pubkit --version
 ```
 
@@ -130,7 +129,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.6.2.
+review or writing criteria are shipped in 0.6.3.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
@@ -302,7 +301,7 @@ session after moving a project. Keep `.pubkit/` and generated prompts out of Git
 when they contain private manuscript material. Rule settings and glossary contents
 are frozen into the session; scan again after changing them.
 
-### Heading review (Unreleased)
+### Heading review
 
 Review headings and prose in separate sessions. The default scan scope remains
 `prose`; `--scope headings` selects section titles. There is no combined scope.
@@ -450,11 +449,11 @@ or release readiness: `meaning_verified` is always `false`.
   selected. Prose selection distinguishes paragraphs from lists, tables,
   quotations and code blocks; supported inline constructs are masked rather
   than treated as ordinary prose.
-- **Separate heading and prose review (Unreleased).** Each scan selects one
+- **Separate heading and prose review.** Each scan selects one
   scope with its own rules, prompt and edit permissions. Heading review uses
   the outline and body as context while protecting body text; prose review
   protects headings. Mixed heading forms are accepted by default. See
-  [Heading review](#heading-review-unreleased).
+  [Heading review](#heading-review).
 - **Source-aligned static analysis.** Candidates identify the original source
   file, line and one-based Unicode column, with a rule ID and review question.
   Source text is checked against parser locations; unresolved mappings produce
@@ -716,7 +715,7 @@ review:
   language: ja
   style: desu-masu
   tokenizer: mecab
-  # heading_rules: heading-rules.yml  # Unreleased; separate heading rule set
+  # heading_rules: heading-rules.yml  # Separate heading rule set
   # Optional overrides (dictionary paths are relative to this file):
   # mecab_command: /opt/homebrew/bin/mecab
   # mecab_dictionary: /opt/homebrew/lib/mecab/dic/ipadic
@@ -841,12 +840,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.6.2. Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.6.3 (session schema 2). Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.2
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.3
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship
