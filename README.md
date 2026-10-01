@@ -716,10 +716,7 @@ structure, and final edits to the reviewer.
 - [yomiyasu](https://github.com/nanaism/yomiyasu):
   informs evidence-based review of
   metaphorical operations, distinctions between instructions and capabilities,
-  and separate assessment of meaning preservation and readability. The criteria
-  and regression examples here are independently written; the upstream skill,
-  Python linter, and benchmark passages are not bundled. Fixed style thresholds
-  and an AI-likeness score are not adopted.
+  and separate assessment of meaning preservation and readability.
 - [日本語技術文書の文章規範](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d):
   informs paragraph logic, evidence scope, and meaningful uncertainty.
 - [AI臭い文章とは何なのか](https://speakerdeck.com/nasuvitz/ai-kusai-bunshou-toha-nanina-no-ka):
