@@ -7,7 +7,7 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.8.0 provides shared Japanese technical writing criteria, an authoring
+Version 0.8.1 provides shared Japanese technical writing criteria, an authoring
 prompt, separate prose and heading review prompts, manuscript scoring, and
 baseline verification for edited manuscripts, plus explicit prose-only mechanical
 replacements using a limited prh-format rule set.
@@ -16,7 +16,7 @@ Japanese text is retained in manuscript excerpts, rule dictionaries, and fixture
 
 ## Available features
 
-The following commands are available in version 0.8.0 and the current checkout.
+The following commands are available in version 0.8.1.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -29,10 +29,9 @@ The following commands are available in version 0.8.0 and the current checkout.
 | [Baseline verification](#verify) | `review verify` | Check edited sources against a saved baseline for mechanical preservation; meaning is not verified |
 | [Manuscript scoring](#score-an-asciidoc-manuscript) | `review score` | Report a prose candidate-density score; explicit `--agent codex` or `--agent claude` optionally invokes a local AI CLI for readability ratings |
 
-The current checkout additionally supports nested replacement-rule imports,
+Version 0.8.1 additionally supports nested replacement-rule imports,
 omitted/null `rules`, arrays in `pattern`, `/i`, and limited ECMAScript word
-boundaries. These additions are unreleased and are not included in the published
-0.8.0 gem. See [Prose replacements](#prose-replacements) for supported syntax
+boundaries. See [Prose replacements](#prose-replacements) for supported syntax
 and preservation limits. Only `replace apply` edits manuscripts directly;
 review prompts supply instructions for an external reviewer.
 
@@ -108,7 +107,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.8.0'
+gem 'asciidoc-pubkit', '~> 0.8.1'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -130,7 +129,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.8.0.gem
+gem install ./asciidoc-pubkit-0.8.1.gem
 asciidoc-pubkit --version
 ```
 
@@ -154,7 +153,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.8.0.
+review or writing criteria are shipped in 0.8.1.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
@@ -207,19 +206,19 @@ rules:
 ```
 
 The root requires `version: 1` and accepts optional `rules` and `imports` arrays.
-Imports and omission of arrays require the unreleased checkout; version 0.8.0
-requires `rules` and rejects `imports`. Omitted arrays default to empty in the
-checkout. Each rule requires a string
+Starting with version 0.8.1, omitted arrays default to empty. Version 0.8.0
+requires `rules` and rejects `imports`. Each rule requires a string
 `expected` (empty strings permit deletion) and exactly one of `pattern` (a
-nonempty string or, in the unreleased checkout, a nonempty array of nonempty
+nonempty string or, starting with version 0.8.1, a nonempty array of nonempty
 strings) or `patterns` (a nonempty array of nonempty strings). Array-valued
 `pattern` is equivalent to `patterns`; specifying both keys is rejected. Optional
 `specs` is an array of exact `from`/`to` string pairs, validated on load. Specs
 exercise the rule on plain text, not AsciiDoc selection or inline protection.
 
 Strings not beginning with `/` match literally. `/.../` denotes a regex; the
-unreleased checkout also accepts `/.../i` for Ruby case-insensitive matching.
-Version 0.8.0 rejects all flags. All occurrences are collected. The implementation uses Ruby regexes with
+version 0.8.1 also accepts `/.../i` for Ruby case-insensitive matching.
+Version 0.8.0 rejects all flags. All occurrences are collected. The implementation
+uses Ruby regexes with
 a timeout and accepts a limited common syntax: character classes, ordinary
 captures, noncapturing groups, lookarounds, alternatives, anchors, quantifiers,
 and the escapes `\n`, `\r`, `\t`, `\d`, `\D`, `\s`, `\S`, `\w`, `\W`
@@ -235,7 +234,7 @@ are recommended to keep backslashes literal. Unknown fields, including
 `options` and `regexpMustEmpty`, and omitted patterns are rejected rather than
 ignored. prh's automatic pattern generation is not supported.
 
-For example, the unreleased checkout also accepts:
+For example, version 0.8.1 also accepts:
 
 ```yaml
 version: 1
@@ -249,9 +248,9 @@ rules:
 Each array entry uses the same literal/regex syntax and validation as a single
 pattern. Arrays do not change supported flags or overlap handling.
 
-### Limited ECMAScript boundary compatibility (unreleased)
+### Limited ECMAScript boundary compatibility
 
-The checkout translates `\b` and `\B` outside character classes into Ruby
+Version 0.8.1 translates `\b` and `\B` outside character classes into Ruby
 lookarounds with ECMAScript word-character semantics, following prh's default
 Unicode mode. Word characters are ASCII letters, digits, and underscore; Japanese
 characters are non-word characters. Thus `/\bTips\b/` matches `Tips` in
@@ -269,10 +268,9 @@ retain Ruby semantics. This is limited prh compatibility, not full ECMAScript
 conformance. Flags `g`, `m`, `s`, `u`, `y`, `d`, and `v` and duplicate `i` are
 rejected; all occurrences are already collected independently of `g`.
 
-### Importing replacement rules (unreleased)
+### Importing replacement rules
 
-The checkout additionally supports nested `imports`; this is not available in
-published version 0.8.0. For example:
+Version 0.8.1 supports nested `imports`; version 0.8.0 does not. For example:
 
 ```yaml
 version: 1
@@ -291,7 +289,7 @@ Absolute local paths are also accepted; URL imports are rejected. An import-only
 file may omit `rules`. A file containing only `version: 1` is also valid and
 contributes no rules. With no imported or local rules, `check`, `diff`, and
 `apply` succeed without changing manuscript sources, and `diff` emits no patch.
-In the unreleased checkout, a bare `rules:`, `rules: null`, and `rules: ~`
+Starting with version 0.8.1, a bare `rules:`, `rules: null`, and `rules: ~`
 also contribute no local rules, just like omission or `rules: []`; imported rules
 are still loaded. Other non-array values remain invalid. This normalization
 applies only to `rules`, not to `imports` or individual rule fields.
@@ -1046,12 +1044,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.8.0 (session schema 2). Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.8.1 (session schema 2). Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.0
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.1
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship
