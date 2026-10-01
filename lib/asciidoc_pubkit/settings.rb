@@ -39,7 +39,7 @@ module AsciidocPubkit
         raise Error, '--heading-rules requires --scope headings.'
       end
       heading_rules_path = options[:heading_rules] ? File.expand_path(options[:heading_rules]) : (review['heading_rules'] ? File.expand_path(review['heading_rules'], base) : HeadingRuleSet.default_path(language))
-      rules_path = options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet.default_path(language))
+      rules_path = options[:replacement] ? RuleSet.default_path(language) : options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet.default_path(language))
       @data = {
         'scope' => scope,
         'heading_rules' => scope == 'headings' ? HeadingRuleSet.load(heading_rules_path) : nil,

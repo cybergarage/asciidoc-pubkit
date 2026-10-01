@@ -8,7 +8,8 @@ reviews section headings in separate sessions, emits review prompts, scores
 running prose, and verifies edited manuscripts
 against a baseline. Only `review score --agent` invokes an installed Codex or
 Claude CLI for optional readability evaluation; that CLI may call its configured
-model provider. It does not rewrite manuscripts or publish books. Do not describe
+model provider. Explicit `replace apply` applies author-supplied mechanical rules to mapped prose;
+review and scoring do not rewrite manuscripts. It does not publish books. Do not describe
 planned publishing features as available functionality.
 
 - [README.md](README.md) owns installation, command usage, configuration, rule
@@ -69,6 +70,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | `lib/asciidoc_pubkit/rule_set.rb`, `data/review-rules.ja.yml` | Validated rule schema and packaged Japanese defaults |
 | `lib/asciidoc_pubkit/language.rb`, `lib/asciidoc_pubkit/writing.rb`, `data/writing/ja/criteria.md` | Language gate and canonical writing criteria/prompt |
 | `lib/asciidoc_pubkit/session.rb` | Baselines, artifact integrity, safe replacement, prompts, verification |
+| `lib/asciidoc_pubkit/replacement.rb` | Limited prh-format rules, prose-only replacement plans, staged validation and explicit apply |
 | `lib/asciidoc_pubkit/score.rb`, `lib/asciidoc_pubkit/local_evaluator.rb` | Manuscript scoring and explicit local CLI evaluation |
 | `test/review_test.rb`, `test/morphology_test.rb` | Workflow regression tests and real MeCab tests |
 

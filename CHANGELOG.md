@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.0 — 2026-10-01
+
+- Add explicit `replace check`, `replace diff`, and `replace apply` commands for
+  mapped running prose using a strict subset of prh-format YAML rules. Protect
+  blocks and recognized inline spans, reject overlapping edits, test rule specs,
+  and validate staged sources before applying replacements without MeCab or AI.
+
 ## 0.6.3 — 2026-10-01
 
 - Summarize review and scoring features at the start of the README architecture

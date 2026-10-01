@@ -12,6 +12,9 @@ module AsciidocPubkit
         review score FILE      Score Japanese prose; optionally use a local AI CLI
         review prompt SESSION  Generate an English review prompt with Japanese source excerpts
         review verify SESSION  Compare edited sources with the saved baseline
+        replace check FILE     Report prose-only replacement candidates
+        replace diff FILE      Preview prose replacements as a unified diff
+        replace apply FILE     Validate and apply explicit replacement rules
 
       Options:
         --help                 Show help (also supported for each command)
@@ -19,7 +22,7 @@ module AsciidocPubkit
 
       Use --lang ja with writing commands and review commands. Other review and
       writing languages are not supported yet and return an error.
-      No command edits manuscripts. review score --agent explicitly invokes a
+      Only replace apply edits manuscripts. review score --agent explicitly invokes a
       local Codex or Claude CLI, which may connect to its configured AI service.
     TEXT
 
@@ -29,21 +32,27 @@ module AsciidocPubkit
         out.puts VERSION
         return 0
       end
-      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing].any? { |group| args == [group, '--help'] }
+      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace].any? { |group| args == [group, '--help'] }
         out.puts HELP
         return 0
       end
       group, command = args.shift(2)
       valid = (group == 'review' && %w[scan score prompt verify].include?(command)) ||
-              (group == 'writing' && %w[criteria prompt].include?(command))
+              (group == 'writing' && %w[criteria prompt].include?(command)) ||
+              (group == 'replace' && %w[check diff apply].include?(command))
       raise Error, 'Unknown command. Use --help.' unless valid
       options = { attributes: {} }
       parser = OptionParser.new do |opts|
-        input_name = group == 'writing' ? '' : (%w[scan score].include?(command) ? ' FILE' : ' SESSION')
+        input_name = group == 'writing' ? '' : ((group == 'replace' || %w[scan score].include?(command)) ? ' FILE' : ' SESSION')
         opts.banner = "Usage: asciidoc-pubkit #{group} #{command} [options]#{input_name}"
         opts.on('-o', '--output PATH', group == 'review' && command == 'scan' ? 'New session directory (default: .pubkit/review for prose, .pubkit/headings for headings)' : 'New output file (default: standard output)') { |v| options[:output] = v }
         opts.on('--lang LANG', 'Language (ja only in this release)') { |v| options[:language] = v }
-        if group == 'review' && %w[scan score].include?(command)
+        if group == 'replace'
+          opts.on('--rules FILE', 'Required prh-format replacement rules (limited compatibility)') { |v| options[:rules] = v }
+          opts.on('--base-dir DIR', 'Set the Asciidoctor base directory') { |v| options[:base_dir] = v }
+          opts.on('--config FILE', 'Use review parsing configuration and exclusions') { |v| options[:config] = v }
+          opts.on('--only FILE', 'Select one included file') { |v| options[:only] = v }
+        elsif group == 'review' && %w[scan score].include?(command)
           if command == 'scan'
             opts.on('--scope SCOPE', 'prose (default) or headings; separate review sessions') { |v| options[:scope] = v }
             opts.on('--heading-rules FILE', 'Replace default heading rules with a YAML rule set') { |v| options[:heading_rules] = v }
@@ -85,6 +94,15 @@ module AsciidocPubkit
       end
       raise Error, 'Exactly one input is required. Use --help.' unless args.length == 1
       Language.validate!(options[:language], operation: 'review') if options[:language]
+      if group == 'replace'
+        raise Error, 'replace apply does not accept --output.' if command == 'apply' && options[:output]
+        replacement = Replacement.new(args.first, options)
+        content = command == 'diff' ? replacement.diff : replacement.report
+        replacement.apply if command == 'apply'
+        content += "Applied #{replacement.candidates.length} replacements.\n" if command == 'apply'
+        output(content, options[:output], out)
+        return command == 'check' && !replacement.candidates.empty? ? 1 : 0
+      end
       if command == 'score'
         if options[:output] && (File.exist?(options[:output]) || File.symlink?(options[:output]))
           raise Error, "Output already exists: #{options[:output]}"

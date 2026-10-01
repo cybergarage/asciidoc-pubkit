@@ -7,9 +7,10 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.6.3 provides shared Japanese technical writing criteria, an authoring
+Version 0.8.0 provides shared Japanese technical writing criteria, an authoring
 prompt, separate prose and heading review prompts, manuscript scoring, and
-baseline verification for edited manuscripts.
+baseline verification for edited manuscripts, plus explicit prose-only mechanical
+replacements using a limited prh-format rule set.
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese text is retained in manuscript excerpts, rule dictionaries, and fixtures.
 
@@ -18,7 +19,9 @@ Japanese text is retained in manuscript excerpts, rule dictionaries, and fixture
 Version 0.6.3 adds separate heading review with `review scan --scope headings`.
 See [Heading review](#heading-review).
 
-The CLI does not automatically rewrite manuscripts or publish books. EPUB, image,
+Version 0.8.0 adds explicit prose replacements with `replace apply`;
+see [Prose replacements](#prose-replacements). Review and scoring do not edit
+manuscripts. The CLI does not publish books. EPUB, image,
 and book scaffolding commands are planned extensions, not available features.
 
 Ruby 3.2 or later is required. Asciidoctor is installed as a gem dependency.
@@ -33,7 +36,7 @@ configured model provider. No scoring mode edits manuscripts.
 
 Version 0.1.1 added morphological analysis. Version 0.1.0 used literal matching.
 
-The CLI has `writing` and `review` command groups. Both default to `--lang ja`.
+The CLI has `writing`, `review`, and `replace` command groups. All default to `--lang ja`.
 Language-specific criteria live under `data/writing/<language>/`; review rules
 use `data/review-rules.<language>.yml`. Writing and review have separate lists
 of supported languages, so a future writing language need not imply review
@@ -83,7 +86,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.6.3'
+gem 'asciidoc-pubkit', '~> 0.8.0'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -105,7 +108,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.6.3.gem
+gem install ./asciidoc-pubkit-0.8.0.gem
 asciidoc-pubkit --version
 ```
 
@@ -129,7 +132,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.6.3.
+review or writing criteria are shipped in 0.8.0.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
@@ -750,6 +753,107 @@ Regex patterns are not interpreted in glossary or allow-list entries. Unknown
 configuration keys are rejected. A bare `mecab_command` is resolved through PATH;
 use an absolute path for an explicit executable override.
 
+## Prose replacements
+
+Available starting with version 0.8.0.
+It applies author-supplied mechanical replacement rules without MeCab or an AI
+CLI. Review candidates and glossary variants remain advisory and are never
+implicitly applied. Replacement rules are separate from review rules.
+
+```sh
+asciidoc-pubkit replace check book.adoc --rules replacements.yml
+asciidoc-pubkit replace diff book.adoc --rules replacements.yml
+asciidoc-pubkit replace apply book.adoc --rules replacements.yml
+```
+
+`check` reports original text, proposed text, rule IDs (`rule-1`, etc.), source
+paths, one-based Unicode lines/columns, and a coverage-notice count. Its exit code
+is 1 when replacements are available, 0 otherwise. `diff` previews unified diffs
+without editing; it requires the external `diff` command. `apply` explicitly
+authorizes source replacement without prompting. Successful diff/apply commands
+return 0; invalid rules, conflicts, unsafe edits, and input/output failures return
+2. Check/diff accept `--output` for a new file only; apply rejects `--output`.
+
+All three accept `--lang ja`, `--base-dir`, `--config`, and `--only` (an included
+source file). Normal configuration discovery and `review.base_dir`, `language`,
+`attributes`, and `exclude` control parsing and selection. `--rules` is required;
+`review.rules` and glossary entries do not supply replacement rules. There are
+no built-in replacement rules and no automatic search for `prh.yml`.
+
+### Limited prh-format rules
+
+The supported format is a strict subset of [prh](https://github.com/prh/prh):
+
+```yaml
+version: 1
+rules:
+  - expected: '®'
+    pattern: '&reg;'
+  - expected: '($1)'
+    pattern: '/（([^（）\r\n]+)）/'
+    specs:
+      - from: '設定（任意）'
+        to: '設定(任意)'
+  - expected: '/'
+    patterns:
+      - '／'
+```
+
+The root contains exactly `version: 1` and `rules`. Each rule requires a string
+`expected` (empty strings permit deletion) and exactly one of `pattern` (a
+nonempty string) or `patterns` (a nonempty array of nonempty strings). Optional
+`specs` is an array of exact `from`/`to` string pairs, validated on load. Specs
+exercise the rule on plain text, not AsciiDoc selection or inline protection.
+
+Strings not beginning with `/` match literally. `/.../` denotes a regex with no
+flags; all occurrences are collected. The implementation uses Ruby regexes with
+a timeout and accepts a limited common syntax: character classes, ordinary
+captures, noncapturing groups, lookarounds, alternatives, anchors, quantifiers,
+and the escapes `\n`, `\r`, `\t`, `\d`, `\D`, `\s`, `\S`, `\w`, `\W`
+and escaped punctuation. Ruby regex character-class behavior applies; this is
+not a JavaScript regex engine or a promise of full prh equivalence. Engine-specific
+groups/escapes and flags are rejected. A leading literal slash must be expressed
+as an escaped regex, for example `/\//`. Zero-length matches are rejected.
+
+Replacement strings support `$1` through `$99` for existing capture groups and
+`$$` for a literal dollar sign. Unsupported dollar references are rejected when
+matched. Missing optional captures expand to empty strings. YAML single quotes
+are recommended to keep backslashes literal. Unknown fields, including `imports`,
+`options`, and `regexpMustEmpty`, and omitted patterns are rejected rather than
+ignored. Regex flags and prh's automatic pattern generation are not supported.
+
+### Selection and preservation
+
+Only unambiguously source-mapped running prose in the existing default review
+scope is eligible. Headings, lists, tables, quotations, listing/source, literal,
+and passthrough blocks are excluded. Recognized inline code, quotations, URLs,
+macros, and attribute references are protected by the existing conservative
+inline heuristic, not a complete inline parser. A match overlapping any protected
+span is skipped; matching is performed on the original text, never on blanked
+placeholders. Backtick-to-bold and list-marker conversions are outside this scope.
+
+Candidates are calculated once against the original sources; replacement results
+are not searched again. Overlapping edits are conflicts, not resolved by rule
+order. Matches/results containing line breaks are rejected. Source files retain
+UTF-8 bytes, original line endings, and unrelated content; repeated include
+occurrences must not create overlapping edits.
+
+Before presenting a plan, the complete captured source set is copied to temporary
+staging and reparsed. Parsing diagnostics, structural changes, new/deleted protected
+inline tokens, and protected-content/source-membership changes reject the plan.
+Relative includes within the base directory are supported. Absolute includes and
+includes whose paths depend on the original filesystem may fail staged validation;
+they are not rewritten or silently accepted. Symlink entrypoints are rejected.
+
+Apply stages all changed files beside their destinations, checks all captured
+source bytes against the plan, and renames the prepared files into place while
+preserving permission bits. An ordinary installation error restores sources
+already installed. This is not a crash-atomic transaction across multiple files;
+keep manuscripts under version control and avoid concurrent edits during apply.
+No review session is created or replaced. Existing sessions retain their original
+baselines; applying replacements can make a session stale for prompt generation.
+Mechanical validation does not establish semantic correctness.
+
 ## Rules and coverage
 
 | Rule | Severity | Purpose |
@@ -840,12 +944,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.6.3 (session schema 2). Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.8.0 (session schema 2). Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.3
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.0
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship

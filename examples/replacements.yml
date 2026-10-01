@@ -1,0 +1,17 @@
+version: 1
+
+rules:
+  - expected: '®'
+    pattern: '&reg;'
+    specs:
+      - from: '製品&reg;'
+        to: '製品®'
+  - expected: '($1)'
+    pattern: '/（([^（）\r\n]+)）/'
+    specs:
+      - from: '設定（任意）'
+        to: '設定(任意)'
+  - expected: ' '
+    pattern: '　'
+  - expected: '/'
+    pattern: '／'
