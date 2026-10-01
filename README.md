@@ -7,27 +7,26 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.6.0 provides shared Japanese technical writing criteria, an authoring
-prompt, contextual review prompts, and baseline verification for edited manuscripts.
+Version 0.6.1 provides shared Japanese technical writing criteria, an authoring
+prompt, contextual review prompts, manuscript scoring, and baseline verification
+for edited manuscripts.
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese text is retained in manuscript excerpts, rule dictionaries, and fixtures.
 
 ## Status
 
-This release does not invoke an AI service, automatically
-rewrite manuscripts, or publish books. EPUB, image, and book scaffolding commands
-are planned extensions, not available features.
+The CLI does not automatically rewrite manuscripts or publish books. EPUB, image,
+and book scaffolding commands are planned extensions, not available features.
 
 Ruby 3.2 or later is required. Asciidoctor is installed as a gem dependency.
 Starting with version 0.1.1, the default review backend requires the external MeCab
 command and a UTF-8 IPADIC dictionary. Node.js and textlint are not required.
 Explicit `--tokenizer literal` mode provides limited phrase matching without MeCab.
 
-The Unreleased checkout also provides `review score FILE` for a manuscript score.
+Version 0.6.1 also provides `review score FILE` for a manuscript score.
 It uses local candidate analysis by default; `--agent codex` or `--agent claude`
 explicitly asks an installed CLI to evaluate readability and may connect to its
-configured model provider. This command is not included in the published 0.6.0
-release. No scoring mode edits manuscripts.
+configured model provider. No scoring mode edits manuscripts.
 
 Version 0.1.1 added morphological analysis. Version 0.1.0 used literal matching.
 
@@ -81,7 +80,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.6.0'
+gem 'asciidoc-pubkit', '~> 0.6.1'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -103,7 +102,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.6.0.gem
+gem install ./asciidoc-pubkit-0.6.1.gem
 asciidoc-pubkit --version
 ```
 
@@ -127,13 +126,13 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.6.0.
+review or writing criteria are shipped in 0.6.1.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
 unchanged.
 
-## Score an AsciiDoc manuscript (Unreleased)
+## Score an AsciiDoc manuscript
 
 Pass any AsciiDoc entry file directly; no review session or gold annotations are
 required. Output defaults to a short English report with a score out of 100.
@@ -465,7 +464,7 @@ The shared criteria distinguish reader instructions, actual system behavior,
 and available capabilities. They also separate readability from checks for
 missing information and unsupported additions. Sentence length, punctuation,
 and list density are contextual cues, not fixed acceptance thresholds. These
-updates are in Unreleased; start a new session to use updated criteria and rules.
+updates are included in 0.6.1; start a new session to use updated criteria and rules.
 
 Literal term matching suppresses matches strictly contained in a longer matched
 term, across categories. The longer term also suppresses contained matches when
@@ -485,12 +484,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.6.0. Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.6.1. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.0
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.1
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship

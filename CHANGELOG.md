@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.1 — 2026-10-01
+
 - Add `review score FILE` for direct AsciiDoc manuscript scoring without a
   session. Report a candidate-density indicator by default and optionally invoke
   a local Codex or Claude CLI for readability ratings with `--agent`. Preserve
