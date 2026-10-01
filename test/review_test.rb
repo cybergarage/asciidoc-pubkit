@@ -57,6 +57,135 @@ class ReviewTest < Minitest::Test
     [result[0], JSON.parse(result[1])]
   end
 
+  def heading_scan(*args)
+    scan('--scope', 'headings', *args)
+  end
+
+  def test_heading_scan_has_separate_rules_and_body_context
+    File.write(@chapter, "[[intro]]\n== シームレスな実行\n\n重要なのは、境界を整理することです。\n\n[[next]]\n== モデルを選び、接続する\n\n入力を読み込みます。\n")
+    result = heading_scan
+    assert_includes result[1], 'Scanned 2 headings'
+    assert_equal 'headings', json('manifest.json')['settings']['scope']
+    assert_equal ['heading-promotion'], json('findings.json').map { |f| f['rule'] }
+    finding = json('findings.json').first
+    assert_equal 2, finding['line']
+    assert_equal 4, finding['column']
+    assert finding['heading_id']
+    refute finding.key?('paragraph_id')
+    document = json('document.json')
+    assert_equal 2, document['headings'].length
+    assert_equal 2, document['paragraphs'].length
+    assert_equal document['headings'].first['index'], document['paragraphs'].first['section_index']
+    code, prompt, error = cli('review', 'prompt', @session)
+    assert_equal 0, code, error
+    assert_includes prompt, 'Japanese heading review'
+    assert_includes prompt, 'Body paragraphs and unselected headings are reference data only'
+    assert_includes prompt, json('manifest.json')['heading_criteria']
+    assert_includes prompt, 'Outline (reference data)'
+    assert_equal 1, prompt.scan('重要なのは、境界を整理することです。').length
+    assert_includes prompt, 'needs-evidence'
+  end
+
+  def test_heading_revise_with_stable_id_passes_and_keeps_candidates_advisory
+    File.write(@chapter, "[[intro]]\n== 実行の基本\n\n本文です。\n")
+    heading_scan
+    File.write(@chapter, File.read(@chapter).sub('実行の基本', 'シームレスな実行'))
+    code, report = verify
+    assert_equal 0, code, report.inspect
+    refute report['meaning_verified']
+    assert_equal ['heading-promotion'], report['findings'].map { |f| f['rule'] }
+  end
+
+  def test_heading_review_protects_body_and_document_title
+    heading_scan
+    File.write(@chapter, File.read(@chapter).sub('コストを確認します。', '本文を変更します。'))
+    code, report = verify
+    assert_equal 1, code
+    assert report['issues'].any? { |i| i['kind'] == 'protected-content-changed' }
+    File.write(@book, File.read(@book).sub('Test Book', 'Changed Book'))
+    assert_equal 1, verify.first
+  end
+
+  def test_heading_generated_id_change_fails_verification
+    heading_scan
+    File.write(@chapter, File.read(@chapter).sub('== Introduction', '== Changed'))
+    code, report = verify
+    assert_equal 1, code
+    assert report['issues'].any? { |i| i['kind'] == 'structure-changed' }
+  end
+
+  def test_heading_hierarchy_and_explicit_id_changes_fail
+    File.write(@chapter, "[[intro]]\n== 入力\n\n本文です。\n\n[[child]]\n=== 出力\n\n次の本文です。\n")
+    heading_scan
+    original = File.read(@chapter)
+    File.write(@chapter, original.sub('=== 出力', '== 出力'))
+    assert_equal 1, verify.first
+    File.write(@chapter, original.sub('[[intro]]', '[[changed]]'))
+    assert_equal 1, verify.first
+  end
+
+  def test_heading_only_protects_other_sources_and_keeps_full_outline
+    File.write(@book, "= Test Book\n:lang: ja\n\n[[book-section]]\n== 本の案内\n\n案内本文です。\n\ninclude::chapter.adoc[]\n")
+    heading_scan('--only', @chapter)
+    assert_equal [@chapter], json('document.json')['headings'].map { |h| h['file'] }.uniq
+    assert_equal 3, json('document.json')['outline'].length
+    File.write(@book, File.read(@book).sub('本の案内', '案内'))
+    assert_equal 1, verify.first
+  end
+
+  def test_heading_mapping_skips_attribute_expansion_inline_conversion_and_old_style
+    File.write(@chapter, "== {topic}\n\n本文です。\n\n== *強調*\n\n本文です。\n\nOld Title\n---------\n\n本文です。\n")
+    heading_scan('-a', 'topic=展開された題名')
+    assert_empty json('document.json')['headings']
+    assert_equal 3, json('document.json')['coverage'].count { |c| c['context'] == 'heading' }
+    assert_equal 0, verify.first
+  end
+
+  def test_heading_duplicate_siblings_and_fixed_titles
+    File.write(@chapter, "== 親\n\n=== 設定\n\n本文です。\n\n=== 設定\n\n本文です。\n\n=== 参考文献\n\n=== 参考文献\n")
+    heading_scan
+    findings = json('findings.json').select { |f| f['rule'] == 'heading-duplicate' }
+    assert_equal ['設定', '設定'], findings.map { |f| f['match'] }
+  end
+
+  def test_heading_custom_rules_survive_removal_and_do_not_use_prose_rules
+    rules = AsciidocPubkit::HeadingRuleSet.load(AsciidocPubkit::HeadingRuleSet.default_path('ja'))
+    rules['terms'] = { 'book-topic' => { 'terms' => ['Introduction'], 'question' => 'Check this book topic.' } }
+    rules['duplicate_siblings'] = false
+    path = File.join(@dir, 'headings.yml')
+    File.write(path, rules.to_yaml)
+    heading_scan('--heading-rules', path)
+    File.unlink(path)
+    assert_equal ['book-topic'], json('findings.json').map { |f| f['rule'] }
+    assert_equal 0, verify.first
+    assert_includes cli('review', 'prompt', @session)[1], 'Check this book topic.'
+  end
+
+  def test_heading_prompt_diagnose_and_stale_sources
+    heading_scan
+    code, prompt, error = cli('review', 'prompt', @session, '--mode', 'diagnose')
+    assert_equal 0, code, error
+    assert_includes prompt, 'Do not edit files.'
+    File.write(@chapter, File.read(@chapter) + "\n追記です。\n")
+    assert_equal 2, cli('review', 'prompt', @session)[0]
+  end
+
+  def test_heading_scope_and_rule_option_validation
+    assert_equal 2, cli('review', 'scan', @book, '--scope', 'all')[0]
+    assert_equal 2, cli('review', 'score', @book, '--scope', 'headings')[0]
+    assert_equal 2, cli('review', 'scan', @book, '--scope', 'headings', '--style', 'desu-masu')[0]
+    assert_equal 2, cli('review', 'scan', @book, '--heading-rules', 'unused.yml')[0]
+  end
+
+  def test_heading_numbers_are_notices_only
+    File.write(@chapter, "[[intro]]\n== 3つの機能\n\n本文です。\n")
+    heading_scan
+    File.write(@chapter, File.read(@chapter).sub('3つ', '4つ'))
+    code, report = verify
+    assert_equal 0, code, report.inspect
+    assert report['notices'].any? { |n| n['kind'] == 'numbers-changed' }
+  end
+
   def test_custom_rules_replace_defaults_and_survive_file_removal
     rules = AsciidocPubkit::RuleSet.load
     rules['terms'].each_value { |entry| entry['terms'] = [] }

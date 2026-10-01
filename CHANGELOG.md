@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Add separate `review scan --scope headings` sessions with packaged heading
+  criteria and strict custom heading rules. Keep prose as the default and
+  scoring scope; supply the full outline and read-only body evidence in one
+  prompt without invoking an AI CLI. Accept mixed heading forms and leave
+  section-role and body-agreement judgments to the reviewer.
+- Permit mapped plain ATX section title edits in heading sessions while
+  protecting body text, structure and section IDs. Report unsupported title
+  mapping, retain stale-source and artifact checks, and require fresh sessions
+  for schema 2. Generated section ID changes fail mechanical verification.
+
 - Introduce the review and scoring concepts before the architecture diagrams,
   with a table linking prose principles, implementation mechanisms, and their
   source files. Distinguish prompt guidance from mechanical guarantees.

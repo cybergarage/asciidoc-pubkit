@@ -23,15 +23,27 @@ module AsciidocPubkit
       reject_keys(config, ['review'], 'configuration')
       review = config.fetch('review', {})
       raise Error, 'review must be a mapping.' unless review.is_a?(Hash)
-      reject_keys(review, %w[language style glossary exclude allows attributes base_dir tokenizer mecab_command mecab_dictionary rules], 'review')
+      reject_keys(review, %w[language style glossary exclude allows attributes base_dir tokenizer mecab_command mecab_dictionary rules heading_rules], 'review')
       raise Error, 'attributes must be a mapping.' unless review.fetch('attributes', {}).is_a?(Hash)
-      %w[base_dir glossary mecab_command mecab_dictionary rules].each do |key|
+      %w[base_dir glossary mecab_command mecab_dictionary rules heading_rules].each do |key|
         raise Error, "#{key} must be a nonempty path string." if review.key?(key) && (!review[key].is_a?(String) || review[key].empty?)
       end
       base = @path ? File.dirname(@path) : File.dirname(File.expand_path(entry))
       language = Language.validate!(options[:language] || review.fetch('language', Language::DEFAULT), operation: 'review')
+      scope = options.fetch(:scope, 'prose')
+      raise Error, 'scope must be prose or headings.' unless %w[prose headings].include?(scope)
+      if scope == 'headings' && (options[:rules] || options[:style])
+        raise Error, 'Heading scans use --heading-rules, not prose --rules or --style.'
+      end
+      if scope == 'prose' && options[:heading_rules]
+        raise Error, '--heading-rules requires --scope headings.'
+      end
+      heading_rules_path = options[:heading_rules] ? File.expand_path(options[:heading_rules]) : (review['heading_rules'] ? File.expand_path(review['heading_rules'], base) : HeadingRuleSet.default_path(language))
       rules_path = options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet.default_path(language))
       @data = {
+        'scope' => scope,
+        'heading_rules' => HeadingRuleSet.load(heading_rules_path),
+        'heading_rules_path' => heading_rules_path,
         'rules' => RuleSet.load(rules_path),
         'rules_path' => rules_path,
         'language' => language,

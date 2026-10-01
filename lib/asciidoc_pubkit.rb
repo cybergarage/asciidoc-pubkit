@@ -26,6 +26,7 @@ end
 require_relative 'asciidoc_pubkit/language'
 require_relative 'asciidoc_pubkit/writing'
 require_relative 'asciidoc_pubkit/rule_set'
+require_relative 'asciidoc_pubkit/heading_rules'
 require_relative 'asciidoc_pubkit/settings'
 require_relative 'asciidoc_pubkit/document'
 require_relative 'asciidoc_pubkit/morphology'

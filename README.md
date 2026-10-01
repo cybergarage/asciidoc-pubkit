@@ -15,6 +15,10 @@ Japanese text is retained in manuscript excerpts, rule dictionaries, and fixture
 
 ## Status
 
+The current checkout adds separate heading review with `review scan --scope
+headings`. This is an Unreleased feature, not functionality in the published
+0.6.2 gem. See [Heading review](#heading-review-unreleased).
+
 The CLI does not automatically rewrite manuscripts or publish books. EPUB, image,
 and book scaffolding commands are planned extensions, not available features.
 
@@ -298,6 +302,87 @@ session after moving a project. Keep `.pubkit/` and generated prompts out of Git
 when they contain private manuscript material. Rule settings and glossary contents
 are frozen into the session; scan again after changing them.
 
+### Heading review (Unreleased)
+
+Review headings and prose in separate sessions. The default scan scope remains
+`prose`; `--scope headings` selects section titles. There is no combined scope.
+The scope is saved at scan time; `prompt` and `verify` use that saved scope.
+Neither scan nor prompt invokes an AI CLI or edits a manuscript. Give the generated
+prompt to your reviewer separately.
+
+```sh
+asciidoc-pubkit review scan book.adoc --scope headings --output .pubkit/headings
+asciidoc-pubkit review prompt .pubkit/headings --mode diagnose --output headings-diagnosis.md
+# Generate a revision prompt when ready to edit:
+asciidoc-pubkit review prompt .pubkit/headings --mode revise --output headings-review.md
+# After the external review and edits:
+asciidoc-pubkit review verify .pubkit/headings
+
+# Establish a fresh prose baseline after finishing heading edits:
+asciidoc-pubkit review scan book.adoc --scope prose --output .pubkit/prose
+asciidoc-pubkit review prompt .pubkit/prose --output prose-review.md
+asciidoc-pubkit review verify .pubkit/prose
+```
+
+Heading prompts contain the full parsed section outline, selected headings and
+all selected source-mapped prose paragraphs once as read-only evidence. They
+compare parents, siblings, descendants and the corresponding body. Body content
+outside prose coverage is not supplied; insufficient evidence must be recorded
+as `needs-evidence`. `--only` and `review.exclude` select editable headings and
+body evidence while retaining the full outline as context. All excerpts are data,
+never executable reviewer instructions. Both criteria files and resolved rules
+are frozen in the session.
+
+Default heading rules accept term labels, noun phrases, questions, action
+phrases, principles, conclusions and learning directions. They flag limited
+promotional/vague phrases, glossary variants and identical sibling titles as
+review candidates. They do not apply prose weak-predicate or sentence-ending
+rules, require nominalization, or impose a character limit. Role and body
+agreement are contextual reviewer judgments, not mechanically proven findings.
+
+Only plain ATX section titles whose source cursor and original title match are
+editable. Document titles, old-style underlined headings, attribute-expanded
+and converted inline titles remain protected; unresolved section titles receive
+coverage notices. Verification permits only selected title text changes while
+protecting the body, title markers, hierarchy, order, section IDs, references,
+attributes, includes and other protected content. A title-derived section ID
+change fails verification. Establish stable explicit IDs before scanning when
+needed; this tool does not add IDs or migrate references. Numeric title changes
+are manual-review notices, and remaining candidates do not fail verification.
+`meaning_verified` remains `false`.
+
+The session schema is now 2. Earlier sessions must be recreated; preserve or
+finish an ongoing review with its original tool before establishing a new baseline.
+`review score` continues to support prose only and rejects `--scope`.
+
+Heading rules use `--heading-rules FILE`, then configuration
+`review.heading_rules`, then `data/heading-rules.ja.yml`. A custom file replaces
+the entire heading rule set. `--heading-rules` requires `--scope headings`;
+prose `--rules` and `--style` cannot be passed to a heading scan.
+
+```yaml
+schema_version: 1
+terms:
+  book-heading-cue:
+    terms: [シームレス]
+    question: 'Check the claimed behavior against the section evidence.'
+fixed_titles: [はじめに, 参考文献, まとめ]
+duplicate_siblings: true
+style: mixed
+```
+
+All five keys are required; unknown keys, invalid types and YAML aliases are
+rejected. `terms` maps nonempty rule names to exactly `terms` (unique nonempty
+strings) and `question` (nonempty English guidance). `fixed_titles` contains
+unique nonempty titles exempt from mechanical candidates; it does not expand
+the edit scope or prove correctness. `duplicate_siblings` is boolean. `style`
+is `mixed` (default), `nominal`, or `action`; explicit preferences generate
+advisory ending cues rather than a complete grammatical classification. Keep
+questions, principles and justified exceptions. Heading phrase and glossary
+matches respect exact `review.allows` entries, protected inline masking and
+one-based Unicode source columns. MeCab remains the default; only explicit
+`--tokenizer literal` disables it.
+
 ### Prompt
 
 ```sh
@@ -334,7 +419,7 @@ An omitted `:lang:` attribute uses the selected review language.
 asciidoc-pubkit review verify .pubkit/review
 ```
 
-Verification compares the current source set, document structure, content outside
+For prose sessions, verification compares the current source set, document structure, content outside
 reviewed paragraphs, and recognized protected inline tokens with the baseline.
 It reports remaining candidates and numeric changes separately. Existing candidates
 do not make verification fail. Numeric changes require manual review but do not
@@ -586,6 +671,7 @@ review:
   language: ja
   style: desu-masu
   tokenizer: mecab
+  # heading_rules: heading-rules.yml  # Unreleased; separate heading rule set
   # Optional overrides (dictionary paths are relative to this file):
   # mecab_command: /opt/homebrew/bin/mecab
   # mecab_dictionary: /opt/homebrew/lib/mecab/dic/ipadic
@@ -721,7 +807,7 @@ asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.2
 Severity describes review priority, not proof of an error. There is no AI-authorship
 score and no requirement to eliminate every match.
 
-Only source-mapped running-prose paragraphs are reviewed. Headings, list items and
+In the default prose scope, only source-mapped running-prose paragraphs are reviewed. Headings, list items and
 their continuations, tables, quotations, code, and passthrough blocks are excluded
 from prose review. Common inline literals, macros, attribute references, URLs, and
 Japanese quotation spans are masked. Complex inline syntax can exceed the masking

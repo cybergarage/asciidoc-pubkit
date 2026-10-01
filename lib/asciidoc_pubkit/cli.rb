@@ -8,7 +8,7 @@ module AsciidocPubkit
       Commands:
         writing criteria      Print the shared Japanese prose criteria
         writing prompt        Generate a Japanese technical writing prompt
-        review scan FILE       Collect Japanese prose and review candidates
+        review scan FILE       Collect Japanese prose or headings and review candidates
         review score FILE      Score Japanese prose; optionally use a local AI CLI
         review prompt SESSION  Generate an English review prompt with Japanese source excerpts
         review verify SESSION  Compare edited sources with the saved baseline
@@ -45,6 +45,8 @@ module AsciidocPubkit
         opts.on('--lang LANG', 'Language (ja only in this release)') { |v| options[:language] = v }
         if group == 'review' && %w[scan score].include?(command)
           if command == 'scan'
+            opts.on('--scope SCOPE', 'prose (default) or headings; separate review sessions') { |v| options[:scope] = v }
+            opts.on('--heading-rules FILE', 'Replace default heading rules with a YAML rule set') { |v| options[:heading_rules] = v }
             opts.on('-y', '--yes', 'Answer yes to replacement confirmation') { options[:yes] = true }
             opts.on('--no-input', 'Never prompt; fail on existing output unless --yes') { options[:no_input] = true }
           else
@@ -106,7 +108,11 @@ module AsciidocPubkit
             true
           end
         end
-        out.puts "Scanned #{result['paragraphs']} paragraphs; found #{result['findings']} review candidates."
+        if result['scope'] == 'headings'
+          out.puts "Scanned #{result['headings']} headings; found #{result['findings']} review candidates."
+        else
+          out.puts "Scanned #{result['paragraphs']} paragraphs; found #{result['findings']} review candidates."
+        end
         out.puts "Tokenizer: #{result['tokenizer']}#{result['tokenizer'] == 'literal' ? ' (limited phrase matching; no morphological analysis)' : ' (UTF-8 IPADIC)'}"
         out.puts "Coverage notices: #{result['coverage_notices']}. See document.json for limitations."
         out.puts "Review session: #{result['session']}"

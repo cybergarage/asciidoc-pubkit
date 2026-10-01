@@ -1,0 +1,23 @@
+---
+schema_version: 1
+terms:
+  heading-promotion:
+    terms:
+    - シームレス
+    - 最適
+    - 完全
+    - 究極
+    question: 'Check whether this evaluation or guarantee is supported by the section. Do not add stronger claims merely to polish a title; valid technical terms may be kept.'
+  heading-vague-topic:
+    terms:
+    - いろいろ
+    - さまざまなこと
+    question: 'Check whether the heading identifies the actual subject, operation or comparison. Use the section as evidence; do not invent missing specificity.'
+fixed_titles:
+- はじめに
+- 本書の構成
+- 参考文献
+- 参照した実装ファイル
+- まとめ
+duplicate_siblings: true
+style: mixed

@@ -13,6 +13,11 @@ module AsciidocPubkit
       criteria(language).sub(/\A# [^\n]+\n\n/, '').gsub(/^## /, '### ')
     end
 
+    def self.heading_criteria(language = Language::DEFAULT)
+      Language.validate!(language, operation: 'review')
+      AsciidocPubkit.read_text(File.join(DATA_ROOT, language, 'headings.md'))
+    end
+
     def self.prompt(language = Language::DEFAULT)
       guide = prompt_criteria(language)
       <<~TEXT

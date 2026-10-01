@@ -2,16 +2,19 @@
 
 module AsciidocPubkit
   class Document
-    attr_reader :sources, :paragraphs, :coverage, :diagnostics, :structure
+    attr_reader :sources, :paragraphs, :coverage, :diagnostics, :structure, :headings, :outline, :scope
 
     def initialize(entry, settings, only: nil)
       @entry = File.realpath(entry)
       @root = File.realpath(settings.fetch('base_dir'))
       @sources = {}
       @paragraphs = []
+      @headings = []
+      @outline = []
       @coverage = []
       @diagnostics = []
       @settings = settings
+      @scope = settings.fetch('scope', 'prose')
       @only = only && File.realpath(only)
       capture(@entry)
       logger = Asciidoctor::MemoryLogger.new
@@ -43,6 +46,15 @@ module AsciidocPubkit
            node.id, (node.title if node.respond_to?(:title?) && node.title?),
            (node.lines if %i[listing literal pass].include?(node.context))]
         end
+        @heading_lines = {}
+        @source_lines.each do |path, lines|
+          lines.each_with_index do |line, offset|
+            match = line.match(/\A(={1,6}[ \t]+)(.*?)([ \t]*)\z/)
+            @heading_lines[[path, offset + 1]] = match if match
+          end
+        end
+        @section_indexes = nodes.each_with_index.to_h
+        nodes.each_with_index { |node, index| collect_heading(node, index) if node.context == :section && node != doc.header }
         nodes.each { |node| collect(node) }
       ensure
         Asciidoctor::LoggerManager.logger = previous_logger
@@ -64,10 +76,38 @@ module AsciidocPubkit
     end
 
     def to_h
-      { 'paragraphs' => paragraphs, 'coverage' => coverage, 'structure' => structure }
+      { 'paragraphs' => paragraphs, 'headings' => headings, 'outline' => outline, 'coverage' => coverage, 'structure' => structure }
     end
 
     private
+
+    # Only ATX section titles that match original source text are editable.
+    # Converted inline titles, attribute substitutions and old-style titles stay protected.
+    def collect_heading(node, index)
+      parent_index = @section_indexes[node.parent] if node.parent.context == :section
+      @outline << { 'index' => index, 'parent_index' => parent_index,
+                    'level' => node.level, 'section_id' => node.id, 'text' => node.title }
+      return unless @settings.fetch('scope', 'prose') == 'headings'
+      cursor = node.source_location
+      path, line = cursor && [cursor.file, cursor.lineno]
+      match = @heading_lines[[path, line]]
+      unless match && match[2] == node.title
+        @coverage << { 'context' => 'heading', 'file' => path, 'line' => line,
+                       'reason' => 'Source title could not be resolved unambiguously; only plain ATX section titles are editable.', 'text' => node.title }
+        return
+      end
+      relative = Pathname.new(path).relative_path_from(Pathname.new(@root)).to_s
+      return if @only && @only != path
+      if @settings.fetch('exclude').any? { |glob| File.fnmatch?(glob, relative, File::FNM_PATHNAME | File::FNM_DOTMATCH) }
+        @coverage << { 'context' => 'heading', 'file' => path, 'line' => line, 'reason' => 'Excluded by configuration.' }
+        return
+      end
+      @headings << { 'id' => AsciidocPubkit.hash_text([path, line, match[2]].join("\0"))[0, 16],
+                     'index' => index, 'parent_index' => parent_index,
+                     'file' => path, 'line' => line, 'column' => match[1].length + 1,
+                     'prefix' => match[1], 'suffix' => match[3], 'level' => node.level,
+                     'section_id' => node.id, 'text' => match[2] }
+    end
 
     def collect(node)
       if %i[list_item table quote verse listing literal pass].include?(node.context)
@@ -99,16 +139,20 @@ module AsciidocPubkit
         return
       end
       headings = []
+      section_index = nil
       parent = node.parent
       while parent
-        headings.unshift(parent.title) if parent.context == :section && parent.title
+        if parent.context == :section && parent.title
+          headings.unshift(parent.title)
+          section_index ||= @section_indexes[parent]
+        end
         parent = parent.parent
       end
       text = lines.join("\n")
       @paragraphs << {
         'id' => AsciidocPubkit.hash_text([path, line, text].join("\0"))[0, 16],
         'file' => path, 'line' => line, 'end_line' => line + lines.length - 1,
-        'headings' => headings, 'text' => text
+        'section_index' => section_index, 'headings' => headings, 'text' => text
       }
     end
   end
