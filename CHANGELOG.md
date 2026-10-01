@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.6.2 — 2026-10-01
+
+- Explain review and scoring architecture, flows, and algorithms in a separate
+  README section with Mermaid diagrams. Add concrete applications for each
+  editorial and research reference.
+
 - Locate `repeated-ending` candidates at the matching ending in the third
   consecutive sentence, preserving Unicode columns and line offsets. Do not
   join repetitions across a sentence without a matching ending.

@@ -7,7 +7,7 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.6.1 provides shared Japanese technical writing criteria, an authoring
+Version 0.6.2 provides shared Japanese technical writing criteria, an authoring
 prompt, contextual review prompts, manuscript scoring, and baseline verification
 for edited manuscripts.
 The CLI, diagnostics, documentation, and generated instructions are in English.
@@ -23,7 +23,7 @@ Starting with version 0.1.1, the default review backend requires the external Me
 command and a UTF-8 IPADIC dictionary. Node.js and textlint are not required.
 Explicit `--tokenizer literal` mode provides limited phrase matching without MeCab.
 
-Version 0.6.1 also provides `review score FILE` for a manuscript score.
+Version 0.6.2 also provides `review score FILE` for a manuscript score.
 It uses local candidate analysis by default; `--agent codex` or `--agent claude`
 explicitly asks an installed CLI to evaluate readability and may connect to its
 configured model provider. No scoring mode edits manuscripts.
@@ -80,7 +80,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.6.1'
+gem 'asciidoc-pubkit', '~> 0.6.2'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -102,7 +102,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.6.1.gem
+gem install ./asciidoc-pubkit-0.6.2.gem
 asciidoc-pubkit --version
 ```
 
@@ -126,7 +126,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.6.1.
+review or writing criteria are shipped in 0.6.2.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
@@ -144,29 +144,13 @@ asciidoc-pubkit review score book.adoc --agent codex
 asciidoc-pubkit review score book.adoc --agent claude --json
 ```
 
-Without `--agent`, `candidate-density-v1` reports a mechanical review indicator:
-`max(0, 100 - 5 * candidates * 1000 / characters)`, rounded to three decimals.
-Characters are non-whitespace Unicode characters in source-mapped running prose
-after inline masking. Every finding, including informational candidates, counts
-once. Lower scores indicate more detected review cues per 1,000 characters, not
-proven defects or AI authorship. Short texts are especially sensitive to a single
-candidate. No unmasked prose yields `null` rather than a perfect score.
-Successful scoring exits 0 regardless of the score; invalid input, configuration,
-analyzer, evaluator, or output failures exit 2. Verification exit codes are
-unchanged. The JSON report includes candidate counts, findings, coverage notices,
-analysis identity, and the formula. Rule, allow-list, and tokenizer changes can
-change the score even when the manuscript is unchanged.
-
-With `--agent`, `llm-readability-v1` displays an evaluator score instead. Sentence
-clarity and paragraph coherence are each rated 1–3 per paragraph and mapped to
-0, 50, and 100. The displayed score averages these two dimensions across scored
-paragraphs with equal paragraph weights. JSON also retains the individual
-ratings, English reasons, source locations, evaluator model and CLI version,
-rubric fingerprint, and the mechanical candidate-density score. These ordinal
-averages are descriptive summaries, not validated interval measurements. This
-single-document evaluation has no reference manuscript or evidence checklist;
-it does not measure fact retention, technical accuracy, or meaning preservation.
-`meaning_verified` remains `false` in both modes.
+Without `--agent`, the report shows a mechanical candidate-density indicator.
+With `--agent`, it shows a model readability rating and retains the mechanical
+score in JSON. See [How review and scoring work](#how-review-and-scoring-work)
+for the analysis pipeline, formulas, and interpretation of these different scores.
+Successful scoring exits 0 regardless of the score; input, configuration,
+analyzer, evaluator, or output failures exit 2. No scoring mode establishes
+technical accuracy or meaning preservation; `meaning_verified` remains `false`.
 
 Scoring uses the same configuration discovery, custom rules, glossary, allows,
 style, language, base directory, include handling, and prose coverage as scanning.
@@ -368,9 +352,192 @@ or release readiness: `meaning_verified` is always `false`.
 | `1` | Verification found protected-content, structure, source, or parsing issues |
 | `2` | Invalid arguments, configuration, session, scan input, or output failure |
 
+## How review and scoring work
+
+This section explains the implementation independently of command syntax.
+[Review workflow](#review-workflow) covers commands and session handling;
+[Score an AsciiDoc manuscript](#score-an-asciidoc-manuscript) covers scoring options.
+The diagrams use GitHub-supported Mermaid fenced blocks.
+
+### Shared components and prose selection
+
+Both paths resolve the same settings and parse the AsciiDoc entry file with
+Asciidoctor, including local includes. `Document` selects running-prose paragraphs
+and maps them back to their source files. Ambiguous mappings become coverage
+notices; the analyzer does not guess locations. Headings provide context, while
+code, tables, quotations, lists, and protected blocks are excluded from prose
+analysis. Inline code, quoted spans, links, and other protected constructs are
+masked with spaces that preserve character offsets and newlines.
+
+```mermaid
+flowchart TD
+    A["AsciiDoc entry and local includes"] --> D["Document: parse and map running prose"]
+    C["Settings: options, configuration, resolved rules"] --> D
+    D --> P["Paragraphs with source locations and headings"]
+    D --> N["Coverage notices and parser diagnostics"]
+    P --> M["Rules: mask protected inline content"]
+    C --> M
+    M --> F["Candidate detection"]
+    F --> R["Session: review baseline and evidence"]
+    F --> S["Score: manuscript indicators"]
+    P -->|"Original prose and headings"| S
+    N --> R
+    N --> S
+```
+
+`Settings` resolves rule precedence as command-line `--rules`, configuration
+`review.rules`, then packaged defaults. A custom rule file replaces the whole
+set. `Rules` returns review candidates with one-based Unicode line and column
+positions; a match does not establish a defect. `Session` saves evidence for a
+later review, while `Score` returns a report directly without creating a session.
+Parser diagnostics must be resolved before scanning or scoring.
+
+### Review: collect, judge, and verify
+
+Scanning freezes the source baseline, resolved settings and rules, analyzer
+identity, and writing criteria. The session consists of `manifest.json`,
+`document.json`, `findings.json`, and `baseline/`. Prompt generation checks
+artifact integrity and rejects sources changed since the scan. It emits one
+Markdown file containing the saved criteria, context, every selected paragraph
+in document order, and its candidate evidence, including paragraphs with no
+candidates. Generating that prompt requires no analyzer or model invocation.
+
+```mermaid
+sequenceDiagram
+    actor Reviewer as Human or external agent
+    participant CLI as pubkit CLI
+    participant Sources as Manuscript files
+    participant Session as Saved review session
+    Reviewer->>CLI: review scan FILE
+    CLI->>Sources: Parse prose and detect candidates
+    CLI->>Session: Save evidence and source baseline
+    Reviewer->>CLI: review prompt SESSION
+    CLI->>Session: Check integrity and read saved evidence
+    CLI->>Sources: Check sources still match scan
+    CLI-->>Reviewer: One Markdown review prompt
+    Reviewer->>Sources: Judge context and edit prose externally
+    Reviewer->>CLI: review verify SESSION
+    CLI->>Session: Read original baseline and settings
+    CLI->>Sources: Reparse and compare protected content
+    CLI-->>Reviewer: Mechanical result, notices, remaining candidates
+```
+
+The reviewer decides whether to keep or revise each paragraph and checks source
+evidence before adding claims. `scan`, `prompt`, and `verify` never invoke an AI
+CLI or edit manuscripts. Verification compares the included source set, content
+outside reviewed prose, protected inline tokens, document structure, and analyzer
+identity against the saved baseline. Numeric changes produce manual-review
+notices; remaining candidates alone do not fail verification. A passing result
+means these mechanical checks passed, with `meaning_verified: false`.
+
+### Detection: contextual rules and token boundaries
+
+MeCab with UTF-8 IPADIC is the default analyzer. It supplies surfaces, dictionary
+forms, part of speech, and source-aligned token spans. Explicit literal mode
+matches configured surface strings; there is no silent fallback. Both modes
+apply glossary, configured prose style, and sentence-ending checks.
+
+```mermaid
+flowchart TD
+    P["Masked running prose"] --> B{"Selected tokenizer"}
+    B -->|"mecab, default"| T["MeCab and IPADIC tokens with source offsets"]
+    T --> L["Lemma rules with allow lists and contextual overlap checks"]
+    T --> X["Four enabled contextual predicate patterns"]
+    B -->|"literal, explicit"| E["Exact configured terms"]
+    P --> Q["Exact framing and contextual phrases"]
+    L --> F["Candidate findings"]
+    X --> O["Prefer most specific phrase; apply allow lists"]
+    E --> O
+    Q --> O
+    O --> F
+    P --> G["Glossary, style, and repeated endings"]
+    G --> F
+```
+
+Morphological rules match configured noun and adjective lemmas, canonical verb
+forms, adjacent compound nouns, and sahen nouns followed by `する` or `できる`.
+Predicate spans extend through adjacent auxiliaries, dependent verbs, and
+supported connective particles. Negative auxiliaries preserve polarity;
+negative-only rules require that evidence. Unknown tokens are not guessed.
+
+The four contextual patterns combine an exact prefix (`地味に`, `静かに`,
+`時間を`, or `側に`) with a known independent verb lemma (`効く`, `壊れる`,
+`溶かす`, or `倒す`). The canonical phrase must be enabled in the resolved rules.
+For example, `地味に効かなかった` is collected as one complete candidate with
+lemma `地味に効く` and `negative: true`. Protected text and paragraph boundaries
+cannot bridge the pattern. Longer contextual phrases suppress contained matches,
+including when the longer phrase is allowed. These limited patterns suggest
+reviewing the actual effect or operation; they do not prove a metaphor is wrong.
+
+Sentence-ending analysis splits each paragraph at `。`, `！`, and `？`, retaining
+source offsets. It extracts supported endings such as `検証します` and `です`,
+then checks consecutive windows of three sentences. A sentence without a matching
+ending breaks the run. The first matching run produces one informational
+candidate at the ending of its third sentence. Precise technical repetition may
+be worth retaining; this is not a requirement to vary verbs.
+
+### Scoring: density and optional readability judgment
+
+Scoring first runs the shared candidate detector. For the default
+`candidate-density-v1`, let `N` be all findings, including informational ones,
+and `C` be non-whitespace Unicode characters after inline masking:
+
+```text
+density = N * 1000 / C
+score   = max(0, 100 - 5 * density)
+```
+
+The score is rounded to three decimals. No unmasked prose yields `null`.
+More candidates per 1,000 characters lower the score; short texts are particularly
+sensitive. Changing rules, allow lists, or the detector can change the score of
+an unchanged manuscript. This heuristic is a review indicator, not a calibrated
+quality measure or a probability that AI wrote the text.
+
+```mermaid
+flowchart TD
+    P["Selected prose and detected candidates"] --> D["Compute candidate density and mechanical score"]
+    D --> A{"Explicit agent option and nonempty prose?"}
+    A -->|"No"| R["Text or JSON report"]
+    A -->|"Yes"| I["Paragraph IDs, text, headings, and readability rubric"]
+    I --> J["Installed Codex or Claude CLI; configured model provider"]
+    J --> V["Validate IDs, integer ratings, and reasons"]
+    V --> M["Map ratings to 0, 50, 100 and average"]
+    M --> R
+    D --> K["Retain mechanical score in JSON"]
+    K --> R
+```
+
+With explicit `--agent`, `llm-readability-v1` asks a fresh local CLI invocation to
+rate each paragraph's sentence clarity and paragraph coherence separately from
+1 to 3. The rubric targets engineers familiar with the technical terms. The
+input contains paragraph IDs, original text, and headings, without candidate
+findings or file paths. The CLI may connect to its configured model provider.
+The response must contain every supplied ID exactly once, integer ratings in
+range, and nonempty reasons. Invalid responses fail scoring.
+
+Ratings of 1, 2, and 3 map to 0, 50, and 100. Each dimension averages equally
+across scored paragraphs; the displayed score averages the two dimension means.
+JSON retains both dimensions, paragraph reasons, evaluator identity, and the
+mechanical score. These ordinal averages summarize a fallible judgment. There
+is no reference manuscript or fact checklist in this single-document path, so
+it does not assess preservation or establish technical accuracy. Temporary CLI
+artifacts are removed after the invocation, and manuscripts remain unchanged.
+
+| Result | What it measures | Evidence needed |
+| --- | --- | --- |
+| Candidate-density score | Detected cues per text length | Current prose and resolved rules |
+| Optional readability score | Model judgment of clarity and coherence | Current prose, context, and rubric |
+| Development benchmark accuracy | Detector agreement and location accuracy | Fixed corpus with annotated targets |
+| Review verification | Mechanical preservation after editing | Original session baseline and current files |
+
+See the [development prose benchmark](#development-prose-benchmark) for
+before/after trials with gold targets, separate fact checklists, and evaluator
+calibration. Its precision, recall, and F1 evaluate the detector rather than
+providing a score for an arbitrary manuscript.
+
 ## Configuration
 
-`scan` searches upward from the entrypoint directory for the nearest
+`scan` and `score` search upward from the entrypoint directory for the nearest
 `.asciidoc-pubkit.yml`. Use `--config FILE` to select a different file. CLI options
 override configuration values; unspecified values use built-in defaults.
 The initial release loads one configuration file, not merged book/repository files.
@@ -436,7 +603,7 @@ The added reach predicate is negative-only; the existing handling predicate is
 reviewed in both affirmative and negative forms. Glossary variants and generic
 framing phrases continue to use literal matching. Contextual phrases suppress
 overlapping morphological candidates. Except for the four predicate patterns
-described below in the Unreleased checkout, they use literal matching. Compound
+described below, they use literal matching. Compound
 nouns are matched across adjacent noun tokens. Selection and narrowing verbs
 include potential forms; predicate surfaces also preserve causative auxiliaries.
 
@@ -452,7 +619,7 @@ These are candidates for contextual review, not banned expressions. A necessary
 condition, uncertainty, or distinction must survive a revision; a redundant
 disclaimer can instead be removed or folded into a more precise main claim.
 
-In version 0.6.1, metaphorical-operation candidates include limited exact surfaces of
+Metaphorical-operation candidates include limited exact surfaces of
 `地味に効く`, `静かに壊れる`, `時間を溶かす`, and `側に倒す`, including selected polite,
 past, and connective forms listed in the packaged YAML. They use contextual
 phrase matching in both tokenizers; this is not complete inflection coverage or
@@ -461,7 +628,7 @@ not added as general metaphor candidates. Identify the actual effect, policy,
 work, or failure state from evidence rather than applying a fixed replacement.
 Keep valid technical meanings and necessary negation.
 
-The Unreleased checkout additionally matches these four phrases with MeCab/IPADIC
+Version 0.6.2 additionally matches these four phrases with MeCab/IPADIC
 verb lemmas and adjacent predicate auxiliaries. For example, `地味に効かなかった`,
 `静かに壊れていた`, `時間を溶かしてしまった`, and `側に倒しました` retain their
 complete surfaces and polarity. A pattern is enabled only when its canonical
@@ -475,7 +642,7 @@ boundaries cannot bridge a pattern. This remains a limited contextual heuristic,
 not a syntactic or semantic determination of metaphor. Literal mode retains
 exact surfaces and does not acquire this inflection coverage.
 
-In the Unreleased checkout, a `repeated-ending` candidate points to the ending
+In version 0.6.2, a `repeated-ending` candidate points to the ending
 of the third sentence in the first consecutive run within each paragraph.
 A sentence without a matching ending interrupts the run. The candidate remains
 informational because precise technical repetition can be necessary.
@@ -484,7 +651,7 @@ The shared criteria distinguish reader instructions, actual system behavior,
 and available capabilities. They also separate readability from checks for
 missing information and unsupported additions. Sentence length, punctuation,
 and list density are contextual cues, not fixed acceptance thresholds. These
-updates are included in 0.6.1; start a new session to use updated criteria and rules.
+updates are included in 0.6.2; start a new session to use updated criteria and rules.
 
 Literal term matching suppresses matches strictly contained in a longer matched
 term, across categories. The longer term also suppresses contained matches when
@@ -504,12 +671,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.6.1. Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.6.2. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.1
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.6.2
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship
@@ -595,7 +762,7 @@ dictionary fingerprints. Comparisons reject changed corpora, scoring versions,
 analyzers, or dictionaries. Reports with configuration fingerprints also reject
 changed benchmark configuration. A fixed empty configuration
 keeps these trials independent of auto-discovered manuscript settings.
-The Unreleased location correction raises location accuracy to 100 without
+The 0.6.2 location correction raises location accuracy to 100 without
 changing precision, recall, or F1 on this corpus. Adding the four MeCab predicate
 patterns then raises precision, recall, F1, and location accuracy to 100 on these
 11 targets. This is regression evidence for the fixed synthetic corpus, not
@@ -720,7 +887,7 @@ In literal mode, all category term lists use exact phrase matching. In MeCab
 mode, abstract nouns and degree adjectives use dictionary forms, while predicates
 use `verbs` and `sahen`; add a predicate's desired literal surface to
 `weak-predicate.terms` as well if literal mode should detect it. Contextual and
-generic framing phrases use literal matching in both modes, with the Unreleased
+generic framing phrases use literal matching in both modes, with the
 MeCab exception for the four configured contextual predicate patterns described
 above. Questions apply to
 both detectors. Glossary, style, repeated-ending checks, inline exclusions, and
@@ -740,16 +907,23 @@ conclusions. Candidate detection therefore leaves contextual judgment, document
 structure, and final edits to the reviewer.
 
 - [natural-japanese](https://github.com/coji/natural-japanese): separates mechanical
-  detection from contextual judgment and identifies repetitive framing.
+  detection from contextual judgment and identifies repetitive framing. Applied
+  here: candidate findings feed a contextual review prompt, while phrases such as
+  `重要なのは` and `このように` invite inspection rather than automatic deletion.
 - [yomiyasu](https://github.com/nanaism/yomiyasu):
   informs evidence-based review of
   metaphorical operations, distinctions between instructions and capabilities,
-  and separate assessment of meaning preservation and readability.
+  and separate assessment of meaning preservation and readability. Applied here:
+  four limited metaphor patterns and third-sentence repetition locations inform
+  candidate detection; the shared criteria require evidence for concrete rewrites.
 - [日本語技術文書の文章規範](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d):
-  informs paragraph logic, evidence scope, and meaningful uncertainty.
+  informs paragraph logic, evidence scope, and meaningful uncertainty. Applied
+  here: the shared criteria start from each paragraph's technical purpose and
+  preserve necessary conditions, uncertainty, and exact terminology.
 - [AI臭い文章とは何なのか](https://speakerdeck.com/nasuvitz/ai-kusai-bunshou-toha-nanina-no-ka):
   provides examples of unnecessary contrast, abstract referents, and paired short
-  sentences.
+  sentences. Applied here: the shared criteria ask reviewers to inspect these
+  patterns in context and recover concrete referents and connected explanations.
 
 The development evaluation adapts ideas from the following primary research;
 its engineering audience, corpus, and rubric do not reproduce those benchmarks.
@@ -759,13 +933,18 @@ Research texts and datasets are not redistributed here.
   (Yamashita et al., LREC 2026): separates information preservation from sentence
   and document simplicity and evaluates LLM judgments against human annotations.
   Its elementary-school audience and Wikipedia corpus differ from this project.
+  Applied here: the scoring rubric separates sentence clarity from paragraph
+  coherence, and the development judge evaluates fact retention independently.
 - [Evaluating Factuality in Text Simplification](https://aclanthology.org/2022.acl-long.506/)
   (Devaraj et al., ACL 2022): distinguishes insertion, deletion, and substitution
-  errors, motivating separate checks for unsupported additions and lost facts.
+  errors. Applied here: development trials check each source fact and report
+  unsupported additions and substitutions separately; a readable rewrite can
+  still fail preservation review.
 - [Evaluating Document Simplification: On the Importance of Separately Assessing Simplicity and Meaning Preservation](https://aclanthology.org/2024.readi-1.1/)
   (Cripwell et al., READI 2024): motivates separate readability and preservation
-  scores rather than a single aggregate. SARI-style overlap metrics are not
-  adopted because lexical agreement alone is insufficient for this prose review.
+  scores. Applied here: readability dimensions and preservation outcomes remain
+  separate in benchmark reports; the direct manuscript score makes no
+  preservation claim. SARI-style overlap metrics are not adopted.
 
 ## License
 
