@@ -810,14 +810,15 @@ strings) or `patterns` (a nonempty array of nonempty strings). Array-valued
 `specs` is an array of exact `from`/`to` string pairs, validated on load. Specs
 exercise the rule on plain text, not AsciiDoc selection or inline protection.
 
-Strings not beginning with `/` match literally. `/.../` denotes a regex with no
-flags; all occurrences are collected. The implementation uses Ruby regexes with
+Strings not beginning with `/` match literally. `/.../` denotes a regex; the
+unreleased checkout also accepts `/.../i` for Ruby case-insensitive matching.
+Version 0.8.0 rejects all flags. All occurrences are collected. The implementation uses Ruby regexes with
 a timeout and accepts a limited common syntax: character classes, ordinary
 captures, noncapturing groups, lookarounds, alternatives, anchors, quantifiers,
 and the escapes `\n`, `\r`, `\t`, `\d`, `\D`, `\s`, `\S`, `\w`, `\W`
 and escaped punctuation. Ruby regex character-class behavior applies; this is
 not a JavaScript regex engine or a promise of full prh equivalence. Engine-specific
-groups/escapes and flags are rejected. A leading literal slash must be expressed
+groups/escapes and flags other than a single `i` are rejected. A leading literal slash must be expressed
 as an escaped regex, for example `/\//`. Zero-length matches are rejected.
 
 Replacement strings support `$1` through `$99` for existing capture groups and
@@ -825,7 +826,7 @@ Replacement strings support `$1` through `$99` for existing capture groups and
 matched. Missing optional captures expand to empty strings. YAML single quotes
 are recommended to keep backslashes literal. Unknown fields, including
 `options` and `regexpMustEmpty`, and omitted patterns are rejected rather than
-ignored. Regex flags and prh's automatic pattern generation are not supported.
+ignored. prh's automatic pattern generation is not supported.
 
 For example, the unreleased checkout also accepts:
 
@@ -839,7 +840,27 @@ rules:
 ```
 
 Each array entry uses the same literal/regex syntax and validation as a single
-pattern. Arrays do not enable regex flags or change overlap handling.
+pattern. Arrays do not change supported flags or overlap handling.
+
+### Limited ECMAScript boundary compatibility (unreleased)
+
+The checkout translates `\b` and `\B` outside character classes into Ruby
+lookarounds with ECMAScript word-character semantics, following prh's default
+Unicode mode. Word characters are ASCII letters, digits, and underscore; Japanese
+characters are non-word characters. Thus `/\bTips\b/` matches `Tips` in
+`前Tips後`, but not in `Tips2`, `_Tips`, or `ATips`.
+With `/i`, long s (`ſ`) and Kelvin sign (`K`) also count as word characters under
+ECMAScript Unicode case folding. The generated assertions add no capture groups
+and preserve original match offsets. Inside a character class, `\b` means a
+backspace character; `\B` there is rejected. Escaped literal backslashes are
+preserved.
+
+Only the boundary assertions emulate ECMAScript. `/i` uses Ruby's
+`Regexp::IGNORECASE`; Unicode case folding can differ from JavaScript (for
+example multi-character folds). Other constructs, including whitespace classes,
+retain Ruby semantics. This is limited prh compatibility, not full ECMAScript
+conformance. Flags `g`, `m`, `s`, `u`, `y`, `d`, and `v` and duplicate `i` are
+rejected; all occurrences are already collected independently of `g`.
 
 ### Importing replacement rules (unreleased)
 

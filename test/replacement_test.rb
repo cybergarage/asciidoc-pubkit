@@ -83,9 +83,62 @@ class ReplacementTest < Minitest::Test
     end
     rules([{ 'expected' => 'X', 'pattern' => ['文'], 'patterns' => ['文'] }])
     assert_raises(AsciidocPubkit::Error) { plan }
-    rules([{ 'expected' => 'X', 'pattern' => ['/文/i'] }])
+    rules([{ 'expected' => 'X', 'pattern' => ['/文/m'] }])
     error = assert_raises(AsciidocPubkit::Error) { plan }
-    assert_includes error.message, 'Regex flags are unsupported'
+    assert_includes error.message, 'Unsupported regex flags'
+  end
+
+  def test_ignore_case_flag_works_in_arrays_specs_and_protected_prose
+    File.write(@book, "EARLY-EX群とearlyex群、`Early-EX群`。\n")
+    rules([{ 'expected' => '早期運動群', 'pattern' => ['/Early-?EX群/i'],
+             'specs' => [{ 'from' => 'EARLY-EX群とearlyex群', 'to' => '早期運動群と早期運動群' }] }])
+    replacement = plan
+    assert_equal 2, replacement.candidates.length
+    replacement.apply
+    assert_equal "早期運動群と早期運動群、`Early-EX群`。\n", File.read(@book)
+  end
+
+  def test_javascript_boundaries_match_ascii_terms_next_to_japanese
+    File.write(@book, "前Tips後 Tips Tips2 _Tips Tips_ ATips、`Tips`。\n")
+    rules([{ 'expected' => '実践', 'pattern' => '/\bTips\b/' }])
+    replacement = plan
+    assert_equal 2, replacement.candidates.length
+    assert_equal [2, 8], replacement.candidates.map { |edit| edit[:column] }
+    replacement.apply
+    assert_equal "前実践後 実践 Tips2 _Tips Tips_ ATips、`Tips`。\n", File.read(@book)
+  end
+
+  def test_boundary_conversion_does_not_add_captures_or_change_match_offsets
+    File.write(@book, "😀測定10 kg後と20kg。\n")
+    rules([{ 'expected' => '$1$2', 'pattern' => '/\b(\d+)\s+([A-Za-z]+)\b/',
+             'specs' => [{ 'from' => '前10 kg後', 'to' => '前10kg後' }] }])
+    replacement = plan
+    assert_equal [1, 4, '10 kg', '10kg'], replacement.candidates.first.values_at(:line, :column, :before, :after)
+    replacement.apply
+    assert_equal "😀測定10kg後と20kg。\n", File.read(@book)
+  end
+
+  def test_nonboundary_and_unicode_ignore_case_word_characters
+    rules([{ 'expected' => 'X', 'pattern' => '/\BTips\B/',
+             'specs' => [{ 'from' => 'ATips2 前Tips後', 'to' => 'AX2 前Tips後' }] }])
+    AsciidocPubkit::ReplacementRules.load(@rules)
+    rules([{ 'expected' => 'X', 'pattern' => '/\bTips\b/i',
+             'specs' => [{ 'from' => 'ſTips TipsK 前tIpS後', 'to' => 'ſTips TipsK 前X後' }] }])
+    AsciidocPubkit::ReplacementRules.load(@rules)
+    rules([{ 'expected' => 'X', 'pattern' => '/\bTips\b/',
+             'specs' => [{ 'from' => 'ſTips TipsK', 'to' => 'ſX XK' }] }])
+    AsciidocPubkit::ReplacementRules.load(@rules)
+  end
+
+  def test_boundary_escapes_in_classes_and_literal_backslashes
+    rules([{ 'expected' => 'X', 'pattern' => '/[\b]/',
+             'specs' => [{ 'from' => "a\bb", 'to' => 'aXb' }] }])
+    AsciidocPubkit::ReplacementRules.load(@rules)
+    rules([{ 'expected' => 'X', 'pattern' => '/\\\\b/',
+             'specs' => [{ 'from' => 'a\bb', 'to' => 'aXb' }] }])
+    AsciidocPubkit::ReplacementRules.load(@rules)
+    rules([{ 'expected' => 'X', 'pattern' => '/[\B]/' }])
+    assert_raises(AsciidocPubkit::Error) { AsciidocPubkit::ReplacementRules.load(@rules) }
   end
 
   def test_overlap_and_structure_changes_are_rejected_without_writes
@@ -124,7 +177,7 @@ class ReplacementTest < Minitest::Test
     invalid = [
       { 'expected' => 'X' },
       { 'expected' => 'X', 'pattern' => 'Y', 'options' => {} },
-      { 'expected' => 'X', 'pattern' => '/Y/i' },
+      { 'expected' => 'X', 'pattern' => '/Y/g' },
       { 'expected' => 'X', 'pattern' => '/(?=文)/' },
       { 'expected' => '$2', 'pattern' => '/(文)/' },
       { 'expected' => 'X', 'pattern' => '文', 'specs' => [{ 'from' => '文', 'to' => 'wrong' }] },

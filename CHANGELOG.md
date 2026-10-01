@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Support replacement regex `/i` with Ruby case-insensitive matching and translate
+  `\b`/`\B` assertions to limited ECMAScript Unicode word boundaries. Preserve
+  capture numbering, source positions, protected spans, and backspace-in-class
+  semantics; retain Ruby behavior elsewhere and reject other flags.
+
 - Treat null replacement `rules`, including bare `rules:`, as an empty local
   rule set while retaining imported rules and rejecting other non-array values.
 

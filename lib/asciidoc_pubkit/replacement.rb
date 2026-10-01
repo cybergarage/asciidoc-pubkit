@@ -20,14 +20,18 @@ module AsciidocPubkit
         compiled = patterns.map do |pattern|
           if pattern.start_with?('/')
             match = pattern.match(%r{\A/(.*)/([a-z]*)\z}m)
-            raise Error, 'Regex flags are unsupported; omit flags (all matches are collected).' unless match && match[2].empty?
+            unless match && ['', 'i'].include?(match[2])
+              raise Error, 'Unsupported regex flags; only optional i is supported (all matches are collected).'
+            end
             body = match[1]
             # Deliberately small common JavaScript/Ruby subset; Ruby-only escapes
             # and engine-specific groups must not silently change JS semantics.
-            if body.match?(/\\[^\\\/.*+?()\[\]{}^$|nrtdDsSwW-]/) || body.match?(/\(\?(?![:=!]|<[=!])/) || body.include?('&&')
+            if body.match?(/\\[^\\\/.*+?()\[\]{}^$|nrtdDsSwWbB-]/) || body.match?(/\(\?(?![:=!]|<[=!])/) || body.include?('&&')
               raise Error, 'Unsupported regex syntax in replacement rule.'
             end
-            Regexp.new(body.gsub('\\/', '/'), timeout: 0.1)
+            ignore_case = match[2] == 'i'
+            body = javascript_boundaries(body, ignore_case: ignore_case)
+            Regexp.new(body.gsub('\\/', '/'), ignore_case ? Regexp::IGNORECASE : 0, timeout: 0.1)
           else
             Regexp.new(Regexp.escape(pattern), timeout: 0.1)
           end
@@ -51,6 +55,40 @@ module AsciidocPubkit
       end
     rescue RegexpError, Regexp::TimeoutError => e
       raise Error, "Invalid replacement regex: #{e.message}"
+    end
+
+    # prh uses Unicode JS regexes: word characters are ASCII letters/digits/_;
+    # Unicode ignore-case additionally folds long s and Kelvin sign to ASCII.
+    # Scope out Ruby's ignore-case so these assertion classes stay exact.
+    def self.javascript_boundaries(body, ignore_case:)
+      word = ignore_case ? '(?-i:[A-Za-z0-9_ſK])' : '[A-Za-z0-9_]'
+      boundary = "(?:(?<=#{word})(?!#{word})|(?<!#{word})(?=#{word}))"
+      nonboundary = "(?:(?<=#{word})(?=#{word})|(?<!#{word})(?!#{word}))"
+      chars = body.chars
+      result = +''
+      in_class = false
+      index = 0
+      while index < chars.length
+        char = chars[index]
+        if char == '\\' && index + 1 < chars.length
+          following = chars[index + 1]
+          if following == 'b'
+            result << (in_class ? '\x08' : boundary)
+          elsif following == 'B'
+            raise Error, '\B inside a character class is unsupported.' if in_class
+            result << nonboundary
+          else
+            result << char << following
+          end
+          index += 2
+          next
+        end
+        in_class = true if char == '['
+        in_class = false if char == ']'
+        result << char
+        index += 1
+      end
+      result
     end
 
     def self.collect(path, active, visited)
