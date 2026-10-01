@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Locate `repeated-ending` candidates at the matching ending in the third
+  consecutive sentence, preserving Unicode columns and line offsets. Do not
+  join repetitions across a sentence without a matching ending.
+- Extend four configured metaphorical-operation phrases with MeCab/IPADIC
+  predicate matching, including past, negative, and auxiliary forms. Retain
+  polarity, custom-rule replacement, allow lists, protected text, and longest
+  phrase precedence; literal mode keeps exact phrase matching.
+
 ## 0.6.1 — 2026-10-01
 
 - Add `review score FILE` for direct AsciiDoc manuscript scoring without a

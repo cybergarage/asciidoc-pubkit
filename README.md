@@ -434,8 +434,9 @@ sahen predicate takes precedence over a matching standalone noun rule. Auxiliary
 negation, past tense, passive forms, and progressive forms in the reported surface.
 The added reach predicate is negative-only; the existing handling predicate is
 reviewed in both affirmative and negative forms. Glossary variants and generic
-framing phrases continue to use literal matching. Contextual phrases also use
-literal matching and suppress overlapping morphological candidates. Compound
+framing phrases continue to use literal matching. Contextual phrases suppress
+overlapping morphological candidates. Except for the four predicate patterns
+described below in the Unreleased checkout, they use literal matching. Compound
 nouns are matched across adjacent noun tokens. Selection and narrowing verbs
 include potential forms; predicate surfaces also preserve causative auxiliaries.
 
@@ -451,7 +452,7 @@ These are candidates for contextual review, not banned expressions. A necessary
 condition, uncertainty, or distinction must survive a revision; a redundant
 disclaimer can instead be removed or folded into a more precise main claim.
 
-Metaphorical-operation candidates include limited exact surfaces of
+In version 0.6.1, metaphorical-operation candidates include limited exact surfaces of
 `地味に効く`, `静かに壊れる`, `時間を溶かす`, and `側に倒す`, including selected polite,
 past, and connective forms listed in the packaged YAML. They use contextual
 phrase matching in both tokenizers; this is not complete inflection coverage or
@@ -459,6 +460,25 @@ syntactic analysis. Bare verbs such as `効く`, `壊れる`, `溶かす`, and `
 not added as general metaphor candidates. Identify the actual effect, policy,
 work, or failure state from evidence rather than applying a fixed replacement.
 Keep valid technical meanings and necessary negation.
+
+The Unreleased checkout additionally matches these four phrases with MeCab/IPADIC
+verb lemmas and adjacent predicate auxiliaries. For example, `地味に効かなかった`,
+`静かに壊れていた`, `時間を溶かしてしまった`, and `側に倒しました` retain their
+complete surfaces and polarity. A pattern is enabled only when its canonical
+phrase (`地味に効く`, `静かに壊れる`, `時間を溶かす`, or `側に倒す`) is present in
+the resolved `contextual-phrase.terms`. Removing those canonical entries from
+custom rules disables their morphological patterns; remaining exact surfaces
+still work. No YAML schema change is required. Allow lists accept the canonical
+phrase or exact detected surface. The most specific overlapping phrase wins,
+including allowed phrases. Masked inline content, unknown tokens, and paragraph
+boundaries cannot bridge a pattern. This remains a limited contextual heuristic,
+not a syntactic or semantic determination of metaphor. Literal mode retains
+exact surfaces and does not acquire this inflection coverage.
+
+In the Unreleased checkout, a `repeated-ending` candidate points to the ending
+of the third sentence in the first consecutive run within each paragraph.
+A sentence without a matching ending interrupts the run. The candidate remains
+informational because precise technical repetition can be necessary.
 
 The shared criteria distinguish reader instructions, actual system behavior,
 and available capabilities. They also separate readability from checks for
@@ -568,13 +588,19 @@ Zero denominators are reported as `null`, not perfect scores. Duplicate detectio
 count as false positives. These scores measure the detector, not the manuscript.
 
 The checked-in [`MeCab baseline`](benchmark/baseline-mecab.json), captured before
-the planned detector changes, has precision 100, recall 81.818, F1 90, and location
+the detector changes, has precision 100, recall 81.818, F1 90, and location
 accuracy 77.778. It misses two inflected metaphor phrases and mislocates two
 repeated-ending candidates. Reports record source, criteria, rules, corpus, and
 dictionary fingerprints. Comparisons reject changed corpora, scoring versions,
 analyzers, or dictionaries. Reports with configuration fingerprints also reject
 changed benchmark configuration. A fixed empty configuration
 keeps these trials independent of auto-discovered manuscript settings.
+The Unreleased location correction raises location accuracy to 100 without
+changing precision, recall, or F1 on this corpus. Adding the four MeCab predicate
+patterns then raises precision, recall, F1, and location accuracy to 100 on these
+11 targets. This is regression evidence for the fixed synthetic corpus, not
+evidence of general performance on unseen manuscripts; literal recall remains
+81.818.
 Record your own baseline when dictionary fingerprints
 differ. `--tokenizer literal` explicitly selects a separate limited-mode run;
 there is no automatic fallback, and literal results do not validate MeCab.
@@ -694,7 +720,9 @@ In literal mode, all category term lists use exact phrase matching. In MeCab
 mode, abstract nouns and degree adjectives use dictionary forms, while predicates
 use `verbs` and `sahen`; add a predicate's desired literal surface to
 `weak-predicate.terms` as well if literal mode should detect it. Contextual and
-generic framing phrases use literal matching in both modes. Questions apply to
+generic framing phrases use literal matching in both modes, with the Unreleased
+MeCab exception for the four configured contextual predicate patterns described
+above. Questions apply to
 both detectors. Glossary, style, repeated-ending checks, inline exclusions, and
 morphological suffix handling remain implemented in Ruby.
 

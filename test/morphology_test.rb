@@ -21,6 +21,51 @@ class MorphologyTest < Minitest::Test
     expected.each { |surface| assert_equal 1, findings.count { |f| f['match'] == surface }, surface }
   end
 
+  def test_contextual_predicates_keep_complete_inflections_and_polarity
+    surfaces = %w[地味に効かなかった 静かに壊れていた 時間を溶かしてしまった 側に倒しました]
+    findings = scan(surfaces.join('。') + '。').select { |f| f['rule'] == 'contextual-phrase' }
+    assert_equal surfaces, findings.map { |f| f['match'] }
+    assert_equal %w[地味に効く 静かに壊れる 時間を溶かす 側に倒す], findings.map { |f| f['lemma'] }
+    assert_equal [true, false, false, false], findings.map { |f| f['negative'] }
+    assert findings.all? { |f| f['detector'] == 'mecab-ipadic' && f['part_of_speech'] == '動詞' }
+    negative = scan('静かに壊れませんでした。時間を溶かさずに調査した。側に倒さない。')
+               .select { |f| f['rule'] == 'contextual-phrase' }
+    assert_equal %w[静かに壊れませんでした 時間を溶かさず 側に倒さない], negative.map { |f| f['match'] }
+    assert negative.all? { |f| f['negative'] }
+  end
+
+  def test_contextual_predicates_preserve_positions_and_do_not_duplicate_literals
+    text = "😀 地味に効きます。\n　静かに壊れていた。"
+    findings = scan(text).select { |f| f['rule'] == 'contextual-phrase' }
+    assert_equal %w[地味に効きます 静かに壊れていた], findings.map { |f| f['match'] }
+    assert_equal [[10, 3], [11, 2]], findings.map { |f| f.values_at('line', 'column') }
+    assert_empty scan('地味に効かなかった。', @settings.merge('tokenizer' => 'literal'))
+  end
+
+  def test_contextual_predicate_allow_lists_and_custom_rule_replacement
+    assert_empty scan('地味に効かなかった。', @settings.merge('allows' => ['地味に効く']))
+    assert_empty scan('地味に効かなかった。', @settings.merge('allows' => ['地味に効かなかった']))
+    findings = scan('地味に効きます。地味に効かなかった。', @settings.merge('allows' => ['地味に効きます']))
+    assert_equal ['地味に効かなかった'], findings.map { |f| f['match'] }
+    rules = AsciidocPubkit::RuleSet.load
+    rules['terms']['contextual-phrase']['terms'] = []
+    assert_empty scan('地味に効かなかった。静かに壊れていた。時間を溶かした。側に倒した。', @settings.merge('rules' => rules))
+    rules['terms']['contextual-phrase']['terms'] = ['地味に効く', '設定は地味に効きます']
+    findings = scan('設定は地味に効きます。', @settings.merge('rules' => rules))
+    assert_equal ['設定は地味に効きます'], findings.map { |f| f['match'] }
+    assert_empty scan('設定は地味に効きます。', @settings.merge('rules' => rules, 'allows' => ['設定は地味に効きます']))
+  end
+
+  def test_contextual_predicates_require_adjacent_unmasked_known_tokens
+    text = '薬が効きます。氷を溶かしました。装置を倒した。地味に効き目がある。静かに壊れ物を運ぶ。'
+    assert_empty scan(text).select { |f| f['rule'] == 'contextual-phrase' }
+    assert_empty scan('`地味に効かなかった`。「静かに壊れていた」。地味に`例`効かなかった。時間を「例」溶かした。側に、倒した。')
+    paragraphs = ['地味に', '効かなかった。'].map.with_index do |text, i|
+      { 'id' => i.to_s, 'file' => '/example.adoc', 'line' => i + 1, 'text' => text }
+    end
+    assert_empty AsciidocPubkit::Rules.scan(paragraphs, @settings, tokenizer: @tokenizer)
+  end
+
   def test_additional_requested_expressions_in_both_modes
     expressions = %w[これらを であることだけでは 役割 一続き 根拠 部品 開発者 選べます 扱います あるものとします わけではありません 成り立たせています 確かめます 書き換える 絞れます 渡します あります 別です 概念 意味しません]
     %w[mecab literal].each do |mode|

@@ -41,6 +41,9 @@ class ProseBenchmarkTest < Minitest::Test
       assert_equal ProseBenchmark::KINDS, report['by_kind'].keys
       assert_equal 11, report['detection'].values_at('true_positives', 'false_negatives').sum
       assert_equal [], report['detection']['unexpected']
+      assert_equal 100.0, report['detection']['precision']
+      assert_equal(mode == 'mecab' ? 100.0 : 81.818, report['detection']['recall'])
+      assert_equal 100.0, report['detection']['location_accuracy']
       refute_includes JSON.generate(report), ProseBenchmark::ROOT
     end
   end

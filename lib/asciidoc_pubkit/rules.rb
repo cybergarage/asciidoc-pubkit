@@ -2,6 +2,8 @@
 
 module AsciidocPubkit
   class Rules
+    CONTEXTUAL_PREDICATES = { '地味に' => '効く', '静かに' => '壊れる',
+                              '時間を' => '溶かす', '側に' => '倒す' }.freeze
     INLINE = /`[^`\n]*`|\+\+\+.*?\+\+\+|\+\+[^\n]*?\+\+|(?<!\w)\+[^+\n]+\+|「[^」\n]*」|『[^』\n]*』|\{[^}\n]+\}|<<[^>\n]+>>|\[\[[^\]\n]+\]\]|(?:link|xref|image|footnote|pass):[^\s\[]*\[[^\]\n]*\]|https?:\/\/[^\s\[\]<>]+(?:\[[^\]\n]*\])?/m
     def self.mask(text)
       # Keep character offsets stable while excluding common inline constructs.
@@ -18,18 +20,24 @@ module AsciidocPubkit
       token_groups = tokenizer ? tokenize_paragraphs(paragraphs, tokenizer) : []
       paragraphs.each_with_index do |paragraph, index|
         text = mask(paragraph.fetch('text'))
-        scan_morphemes(findings, paragraph, text, token_groups[index], settings, rules, terms) if tokenizer
-        scan_literal_terms(findings, paragraph, text, terms, settings, morphological: !!tokenizer)
+        contextual = tokenizer ? contextual_predicates(text, token_groups[index], terms) : []
+        scan_morphemes(findings, paragraph, text, token_groups[index], settings, rules, terms, contextual) if tokenizer
+        scan_literal_terms(findings, paragraph, text, terms, settings, morphological: !!tokenizer, contextual: contextual)
         settings.fetch('glossary').each do |canonical, variants|
           variants.each do |variant|
             find_term(findings, paragraph, text, variant, 'glossary-variant', 'warning', "Use #{canonical.inspect} when this variant refers to the same concept; preserve identifiers and quotations.")
           end
         end
-        sentences = text.split(/[。！？]/).map(&:strip).reject(&:empty?)
-        endings = sentences.map { |sentence| sentence[/(?:\p{Han}+(?:します|できます)|しています|されます|ません|です)\z/] }
-        repeated = endings.each_cons(3).find { |items| items.first && items.uniq.one? }
+        endings = text.to_enum(:scan, /[^。！？]+/).filter_map do
+          sentence = Regexp.last_match
+          next if sentence[0].strip.empty?
+          ending = sentence[0].match(/(\p{Han}+(?:します|できます)|しています|されます|ません|です)[[:space:]]*\z/)
+          { 'match' => ending && ending[1], 'offset' => ending && sentence.begin(0) + ending.begin(1) }
+        end
+        repeated = endings.each_cons(3).find { |items| items.first['match'] && items.map { |item| item['match'] }.uniq.length == 1 }
         if repeated
-          add(findings, paragraph, text, text.index(repeated.first), repeated.first, 'repeated-ending', 'info', 'Three consecutive sentences share an ending. Check rhythm without changing precise technical verbs.')
+          ending = repeated.last
+          add(findings, paragraph, text, ending['offset'], ending['match'], 'repeated-ending', 'info', 'Three consecutive sentences share an ending. Check rhythm without changing precise technical verbs.')
         end
         pattern = case settings.fetch('style')
                   when 'desu-masu' then /(?:である|だった|なのだ)(?=。|\z)/
@@ -68,13 +76,40 @@ module AsciidocPubkit
       end
     end
 
-    def self.scan_morphemes(findings, paragraph, text, tokens, settings, rules, terms)
+    def self.contextual_predicates(text, tokens, terms)
+      surfaces, question = terms.fetch('contextual-phrase')
+      tokens.each_with_index.filter_map do |token, index|
+        next if token['unknown'] || token['pos'] != '動詞' || token['pos_detail'] != '自立'
+        pattern = CONTEXTUAL_PREDICATES.find do |prefix, lemma|
+          surfaces.include?(prefix + lemma) && token['lemma'] == lemma &&
+            token['offset'] >= prefix.length && text[token['offset'] - prefix.length...token['offset']] == prefix
+        end
+        next unless pattern
+        prefix, lemma = pattern
+        start = token['offset'] - prefix.length
+        prefix_index = tokens[0...index].rindex { |member| member['offset'] == start }
+        next unless prefix_index
+        members = tokens[prefix_index..predicate_end(tokens, index, text)]
+        next if members.any? { |member| member['unknown'] }
+        finish = members.last['end_offset']
+        metadata = { 'lemma' => prefix + lemma, 'part_of_speech' => '動詞',
+                     'negative' => negative?(members), 'detector' => 'mecab-ipadic' }
+        [start, finish, text[start...finish], 'contextual-phrase', question, metadata]
+      end
+    end
+
+    def self.negative?(members)
+      members.any? { |member| member['pos'] == '助動詞' && %w[ない ぬ ん].include?(member['lemma']) }
+    end
+
+    def self.scan_morphemes(findings, paragraph, text, tokens, settings, rules, terms, contextual = [])
       phrase_ranges = terms['contextual-phrase'][0].flat_map do |phrase|
         text.to_enum(:scan, Regexp.new(Regexp.escape(phrase))).map do
           match = Regexp.last_match
           match.begin(0)...match.end(0)
         end
       end
+      phrase_ranges.concat(contextual.map { |start, finish, *_| start...finish })
       tokens.each_with_index do |token, index|
         next if token['unknown'] || phrase_ranges.any? { |range| range.cover?(token['offset']) }
         lemma = token['lemma']
@@ -116,7 +151,7 @@ module AsciidocPubkit
         end
         next unless rule
         members = tokens[index..finish_index]
-        negative = members.any? { |member| member['pos'] == '助動詞' && %w[ない ぬ ん].include?(member['lemma']) }
+        negative = negative?(members)
         next if rules.fetch('negative_only').include?(lemma) && !negative
         surface = text[token['offset']...tokens[finish_index]['end_offset']]
         allows = settings.fetch('allows')
@@ -143,22 +178,25 @@ module AsciidocPubkit
       finish
     end
 
-    def self.scan_literal_terms(findings, paragraph, text, terms, settings, morphological:)
-      candidates = []
+    def self.scan_literal_terms(findings, paragraph, text, terms, settings, morphological:, contextual: [])
+      candidates = contextual.dup
       terms.each do |rule, (surfaces, question)|
         next if morphological && !%w[generic-framing contextual-phrase].include?(rule)
         surfaces.each do |surface|
           text.to_enum(:scan, Regexp.new(Regexp.escape(surface))).each do
             match = Regexp.last_match
+            next if contextual.any? { |start, finish, _, candidate_rule, *_| start == match.begin(0) && finish == match.end(0) && candidate_rule == rule }
             candidates << [match.begin(0), match.end(0), surface, rule, question]
           end
         end
       end
       # Keep the most specific phrase, including when it is explicitly allowed.
-      candidates.each do |start, finish, surface, rule, question|
+      candidates.each do |start, finish, surface, rule, question, metadata|
         next if candidates.any? { |left, right, *_| left <= start && right >= finish && right - left > finish - start }
-        next if settings.fetch('allows').include?(surface)
+        forms = metadata ? [surface, surface + '。', metadata['lemma']] : [surface]
+        next if forms.any? { |form| settings.fetch('allows').include?(form) }
         add(findings, paragraph, text, start, surface, rule, 'hint', question)
+        findings.last.merge!(metadata) if metadata
       end
     end
 
