@@ -56,6 +56,8 @@
 
 ## 0.6.0 — 2026-09-30
 
+Initial public release, including the earlier development work.
+
 - Add `writing criteria` and `writing prompt` commands backed by one packaged
   Japanese technical prose guide. Include that guide in saved review prompts.
 - Organize the CLI into `writing` and `review` groups and accept `--lang ja` on
@@ -64,8 +66,6 @@
   book writing and review skills to use the generated prompts.
 - Refine Japanese review questions for redundant qualifications and generic
   recaps, and document the editorial sources and contextual limits.
-
-## 0.1.3 — 2026-09-29
 
 - Consolidate Japanese review candidates for terminology, compressed noun
   relationships, operations, and negative qualifications in the packaged rules.
@@ -77,16 +77,11 @@
 - Add `review scan --yes` (`-y`) and `--no-input` for batch execution.
 - Preserve previous sessions until replacement scan artifacts are ready.
 
-## 0.1.2 — Released
-
 - Package default Japanese review rules as a validated UTF-8 YAML file.
 - Support custom rule files through `review scan --rules` and `review.rules`.
 - Save resolved rules in sessions for reproducible prompts and verification.
 - Add concept, distinction, and negative meaning review candidates.
 - Add a Make target for running a local checkout with arbitrary CLI arguments.
-- Require a new review session when upgrading from earlier tool versions.
-
-## 0.1.1 — Released
 
 - Add contextual phrases, compound nouns, and potential and causative verb forms.
 - Add requested abstract nouns, degree adjectives, and vague predicates.
@@ -95,9 +90,6 @@
 - Record analyzer and dictionary fingerprints in review sessions.
 - Add an explicit literal mode for environments without MeCab.
 - Reject incompatible dictionaries and unavailable analyzers with setup guidance.
-- Require a new review session when upgrading from 0.1.0.
-
-## 0.1.0 — Released
 
 - Add AsciiDoc running-prose extraction with checked source locations.
 - Add Japanese review candidates and configurable terminology checks.
