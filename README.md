@@ -804,7 +804,9 @@ Imports and omission of arrays require the unreleased checkout; version 0.8.0
 requires `rules` and rejects `imports`. Omitted arrays default to empty in the
 checkout. Each rule requires a string
 `expected` (empty strings permit deletion) and exactly one of `pattern` (a
-nonempty string) or `patterns` (a nonempty array of nonempty strings). Optional
+nonempty string or, in the unreleased checkout, a nonempty array of nonempty
+strings) or `patterns` (a nonempty array of nonempty strings). Array-valued
+`pattern` is equivalent to `patterns`; specifying both keys is rejected. Optional
 `specs` is an array of exact `from`/`to` string pairs, validated on load. Specs
 exercise the rule on plain text, not AsciiDoc selection or inline protection.
 
@@ -824,6 +826,20 @@ matched. Missing optional captures expand to empty strings. YAML single quotes
 are recommended to keep backslashes literal. Unknown fields, including
 `options` and `regexpMustEmpty`, and omitted patterns are rejected rather than
 ignored. Regex flags and prh's automatic pattern generation are not supported.
+
+For example, the unreleased checkout also accepts:
+
+```yaml
+version: 1
+rules:
+  - expected: 'ハードウェア'
+    pattern:
+      - 'ハードウエア'
+      - 'ハードウェアー'
+```
+
+Each array entry uses the same literal/regex syntax and validation as a single
+pattern. Arrays do not enable regex flags or change overlap handling.
 
 ### Importing replacement rules (unreleased)
 

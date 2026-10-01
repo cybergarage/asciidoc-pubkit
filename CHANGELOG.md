@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Accept nonempty string arrays in replacement `pattern` as an alias for
+  `patterns`, retaining strict validation, specs, protection, and conflict checks.
+
 - Document omitted replacement `rules` as an empty set, including version-only
   files, and verify CLI no-op behavior and application through import-only chains.
 

@@ -54,6 +54,40 @@ class ReplacementTest < Minitest::Test
     assert_equal "本文Cとです。\n", File.read(@book)
   end
 
+  def test_pattern_array_supports_captures_specs_and_inline_protection
+    File.write(@book, "本文（任意）と[任意]、`[任意]`。\n")
+    rules([{ 'expected' => '($1)',
+             'pattern' => ['/（([^（）\r\n]+)）/', '/\[([^\]\r\n]+)\]/'],
+             'specs' => [{ 'from' => '設定（任意）と[任意]', 'to' => '設定(任意)と(任意)' }] }])
+    replacement = plan
+    assert_equal 2, replacement.candidates.length
+    replacement.apply
+    assert_equal "本文(任意)と(任意)、`[任意]`。\n", File.read(@book)
+  end
+
+  def test_pattern_array_is_equivalent_to_patterns_and_conflicts_are_rejected
+    File.write(@book, "本文AとBです。\n")
+    rules([{ 'expected' => 'C', 'patterns' => ['A', 'B'] }])
+    expected = plan.candidates
+    rules([{ 'expected' => 'C', 'pattern' => ['A', 'B'] }])
+    assert_equal expected, plan.candidates
+    rules([{ 'expected' => 'C', 'pattern' => ['本文', '文'] }])
+    assert_raises(AsciidocPubkit::Error) { plan }
+  end
+
+  def test_pattern_arrays_reject_invalid_elements_and_both_keys
+    File.write(@book, "本文です。\n")
+    [[], [''], [nil], [1], [['文']], ['文', nil]].each do |patterns|
+      rules([{ 'expected' => 'X', 'pattern' => patterns }])
+      assert_raises(AsciidocPubkit::Error, patterns.inspect) { plan }
+    end
+    rules([{ 'expected' => 'X', 'pattern' => ['文'], 'patterns' => ['文'] }])
+    assert_raises(AsciidocPubkit::Error) { plan }
+    rules([{ 'expected' => 'X', 'pattern' => ['/文/i'] }])
+    error = assert_raises(AsciidocPubkit::Error) { plan }
+    assert_includes error.message, 'Regex flags are unsupported'
+  end
+
   def test_overlap_and_structure_changes_are_rejected_without_writes
     File.write(@book, "通常本文です。\n")
     original = File.read(@book)

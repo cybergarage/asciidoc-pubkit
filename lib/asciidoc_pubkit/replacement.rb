@@ -12,7 +12,8 @@ module AsciidocPubkit
                rule['expected'].is_a?(String) && (rule.key?('pattern') ^ rule.key?('patterns'))
           raise Error, "Rule #{index + 1} requires expected and exactly one of pattern or patterns; unsupported keys are rejected."
         end
-        patterns = rule.key?('pattern') ? [rule['pattern']] : rule['patterns']
+        patterns = rule.key?('pattern') ? rule['pattern'] : rule['patterns']
+        patterns = [patterns] if rule.key?('pattern') && patterns.is_a?(String)
         unless patterns.is_a?(Array) && !patterns.empty? && patterns.all? { |p| p.is_a?(String) && !p.empty? }
           raise Error, 'Replacement patterns must be nonempty strings.'
         end
