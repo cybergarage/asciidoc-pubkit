@@ -35,9 +35,6 @@ module AsciidocPubkit
       if scope == 'headings' && (options[:rules] || options[:style])
         raise Error, 'Heading scans use --heading-rules, not prose --rules or --style.'
       end
-      if scope != 'headings' && options[:preserve_heading_ids]
-        raise Error, '--preserve-heading-ids requires --scope headings.'
-      end
       if scope != 'headings' && options[:heading_rules]
         raise Error, '--heading-rules requires --scope headings.'
       end
@@ -45,7 +42,7 @@ module AsciidocPubkit
       rules_path = options[:replacement] ? RuleSet.default_path(language) : options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet.default_path(language))
       @data = {
         'scope' => scope,
-        'preserve_heading_ids' => !!options[:preserve_heading_ids],
+        'preserve_heading_ids' => scope == 'headings',
         'heading_rules' => scope == 'headings' ? HeadingRuleSet.load(heading_rules_path) : nil,
         'heading_rules_path' => heading_rules_path,
         'rules' => scope != 'headings' ? RuleSet.load(rules_path) : nil,

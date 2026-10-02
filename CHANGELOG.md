@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Make exact saved old-ID anchor permissions standard for eligible heading
+  scans. Remove `--preserve-heading-ids`; continue protecting existing anchors,
+  section IDs, structure, and body content. Existing session permissions and
+  baselines remain unchanged.
+
 ## 0.8.6 — 2026-10-02
 
 - Add separate `review scan --scope lists` sessions for source-mapped single-line

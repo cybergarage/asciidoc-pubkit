@@ -566,9 +566,10 @@ and converted inline titles and physical title lines reused by multiple includes
 Unresolved section titles receive coverage notices. Verification permits only selected title text changes while
 protecting the body, title markers, hierarchy, order, section IDs, references,
 attributes, includes and other protected content. A title-derived section ID
-change fails verification. To permit limited ID preservation, scan with
-`--scope headings --preserve-heading-ids`. Eligible generated headings then save
-an exact `permitted_id_anchor` in their metadata. A reviewer may insert only that
+change fails verification. In the development checkout, heading scans preserve
+generated IDs by default; this default is not yet released (0.8.6 requires explicit
+permission). Eligible generated headings save an exact `permitted_id_anchor` in
+their metadata. A reviewer may insert only that
 anchor immediately before its selected heading, for example:
 
 ```adoc
@@ -578,8 +579,10 @@ anchor immediately before its selected heading, for example:
 
 Verification allows this exact addition while requiring the same section ID,
 hierarchy, order, and protected body. Existing explicit anchors remain protected;
-other anchors and reference migrations are outside this permission. Without the
-flag, only title text is editable. Scan and prompt never insert anchors or rewrite
+other anchors and reference migrations are outside this permission. No additional
+ID-preservation option is required. Previously saved permissions remain unchanged;
+start a separate new session to obtain the default permissions, keeping the old
+baseline intact. Scan and prompt never insert anchors or rewrite
 manuscripts. Numeric title changes
 are manual-review notices, and remaining candidates do not fail verification.
 `meaning_verified` remains `false`.

@@ -35,8 +35,10 @@ class ReviewScopesTest < Minitest::Test
     [code, JSON.parse(out)]
   end
 
-  def test_heading_anchor_permission_preserves_ids_and_baseline
-    scan('headings', '--preserve-heading-ids')
+  def test_default_heading_anchor_permission_preserves_ids_and_baseline
+    scan('headings')
+    manifest = JSON.parse(File.read(File.join(@session, 'manifest.json')))
+    assert_equal true, manifest['settings']['preserve_heading_ids']
     session = AsciidocPubkit::Session.new(@session)
     prompt = session.prompt('revise')
     assert_includes prompt, 'that exact anchor'
@@ -49,14 +51,14 @@ class ReviewScopesTest < Minitest::Test
     before.each { |f, bytes| assert_equal bytes, File.binread(f) }
   end
 
-  def test_default_heading_scope_still_rejects_anchor_additions
+  def test_heading_rename_without_preserving_id_is_rejected
     scan('headings')
-    File.write(@book, @source.sub('== 手動圧縮の入口', "[#_手動圧縮の入口]\n== 起動方法"))
+    File.write(@book, @source.sub('== 手動圧縮の入口', '== 起動方法'))
     assert_equal 1, verify.first
   end
 
   def test_wrong_ids_unrelated_anchors_and_body_edits_are_rejected
-    scan('headings', '--preserve-heading-ids')
+    scan('headings')
     [
       @source.sub('== 手動圧縮の入口', "[#wrong]\n== 起動方法"),
       @source.sub('本文の入口です。', "[#_手動圧縮の入口]\n本文の入口です。"),
@@ -70,18 +72,18 @@ class ReviewScopesTest < Minitest::Test
 
   def test_existing_explicit_anchor_is_not_editable
     File.write(@book, @source.sub('== 手動圧縮の入口', "[#fixed]\n== 手動圧縮の入口"))
-    scan('headings', '--preserve-heading-ids')
+    scan('headings')
     heading = JSON.parse(File.read(File.join(@session, 'document.json')))['headings'].first
     assert_nil heading['permitted_id_anchor']
     File.write(@book, @source.sub('== 手動圧縮の入口', "[#changed]\n== 起動方法"))
     assert_equal 1, verify.first
   end
 
-  def test_anchor_flag_requires_heading_scope
-    %w[prose lists].each do |scope|
+  def test_removed_anchor_flag_is_rejected
+    %w[prose headings lists].each do |scope|
       code, _, err = cli('review', 'scan', @book, '--scope', scope, '--preserve-heading-ids')
       assert_equal 2, code
-      assert_includes err, '--preserve-heading-ids requires --scope headings'
+      assert_includes err, 'invalid option: --preserve-heading-ids'
     end
   end
 
@@ -185,6 +187,20 @@ class ReviewScopesTest < Minitest::Test
     doc = JSON.parse(File.read(File.join(@session, 'document.json')))
     assert_empty doc['paragraphs']
     refute_empty doc['coverage']
+  end
+
+  def test_other_scopes_do_not_authorize_heading_anchors
+    %w[prose lists].each do |scope|
+      settings = AsciidocPubkit::Settings.new(@book, scope: scope, tokenizer: 'literal')
+      assert_equal false, settings.data['preserve_heading_ids']
+    end
+  end
+
+  def test_saved_disabled_setting_is_not_reinterpreted
+    settings = AsciidocPubkit::Settings.new(@book, scope: 'headings', tokenizer: 'literal')
+    saved_settings = settings.data.merge('preserve_heading_ids' => false)
+    document = AsciidocPubkit::Document.new(@book, saved_settings)
+    assert_nil document.headings.first['permitted_id_anchor']
   end
 
 end

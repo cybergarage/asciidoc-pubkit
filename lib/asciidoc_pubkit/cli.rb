@@ -55,7 +55,6 @@ module AsciidocPubkit
         elsif group == 'review' && %w[scan score].include?(command)
           if command == 'scan'
             opts.on('--scope SCOPE', 'prose (default), headings, or lists; separate review sessions') { |v| options[:scope] = v }
-            opts.on('--preserve-heading-ids', 'Allow exact old-ID anchors before eligible headings') { options[:preserve_heading_ids] = true }
             opts.on('--heading-rules FILE', 'Replace default heading rules with a YAML rule set') { |v| options[:heading_rules] = v }
             opts.on('-y', '--yes', 'Answer yes to replacement confirmation') { options[:yes] = true }
             opts.on('--no-input', 'Never prompt; fail on existing output unless --yes') { options[:no_input] = true }

@@ -83,7 +83,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
   existing output, and does not establish semantic correctness.
 - Keep prose and heading scan scopes separate. Prose is the default; heading
   sessions use body text as read-only evidence. Only source-mapped plain ATX
-  section title spans and opt-in exact saved old-ID anchors immediately before
+  section title spans and exact saved old-ID anchors immediately before
   eligible titles are editable in heading sessions; retain structure and
   section IDs, including generated IDs. Separate list sessions edit only mapped
   single-line simple outline item text, preserving markers and inline syntax.
