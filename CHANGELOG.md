@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.8.2 — 2026-10-02
 
 - Report replacement rule errors with the original YAML filename and one-based
   line number on the first line and the existing reason on the following line.
