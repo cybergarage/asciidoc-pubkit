@@ -59,6 +59,17 @@ terms:
     - 確かめます
     - 探します
     - 追えます
+    # Inspect retrieval, interpretation, and invocation for any object.
+    - 呼ぶ
+    - 呼びます
+    - 呼んで
+    - 呼んだ
+    - 読み取る
+    - 読み取ります
+    - 拾う
+    - 拾います
+    - 回収する
+    - 回収します
     # Construction, preparation, and combination.
     - 用意します
     - 作ります
@@ -136,6 +147,7 @@ terms:
     - わけではありません
     - 別です
     # Unusual technical translations; shared criteria own the alternatives.
+    - 木全体
     - 構築入口
     - 実装の読解
     - エラーを回収する
@@ -289,6 +301,12 @@ verbs:
   追う:
   - 追う
   - 追える
+  呼ぶ:
+  - 呼ぶ
+  読み取る:
+  - 読み取る
+  拾う:
+  - 拾う
   ある:
   - ある
 sahen:
@@ -302,6 +320,7 @@ sahen:
 - 区別
 - 解消
 - 混同
+- 回収
 negative_only:
 - 到達する
 - 意味する

@@ -184,6 +184,8 @@ module AsciidocPubkit
         After editing, reread each paragraph in context. Report unresolved issues and do not claim publication readiness.
         Mechanical verification does not establish semantic correctness.
 
+        #{review_process('paragraph', mode)}
+
         ## Shared prose criteria
 
         Apply these criteria only within the running-prose edit scope above. Their
@@ -318,6 +320,8 @@ module AsciidocPubkit
         original title, proposed title when applicable, and a short reason.
         Also track each candidate ID and its disposition. Do not claim publication readiness.
 
+        #{review_process('heading', mode)}
+
         ## Shared preservation and writing criteria
 
         The following common criteria provide meaning and terminology guidance.
@@ -370,6 +374,20 @@ module AsciidocPubkit
       end
       text << "## Verification\n\nRun `asciidoc-pubkit review verify` with this heading session directory. Report ID changes and unresolved semantic concerns. Mechanical verification keeps meaning_verified: false.\n"
       text
+    end
+
+    def review_process(unit, mode)
+      <<~TEXT
+        ## Review decisions and completion
+
+        Keep manifest.json, document.json, findings.json, and every baseline/ snapshot immutable. Restrict editing and formatting tools to the authorized source spans; never run them over the session directory.
+        Record each reviewed #{unit} ID and each candidate ID with revise, keep, or needs-evidence and a reason grounded in that passage. For keep, identify the concrete referent, operation, condition, necessary distinction, or established terminology that justifies retaining it. A shared generic reason does not establish individual review.
+        Never infer revise or keep from whether the matched string survives, disappears, or changes. Do not bulk-assign keep to unchanged #{unit}s or remaining candidates. An unreviewed item stays pending; use needs-evidence only after review identifies missing evidence.
+        Review #{unit}s without candidates against the shared criteria as well. For concerns outside the editable scope, report the location and a separate out-of-scope proposal; do not count protection as an editorial keep decision or edit protected content.
+        #{mode == 'revise' ? 'Compare the original and edited passages, check both information loss and unsupported additions, and reconcile each recorded decision with the actual diff. After verification, individually inspect newly detected or remaining candidates; retain the original candidate IDs in the review record.' : 'Compare each proposed revision with the original passage for information loss and unsupported additions. A revise decision means a proposed revision, not an applied edit.'}
+        Report mechanical preservation, candidate decisions, and #{unit}-level quality review separately. State selected and reviewed #{unit} counts, candidate decision counts, pending items, needs-evidence items, out-of-scope concerns, and evidence used. If any selected item or candidate remains pending, report the review as incomplete.
+        Mechanical verification does not read or validate these decision records. Its passed result and candidate counts do not establish review completion or writing quality; meaning_verified remains false. Do not claim semantic correctness from those checks.
+      TEXT
     end
 
     def prompt_data(data, language)

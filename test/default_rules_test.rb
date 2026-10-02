@@ -66,7 +66,7 @@ class DefaultRulesTest < Minitest::Test
       end
       assert_equal ['構築入口'], scan('構築入口。', mode).map { |f| f['match'] }
       assert_empty scan('構築入口。', mode, allows: ['構築入口'])
-      assert_empty scan('人を呼ぶ。落ち葉を拾う。信号を読み取る。', mode)
+      assert_empty scan('人を呼ぶ。落ち葉を拾う。信号を読み取る。', mode).select { |f| f['rule'] == 'contextual-phrase' }
     end
 
     define_method("test_metaphor_corpus_in_#{mode}") do
@@ -119,6 +119,46 @@ class DefaultRulesTest < Minitest::Test
       matches = ->(allows) { scan(text, mode, allows: allows).select { |f| f['rule'] == 'generic-framing' }.map { |f| f['match'] } }
       assert_equal %w[このように 要するに], matches.call([])
       assert_equal ['要するに'], matches.call(['このように'])
+    end
+  end
+
+  def test_investigated_manuscript_variants_are_detected_by_lemma
+    examples = {
+      'ツールを呼んだ。' => ['呼ぶ', '呼んだ'],
+      'ツールを呼んで処理を続けます。' => ['呼ぶ', '呼んで'],
+      'そのsystem messageから指示と宣言を読み取ります。' => ['読み取る', '読み取ります'],
+      '最後のdetailsを拾います。' => ['拾う', '拾います'],
+      'entry.typeが一致する項目を拾いました。' => ['拾う', '拾いました'],
+      'I/Oエラーは呼び出し側が回収する設計です。' => ['回収する', '回収する'],
+      'エラーを回収しません。' => ['回収する', '回収しません']
+    }
+    examples.each do |text, (lemma, surface)|
+      findings = scan(text, 'mecab').select { |f| f['lemma'] == lemma }
+      assert_equal [surface], findings.map { |f| f['match'] }, text
+      assert_equal [text.index(surface) + 1], findings.map { |f| f['column'] }
+      assert_equal surface.include?('ません'), findings.first['negative']
+      assert_empty scan(text, 'mecab', allows: [lemma]).select { |f| f['lemma'] == lemma }
+      assert_empty scan("`#{text}`。「#{text}」。", 'mecab')
+    end
+    rules = AsciidocPubkit::RuleSet.load
+    %w[呼ぶ 読み取る 拾う].each { |lemma| rules['verbs'].delete(lemma) }
+    rules['sahen'].delete('回収')
+    rules['terms'].each_value { |entry| entry['terms'] = [] }
+    rules['compound_nouns'] = []
+    settings = { 'rules' => rules, 'tokenizer' => 'mecab', 'allows' => [], 'glossary' => {}, 'style' => 'preserve' }
+    paragraph = { 'id' => 'custom', 'file' => '/example.adoc', 'line' => 1, 'text' => examples.keys.join }
+    assert_empty AsciidocPubkit::Rules.scan([paragraph], settings)
+  end
+
+  def test_tree_whole_phrase_is_independent_of_ipadic_surname_segmentation
+    %w[mecab literal].each do |mode|
+      text = "😀木全体を読むわけではなく。\n木全体を確認します。"
+      findings = scan(text, mode).select { |f| f['rule'] == 'contextual-phrase' }
+      assert_equal %w[木全体 木全体], findings.map { |f| f['match'] }
+      assert_equal [[1, 2], [2, 1]], findings.map { |f| f.values_at('line', 'column') }
+      assert_empty scan(text, mode, allows: ['木全体']).select { |f| f['rule'] == 'contextual-phrase' }
+      assert_empty scan('`木全体`。「木全体」。', mode)
+      assert_empty scan('木全さん。', mode).select { |f| f['rule'] == 'contextual-phrase' }
     end
   end
 

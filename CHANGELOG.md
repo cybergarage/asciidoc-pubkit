@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.8.4 — 2026-10-02
+
+- Require passage-specific review decisions in prose and heading prompts instead
+  of inferring keep/revise from retained strings. Leave unreviewed items pending,
+  reconcile decisions with edits or proposals, and report mechanical verification,
+  candidate handling, and editorial completion separately. Protect session files
+  and baseline snapshots from editing and formatting tools. These instructions
+  do not add automatic decision-record or semantic validation to verification.
+- Detect inflected invocation, interpretation, retrieval, and collection verbs
+  for varied objects through configured MeCab lemmas; retain contextual phrase
+  precedence, allow lists, and explicit literal-mode coverage. Add the exact
+  contextual phrase 木全体 to cover IPADIC surname segmentation.
+- Add regression cases based on investigated manuscript variants and test review
+  instructions in both scopes and modes with session artifacts kept intact.
+
 ## 0.8.3 — 2026-10-02
 
 - Refine shared Japanese writing and review criteria for established technical

@@ -7,7 +7,7 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.8.3 provides shared Japanese technical writing criteria, an authoring
+Version 0.8.4 provides shared Japanese technical writing criteria, an authoring
 prompt, separate prose and heading review prompts, manuscript scoring, and
 baseline verification for edited manuscripts, plus explicit prose-only mechanical
 replacements using a limited prh-format rule set.
@@ -16,7 +16,7 @@ Japanese text is retained in manuscript excerpts, rule dictionaries, and fixture
 
 ## Available features
 
-The following commands are available in version 0.8.3.
+The following commands are available in version 0.8.4.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -107,7 +107,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.8.3'
+gem 'asciidoc-pubkit', '~> 0.8.4'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -129,7 +129,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.8.3.gem
+gem install ./asciidoc-pubkit-0.8.4.gem
 asciidoc-pubkit --version
 ```
 
@@ -153,7 +153,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.8.3.
+review or writing criteria are shipped in 0.8.4.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
@@ -612,7 +612,21 @@ asciidoc-pubkit review prompt .pubkit/review --mode diagnose
 
 `revise` is the default and asks the agent to edit relevant prose. `diagnose` asks
 for findings and proposed revisions without editing. Both modes require the agent
-to distinguish **revise**, **keep**, and **needs-evidence** decisions.
+to distinguish **revise**, **keep**, and **needs-evidence** decisions. Each decision
+needs a passage-specific reason. Whether a matched string remains or disappears
+cannot determine that decision; unchanged paragraphs and remaining candidates
+must not receive automatic `keep` records. Unreviewed items remain pending.
+
+Version 0.8.4 prompts require the reviewer to reconcile decisions with actual
+edits (or proposed revisions in diagnose mode), review paragraphs or headings
+without candidates, and inspect newly detected or remaining candidates after
+verification. They request separate reports for mechanical preservation,
+candidate decisions, and paragraph or heading quality review, with counts and
+unresolved items. Protected-scope concerns are separate proposals, not evidence
+of editorial approval. Pending items make the review incomplete.
+These are reviewer instructions: the gem does not validate a decision ledger
+or prove that an AI or human followed the instructions. Keep session metadata
+and baseline snapshots immutable; format only authorized manuscript spans.
 
 The single Markdown output includes every selected paragraph once, in document
 order, with the shared criteria saved at scan time, candidates, saved settings,
@@ -649,7 +663,10 @@ Non-prose comparison ignores empty separator lines and trailing whitespace;
 listing, literal, and passthrough block content is additionally compared as parsed
 lines. Inline protection is heuristic, not a complete AsciiDoc inline parser.
 Successful verification does not prove meaning preservation, technical accuracy,
-or release readiness: `meaning_verified` is always `false`.
+or release readiness: `meaning_verified` is always `false`. Verification does
+not read candidate decision records or certify editorial completion. A passing
+mechanical result must be reported separately from the reviewer's quality and
+completion assessment.
 
 | Exit code | Meaning |
 | --- | --- |
@@ -1017,6 +1034,16 @@ requirements, and collecting errors from catching them. Suggested alternatives
 are not automatic replacement rules. Start a new review session to include
 updated rules and criteria; existing sessions retain their saved versions.
 
+Version 0.8.4 also configures `呼ぶ`, `読み取る`, `拾う`, and the sahen predicate
+`回収する` as weak-predicate candidates. MeCab matches their inflections for
+any object, including `指示と宣言を読み取ります` and `最後のdetailsを拾います`.
+This broadens review cues, not mandatory terminology changes; everyday and
+technically valid uses can be retained with a specific reason. Literal mode
+matches only the selected surfaces in the YAML. Longer contextual phrases take
+precedence. `木全体` is an explicit contextual phrase in both modes because
+IPADIC can parse `木全` as a surname; this narrowly addresses that segmentation
+case without treating all names or compounds containing `木` as trees.
+
 Metaphorical-operation candidates include limited exact surfaces of
 `地味に効く`, `静かに壊れる`, `時間を溶かす`, and `側に倒す`, including selected polite,
 past, and connective forms listed in the packaged YAML. They use contextual
@@ -1069,12 +1096,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.8.3 (session schema 2). Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.8.4 (session schema 2). Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.3
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.4
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship

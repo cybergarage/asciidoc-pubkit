@@ -405,6 +405,36 @@ class ReviewTest < Minitest::Test
     assert_includes output, '重要なのは'
   end
 
+  def test_review_decision_instructions_apply_to_both_scopes_and_modes
+    %w[prose headings].each do |scope|
+      scan('--scope', scope, '--yes')
+      before = %w[manifest.json document.json findings.json].to_h { |name| [name, File.binread(File.join(@session, name))] }
+      json('manifest.json')['sources'].each do |source|
+        path = source.fetch('snapshot')
+        before[path] = File.binread(File.join(@session, path))
+      end
+      %w[revise diagnose].each do |mode|
+        code, prompt, error = cli('review', 'prompt', @session, '--mode', mode)
+        assert_equal 0, code, error
+        assert_includes prompt, 'Never infer revise or keep from whether the matched string'
+        assert_includes prompt, 'An unreviewed item stays pending'
+        assert_includes prompt, 'a reason grounded in that passage'
+        assert_includes prompt, 'Keep manifest.json, document.json, findings.json, and every baseline/ snapshot immutable'
+        assert_includes prompt, 'report the review as incomplete'
+        assert_includes prompt, 'Mechanical verification does not read or validate these decision records'
+        assert_includes prompt, "Review #{scope == 'prose' ? 'paragraph' : 'heading'}s without candidates"
+        if mode == 'revise'
+          assert_includes prompt, 'reconcile each recorded decision with the actual diff'
+          assert_includes prompt, 'individually inspect newly detected or remaining candidates'
+        else
+          assert_includes prompt, 'Do not edit files.'
+          assert_includes prompt, 'a proposed revision, not an applied edit'
+        end
+      end
+      before.each { |path, content| assert_equal content, File.binread(File.join(@session, path)) }
+    end
+  end
+
   def test_prompt_preserves_all_paragraphs_and_candidates_without_duplicate_context
     scan
     code, output, error = cli('review', 'prompt', @session)

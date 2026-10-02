@@ -248,6 +248,15 @@ conditions, negation, numbers, actors, causes, and implementation requirements.
 For example, removing a unique constraint from a duplicate-message check can
 lose a concurrency requirement even when the revised paragraph sounds clearer.
 Record unresolved evidence and keep necessary repetition or qualifications.
+A review decision must come from reading the passage and checking the applicable
+criteria. A retained word does not establish a `keep` decision, and a removed
+word does not establish a satisfactory revision. Give passage-specific reasons
+for retaining terminology, conditions, and distinctions; leave unreviewed items
+pending rather than filling them with generic maintenance reasons. Compare the
+actual revision with the original claim, including paragraphs without machine
+candidates. Keep unresolved evidence and protected-scope proposals visible in
+the completion report.
+
 No candidate count or mechanical verification result proves semantic correctness.
 Sentence length, punctuation, and list density can help locate passages to read;
 they are not fixed acceptance thresholds. Keep lists for parallel items and
