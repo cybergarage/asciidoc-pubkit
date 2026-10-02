@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.8.5 — 2026-10-02
 
 - Refine role-metaphor guidance for 入口: consider the actual creation, invocation,
   configuration, reference, learning, or entry-point role even with a clear

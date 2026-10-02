@@ -7,7 +7,7 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.8.4 provides shared Japanese technical writing criteria, an authoring
+Version 0.8.5 provides shared Japanese technical writing criteria, an authoring
 prompt, separate prose and heading review prompts, manuscript scoring, and
 baseline verification for edited manuscripts, plus explicit prose-only mechanical
 replacements using a limited prh-format rule set.
@@ -16,7 +16,7 @@ Japanese text is retained in manuscript excerpts, rule dictionaries, and fixture
 
 ## Available features
 
-The following commands are available in version 0.8.4.
+The following commands are available in version 0.8.5.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -107,7 +107,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.8.4'
+gem 'asciidoc-pubkit', '~> 0.8.5'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -129,7 +129,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.8.4.gem
+gem install ./asciidoc-pubkit-0.8.5.gem
 asciidoc-pubkit --version
 ```
 
@@ -153,7 +153,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.8.4.
+review or writing criteria are shipped in 0.8.5.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
@@ -624,7 +624,7 @@ verification. They request separate reports for mechanical preservation,
 candidate decisions, and paragraph or heading quality review, with counts and
 unresolved items. Protected-scope concerns are separate proposals, not evidence
 of editorial approval. Pending items make the review incomplete.
-The current source further requires an individual role or claim, located
+Version 0.8.5 further requires an individual role or claim, located
 evidence, a considered direct alternative, and the rationale for each candidate
 decision. A stock reason with an appended quotation is insufficient. For `入口`,
 the shared criteria ask whether creation, invocation, configuration, reference,
@@ -1029,7 +1029,7 @@ These are candidates for contextual review, not banned expressions. A necessary
 condition, uncertainty, or distinction must survive a revision; a redundant
 disclaimer can instead be removed or folded into a more precise main claim.
 
-The current source extends the existing `入口` question and shared criteria
+Version 0.8.5 extends the existing `入口` question and shared criteria
 without adding another prose matcher. A known referent alone does not justify
 vague role wording; direct alternatives are evaluated against the actual
 operation, conditions, and technical usage. The heading `heading-vague-topic`
@@ -1062,7 +1062,7 @@ precedence. `木全体` is an explicit contextual phrase in both modes because
 IPADIC can parse `木全` as a surname; this narrowly addresses that segmentation
 case without treating all names or compounds containing `木` as trees.
 
-The current source additionally reviews `拡張点`, `使えます`, `積み重なります`,
+Version 0.8.5 additionally reviews `拡張点`, `使えます`, `積み重なります`,
 `開放しています`, `見落とします`, `扱えます`, `使っています`, and selected indirect
 phrases. Existing tracking rules cover `追えます`. MeCab uses configured lemmas
 for use, potential handling, accumulation, oversight, and sahen opening;
@@ -1070,7 +1070,7 @@ literal mode uses the listed surfaces. The shared examples distinguish an
 extension point from its mechanism, layers from a stack, system detection from
 human oversight, and processing from control. Revisions preserve actors,
 capabilities and obligations, sequence, visibility, counts, and distribution.
-These unreleased additions need a fresh scan and are contextual review guidance.
+These additions need a fresh scan and are contextual review guidance.
 
 Metaphorical-operation candidates include limited exact surfaces of
 `地味に効く`, `静かに壊れる`, `時間を溶かす`, and `側に倒す`, including selected polite,
@@ -1124,12 +1124,12 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.8.4 (session schema 2). Keep the original baseline for
+Sessions from earlier tool versions are not compatible with 0.8.5 (session schema 2). Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.4
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.5
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship
