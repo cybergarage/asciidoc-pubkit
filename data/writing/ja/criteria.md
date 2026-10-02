@@ -76,10 +76,24 @@ For everyday verbs, identify the operation before choosing terminology:
 | 設定を書く・設定を書きます | 設定を記述する・定義する for authoring a definition; 設定する for actually configuring something |
 | 値を拾う | 取得する for retrieval; 抽出する for selection from existing data |
 | 切り出す合図です | 切り出す目安です for a judgment criterion; シグナルです only for an actual signal |
+| インタフェースから使えます | 利用できます when describing availability through the interface; retain the actor and capability |
+| 拡張機構が積み重なります | 階層化されています only for established layers; スタックを構成しています only for an actual stack and its ordering |
+| 拡張点として開放しています | 提供しています for offering an extension facility; 公開しています for exposing access, preserving any access restrictions |
+| 自動継続を途中で切らずに一巡を追えます | 追跡できます・トレースできます when following the sequence; preserve the complete cycle and uninterrupted continuation |
+| 再試行を見落とします | 検知漏れが生じます・捕捉漏れが発生します for a system's detection failure; 見落とすリスクがあります for a human's possible oversight |
+| 差分を隠しすぎずに扱えます | 処理できます for processing; 制御できます only when control is available, preserving how much difference remains visible |
+| 通知文に使っています | 用いられています when the use is the focus and the actor is recoverable; retain active voice when who uses it matters |
 
 A familiar verb is not wrong merely because it is simple. Prefer the most direct
 accurate verb; do not introduce jargon or claim parsing, execution, or a state
 change that the evidence does not establish.
+
+Layering and a stack are different structural claims. Do not infer either from
+an accumulation metaphor alone. Tracking is more specific than confirmation;
+retain ordering and continuity instead of shortening it to `確認できます`.
+Distinguish an observed detection failure from a risk of human oversight: do not
+turn a definite failure into a possibility or assign human observation to a
+system. Active and passive voice must preserve the same actor and responsibility.
 
 Do not choose a more impressive synonym merely to vary sentence endings. Keep
 the technically correct verb when it names the real operation.
@@ -175,6 +189,16 @@ Inspect indirect predicates and author-centered emphasis as well:
 
 - Simplify `無効化したりできます` to `無効化できます` when it describes a single
   capability. Preserve `たり` when it marks a meaningful non-exhaustive list.
+- Simplify `切り替えで扱えます` to `切り替えられます` when switching is the
+  capability itself. Preserve the subject, alternatives, and any separate
+  operation enabled by switching.
+- For `三点に分かれて現れます`, identify what the three points represent. Use
+  `3か所に分散します` for distributed locations or `3つの要素として定義されます`
+  for defined elements only when that structure is established. Keep the count,
+  separation, and relationships; `現れます` alone loses structural information.
+- Simplify `担保しなければなりません` to `担保が必要です` only when the guaranteed
+  property, responsible actor, and requirement remain explicit. A noun phrase
+  must not hide who must establish the guarantee or weaken an obligation.
 - For `提供することが前提です`, identify whose prerequisite or assumption is
   stated. Use `提供する必要があります` only when the source establishes an actual
   requirement; do not turn an assumption into an obligation.
@@ -218,10 +242,16 @@ Review unusual translations against the actual concept:
 | Wording to inspect | Context-dependent terminology |
 | --- | --- |
 | 木 | ツリー when referring to the data structure; keep literal trees and established mathematical usage |
+| 拡張点 | 拡張ポイント for the specific extension location or interface; 拡張機構 for the broader mechanism only when that is the intended referent |
 | 構築入口 | ビルドのエントリポイント only when the entry point starts a build, not object construction or initialization |
 | 実装の読解 | コードリーディング for reading code; 実装の解析 when analysis is the actual task |
 | エラーを回収する | エラーを捕捉する for catching; ハンドリングする for handling; preserve aggregation or collection when that is the behavior |
 | 介入パターン | フックパターン only when a hook mechanism is established, not arbitrary human intervention |
+
+An extension point and an extension mechanism can denote different scopes.
+Keep `拡張点` when it is the project's established term and its referent is clear;
+choose terminology for the actual interface or mechanism rather than replacing
+all occurrences with a broader term.
 
 These alternatives are not interchangeable replacements. Confirm the operation
 and the domain's established usage from code, the glossary, or primary

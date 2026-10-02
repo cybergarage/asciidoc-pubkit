@@ -1044,6 +1044,16 @@ precedence. `木全体` is an explicit contextual phrase in both modes because
 IPADIC can parse `木全` as a surname; this narrowly addresses that segmentation
 case without treating all names or compounds containing `木` as trees.
 
+The current source additionally reviews `拡張点`, `使えます`, `積み重なります`,
+`開放しています`, `見落とします`, `扱えます`, `使っています`, and selected indirect
+phrases. Existing tracking rules cover `追えます`. MeCab uses configured lemmas
+for use, potential handling, accumulation, oversight, and sahen opening;
+literal mode uses the listed surfaces. The shared examples distinguish an
+extension point from its mechanism, layers from a stack, system detection from
+human oversight, and processing from control. Revisions preserve actors,
+capabilities and obligations, sequence, visibility, counts, and distribution.
+These unreleased additions need a fresh scan and are contextual review guidance.
+
 Metaphorical-operation candidates include limited exact surfaces of
 `地味に効く`, `静かに壊れる`, `時間を溶かす`, and `側に倒す`, including selected polite,
 past, and connective forms listed in the packaged YAML. They use contextual

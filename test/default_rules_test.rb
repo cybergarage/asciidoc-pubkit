@@ -69,6 +69,31 @@ class DefaultRulesTest < Minitest::Test
       assert_empty scan('人を呼ぶ。落ち葉を拾う。信号を読み取る。', mode).select { |f| f['rule'] == 'contextual-phrase' }
     end
 
+    define_method("test_extension_wording_candidates_in_#{mode}") do
+      examples = {
+        '拡張点' => ['contextual-phrase', '拡張点'],
+        'インタフェースから使えます' => ['weak-predicate', '使えます'],
+        '拡張機構が積み重なります' => ['weak-predicate', '積み重なります'],
+        '拡張点として開放しています' => ['weak-predicate', '開放しています'],
+        '自動継続を途中で切らずに一巡を追えます' => ['weak-predicate', '追えます'],
+        '再試行を見落とします' => ['weak-predicate', '見落とします'],
+        '差分を隠しすぎずに扱えます' => ['weak-predicate', '扱えます'],
+        '通知文に使っています' => ['weak-predicate', '使っています'],
+        '切り替えで扱えます' => ['contextual-phrase', '切り替えで扱えます'],
+        '三点に分かれて現れます' => ['contextual-phrase', '分かれて現れます'],
+        '整合性を担保しなければなりません' => ['contextual-phrase', '担保しなければなりません']
+      }
+      examples.each do |text, (rule, surface)|
+        findings = scan("😀#{text}。", mode).select { |f| f['rule'] == rule && f['match'] == surface }
+        assert_equal 1, findings.length, "#{mode}: #{text}"
+        assert_equal text.index(surface) + 2, findings.first['column']
+        assert_empty scan(text + '。', mode, allows: [surface]).select { |f| f['match'] == surface }
+        assert_empty scan("`#{text}`。「#{text}」。", mode)
+      end
+      assert_equal ['切り替えで扱えます'], scan('切り替えで扱えます。', mode).map { |f| f['match'] }
+      assert_empty scan('切り替えで扱えます。', mode, allows: ['切り替えで扱えます'])
+    end
+
     define_method("test_metaphor_corpus_in_#{mode}") do
       corpus = JSON.parse(File.read(File.join(__dir__, 'fixtures/prose_evaluation.ja.json')))
       corpus.fetch('detection_cases').each do |entry|
@@ -148,6 +173,24 @@ class DefaultRulesTest < Minitest::Test
     settings = { 'rules' => rules, 'tokenizer' => 'mecab', 'allows' => [], 'glossary' => {}, 'style' => 'preserve' }
     paragraph = { 'id' => 'custom', 'file' => '/example.adoc', 'line' => 1, 'text' => examples.keys.join }
     assert_empty AsciidocPubkit::Rules.scan([paragraph], settings)
+  end
+
+  def test_extension_operation_inflections_and_canonical_allow_lists
+    examples = {
+      '使えなかった。' => ['使う', '使えなかった', true],
+      '使っていた。' => ['使う', '使っていた', false],
+      '扱えません。' => ['扱う', '扱えません', true],
+      '積み重なっていた。' => ['積み重なる', '積み重なっていた', false],
+      '見落とさなかった。' => ['見落とす', '見落とさなかった', true],
+      '開放していません。' => ['開放する', '開放していません', true]
+    }
+    examples.each do |text, (lemma, surface, negative)|
+      findings = scan(text, 'mecab').select { |f| f['rule'] == 'weak-predicate' }
+      assert_equal [surface], findings.map { |f| f['match'] }
+      assert_equal lemma, findings.first['lemma']
+      assert_equal negative, findings.first['negative']
+      assert_empty scan(text, 'mecab', allows: [lemma])
+    end
   end
 
   def test_tree_whole_phrase_is_independent_of_ipadic_surname_segmentation

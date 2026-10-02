@@ -314,7 +314,7 @@ class ReviewTest < Minitest::Test
     scan('--lang', 'ja')
     saved = json('manifest.json')['writing_criteria']
     assert_includes saved, 'Keep claims within their evidence and purpose'
-    %w[構築入口 ツールを呼ぶ 無効化したりできます 設計の肝です].each do |example|
+    %w[構築入口 ツールを呼ぶ 無効化したりできます 設計の肝です 拡張点 見落とします 分かれて現れます].each do |example|
       assert_includes saved, example
     end
     code, prompt, error = cli('review', 'prompt', @session, '--lang', 'ja')

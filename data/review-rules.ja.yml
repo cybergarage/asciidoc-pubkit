@@ -41,7 +41,10 @@ terms:
     terms:
     # Use, interpretation, and understanding (literal-mode surfaces).
     - 利用します
+    - 使えます
+    - 使っています
     - 扱います
+    - 扱えます
     - 扱いません
     - 意味しません
     - 把握します
@@ -58,6 +61,7 @@ terms:
     - 調べられます
     - 確かめます
     - 探します
+    - 見落とします
     - 追えます
     # Inspect retrieval, interpretation, and invocation for any object.
     - 呼ぶ
@@ -75,6 +79,8 @@ terms:
     - 作ります
     - 組み立てられます
     - 組み合わせます
+    - 積み重なります
+    - 開放しています
     - 成り立たせています
     # Organization, comparison, and selection.
     - 整理します
@@ -153,6 +159,7 @@ terms:
     - エラーを回収する
     - エラーを回収します
     - 介入パターン
+    - 拡張点
     # Object-specific everyday verbs, not general bans on these verbs.
     - ツールを呼ぶ
     - ツールを呼びます
@@ -166,6 +173,10 @@ terms:
     # Indirect capabilities and prerequisites; preserve their modality.
     - したりできます
     - することが前提です
+    # Preserve capability, distributed structure, and the responsible actor.
+    - 切り替えで扱えます
+    - 分かれて現れます
+    - 担保しなければなりません
     # Compressed noun relationships; suggestions are not automatic replacements.
     - 明示選択
     - 欠落理由
@@ -218,6 +229,14 @@ terms:
 verbs:
   扱う:
   - 扱う
+  - 扱える
+  使う:
+  - 使う
+  - 使える
+  積み重なる:
+  - 積み重なる
+  見落とす:
+  - 見落とす
   示す:
   - 示す
   変わる:
@@ -321,6 +340,7 @@ sahen:
 - 解消
 - 混同
 - 回収
+- 開放
 negative_only:
 - 到達する
 - 意味する

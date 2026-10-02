@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Add contextual Japanese revision examples for extension terminology, exposed
+  interfaces, layered structures, process tracking, missed events, processing,
+  and concise capabilities or obligations. Preserve actors, modality, ordering,
+  visibility, counts, and structural distinctions when choosing alternatives.
+- Add extension and indirect-expression candidates, reuse existing tracking
+  predicates, and extend configured use/handling potential forms and selected
+  operation lemmas with literal-mode surfaces.
+
 ## 0.8.4 — 2026-10-02
 
 - Require passage-specific review decisions in prose and heading prompts instead
