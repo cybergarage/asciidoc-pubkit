@@ -66,6 +66,21 @@ Prefer a precise action or consequence:
 - `結果を残します` becomes `実行したコマンドと結果をプルリクエストへ記録します`
   when that is the storage location.
 
+For everyday verbs, identify the operation before choosing terminology:
+
+| Wording to inspect | Revision when supported by context |
+| --- | --- |
+| ツールを呼ぶ | 呼び出す for invocation; 実行する only for execution |
+| 責務を持つ | 責務を担う when describing responsibility, not stored state or ownership |
+| 指示を読み取る | 解析する for parsing or analysis; 抽出する for selecting information |
+| 設定を書く・設定を書きます | 設定を記述する・定義する for authoring a definition; 設定する for actually configuring something |
+| 値を拾う | 取得する for retrieval; 抽出する for selection from existing data |
+| 切り出す合図です | 切り出す目安です for a judgment criterion; シグナルです only for an actual signal |
+
+A familiar verb is not wrong merely because it is simple. Prefer the most direct
+accurate verb; do not introduce jargon or claim parsing, execution, or a state
+change that the evidence does not establish.
+
 Do not choose a more impressive synonym merely to vary sentence endings. Keep
 the technically correct verb when it names the real operation.
 
@@ -156,6 +171,27 @@ Common patterns that merit paragraph-level review include:
 Keep a contrast when the two alternatives and the difference that affects the
 decision are explicit. Keep necessary repetition when it improves technical
 accuracy.
+Inspect indirect predicates and author-centered emphasis as well:
+
+- Simplify `無効化したりできます` to `無効化できます` when it describes a single
+  capability. Preserve `たり` when it marks a meaningful non-exhaustive list.
+- For `提供することが前提です`, identify whose prerequisite or assumption is
+  stated. Use `提供する必要があります` only when the source establishes an actual
+  requirement; do not turn an assumption into an obligation.
+- For `宣言することは別です`, name what is compared and how it differs. A form such
+  as `宣言することとは異なります` needs an explicit, correctly oriented comparison.
+- For `そうではありません`, state the specific fact or negate the specific claim.
+  `実際には異なります` alone can retain the same missing referent. Preserve negation.
+- For `〜が見えてきます`, state the property the explanation makes identifiable.
+  `理解しやすくなります` is still a reader-effect claim that needs support; retain
+  literal visibility when discussing a display or visualization.
+- For `理由がここにあります`, connect the cause and result directly, for example
+  `これが〜の理由です` when `これ` has a clear referent.
+- For `設計の肝です`, identify the central responsibility or design decision.
+  `重要なポイントです` is not sufficient when it merely replaces one emphasis
+  phrase with another. Remove emotional, essay-like, or promotional emphasis
+  that supplies no technical fact; retain supported judgments and their basis.
+
 Do not shorten sentences or vary endings mechanically. Read the sequence aloud
 and repair the missing relationship rather than replacing one stock pattern
 with another.
@@ -170,11 +206,26 @@ glossary, and primary documentation before changing it.
 - Distinguish resource ownership from the responsibility to close or stop it.
 - Use the project's chosen forms consistently, such as `goroutine` versus
   `ゴルーチン`, or `reflection` versus `リフレクション`.
-- Replace unnecessary English words with established Japanese terms, but retain
-  identifiers and official names.
+- Prefer established terminology in the technical domain, whether Japanese or
+  katakana. Avoid forced literal translations and unnecessary English; retain
+  identifiers, official names, and the project's chosen terminology.
 - Do not describe a language operation with a loose everyday verb when the
   domain has a precise term, such as name shadowing, method promotion, parsing,
   serialization, cancellation, or resource release.
+
+Review unusual translations against the actual concept:
+
+| Wording to inspect | Context-dependent terminology |
+| --- | --- |
+| 木 | ツリー when referring to the data structure; keep literal trees and established mathematical usage |
+| 構築入口 | ビルドのエントリポイント only when the entry point starts a build, not object construction or initialization |
+| 実装の読解 | コードリーディング for reading code; 実装の解析 when analysis is the actual task |
+| エラーを回収する | エラーを捕捉する for catching; ハンドリングする for handling; preserve aggregation or collection when that is the behavior |
+| 介入パターン | フックパターン only when a hook mechanism is established, not arbitrary human intervention |
+
+These alternatives are not interchangeable replacements. Confirm the operation
+and the domain's established usage from code, the glossary, or primary
+documentation; record uncertainty rather than inventing a mechanism.
 
 Natural Japanese must not erase a technical distinction. If the original claim
 is ambiguous, inspect the code or authoritative documentation before editing.

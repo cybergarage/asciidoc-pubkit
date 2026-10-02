@@ -1005,6 +1005,18 @@ These are candidates for contextual review, not banned expressions. A necessary
 condition, uncertainty, or distinction must survive a revision; a redundant
 disclaimer can instead be removed or folded into a more precise main claim.
 
+The current source also includes scoped candidates such as `構築入口`,
+`エラーを回収する`, `ツールを呼ぶ`, `したりできます`, and `設計の肝`.
+These additions use the exact surfaces listed in the YAML in both modes;
+they do not add general inflection coverage or ban everyday verbs. Existing
+`木`, `持つ`, `書く`, `別です`, and `ではありません` rules cover related examples.
+The shared criteria explain context-dependent terminology, precise operations,
+direct predicates, and objective tone. They distinguish invocation from
+execution, configuration text from configuration changes, assumptions from
+requirements, and collecting errors from catching them. Suggested alternatives
+are not automatic replacement rules. Start a new review session to include
+updated rules and criteria; existing sessions retain their saved versions.
+
 Metaphorical-operation candidates include limited exact surfaces of
 `地味に効く`, `静かに壊れる`, `時間を溶かす`, and `側に倒す`, including selected polite,
 past, and connective forms listed in the packaged YAML. They use contextual

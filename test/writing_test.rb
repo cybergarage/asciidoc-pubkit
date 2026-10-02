@@ -23,6 +23,11 @@ class WritingTest < Minitest::Test
     assert_includes prompt, 'Language: ja'
     assert_includes prompt, 'Keep claims within their evidence and purpose'
     assert_includes prompt, 'Headings and the relation to figures and code'
+    %w[構築入口 エラーを回収する ツールを呼ぶ 提供することが前提です 設計の肝です].each do |example|
+      assert_includes criteria, example
+      assert_includes prompt, example
+    end
+    assert_includes prompt, 'do not turn an assumption into an obligation'
     refute_includes prompt, 'Migrated OSS prose style profile'
   end
 

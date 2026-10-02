@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Refine shared Japanese writing and review criteria for established technical
+  terminology, precise operations, direct predicates, and evidence-based tone.
+  Preserve distinctions between assumptions, requirements, and capabilities.
+- Add scoped review candidates for unusual translations, everyday operation
+  wording, indirect predicates, and author-centered emphasis; reuse existing
+  noun, verb, and qualification rules instead of fixed automatic replacements.
+
 ## 0.8.2 — 2026-10-02
 
 - Report replacement rule errors with the original YAML filename and one-based

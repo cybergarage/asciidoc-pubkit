@@ -135,6 +135,25 @@ terms:
     # Retain this specific phrase for existing allow lists and fuller evidence.
     - わけではありません
     - 別です
+    # Unusual technical translations; shared criteria own the alternatives.
+    - 構築入口
+    - 実装の読解
+    - エラーを回収する
+    - エラーを回収します
+    - 介入パターン
+    # Object-specific everyday verbs, not general bans on these verbs.
+    - ツールを呼ぶ
+    - ツールを呼びます
+    - 責務を持つ
+    - 指示を読み取る
+    - 指示を読み取ります
+    - 設定を書く
+    - 値を拾う
+    - 値を拾います
+    - 切り出す合図です
+    # Indirect capabilities and prerequisites; preserve their modality.
+    - したりできます
+    - することが前提です
     # Compressed noun relationships; suggestions are not automatic replacements.
     - 明示選択
     - 欠落理由
@@ -158,7 +177,8 @@ terms:
     - でもありません
     - してはいけません
     - 表してはいません
-    question: Check whether the phrase adds a condition that changes the reader's
+    question: Apply the shared prose criteria to terminology, operation wording,
+      indirect predicates, and qualifications. Check whether the phrase adds a condition that changes the reader's
       interpretation or action. If it only denies an overbroad reading already
       excluded by the main claim, revise that claim or remove the qualification.
       Preserve necessary negation, uncertainty, and technical boundaries. For
@@ -176,6 +196,10 @@ terms:
     - まとめると
     - このように
     - 要するに
+    # Author-centered discovery, indirect explanation, and unsupported emphasis.
+    - 見えてきます
+    - 理由がここにあります
+    - 設計の肝
     question: Check whether this opening or recap adds a claim, scope, or consequence
       beyond the surrounding prose. Keep useful framing; otherwise state the
       substantive claim directly. Do not force a uniform sentence pattern.

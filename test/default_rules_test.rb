@@ -31,6 +31,44 @@ class DefaultRulesTest < Minitest::Test
   end
 
   %w[mecab literal].each do |mode|
+    define_method("test_technical_wording_candidates_in_#{mode}") do
+      examples = {
+        '木' => 'abstract-reference',
+        '構築入口' => 'contextual-phrase',
+        '実装の読解' => 'contextual-phrase',
+        'エラーを回収する' => 'contextual-phrase',
+        '介入パターン' => 'contextual-phrase',
+        'ツールを呼ぶ' => 'contextual-phrase',
+        '責務を持つ' => 'contextual-phrase',
+        '指示を読み取る' => 'contextual-phrase',
+        '設定を書く' => 'contextual-phrase',
+        '値を拾う' => 'contextual-phrase',
+        '切り出す合図です' => 'contextual-phrase',
+        '設定を書きます' => 'weak-predicate',
+        '無効化したりできます' => 'contextual-phrase',
+        '提供することが前提です' => 'contextual-phrase',
+        '宣言することは別です' => 'contextual-phrase',
+        'そうではありません' => 'contextual-phrase',
+        '構造が見えてきます' => 'generic-framing',
+        '理由がここにあります' => 'generic-framing',
+        '設計の肝です' => 'generic-framing'
+      }
+      examples.each do |phrase, rule|
+        findings = scan("😀#{phrase}。", mode).select { |f| f['rule'] == rule }
+        assert_equal 1, findings.length, "#{mode}: #{phrase}"
+        finding = findings.first
+        assert_equal finding['match'], "😀#{phrase}。"[finding['column'] - 1, finding['match'].length]
+        assert_empty scan("`#{phrase}`。「#{phrase}」。", mode)
+      end
+      %w[エラーを回収します ツールを呼びます 指示を読み取ります 値を拾います].each do |phrase|
+        assert_equal [phrase], scan(phrase + '。', mode).map { |f| f['match'] }
+        assert_empty scan(phrase + '。', mode, allows: [phrase])
+      end
+      assert_equal ['構築入口'], scan('構築入口。', mode).map { |f| f['match'] }
+      assert_empty scan('構築入口。', mode, allows: ['構築入口'])
+      assert_empty scan('人を呼ぶ。落ち葉を拾う。信号を読み取る。', mode)
+    end
+
     define_method("test_metaphor_corpus_in_#{mode}") do
       corpus = JSON.parse(File.read(File.join(__dir__, 'fixtures/prose_evaluation.ja.json')))
       corpus.fetch('detection_cases').each do |entry|
