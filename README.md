@@ -7,8 +7,8 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.8.5 provides shared Japanese technical writing criteria, an authoring
-prompt, separate prose and heading review prompts, manuscript scoring, and
+Version 0.8.6 provides shared Japanese technical writing criteria, an authoring
+prompt, separate prose, heading, and list review prompts, manuscript scoring, and
 baseline verification for edited manuscripts, plus explicit prose-only mechanical
 replacements using a limited prh-format rule set.
 The CLI, diagnostics, documentation, and generated instructions are in English.
@@ -16,7 +16,7 @@ Japanese text is retained in manuscript excerpts, rule dictionaries, and fixture
 
 ## Available features
 
-The following commands are available in version 0.8.5.
+The following commands are available in version 0.8.6.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -108,7 +108,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.8.5'
+gem 'asciidoc-pubkit', '~> 0.8.6'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -130,7 +130,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.8.5.gem
+gem install ./asciidoc-pubkit-0.8.6.gem
 asciidoc-pubkit --version
 ```
 
@@ -154,7 +154,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.8.5.
+review or writing criteria are shipped in 0.8.6.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
@@ -584,7 +584,7 @@ manuscripts. Numeric title changes
 are manual-review notices, and remaining candidates do not fail verification.
 `meaning_verified` remains `false`.
 
-The development session schema is now 3. Earlier sessions must be recreated; preserve or
+Version 0.8.6 uses session schema 3. Earlier sessions must be recreated; preserve or
 finish an ongoing review with its original tool before establishing a new baseline.
 `review score` continues to support prose only and rejects `--scope`.
 
@@ -1139,13 +1139,13 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-The development checkout uses session schema 3; published 0.8.5 uses schema 2.
+Version 0.8.6 uses session schema 3; version 0.8.5 uses schema 2.
 Sessions with a different schema or tool version cannot be loaded. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.5
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-0.8.6
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship

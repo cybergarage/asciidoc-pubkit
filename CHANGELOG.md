@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.8.6 — 2026-10-02
 
 - Add separate `review scan --scope lists` sessions for source-mapped single-line
   outline list text. Preserve markers, structure, inline tokens, and other scopes;
@@ -8,7 +8,7 @@
 - Add opt-in `--preserve-heading-ids` for heading scans. Save exact old-ID anchor
   permissions and verify only those additions immediately before their selected
   headings while retaining section IDs, structure, and protected body content.
-- Advance development sessions to schema 3; retain prior baselines and finish
+- Advance sessions to schema 3; retain prior baselines and finish
   ongoing reviews with their original tool and schema.
 
 ## 0.8.5 — 2026-10-02
