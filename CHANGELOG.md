@@ -1,11 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.8.7 — 2026-10-02
 
 - Make exact saved old-ID anchor permissions standard for eligible heading
   scans. Remove `--preserve-heading-ids`; continue protecting existing anchors,
   section IDs, structure, and body content. Existing session permissions and
   baselines remain unchanged.
+- Tell prose reviewers in scan output and generated prompts to review list text
+  in a separate `--scope lists` session without replacing the prose baseline.
 
 ## 0.8.6 — 2026-10-02
 

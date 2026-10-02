@@ -215,6 +215,7 @@ module AsciidocPubkit
 
         Only source-mapped running-prose paragraphs are reviewed. Inline macros and literal spans are masked by a conservative heuristic.
         Headings, lists, tables, quotations, code, and passthrough blocks are not prose-reviewed in this release.
+        #{list_scope ? "" : "List text requires a separate review scan with --scope lists. Preserve this baseline and use a different session directory; do not count excluded lists as reviewed."}
         This is a local correction task, not a chapter-restructuring task.
         Coverage notices: #{@document['coverage'].length}
 

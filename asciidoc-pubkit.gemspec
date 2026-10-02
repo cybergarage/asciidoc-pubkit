@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = 'asciidoc-pubkit'
-  spec.version = '0.8.6'
+  spec.version = '0.8.7'
   spec.summary = 'Japanese writing and review tools for AsciiDoc books'
   spec.description = 'Generate Japanese technical writing prompts, review AsciiDoc prose, section headings, and list text separately, verify protected manuscript content, and explicitly apply prose-only mechanical replacements.'
   spec.authors = ['CyberGarage']

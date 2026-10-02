@@ -132,6 +132,7 @@ module AsciidocPubkit
           out.puts "Scanned #{result['paragraphs']} list items; found #{result['findings']} review candidates."
         else
           out.puts "Scanned #{result['paragraphs']} paragraphs; found #{result['findings']} review candidates."
+          out.puts "List text is excluded. Review it in a separate session with --scope lists."
         end
         out.puts "Tokenizer: #{result['tokenizer']}#{result['tokenizer'] == 'literal' ? ' (limited phrase matching; no morphological analysis)' : ' (UTF-8 IPADIC)'}"
         out.puts "Coverage notices: #{result['coverage_notices']}. See document.json for limitations."

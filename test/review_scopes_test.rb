@@ -203,4 +203,15 @@ class ReviewScopesTest < Minitest::Test
     assert_nil document.headings.first['permitted_id_anchor']
   end
 
+  def test_prose_scan_and_prompt_direct_reviewers_to_separate_list_review
+    code, out, err = cli('review', 'scan', @book, '--scope', 'prose', '--tokenizer', 'literal', '--output', @session)
+    assert_equal 0, code, err
+    assert_includes out, 'List text is excluded.'
+    assert_includes out, '--scope lists'
+    prompt = AsciidocPubkit::Session.new(@session).prompt('revise')
+    assert_includes prompt, 'List text requires a separate review scan with --scope lists.'
+    assert_includes prompt, 'Preserve this baseline and use a different session directory'
+    refute_includes prompt, 'link:https://example.com[資料]'
+  end
+
 end
