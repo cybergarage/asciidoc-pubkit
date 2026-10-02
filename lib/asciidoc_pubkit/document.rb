@@ -64,6 +64,15 @@ module AsciidocPubkit
           true
         end
         nodes.each { |node| collect(node) }
+        if scope == 'lists'
+          reused = @paragraphs.group_by { |p| [p['file'], p['line']] }.select { |_, group| group.length > 1 }
+          @paragraphs.reject! do |paragraph|
+            next false unless reused.key?([paragraph['file'], paragraph['line']])
+            @coverage << { 'context' => 'list_item', 'file' => paragraph['file'], 'line' => paragraph['line'],
+                           'reason' => 'The source list item is reused and cannot be edited independently.' }
+            true
+          end
+        end
       ensure
         Asciidoctor::LoggerManager.logger = previous_logger
       end
@@ -110,14 +119,80 @@ module AsciidocPubkit
         @coverage << { 'context' => 'heading', 'file' => path, 'line' => line, 'reason' => 'Excluded by configuration.' }
         return
       end
+      section_id = node.id
+      generated = section_id && !node.attributes.key?('id')
+      anchor = if @settings['preserve_heading_ids'] && generated && section_id.match?(/\A[\p{L}\p{N}_.:-]+\z/)
+                 "[##{section_id}]"
+               end
       @headings << { 'id' => AsciidocPubkit.hash_text([path, line, match[2]].join("\0"))[0, 16],
                      'index' => index, 'parent_index' => parent_index,
                      'file' => path, 'line' => line, 'column' => match[1].length + 1,
                      'prefix' => match[1], 'suffix' => match[3], 'level' => node.level,
-                     'section_id' => node.id, 'text' => match[2] }
+                     'section_id' => section_id, 'id_generated' => !!generated, 'permitted_id_anchor' => anchor, 'text' => match[2] }
+    end
+
+    def collect_list_item(node)
+      cursor = node.source_location
+      path, line = cursor && [cursor.file, cursor.lineno]
+      parent = node.parent
+      supported = %i[ulist olist].include?(parent.context)
+      while parent
+        supported = false if %i[quote verse table listing literal pass dlist colist].include?(parent.context)
+        parent = parent.parent
+      end
+      # ListItem#text applies substitutions; read through the public subs API.
+      original_subs = node.subs.dup
+      begin
+        node.subs.clear
+        text = node.text
+      ensure
+        node.subs.replace(original_subs)
+      end
+      raw = path && @source_lines[path] && @source_lines[path][line - 1]
+      pattern = node.marker && /\A([ \t]*#{Regexp.escape(node.marker)}[ \t]+)(.*?)([ \t]*)\z/
+      match = raw && pattern && raw.match(pattern)
+      # Include boundaries can leave the cursor on the include directive.
+      # Recover a unique physical span; repeated use is rejected after collection.
+      if supported && node.simple? && text && !text.include?("\n") && pattern && (!match || match[2] != text)
+        candidates = @source_lines.flat_map do |source_path, lines|
+          lines.each_with_index.filter_map do |source_line, offset|
+            candidate = source_line.match(pattern)
+            [source_path, offset + 1, candidate] if candidate && candidate[2] == text
+          end
+        end
+        path, line, match = candidates.first if candidates.length == 1
+      end
+      unless supported && node.simple? && text && !text.include?("\n") && match && match[2] == text && !text.empty?
+        @coverage << { 'context' => 'list_item', 'file' => path, 'line' => line,
+                       'reason' => 'Only unambiguously mapped, single-line outline list text with simple content is editable.' }
+        return
+      end
+      return if @only && @only != path
+      relative = Pathname.new(path).relative_path_from(Pathname.new(@root)).to_s
+      return if @settings.fetch('exclude').any? { |glob| File.fnmatch?(glob, relative, File::FNM_PATHNAME | File::FNM_DOTMATCH) }
+      headings = []
+      section_index = nil
+      parent = node.parent
+      while parent
+        if parent.context == :section && parent.title
+          headings.unshift(parent.title)
+          section_index ||= @section_indexes[parent]
+        end
+        parent = parent.parent
+      end
+      @paragraphs << {
+        'id' => AsciidocPubkit.hash_text([path, line, text].join("\0"))[0, 16],
+        'file' => path, 'line' => line, 'end_line' => line, 'column' => match[1].length + 1,
+        'prefix' => match[1], 'suffix' => match[3], 'kind' => 'list-item',
+        'section_index' => section_index, 'headings' => headings, 'text' => text
+      }
     end
 
     def collect(node)
+      if scope == 'lists'
+        collect_list_item(node) if node.context == :list_item
+        return
+      end
       if %i[list_item table quote verse listing literal pass].include?(node.context)
         @coverage << { 'context' => node.context.to_s, 'reason' => 'Not reviewed as running prose.' }
       end

@@ -213,7 +213,7 @@ module AsciidocPubkit
         'id' => AsciidocPubkit.hash_text([paragraph['id'], rule, offset, match].join(':'))[0, 16],
         'paragraph_id' => paragraph['id'], 'rule' => rule, 'severity' => severity,
         'file' => paragraph['file'], 'line' => paragraph['line'] + prefix.count("\n"),
-        'column' => (prefix.rindex("\n") ? prefix.length - prefix.rindex("\n") : prefix.length + 1),
+        'column' => (prefix.rindex("\n") ? prefix.length - prefix.rindex("\n") : prefix.length + paragraph.fetch('column', 1)),
         'match' => match, 'question' => question
       }
     end

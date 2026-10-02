@@ -24,6 +24,7 @@ The following commands are available in version 0.8.5.
 | [Replacement preview](#prose-replacements) | `replace check`, `replace diff` | Report mechanical replacement candidates or preview a diff for mapped running prose; preserve source files |
 | [Replacement application](#prose-replacements) | `replace apply` | Apply author-supplied rules after checking protected content and document structure; no MeCab or AI required |
 | [Prose review](#review-workflow) | `review scan` | Collect mapped Japanese running prose and contextual review candidates with MeCab/IPADIC by default |
+| [List review](#list-review) | `review scan --scope lists` | Review mapped single-line list text in a separate session |
 | [Heading review](#heading-review) | `review scan --scope headings` | Collect editable section titles separately, retaining the outline and read-only body evidence |
 | [Review prompts](#prompt) | `review prompt` | Generate one Markdown prompt from a saved session for review and editing by an external reviewer |
 | [Baseline verification](#verify) | `review verify` | Check edited sources against a saved baseline for mechanical preservation; meaning is not verified |
@@ -520,8 +521,9 @@ are frozen into the session; scan again after changing them.
 
 ### Heading review
 
-Review headings and prose in separate sessions. The default scan scope remains
-`prose`; `--scope headings` selects section titles. There is no combined scope.
+Review headings, prose, and list text in separate sessions. The default scan scope
+remains `prose`; `--scope headings` selects section titles and `--scope lists` selects
+supported list text. There is no combined scope.
 Default output directories are `.pubkit/review` for prose and `.pubkit/headings`
 for headings, so separate scans do not replace each other by default.
 The scope is saved at scan time; `prompt` and `verify` use that saved scope.
@@ -564,12 +566,25 @@ and converted inline titles and physical title lines reused by multiple includes
 Unresolved section titles receive coverage notices. Verification permits only selected title text changes while
 protecting the body, title markers, hierarchy, order, section IDs, references,
 attributes, includes and other protected content. A title-derived section ID
-change fails verification. Establish stable explicit IDs before scanning when
-needed; this tool does not add IDs or migrate references. Numeric title changes
+change fails verification. To permit limited ID preservation, scan with
+`--scope headings --preserve-heading-ids`. Eligible generated headings then save
+an exact `permitted_id_anchor` in their metadata. A reviewer may insert only that
+anchor immediately before its selected heading, for example:
+
+```adoc
+[#_手動圧縮の入口]
+== 手動圧縮と拡張からの起動
+```
+
+Verification allows this exact addition while requiring the same section ID,
+hierarchy, order, and protected body. Existing explicit anchors remain protected;
+other anchors and reference migrations are outside this permission. Without the
+flag, only title text is editable. Scan and prompt never insert anchors or rewrite
+manuscripts. Numeric title changes
 are manual-review notices, and remaining candidates do not fail verification.
 `meaning_verified` remains `false`.
 
-The session schema is now 2. Earlier sessions must be recreated; preserve or
+The development session schema is now 3. Earlier sessions must be recreated; preserve or
 finish an ongoing review with its original tool before establishing a new baseline.
 `review score` continues to support prose only and rejects `--scope`.
 
@@ -1124,7 +1139,8 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Sessions from earlier tool versions are not compatible with 0.8.5 (session schema 2). Keep the original baseline for
+The development checkout uses session schema 3; published 0.8.5 uses schema 2.
+Sessions with a different schema or tool version cannot be loaded. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
@@ -1146,6 +1162,33 @@ locations can be inaccurate at include boundaries. If a location cannot be match
 unambiguously, the paragraph is skipped with a coverage notice. Columns are
 one-based Unicode character positions, not byte offsets or display widths.
 An empty findings array does not establish full coverage or good prose.
+
+## List review
+
+Use a separate session to review list descriptions, including reference-list text:
+
+```sh
+asciidoc-pubkit review scan book.adoc --scope lists --output .pubkit/lists
+asciidoc-pubkit review prompt .pubkit/lists --output lists-review.md
+asciidoc-pubkit review verify .pubkit/lists
+```
+
+The default output directory is `.pubkit/lists`. This scope reuses prose rules,
+glossary, style, analyzer, and shared writing criteria. It does not include running
+prose or edit headings. Each selected item appears once with heading context;
+read additional evidence separately when its technical role cannot be established.
+
+Only exact source-mapped, single-line simple unordered or ordered item text is
+editable, including supported nested outline lists. Multiline, description,
+checklist, compound, ambiguous, and reused-source items remain protected with
+coverage notices. List markers, nesting, structure, links, and other inline tokens
+remain protected. Candidate columns include the source marker and indentation.
+Session JSON retains the `paragraphs` and `paragraph_id` keys, with
+`kind: list-item` and source `column`, `prefix`, and `suffix` metadata.
+
+Default prose scanning, scoring, and mechanical replacement keep their existing
+prose scope. Heading body evidence continues to omit lists. A successful verify
+checks preservation and does not establish editorial completion.
 
 ## Development
 

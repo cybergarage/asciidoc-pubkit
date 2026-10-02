@@ -21,8 +21,9 @@ For a title such as `手動圧縮の入口` or `画像・分類モデルへの�
 shared role-metaphor criteria to the section evidence. Consider `起動方法` or
 `呼び出しAPI` only when that is what the body explains. Naming a subject does
 not by itself explain the operation. If a better title would change a generated
-section ID, record the proposed title and ID concern for a separate authorized
-migration rather than changing anchors or keeping it for stylistic reasons.
+section ID, use the exact permitted_id_anchor only when the saved session explicitly
+authorizes it. Otherwise record the proposed title and ID concern for separate
+authorized preservation. Protection does not justify an editorial keep decision.
 
 ## Compare headings with the same role
 

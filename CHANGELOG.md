@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- Add separate `review scan --scope lists` sessions for source-mapped single-line
+  outline list text. Preserve markers, structure, inline tokens, and other scopes;
+  report unsupported or reused-source items as coverage notices.
+- Add opt-in `--preserve-heading-ids` for heading scans. Save exact old-ID anchor
+  permissions and verify only those additions immediately before their selected
+  headings while retaining section IDs, structure, and protected body content.
+- Advance development sessions to schema 3; retain prior baselines and finish
+  ongoing reviews with their original tool and schema.
+
 ## 0.8.5 — 2026-10-02
 
 - Refine role-metaphor guidance for 入口: consider the actual creation, invocation,

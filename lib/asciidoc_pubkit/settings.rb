@@ -31,20 +31,24 @@ module AsciidocPubkit
       base = @path ? File.dirname(@path) : File.dirname(File.expand_path(entry))
       language = Language.validate!(options[:language] || review.fetch('language', Language::DEFAULT), operation: 'review')
       scope = options.fetch(:scope, 'prose')
-      raise Error, 'scope must be prose or headings.' unless %w[prose headings].include?(scope)
+      raise Error, 'scope must be prose, headings, or lists.' unless %w[prose headings lists].include?(scope)
       if scope == 'headings' && (options[:rules] || options[:style])
         raise Error, 'Heading scans use --heading-rules, not prose --rules or --style.'
       end
-      if scope == 'prose' && options[:heading_rules]
+      if scope != 'headings' && options[:preserve_heading_ids]
+        raise Error, '--preserve-heading-ids requires --scope headings.'
+      end
+      if scope != 'headings' && options[:heading_rules]
         raise Error, '--heading-rules requires --scope headings.'
       end
       heading_rules_path = options[:heading_rules] ? File.expand_path(options[:heading_rules]) : (review['heading_rules'] ? File.expand_path(review['heading_rules'], base) : HeadingRuleSet.default_path(language))
       rules_path = options[:replacement] ? RuleSet.default_path(language) : options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet.default_path(language))
       @data = {
         'scope' => scope,
+        'preserve_heading_ids' => !!options[:preserve_heading_ids],
         'heading_rules' => scope == 'headings' ? HeadingRuleSet.load(heading_rules_path) : nil,
         'heading_rules_path' => heading_rules_path,
-        'rules' => scope == 'prose' ? RuleSet.load(rules_path) : nil,
+        'rules' => scope != 'headings' ? RuleSet.load(rules_path) : nil,
         'rules_path' => rules_path,
         'language' => language,
         'style' => options[:style] || review.fetch('style', 'preserve'),

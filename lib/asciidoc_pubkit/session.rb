@@ -4,7 +4,7 @@ require 'tmpdir'
 
 module AsciidocPubkit
   class Session
-    SCHEMA = 2
+    SCHEMA = 3
 
     def self.scan(entry, options)
       settings = Settings.new(entry, options)
@@ -12,7 +12,7 @@ module AsciidocPubkit
       unless document.diagnostics.empty?
         raise Error, "Document diagnostics must be resolved before scanning:\n" + document.diagnostics.map { |d| "#{d['severity']}: #{d['message']}" }.join("\n")
       end
-      default_output = settings.data['scope'] == 'headings' ? '.pubkit/headings' : '.pubkit/review'
+      default_output = { 'headings' => '.pubkit/headings', 'lists' => '.pubkit/lists' }.fetch(settings.data['scope'], '.pubkit/review')
       destination = File.expand_path(options.fetch(:output, default_output))
       replacing = File.exist?(destination) || File.symlink?(destination)
       if replacing
@@ -95,13 +95,18 @@ module AsciidocPubkit
       File.write(path, JSON.pretty_generate(value) + "\n")
     end
 
-    def self.protected_content(document)
+    def self.protected_content(document, allowed_anchor_lines: {})
       document.sources.to_h do |path, raw|
         paragraphs = document.paragraphs.select { |p| p['file'] == path }
         heading_scope = document.scope == 'headings'
         editable_headings = document.headings.select { |h| h['file'] == path }.to_h { |h| [h['line'], h] }
+        editable_items = document.scope == 'lists' ? paragraphs.to_h { |p| [p['line'], p] } : {}
         editable_lines = heading_scope ? [] : paragraphs.flat_map { |p| (p['line']..p['end_line']).to_a }
         outside = raw.lines.each_with_index.filter_map do |line, index|
+          next if allowed_anchor_lines.fetch(path, []).include?(index + 1)
+          if (item = editable_items[index + 1])
+            next [item['prefix'], '<editable-list-text>', item['suffix']]
+          end
           next if editable_lines.include?(index + 1)
           if heading_scope && (heading = editable_headings[index + 1])
             # Keep a positional placeholder: removing entire lines would hide reordering.
@@ -160,6 +165,7 @@ module AsciidocPubkit
       raise Error, 'Sources have changed since scanning. Create a new scan before generating a prompt.' unless stale.empty?
       language = Language.validate!(@manifest.fetch('settings').fetch('language'), operation: 'review')
       return heading_prompt(mode, language) if @manifest.fetch('settings').fetch('scope', 'prose') == 'headings'
+      list_scope = @manifest['settings']['scope'] == 'lists'
       criteria = @manifest.fetch('writing_criteria')
       instructions = <<~TEXT
         # Japanese manuscript review
@@ -184,7 +190,7 @@ module AsciidocPubkit
         After editing, reread each paragraph in context. Report unresolved issues and do not claim publication readiness.
         Mechanical verification does not establish semantic correctness.
 
-        #{review_process('paragraph', mode)}
+        #{review_process(list_scope ? 'list item' : 'paragraph', mode)}
 
         ## Shared prose criteria
 
@@ -213,6 +219,18 @@ module AsciidocPubkit
         Coverage notices: #{@document['coverage'].length}
 
       TEXT
+      if list_scope
+        instructions.sub!('running-prose paragraphs', 'single-line outline list item text')
+        instructions.sub!('proposed paragraph revisions', 'proposed list item revisions')
+        instructions.sub!('Do not change excluded content, lists, tables, quotations, or other files.',
+                          'Preserve list markers, nesting, order, continuation syntax, and inline tokens. Do not edit running prose, excluded list items, tables, quotations, or other files.')
+        instructions.sub!('running-prose edit scope', 'selected list-text edit scope')
+        instructions.sub!('Only source-mapped running-prose paragraphs are reviewed.', 'Only unambiguously source-mapped, single-line simple unordered or ordered list text is reviewed.')
+        instructions.sub!('Headings, lists, tables, quotations, code, and passthrough blocks are not prose-reviewed in this release.',
+                          'Multiline, description, checklist, compound, and reused-source list items remain protected. Running prose, headings, tables, quotations, code, and passthrough blocks are not reviewed in this session.')
+        instructions.sub!('the supplied prose/body context omits lists and other excluded blocks',
+                          'this session supplies only selected list text and heading labels; running prose and other excluded blocks are omitted')
+      end
       instructions << <<~TEXT
         ## Reading order
 
@@ -232,7 +250,7 @@ module AsciidocPubkit
           instructions << "## Context\n\n#{prompt_data(JSON.generate(context), 'json')}\n"
           previous_context = context
         end
-        instructions << "### Paragraph #{paragraph['id']} — lines #{paragraph['line']}–#{paragraph['end_line']}\n\n"
+        instructions << "### #{list_scope ? 'List item' : 'Paragraph'} #{paragraph['id']} — lines #{paragraph['line']}–#{paragraph['end_line']}\n\n"
         instructions << prompt_data(paragraph['text'], 'text') << "\n"
         related = findings_by_paragraph.fetch(paragraph['id'], [])
         if related.empty?
@@ -252,7 +270,7 @@ module AsciidocPubkit
       document.diagnostics.each { |d| issues << { 'kind' => 'parse-diagnostic', 'message' => d['message'] } }
       old_paths = @manifest['sources'].map { |source| source['path'] }.sort
       issues << { 'kind' => 'source-set-changed', 'message' => 'The included source file set changed.' } if old_paths != document.sources.keys.sort
-      current = self.class.protected_content(document)
+      current = self.class.protected_content(document, allowed_anchor_lines: permitted_anchor_lines(document))
       @manifest['protected'].each do |path, saved|
         next if current[path] == saved
         issues << { 'kind' => 'protected-content-changed', 'file' => path,
@@ -288,6 +306,21 @@ module AsciidocPubkit
 
     private
 
+    def permitted_anchor_lines(document)
+      return {} unless @manifest['settings']['scope'] == 'headings' && @manifest['settings']['preserve_heading_ids']
+      allowed = Hash.new { |hash, path| hash[path] = [] }
+      @document.fetch('headings', []).each do |saved|
+        anchor = saved['permitted_id_anchor']
+        next unless anchor
+        current = document.headings.find { |heading| heading['index'] == saved['index'] && heading['file'] == saved['file'] }
+        next unless current && current['section_id'] == saved['section_id']
+        line = current['line'] - 1
+        next unless line.positive? && document.sources.fetch(current['file']).lines[line - 1].chomp == anchor
+        allowed[current['file']] << line
+      end
+      allowed
+    end
+
     def comparison_structure(structure, headings, heading_scope)
       editable = headings.map { |h| h['index'] }
       structure.each_with_index.filter_map do |node, index|
@@ -311,7 +344,11 @@ module AsciidocPubkit
         Preserve section count, order, hierarchy, IDs, references, attributes, include directives,
         inline tokens, title markers, and all content outside the selected title spans.
         Title-derived section IDs can change after a title edit. Keep IDs unchanged;
-        otherwise report the concern and leave the title for a separate ID migration.
+        when permitted_id_anchor is present in the saved heading metadata, you may insert
+        that exact anchor on the line immediately before its heading to preserve the old ID.
+        This is the only authorized addition outside title spans. Do not edit existing anchors,
+        invent IDs, or add anchors for other headings. Without that permission, report the
+        concern and leave the title for a separately authorized ID preservation task.
         Preserve the configured fixed section names; do not rename them merely for variety.
         Automated findings are review candidates, not proven defects.
         Do not invent facts, guarantees, implementation mechanisms or benefits.
@@ -343,7 +380,8 @@ module AsciidocPubkit
 
         ## Coverage and reading order
 
-        Only selected, unambiguously source-mapped plain ATX section titles are editable.
+        Only selected, unambiguously source-mapped plain ATX section titles and explicitly
+        permitted old-ID anchor additions are editable.
         Document titles, old-style headings, converted inline titles and attribute-expanded
         titles remain protected. Body coverage excludes lists, tables, quotations and code;
         use needs-evidence when the supplied body cannot establish a title's scope.

@@ -8,7 +8,7 @@ module AsciidocPubkit
       Commands:
         writing criteria      Print the shared Japanese prose criteria
         writing prompt        Generate a Japanese technical writing prompt
-        review scan FILE       Collect Japanese prose or headings and review candidates
+        review scan FILE       Collect Japanese prose, headings, or list text and review candidates
         review score FILE      Score Japanese prose; optionally use a local AI CLI
         review prompt SESSION  Generate an English review prompt with Japanese source excerpts
         review verify SESSION  Compare edited sources with the saved baseline
@@ -45,7 +45,7 @@ module AsciidocPubkit
       parser = OptionParser.new do |opts|
         input_name = group == 'writing' ? '' : ((group == 'replace' || %w[scan score].include?(command)) ? ' FILE' : ' SESSION')
         opts.banner = "Usage: asciidoc-pubkit #{group} #{command} [options]#{input_name}"
-        opts.on('-o', '--output PATH', group == 'review' && command == 'scan' ? 'New session directory (default: .pubkit/review for prose, .pubkit/headings for headings)' : 'New output file (default: standard output)') { |v| options[:output] = v }
+        opts.on('-o', '--output PATH', group == 'review' && command == 'scan' ? 'New session directory (default: .pubkit/review, .pubkit/headings, or .pubkit/lists)' : 'New output file (default: standard output)') { |v| options[:output] = v }
         opts.on('--lang LANG', 'Language (ja only in this release)') { |v| options[:language] = v }
         if group == 'replace'
           opts.on('--rules FILE', 'Required prh-format replacement rules (limited compatibility)') { |v| options[:rules] = v }
@@ -54,7 +54,8 @@ module AsciidocPubkit
           opts.on('--only FILE', 'Select one included file') { |v| options[:only] = v }
         elsif group == 'review' && %w[scan score].include?(command)
           if command == 'scan'
-            opts.on('--scope SCOPE', 'prose (default) or headings; separate review sessions') { |v| options[:scope] = v }
+            opts.on('--scope SCOPE', 'prose (default), headings, or lists; separate review sessions') { |v| options[:scope] = v }
+            opts.on('--preserve-heading-ids', 'Allow exact old-ID anchors before eligible headings') { options[:preserve_heading_ids] = true }
             opts.on('--heading-rules FILE', 'Replace default heading rules with a YAML rule set') { |v| options[:heading_rules] = v }
             opts.on('-y', '--yes', 'Answer yes to replacement confirmation') { options[:yes] = true }
             opts.on('--no-input', 'Never prompt; fail on existing output unless --yes') { options[:no_input] = true }
@@ -128,6 +129,8 @@ module AsciidocPubkit
         end
         if result['scope'] == 'headings'
           out.puts "Scanned #{result['headings']} headings; found #{result['findings']} review candidates."
+        elsif result['scope'] == 'lists'
+          out.puts "Scanned #{result['paragraphs']} list items; found #{result['findings']} review candidates."
         else
           out.puts "Scanned #{result['paragraphs']} paragraphs; found #{result['findings']} review candidates."
         end
