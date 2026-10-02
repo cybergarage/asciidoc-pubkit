@@ -624,6 +624,13 @@ verification. They request separate reports for mechanical preservation,
 candidate decisions, and paragraph or heading quality review, with counts and
 unresolved items. Protected-scope concerns are separate proposals, not evidence
 of editorial approval. Pending items make the review incomplete.
+The current source further requires an individual role or claim, located
+evidence, a considered direct alternative, and the rationale for each candidate
+decision. A stock reason with an appended quotation is insufficient. For `入口`,
+the shared criteria ask whether creation, invocation, configuration, reference,
+or a learning role can be stated directly even when the referent is clear.
+Remaining role metaphors must be checked against those individual decisions.
+
 These are reviewer instructions: the gem does not validate a decision ledger
 or prove that an AI or human followed the instructions. Keep session metadata
 and baseline snapshots immutable; format only authorized manuscript spans.
@@ -1021,6 +1028,17 @@ as `ではありません` cover longer qualifications without listing every sen
 These are candidates for contextual review, not banned expressions. A necessary
 condition, uncertainty, or distinction must survive a revision; a redundant
 disclaimer can instead be removed or folded into a more precise main claim.
+
+The current source extends the existing `入口` question and shared criteria
+without adding another prose matcher. A known referent alone does not justify
+vague role wording; direct alternatives are evaluated against the actual
+operation, conditions, and technical usage. The heading `heading-vague-topic`
+rule also includes `入口`; proposed title changes must preserve generated IDs
+or be reported for a separate authorized migration. Lists remain excluded and
+are not included in prose or heading body evidence. Reports about outside-scope
+concerns cover only content actually inspected, not unreviewed excluded blocks.
+If baseline or artifact integrity fails, preserve the evidence and stop editing;
+never update snapshot hashes or replace the baseline to claim a successful review.
 
 Version 0.8.3 also includes scoped candidates such as `構築入口`,
 `エラーを回収する`, `ツールを呼ぶ`, `したりできます`, and `設計の肝`.

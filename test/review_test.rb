@@ -86,6 +86,61 @@ class ReviewTest < Minitest::Test
     assert_includes prompt, 'needs-evidence'
   end
 
+  def test_entry_role_candidates_respect_prose_heading_and_list_scopes
+    File.write(@chapter, <<~ADOC)
+      == 手動圧縮の入口
+
+      実行基盤を作る入口はcreate()です。
+
+      * CLIの入口を説明しています。
+
+      == 画像・分類モデルへの入口
+
+      外部へアクセスする入口はtoolsとmodelsです。
+    ADOC
+    %w[mecab literal].each do |mode|
+      scan('--tokenizer', mode, '--yes')
+      findings = json('findings.json').select { |f| f['match'] == '入口' }
+      assert_equal [3, 9], findings.map { |f| f['line'] }
+      assert findings.all? { |f| f['rule'] == 'abstract-reference' }
+      assert findings.all? { |f| f['question'].include?('a clear referent alone') }
+      heading_scan('--tokenizer', mode, '--yes')
+      findings = json('findings.json').select { |f| f['match'] == '入口' }
+      assert_equal [1, 7], findings.map { |f| f['line'] }
+      assert findings.all? { |f| f['rule'] == 'heading-vague-topic' }
+      headings = json('document.json')['headings']
+      assert_equal headings.map { |h| h['id'] }, findings.map { |f| f['heading_id'] }
+      code, prompt, error = cli('review', 'prompt', @session)
+      assert_equal 0, code, error
+      assert_includes prompt, 'record the proposed title and ID concern'
+      refute_includes prompt, 'CLIの入口を説明しています。'
+      File.write(@chapter, File.read(@chapter).sub('手動圧縮の入口', '手動圧縮の起動方法'))
+      code, report = verify
+      assert_equal 1, code
+      assert report['issues'].any? { |issue| issue['kind'] == 'structure-changed' }
+      File.write(@chapter, File.read(@chapter).sub('手動圧縮の起動方法', '手動圧縮の入口'))
+    end
+  end
+
+  def test_corrupted_baseline_cannot_generate_prompt_or_report_success
+    %w[prose headings].each do |scope|
+      @session = File.join(@dir, "integrity-#{scope}")
+      scan('--scope', scope)
+      snapshot = json('manifest.json')['sources'].find { |source| source['path'] == @book }.fetch('snapshot')
+      path = File.join(@session, snapshot)
+      File.open(path, 'a') { |file| file.puts '\n[[added-anchor]]' }
+      corrupted = File.binread(path)
+      code, _, error = cli('review', 'prompt', @session)
+      assert_equal 2, code
+      assert_includes error, 'review baseline has changed'
+      code, report, error = cli('review', 'verify', @session)
+      assert_equal 2, code
+      assert_includes error, 'review baseline has changed'
+      refute_includes report, '"passed": true'
+      assert_equal corrupted, File.binread(path)
+    end
+  end
+
   def test_heading_revise_with_stable_id_passes_and_keeps_candidates_advisory
     File.write(@chapter, "[[intro]]\n== 実行の基本\n\n本文です。\n")
     heading_scan
@@ -314,6 +369,7 @@ class ReviewTest < Minitest::Test
     scan('--lang', 'ja')
     saved = json('manifest.json')['writing_criteria']
     assert_includes saved, 'Keep claims within their evidence and purpose'
+    assert_includes saved, 'Intended role of 入口'
     %w[構築入口 ツールを呼ぶ 無効化したりできます 設計の肝です 拡張点 見落とします 分かれて現れます].each do |example|
       assert_includes saved, example
     end
@@ -418,6 +474,11 @@ class ReviewTest < Minitest::Test
         assert_equal 0, code, error
         assert_includes prompt, 'Never infer revise or keep from whether the matched string'
         assert_includes prompt, 'An unreviewed item stays pending'
+        assert_includes prompt, 'Appending a source quotation to a stock reason is still insufficient'
+        assert_includes prompt, 'the direct wording considered'
+        assert_includes prompt, 'a nearby identifier makes the referent clear'
+        assert_includes prompt, 'stop editing, preserve the evidence'
+        assert_includes prompt, 'do not claim those were reviewed'
         assert_includes prompt, 'a reason grounded in that passage'
         assert_includes prompt, 'Keep manifest.json, document.json, findings.json, and every baseline/ snapshot immutable'
         assert_includes prompt, 'report the review as incomplete'

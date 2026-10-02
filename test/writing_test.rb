@@ -28,6 +28,9 @@ class WritingTest < Minitest::Test
       assert_includes prompt, example
     end
     assert_includes prompt, 'do not turn an assumption into an obligation'
+    assert_includes prompt, 'Intended role of 入口'
+    assert_includes prompt, 'naming its referent alone'
+    assert_includes prompt, 'Distinguish a public option or return field from internal state'
     refute_includes prompt, 'Migrated OSS prose style profile'
   end
 

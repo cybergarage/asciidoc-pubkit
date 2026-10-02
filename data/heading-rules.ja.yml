@@ -12,7 +12,8 @@ terms:
     terms:
     - いろいろ
     - さまざまなこと
-    question: 'Check whether the heading identifies the actual subject, operation or comparison. Use the section as evidence; do not invent missing specificity.'
+    - 入口
+    question: 'Check whether the heading identifies the actual subject, operation or comparison. Use the section as evidence; apply the shared role-metaphor criteria to 入口 and preserve section IDs. Do not invent missing specificity.'
 fixed_titles:
 - はじめに
 - 本書の構成

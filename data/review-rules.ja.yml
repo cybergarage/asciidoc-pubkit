@@ -34,7 +34,9 @@ terms:
     # Review context before choosing a katakana technical term.
     - 木
     - 余白
-    question: Identify the concrete referent, components, or measurable work. Keep
+    question: Identify the concrete referent, components, role, or measurable work.
+      For 入口, apply the shared role-metaphor criteria; a clear referent alone is
+      not a sufficient reason to keep vague operation wording. Keep
       established technical meanings. For 木 and 余白, consider a context-appropriate
       katakana term (such as ツリー or マージン) only when it names the intended concept.
   weak-predicate:

@@ -34,7 +34,9 @@ adjacent sentences.
 
 ## Replace abstraction with the thing being discussed
 
-Abstract terms are valid when their referent is stated. Inspect terms such as:
+Identify both the referent and its role before retaining an abstract term.
+A named API, file, or command can make the referent recoverable while leaving
+its operation vague. Inspect terms such as:
 
 | Term | What must be identifiable |
 | --- | --- |
@@ -48,6 +50,33 @@ Abstract terms are valid when their referent is stated. Inspect terms such as:
 Do not improve a sentence by replacing one abstraction with another. For
 example, changing `費用` to `コスト` says nothing unless the sentence identifies
 what increases.
+
+For role metaphors such as `入口`, check whether naming the actual operation or
+relationship gives the reader more useful information, even when the referent
+is already clear. Consider these alternatives only when evidence supports them:
+
+| Intended role of 入口 | More direct wording |
+| --- | --- |
+| Object creation | 生成API・生成メソッド, or state what the method creates |
+| Invocation or external access | 呼び出しAPI・アクセス経路, or name the call and its operation |
+| Configuration or prompt changes | 設定項目・上書きメソッド・コールバック・変更手段, preserving the changed scope |
+| Command use | Name the command and the action it performs |
+| Documentation or test references | 参照先・確認対象, or state what the document explains or test checks |
+| Learning introduction | 導入例・理解する手がかり, supported by the example's actual content |
+| Actual execution entry point | エントリポイント when that is the established technical role |
+
+For example, `実行基盤を作る入口はcreate()です` can become
+`実行基盤は生成メソッドcreate()で作ります`; `利用側の入口はinstallです` can
+become `インストールするコマンドはinstallです`. Keep asynchronous behavior,
+inputs, conditions, and other facts from the surrounding passage.
+Do not replace every `入口` with `エントリポイント`, or introduce an API,
+mechanism, or stronger guarantee that the source does not establish. Preserve
+negation and scope: a catalog listing does not imply an execution method exists.
+Distinguish a public option or return field from internal state before describing
+a change mechanism. Literal entrances and clearly established technical usage
+can remain. For keep, explain the role and why retaining the wording serves the
+reader better than the considered direct alternative; naming its referent alone
+or appending the original sentence to a generic reason is insufficient.
 
 ## Give weak predicates a concrete action or consequence
 

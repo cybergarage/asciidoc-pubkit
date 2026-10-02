@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Refine role-metaphor guidance for 入口: consider the actual creation, invocation,
+  configuration, reference, learning, or entry-point role even with a clear
+  referent. Require decision-specific evidence and evaluated alternatives rather
+  than stock reasons with appended quotations; keep quality checks advisory.
+- Add 入口 as a heading topic candidate while preserving generated IDs and edit
+  scopes. Clarify review integrity failure handling and limits of reports about
+  excluded lists and other unsupplied content.
+
 - Add contextual Japanese revision examples for extension terminology, exposed
   interfaces, layered structures, process tracking, missed events, processing,
   and concise capabilities or obligations. Preserve actors, modality, ordering,
