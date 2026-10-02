@@ -465,6 +465,18 @@ Without `--output`, `prompt` writes Markdown and `verify` writes JSON to stdout.
 and prompts explicitly direct reviewers to a separate `--scope lists` session
 for list text; the prose baseline must remain intact.
 
+List review is optional when the assignment covers running prose only or there
+are no list descriptions to review. It is needed when the assignment includes
+list wording: the default prose scan does not review it. See [List review](#list-review)
+for examples, supported items, and coverage limits.
+
+For a review covering all three scopes, finish and verify headings first, then
+scan and review the current prose, then scan and review the current list text.
+Create each session after the preceding phase's edits and verification. Preserve
+all earlier baselines and phase-end results; later edits in another scope may
+legitimately make an earlier session's verification fail. On re-review, choose
+unused session paths rather than replacing the previous evidence.
+
 ### Scan
 
 ```sh
@@ -1169,11 +1181,33 @@ An empty findings array does not establish full coverage or good prose.
 
 ## List review
 
-Use a separate session to review list descriptions, including reference-list text:
+List review checks wording in unordered and ordered list items, including
+reference-list descriptions. For example, the description following this link
+is list text and is excluded from the default running-prose review:
+
+```adoc
+* link:https://example.com/cli[CLI documentation]: printとJSON/RPCの入口を説明しています。
+```
+
+AsciiDoc parses list items separately from ordinary paragraphs. The tool keeps
+these review scopes separate to map editable text and verify preservation of
+list markers, nesting, links, and inline syntax. This is a scope and preservation
+choice, not a claim that list descriptions are outside the book's body or an
+exclusion made to improve processing speed.
+
+Use this optional phase when list descriptions are part of the requested review,
+including a whole-book editorial pass. Omit it for an explicitly prose-only or
+heading-only assignment, or when there is no eligible list text. Report omitted
+and unsupported list content as unreviewed; successful prose verification does
+not establish that lists were reviewed. A zero-item list scan still requires
+inspection of coverage notices.
+
+Use a separate session:
 
 ```sh
 asciidoc-pubkit review scan book.adoc --scope lists --output .pubkit/lists
 asciidoc-pubkit review prompt .pubkit/lists --output lists-review.md
+# Ask the reviewer to read the prompt and edit only selected list text.
 asciidoc-pubkit review verify .pubkit/lists
 ```
 

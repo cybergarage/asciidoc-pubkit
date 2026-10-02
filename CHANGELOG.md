@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Explain when optional list review is needed, why its scope is separate from
+  running prose, and how to preserve phase baselines in a complete review.
+
 ## 0.8.7 — 2026-10-02
 
 - Make exact saved old-ID anchor permissions standard for eligible heading
