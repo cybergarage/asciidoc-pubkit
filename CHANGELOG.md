@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.8.3 — 2026-10-02
 
 - Refine shared Japanese writing and review criteria for established technical
   terminology, precise operations, direct predicates, and evidence-based tone.
