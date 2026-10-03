@@ -6,6 +6,10 @@ module AsciidocPubkit
       Usage: asciidoc-pubkit <group> <command> [options] [input]
 
       Commands:
+        document toc FILE      Print the parsed section outline
+        document info FILE     Extract book metadata
+        document check-xrefs FILE  Report unresolved local cross-references
+        document index DIRECTORY  Generate an English-title AsciiDoc index
         writing criteria      Print the shared Japanese prose criteria
         writing prompt        Generate a Japanese technical writing prompt
         review scan FILE       Collect Japanese prose, headings, or list text and review candidates
@@ -32,11 +36,14 @@ module AsciidocPubkit
         out.puts VERSION
         return 0
       end
-      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace].any? { |group| args == [group, '--help'] }
+      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace document].any? { |group| args == [group, '--help'] }
         out.puts HELP
         return 0
       end
       group, command = args.shift(2)
+      if group == 'document' && %w[toc info check-xrefs index].include?(command)
+        return DocumentCommands.run(command, args, out: out, err: err)
+      end
       valid = (group == 'review' && %w[scan score prompt verify].include?(command)) ||
               (group == 'writing' && %w[criteria prompt].include?(command)) ||
               (group == 'replace' && %w[check diff apply].include?(command))

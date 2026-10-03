@@ -7,20 +7,24 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
-Version 0.8.7 provides shared Japanese technical writing criteria, an authoring
-prompt, separate prose, heading, and list review prompts, manuscript scoring, and
-baseline verification for edited manuscripts, plus explicit prose-only mechanical
-replacements using a limited prh-format rule set.
+Version 0.9.0 provides AsciiDoc document inspection, explicit prose-only
+mechanical replacements, and Japanese manuscript review. Start by inspecting the
+outline, book metadata, and local cross-references; preview and apply your
+replacement rules; then review and verify the edited manuscript against a saved
+baseline. Document commands also generate English document-title indexes.
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese text is retained in manuscript excerpts, rule dictionaries, and fixtures.
 
 ## Available features
 
-The following commands are available in version 0.8.7.
+The following commands are available in version 0.9.0.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
-| [Writing criteria and prompts](#writing-commands) | `writing criteria`, `writing prompt` | Print Japanese prose criteria or generate a writing prompt without a manuscript or MeCab |
+| [Document outline](#document-commands) | `document toc` | Print parsed section titles, including book parts and chapters, with optional depth and outline numbering |
+| [Book metadata](#document-commands) | `document info` | Extract book attributes as text or JSON |
+| [Cross-reference checks](#document-commands) | `document check-xrefs` | Report unresolved local cross-references with source locations |
+| [Document-title index](#document-commands) | `document index` | Generate an alphabetical AsciiDoc index from English document titles and IDs |
 | [Replacement preview](#prose-replacements) | `replace check`, `replace diff` | Report mechanical replacement candidates or preview a diff for mapped running prose; preserve source files |
 | [Replacement application](#prose-replacements) | `replace apply` | Apply author-supplied rules after checking protected content and document structure; no MeCab or AI required |
 | [Prose review](#review-workflow) | `review scan` | Collect mapped Japanese running prose and contextual review candidates with MeCab/IPADIC by default |
@@ -29,42 +33,29 @@ The following commands are available in version 0.8.7.
 | [Review prompts](#prompt) | `review prompt` | Generate one Markdown prompt from a saved session for review and editing by an external reviewer |
 | [Baseline verification](#verify) | `review verify` | Check edited sources against a saved baseline for mechanical preservation; meaning is not verified |
 | [Manuscript scoring](#score-an-asciidoc-manuscript) | `review score` | Report a prose candidate-density score; explicit `--agent codex` or `--agent claude` optionally invokes a local AI CLI for readability ratings |
-
-Version 0.8.1 additionally supports nested replacement-rule imports,
-omitted/null `rules`, arrays in `pattern`, `/i`, and limited ECMAScript word
-boundaries. See [Prose replacements](#prose-replacements) for supported syntax
-and preservation limits. Only `replace apply` edits manuscripts directly;
-review prompts supply instructions for an external reviewer.
+| [Writing criteria and prompts](#writing-commands) | `writing criteria`, `writing prompt` | Print Japanese prose criteria or generate a writing prompt without a manuscript or MeCab |
 
 ## Status
 
-Version 0.6.3 adds separate heading review with `review scan --scope headings`.
-See [Heading review](#heading-review).
-
-Version 0.8.0 adds explicit prose replacements with `replace apply`;
-see [Prose replacements](#prose-replacements). Review and scoring do not edit
-manuscripts. The CLI does not publish books. EPUB, image,
-and book scaffolding commands are planned extensions, not available features.
-
 Ruby 3.2 or later is required. Asciidoctor is installed as a gem dependency.
-Starting with version 0.1.1, the default review backend requires the external MeCab
-command and a UTF-8 IPADIC dictionary. Node.js and textlint are not required.
-Explicit `--tokenizer literal` mode provides limited phrase matching without MeCab.
+Document inspection and prose replacement require neither MeCab nor an AI CLI.
+Japanese review uses the external MeCab command and a UTF-8 IPADIC dictionary by
+default; explicit `--tokenizer literal` provides limited phrase matching.
+Node.js and textlint are not required.
 
-Version 0.6.2 also provides `review score FILE` for a manuscript score.
-It uses local candidate analysis by default; `--agent codex` or `--agent claude`
-explicitly asks an installed CLI to evaluate readability and may connect to its
-configured model provider. No scoring mode edits manuscripts.
+Only `replace apply` edits manuscripts directly. Review prompts supply
+instructions for an external reviewer; review and scoring do not edit
+manuscripts. Only `review score --agent codex` or `--agent claude` invokes an
+installed AI CLI, which may connect to its configured model provider.
+The CLI does not publish books. EPUB, image, and book scaffolding commands are
+planned extensions, not available features.
 
-Version 0.1.1 added morphological analysis. Version 0.1.0 used literal matching.
-
-The CLI has `writing`, `review`, and `replace` command groups. All default to `--lang ja`.
-Language-specific criteria live under `data/writing/<language>/`; review rules
-use `data/review-rules.<language>.yml`. Writing and review have separate lists
-of supported languages, so a future writing language need not imply review
-support. Other languages are reserved for future implementations and now
-return an explicit error. A review session saves its language and the criteria
-used to generate its prompt.
+The CLI has `document`, `replace`, `review`, and `writing` command groups.
+Document commands accept documents in any language and do not load review
+configuration. Writing, replacement, and review default to `--lang ja` and reject
+unsupported languages. Language-specific criteria live under
+`data/writing/<language>/`; review rules use `data/review-rules.<language>.yml`.
+A review session saves its language and the criteria used to generate its prompt.
 
 ## Install from RubyGems
 
@@ -80,16 +71,17 @@ Ruby 3.2 or later is required. RubyGems installs the required Ruby dependencies;
 no repository clone or Node.js installation is needed. MeCab and IPADIC must be
 installed separately when using version 0.1.1 or later in the default mode.
 
-Generate a writing prompt without an existing manuscript:
+Inspect the document, apply explicit replacement rules, and start the review
+workflow from your manuscript directory:
 
 ```sh
-asciidoc-pubkit writing criteria --lang ja
-asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
-```
-
-Run the review workflow from your manuscript directory:
-
-```sh
+asciidoc-pubkit document toc book.adoc --depth 2 --numbered
+asciidoc-pubkit document info book.adoc --json
+asciidoc-pubkit document check-xrefs book.adoc
+asciidoc-pubkit replace check book.adoc --rules replacements.yml
+asciidoc-pubkit replace diff book.adoc --rules replacements.yml
+asciidoc-pubkit replace apply book.adoc --rules replacements.yml
+# Start a new review baseline after completing mechanical replacements.
 asciidoc-pubkit review scan book.adoc --output .pubkit/review
 asciidoc-pubkit review prompt .pubkit/review --output review-prompt.md
 # Ask your agent to review the prompt and edit the referenced manuscript.
@@ -108,13 +100,16 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 0.8.7'
+gem 'asciidoc-pubkit', '~> 0.9.0'
 ```
 
 Then install dependencies and run the CLI through Bundler:
 
 ```sh
 bundle install
+bundle exec asciidoc-pubkit document toc book.adoc
+bundle exec asciidoc-pubkit replace diff book.adoc --rules replacements.yml
+bundle exec asciidoc-pubkit replace apply book.adoc --rules replacements.yml
 bundle exec asciidoc-pubkit review scan book.adoc --output .pubkit/review
 bundle exec asciidoc-pubkit review prompt .pubkit/review --output review-prompt.md
 bundle exec asciidoc-pubkit review verify .pubkit/review --output verification.json
@@ -130,35 +125,79 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-0.8.7.gem
+gem install ./asciidoc-pubkit-0.9.0.gem
 asciidoc-pubkit --version
 ```
 
 The gem name and CLI name are `asciidoc-pubkit`; the Ruby require path is
 `asciidoc_pubkit`, and the namespace is `AsciidocPubkit`.
 
-## Writing commands
+## Document commands
 
-`writing criteria` prints the packaged common criteria. `writing prompt` adds
-task instructions around those same criteria. Neither command needs an AsciiDoc
-file, a review session, MeCab, or network access. Both accept `--lang ja` and
-`--output FILE`; output defaults to stdout, and an existing output file is never
-overwritten. The prompt asks the agent to read project instructions and evidence;
-it does not supply source facts or authorize edits. Book-specific voice and
-format still come from the book. The OSS-only prose style profile remains with
-the book workflow, not the shared default.
+Version 0.9.0 provides four read-only document commands. They require neither
+MeCab nor an AI CLI, accept documents in any language, and do not create review
+sessions or change manuscripts.
 
 ```sh
-asciidoc-pubkit writing criteria --lang ja
-asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
+asciidoc-pubkit document toc book.adoc --depth 2 --numbered
+asciidoc-pubkit document info book.adoc --json
+asciidoc-pubkit document check-xrefs book.adoc --json
+asciidoc-pubkit document index . --output index.adoc --title "Index"
 ```
 
-For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 0.8.7.
+All four require exactly one input. Use `--help` for command-specific options.
+Output defaults to stdout. `--output FILE` creates a new file and rejects existing
+files and symlinks. Diagnostics go to stderr. These commands do not discover
+`.asciidoc-pubkit.yml` or load review rules. Use repeatable `-a NAME=VALUE` options
+for Asciidoctor attributes and `--base-dir DIR` for the local include boundary.
+The default boundary is the input file's directory, or the scanned directory for
+`index`. Local includes and conditional directives are parsed normally; source
+files and symlink targets must remain within that boundary. Remote includes are
+rejected. `/shared/` has no special mapping or automatic exclusion: migrate such
+references to local includes within the configured boundary.
 
-For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
-paragraphs deliberately contain review candidates; its code block must remain
-unchanged.
+`toc` prints parsed section titles in document order, with two spaces per nesting
+level. It includes book parts and their child chapters, but excludes the document
+title and apparent headings inside code blocks. `--numbered` uses outline
+positions (`1.`, `1-1.`, etc.), independently of Asciidoctor's publication
+numbering. `--depth` must be a positive integer and limits the Asciidoctor section
+level: chapters are level 1 and book parts are level 0. It does not generate or
+rewrite heading text.
+
+`info` prints `key: value` lines or a JSON object with `--json`. Its fields are
+`doctitle`, `subtitle`, `description`, `keywords`, `lang`, `uuid`, `author`,
+`producer`, and `creator`. Missing attributes become empty strings. Metadata is
+extracted from the parsed document, including active local includes.
+
+`check-xrefs` reports unresolved local `xref:ID[]` and `<<ID,label>>` references,
+including fragments targeting the entry document or an included file. It
+recognizes explicit and generated IDs and attribute-expanded targets. It scans
+macro-enabled block text, list items, table cells, and titles; comments and
+ordinary code blocks are excluded. References to separate documents and remote
+URLs are outside its scope. This is a limited syntax scan, not complete rendered
+link validation: complex inline passthroughs and custom macros are not analyzed.
+Text output has `file:line`, a tab, and the missing ID; JSON output is an array of
+`refid`, `file`, and `line` objects. Locations use Asciidoctor source cursors;
+table cells, list continuations, and multiline titles may identify the enclosing node's start
+rather than the exact token line. Duplicate occurrences of one ID on the same
+source line are reported once.
+
+`index` recursively scans lowercase `.adoc` files, skips hidden subdirectories
+and its output path, and uses each document's ID and title. It produces an
+AsciiDoc alphabetical cross-reference list for English names: parenthesized
+text and subtitles after `:` or `：` are removed; remaining titles must be ASCII
+and contain a letter. Documents without IDs are omitted. Titles are deduplicated
+case-insensitively, preferring the shallowest relative path and then lexical path
+order. `--title` adds a document title with `[#book-index]`; alphabetical groups
+use discrete level-2 headings (`=== A`). This indexes document titles, not all
+section headings. The generated references are useful when those documents are
+included in the consuming book; the command does not verify that membership.
+
+Success returns 0. `check-xrefs` returns 1 when local references are unresolved.
+Invalid inputs/options, include or parse errors, and output failures return 2;
+no output file is created on a parse error. Warnings remain visible on stderr.
+Unlike the original directory index script, an input parse error fails the whole
+index instead of silently omitting the file.
 
 ## Prose replacements
 
@@ -1227,6 +1266,29 @@ Session JSON retains the `paragraphs` and `paragraph_id` keys, with
 Default prose scanning, scoring, and mechanical replacement keep their existing
 prose scope. Heading body evidence continues to omit lists. A successful verify
 checks preservation and does not establish editorial completion.
+
+## Writing commands
+
+`writing criteria` prints the packaged common criteria. `writing prompt` adds
+task instructions around those same criteria. Neither command needs an AsciiDoc
+file, a review session, MeCab, or network access. Both accept `--lang ja` and
+`--output FILE`; output defaults to stdout, and an existing output file is never
+overwritten. The prompt asks the agent to read project instructions and evidence;
+it does not supply source facts or authorize edits. Book-specific voice and
+format still come from the book. The OSS-only prose style profile remains with
+the book workflow, not the shared default.
+
+```sh
+asciidoc-pubkit writing criteria --lang ja
+asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
+```
+
+For example, `--lang en` exits with an unsupported-language error. No English
+review or writing criteria are shipped in 0.9.0.
+
+For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
+paragraphs deliberately contain review candidates; its code block must remain
+unchanged.
 
 ## Development
 

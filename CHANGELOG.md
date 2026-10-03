@@ -1,6 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.9.0 — 2026-10-03
+
+- Add read-only `document toc`, `document info`, `document check-xrefs`, and
+  `document index` commands without MeCab, review settings, or AI invocation.
+  Parse local includes and conditions within an explicit source boundary;
+  reject remote includes, parse errors, and existing output files. Support book
+  parts, strict depth selection, metadata JSON, local cross-reference diagnostics,
+  and deterministic English document-title indexes.
+
+- Introduce document inspection before prose replacements and review in the README.
 
 - Explain when optional list review is needed, why its scope is separate from
   running prose, and how to preserve phase baselines in a complete review.
