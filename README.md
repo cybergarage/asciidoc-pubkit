@@ -6,6 +6,16 @@
 
 A toolkit for authoring and reviewing AsciiDoc books.
 
+This gem brings together practical lessons from the author's experience writing
+and publishing books, along with a selection of the tools originally developed
+for that work. Those projects include CyberGarage technical books in
+[English](https://www.amazon.com/stores/CyberGarage/author/B0H8M3CPGH) and
+[Japanese](https://www.amazon.co.jp/stores/CyberGarage/author/B0H8M3CPGH),
+and books on health, exercise, and sports science published under
+[WellBeing Lab](https://www.amazon.co.jp/stores/WellBeing-Lab/author/B0H7MB1HVD).
+The experience informs the toolkit's writing criteria, contextual review prompts,
+and checks for preserving manuscript content during revision.
+
 Version 1.0.0 provides document inspection, explicit prose-only mechanical
 replacements, and Japanese manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
