@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Extend the original development corpus from 13 to 21 paragraphs and the manual
+  revision calibration from 8 to 20 pairs, covering quantity and modifier targets,
+  order, condition scope, parallel work, sentence functions, and style constraints.
+  Identify the expanded corpus as `technical-prose-v2`; preserve the historical
+  v1 MeCab baseline and require a new baseline for comparisons with v2.
+- Adapt yomiyasu v1.0.6 structural comparison and sentence-function guidance into
+  the shared Japanese criteria. Preserve plain or polite style, condition and
+  purpose scope during sentence edits, and meaningful punctuation. Extend the
+  development judge rubric without changing detector rules, scoring formulas,
+  mechanical verification semantics, or existing saved session criteria.
+
 ## 1.0.0 — 2026-10-05
 
 - Release the existing document inspection, explicit prose replacement,

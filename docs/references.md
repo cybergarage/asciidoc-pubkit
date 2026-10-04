@@ -15,6 +15,12 @@ structure, and final edits to the reviewer.
   and separate assessment of meaning preservation and readability. Applied here:
   four limited metaphor patterns and third-sentence repetition locations inform
   candidate detection; the shared criteria require evidence for concrete rewrites.
+  The unreleased update adapts the structural comparison and sentence-function
+  guidance from [v1.0.6, commit 4075fc3](https://github.com/nanaism/yomiyasu/commit/4075fc34fb0333ca1fe42d32cd619338f4a138ba):
+  compare modifier and quantity targets, condition scope, parallel relationships,
+  and order before and after revision; preserve sentence function separately
+  from plain or polite style. The new examples are original project fixtures.
+  Markdown-specific bold fixes and numeric style thresholds are not imported.
 - [日本語技術文書の文章規範](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d):
   informs paragraph logic, evidence scope, and meaningful uncertainty. Applied
   here: the shared criteria start from each paragraph's technical purpose and

@@ -35,7 +35,7 @@ class ProseBenchmarkTest < Minitest::Test
   def test_corpus_targets_are_valid_and_both_analyzers_run_without_an_ai_cli
     %w[mecab literal].each do |mode|
       report, cases = ProseBenchmark.snapshot(mode)
-      assert_equal 13, cases.length
+      assert_equal 21, cases.length
       assert_equal mode, report['analysis']['engine']
       assert_equal false, report['meaning_verified']
       assert_equal ProseBenchmark::KINDS, report['by_kind'].keys
@@ -56,6 +56,29 @@ class ProseBenchmarkTest < Minitest::Test
     %w[corpus_sha256 document_sha256 config_sha256 scoring_version analysis].each do |key|
       changed = after.merge(key => 'different')
       assert_raises(AsciidocPubkit::Error) { ProseBenchmark.compare(before, changed) }
+    end
+  end
+
+  def test_structural_cases_have_evidence_and_calibration_without_numeric_shortcuts
+    cases = ProseBenchmark.corpus.fetch('cases')
+    assert_equal 'technical-prose-v2', ProseBenchmark.corpus.fetch('id')
+    assert_equal cases.length, cases.map { |item| item.fetch('id') }.uniq.length
+    %w[per-worker-quantity ordered-recovery modifier-target conditional-scope
+       parallel-checks advice-and-behavior plain-style-control punctuation-and-purpose].each do |id|
+      item = cases.find { |entry| entry['id'] == id }
+      refute_nil item, id
+      refute_empty item.fetch('facts'), id
+      assert_empty item.fetch('targets'), id
+    end
+    pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
+    assert_equal 20, pairs.length
+    assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
+    quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
+    assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)
+    assert_equal 'reject', quantity.fetch('expected_disposition')
+    %w[quantity-target order modifier-target condition-scope parallelism sentence-function
+       register purpose-scope].each do |axis|
+      assert pairs.any? { |item| item.fetch('review_axes').include?(axis) }, axis
     end
   end
 
@@ -135,6 +158,9 @@ class ProseBenchmarkTest < Minitest::Test
       assert File.file?(File.join(directory, 'trial-1/session/manifest.json'))
       assert_includes captured.first.first, 'Japanese manuscript review'
       assert_includes captured.first.first, 'Explain metaphorical operations from evidence'
+      assert_includes captured.first.first, 'Compare structure before and after revision'
+      assert_includes captured.first.first, 'Preserve plain or polite style'
+      assert_includes captured.last.first, 'targets, required order'
       refute_includes captured.last.first, 'expected_disposition'
       refute_includes captured.last.first, 'candidate_count'
     end

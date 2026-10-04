@@ -370,6 +370,8 @@ class ReviewTest < Minitest::Test
     saved = json('manifest.json')['writing_criteria']
     assert_includes saved, 'Keep claims within their evidence and purpose'
     assert_includes saved, 'Intended role of 入口'
+    assert_includes saved, 'Compare structure before and after revision'
+    assert_includes saved, 'Preserve plain or polite style'
     %w[構築入口 ツールを呼ぶ 無効化したりできます 設計の肝です 拡張点 見落とします 分かれて現れます].each do |example|
       assert_includes saved, example
     end

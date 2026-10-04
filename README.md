@@ -34,6 +34,11 @@ The following commands are available in version 1.0.0.
 | [Manuscript scoring](docs/scoring.md#score-an-asciidoc-manuscript) | `review score` | Report a prose candidate-density score; explicit `--agent codex` or `--agent claude` optionally invokes a local AI CLI for readability ratings |
 | [Writing criteria and prompts](docs/writing.md#writing-commands) | `writing criteria`, `writing prompt` | Print Japanese prose criteria or generate a writing prompt without a manuscript or MeCab |
 
+The unreleased checkout extends the [shared writing criteria](docs/writing.md#writing-commands)
+with structural comparison before and after revision and preservation of sentence
+functions and plain or polite style. The [development evaluation](docs/development.md#development-prose-benchmark)
+includes new cases for these checks; published 1.0.0 criteria remain unchanged.
+
 ## Requirements and scope
 
 Ruby 3.2 or later is required; RubyGems installs Asciidoctor and the other Ruby

@@ -24,13 +24,19 @@ module ProseBenchmark
     vocabulary, repetition, negation, or length alone. Shorter is not always better.
     For each supplied fact, return a boolean retained value. Preserve conditions,
     numbers, versions, actors, actual behavior, uncertainty and implementation
-    requirements. Mark false for omission or changed meaning. An explicit lack
-    of evidence must remain unresolved rather than becoming a new asserted fact.
+    requirements. Check modifier targets, condition and exception scope, quantity
+    targets, required order, independent parallel work, and each clause's function
+    (advice, obligation, plan, evaluation, or actual behavior). Retain explicit
+    editorial constraints such as requested plain or polite style; do not prefer
+    polite style merely because the topic is technical. Mark false for omission
+    or changed meaning or violation of a supplied editorial constraint. An explicit
+    lack of evidence must remain unresolved rather than becoming a new asserted fact.
     Report unsupported additions and substitutions separately as English reasons,
     with short Japanese evidence quotes. Empty arrays mean no such errors found.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an
-    omitted or changed established fact; needs-evidence for newly asserted details
-    that cannot be established; accept a faithful revision or necessary unchanged
+    omitted or changed established fact or violated explicit editorial constraint;
+    needs-evidence for newly asserted details that cannot be established;
+    accept a faithful revision or necessary unchanged
     prose. Give a short English reason. Do not infer how a text was authored.
     These are fallible evaluator judgments, not proof of semantic correctness.
   TEXT

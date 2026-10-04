@@ -8,6 +8,7 @@
 - Explain metaphorical operations from evidence
 - Distinguish instructions, behavior, and capabilities
 - Make relationships explicit
+- Compare structure before and after revision
 - Keep claims within their evidence and purpose
 - Remove generated-prose patterns without flattening the meaning
 - Preserve exact technical terminology
@@ -155,6 +156,21 @@ instruction when that fits the document's voice. Do not change `〜します` to
 optional capability are different claims. Name the actor when context does not
 identify it, without repeating an already clear subject in every sentence.
 
+Distinguish advice, obligations, plans, and evaluations as well, including when
+different functions occur in adjacent sentences or clauses. A paragraph can
+combine advice with an explanation of actual behavior; that alone is not an
+ending inconsistency. Do not turn advice into a policy, a plan into a completed
+action, or an evaluation into an implementation goal. Sequence words such as
+`まず` and `次に` establish order, not whether the action is advice or actual
+behavior. When the function or actor is unresolved, retain the uncertainty and
+record what needs confirmation.
+
+Preserve plain or polite style unless the author requests a change or the book's
+explicit style requirements call for one. A technical topic alone does not
+require polite style. Resolve unintended style mixing separately from each
+sentence's function; changing `する` to `します` must not change advice into
+an asserted operation. Do not vary endings just to make these functions uniform.
+
 ## Make relationships explicit
 
 Inspect a sentence when it:
@@ -176,6 +192,40 @@ every sentence when it is already unambiguous.
 Use prose for a sequence in which one event causes or conditions the next; use
 a list when the items are genuinely parallel. Do not turn a causal explanation
 into disconnected bullets or impose an order on independent items.
+
+## Compare structure before and after revision
+
+Before replacing words, identify the subject and predicate, each modifier and
+its target, and each referring expression and its referent. Trace conditions,
+exceptions, negation, parallel relationships, quantities and their targets,
+and required order. After revising, compare those relationships with the source,
+including passages without candidates. Keep naturally clear wording when no
+relationship needs repair. Supply missing actors or objects only from evidence;
+leave an unresolved relationship pending rather than inventing one.
+
+Use these checks when splitting, joining, or rearranging sentences:
+
+- Keep a condition or exception attached to the same operations. Joining an
+  unconditional audit-log statement to a conditional data-save statement must
+  not make logging conditional on authentication success.
+- Preserve what each quantity counts and whether it is a total, per-item limit,
+  minimum, maximum, or exact count. `各ワーカーは最大3回再試行します` does not
+  mean `全ワーカーで合計3回まで再試行します`, although the numeral is unchanged.
+- Preserve required order and distinguish it from independent parallel work.
+  Stopping processing, changing settings, and restarting in that order is not
+  equivalent to changing settings before stopping. Do not invent an order or
+  success prerequisite for independent validation steps.
+- Keep modifiers attached to their original targets after replacing verbs or
+  changing word order. In `圧縮されたログを送信するサーバーを監視します`, the
+  logs are compressed and the server is monitored.
+- Preserve the scope and direction of purpose, reason, contrast, and emphasis.
+  A purpose applying to two operations must still apply to both after splitting;
+  necessary contrast or priority must not become simple addition or equality.
+
+Adjust punctuation when it obscures these relationships, not merely to reduce
+comma counts. Keep a colon that maps a label to a value, such as `状態: 正常`,
+and distinguish it from an ornamental ending. Preserve inline syntax and edit
+scope; prose review does not authorize rewriting labels in protected blocks.
 
 ## Keep claims within their evidence and purpose
 
@@ -304,6 +354,9 @@ condition, cause, and effect.
 Assess readability and meaning preservation separately. Compare the source and
 revision for both missing information and unsupported additions, including
 conditions, negation, numbers, actors, causes, and implementation requirements.
+Include modifier targets, quantity targets, required order, exception scope,
+sentence functions, and requested style in that comparison. Unchanged numbers
+or words do not establish unchanged relationships.
 For example, removing a unique constraint from a duplicate-message check can
 lose a concurrency requirement even when the revised paragraph sounds clearer.
 Record unresolved evidence and keep necessary repetition or qualifications.

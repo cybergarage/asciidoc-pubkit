@@ -106,6 +106,140 @@
       "expected_disposition": "accept",
       "review_axes": ["actor", "necessary-repetition", "readability"],
       "reason": "Repeated precise verbs identify the same responsibility for three distinct actors. An ending candidate alone is not a reason to rewrite."
+    },
+    {
+      "id": "quantity-target-changed",
+      "source": "各ワーカーは最大3回再試行します。",
+      "revision": "全ワーカーで合計3回まで再試行します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "quantity-target",
+        "information-loss"
+      ],
+      "reason": "The numeral is unchanged, but a per-worker limit became an aggregate limit."
+    },
+    {
+      "id": "quantity-target-preserved",
+      "source": "再試行の上限は各ワーカーについて3回です。",
+      "revision": "各ワーカーは3回まで再試行します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "quantity-target",
+        "readability"
+      ],
+      "reason": "The rewrite makes the same per-worker retry limit explicit."
+    },
+    {
+      "id": "recovery-order-reversed",
+      "source": "処理を停止してから設定を変更し、変更後に処理を再開します。",
+      "revision": "設定を変更してから処理を停止し、処理を再開します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "order",
+        "information-loss"
+      ],
+      "reason": "Configuration changes now precede the required stop."
+    },
+    {
+      "id": "modifier-target-changed",
+      "source": "圧縮されたログを送信するサーバーを監視します。",
+      "revision": "ログを送信するサーバーを圧縮して監視します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "modifier-target",
+        "substitution"
+      ],
+      "reason": "Compression moved from the logs to the server."
+    },
+    {
+      "id": "condition-scope-expanded",
+      "source": "認証に成功した場合だけデータを保存します。監査ログは認証の成否にかかわらず記録します。",
+      "revision": "認証に成功した場合だけ、データを保存して監査ログを記録します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "condition-scope",
+        "information-loss"
+      ],
+      "reason": "The authentication condition now excludes failure audit logs."
+    },
+    {
+      "id": "parallel-made-sequential",
+      "source": "形式と署名の検証は独立しており、どちらから実行してもかまいません。",
+      "revision": "形式の検証が成功したら、署名を検証します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "parallelism",
+        "order",
+        "unsupported-addition"
+      ],
+      "reason": "An independent check became conditional on the other check succeeding."
+    },
+    {
+      "id": "advice-made-behavior",
+      "source": "運用者はログの保存期間を延ばすとよい。サーバーは起動時にログを読み込みます。",
+      "revision": "運用者はログの保存期間を延ばします。サーバーは起動時にログを読み込みます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "sentence-function",
+        "advice-versus-behavior"
+      ],
+      "reason": "Advice became an asserted action or policy without evidence."
+    },
+    {
+      "id": "plain-style-preserved",
+      "source": "サーバーは起動時に設定を読み込む。設定が無効なら起動を中止する。文体は常体を維持する指定がある。",
+      "revision": "サーバーは起動時に設定を読み込み、設定が無効なら起動を中止する。文体は常体を維持する指定がある。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "register",
+        "condition",
+        "readability"
+      ],
+      "reason": "The rewrite preserves plain style and the startup condition."
+    },
+    {
+      "id": "unsolicited-register-change",
+      "source": "サーバーは起動時に設定を読み込む。文体は常体を維持する指定がある。",
+      "revision": "サーバーは起動時に設定を読み込みます。文体は常体を維持する指定があります。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "register",
+        "editorial-constraint"
+      ],
+      "reason": "Polite style violates the explicit instruction to retain plain style."
+    },
+    {
+      "id": "split-purpose-preserved",
+      "source": "起動を速くするために、設定を事前に読み込み、結果をキャッシュします。",
+      "revision": "設定を事前に読み込み、結果をキャッシュします。これらは起動を速くするための処理です。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "purpose-scope",
+        "sentence-splitting"
+      ],
+      "reason": "The purpose still applies to both operations after splitting."
+    },
+    {
+      "id": "joined-condition-expanded",
+      "source": "接続が切れた場合は再接続します。監査ログは接続状態にかかわらず保存します。",
+      "revision": "接続が切れた場合は再接続して監査ログを保存します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "condition-scope",
+        "sentence-joining"
+      ],
+      "reason": "Joining makes unconditional log storage conditional on disconnection."
+    },
+    {
+      "id": "unresolved-actor-invented",
+      "source": "設定を変更します。担当者はまだ決まっていません。",
+      "revision": "運用者が設定を変更します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "unsupported-addition"
+      ],
+      "reason": "The rewrite assigns responsibility that the source explicitly leaves unresolved."
     }
   ]
 }

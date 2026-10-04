@@ -21,7 +21,12 @@ pairs are manual evaluation cases, not an automated semantic checker or a
 measured AI benchmark. Compare source and revision separately for readability,
 information loss, and unsupported additions, using each case's review axes and
 expected disposition. Cover conditions, negation, numbers, versions, actors,
-causes, implementation requirements, and necessary repetition. Record the
+causes, implementation requirements, and necessary repetition. The 20 manual
+revision pairs also cover modifier and quantity targets, order, parallel work,
+condition scope, sentence functions, and explicit style constraints. They include
+acceptable revisions, meaning changes with unchanged numerals, and unresolved
+actors that need evidence. These expected dispositions calibrate an optional
+AI judge; automated fixture checks do not prove semantic understanding. Record the
 model, prompt, source evidence, and human judgments when evaluating actual
 generated revisions; fewer findings alone do not establish an improvement.
 
@@ -31,12 +36,18 @@ The checkout provides `script/evaluate-prose` for measuring future detector and
 prompt changes. This is a development tool, not an installed gem command; the
 benchmark CLI calls are separate from the optional `review score --agent` path.
 The fixed
-[`prose_benchmark.ja.adoc`](../test/fixtures/prose_benchmark.ja.adoc) contains 13
+[`prose_benchmark.ja.adoc`](../test/fixtures/prose_benchmark.ja.adoc) contains 21
 original editorial paragraphs with intentionally vague framing and metaphors,
 inflection variants, and valid technical prose controls. Its
 [`annotations`](../test/fixtures/prose_benchmark.ja.json) contain 11 review targets
 and separate source fact checklists. It is a small synthetic regression corpus,
 not an AI authorship dataset or a representative measure of prose quality.
+The expanded `technical-prose-v2` corpus adds eight paragraphs for structural
+preservation and style review. Their fact checklists include editorial constraints
+as well as technical claims; they add no detector targets. They are still supplied
+to the reviewer and judge even when the three scored detector kinds have no findings.
+Normal tests validate corpus mapping and the evaluation workflow with a fake
+agent; real model readability and preservation results require explicit `--agent`.
 
 Run the deterministic benchmark before and after a change:
 
@@ -59,7 +70,8 @@ Zero denominators are reported as `null`, not perfect scores. Duplicate detectio
 count as false positives. These scores measure the detector, not the manuscript.
 
 The checked-in [`MeCab baseline`](../benchmark/baseline-mecab.json), captured before
-the detector changes, has precision 100, recall 81.818, F1 90, and location
+the detector changes on the original 13-paragraph `technical-prose-v1` corpus,
+has precision 100, recall 81.818, F1 90, and location
 accuracy 77.778. It misses two inflected metaphor phrases and mislocates two
 repeated-ending candidates. Reports record source, criteria, rules, corpus, and
 dictionary fingerprints. Comparisons reject changed corpora, scoring versions,
@@ -72,8 +84,10 @@ patterns then raises precision, recall, F1, and location accuracy to 100 on thes
 11 targets. This is regression evidence for the fixed synthetic corpus, not
 evidence of general performance on unseen manuscripts; literal recall remains
 81.818.
-Record your own baseline when dictionary fingerprints
-differ. `--tokenizer literal` explicitly selects a separate limited-mode run;
+That historical report is retained unchanged and cannot be compared directly
+with `technical-prose-v2`. Record a new baseline on the expanded corpus before
+changing criteria or detectors, and also when dictionary fingerprints differ.
+`--tokenizer literal` explicitly selects a separate limited-mode run;
 there is no automatic fallback, and literal results do not validate MeCab.
 
 ### Optional local AI evaluation
@@ -124,6 +138,9 @@ require the same reported writer and judge models, CLI versions, rubric, and
 calibration corpus. CLI defaults can change, so retain the recorded model IDs
 and use explicit model options for controlled comparisons. Score changes can
 reflect sampling variation as well as implementation changes.
+When testing a criteria change, first fix the expanded corpus, calibration pairs,
+and judge rubric and record the AI baseline; then change only the review criteria
+and rerun. A changed judge rubric or calibration corpus requires a new baseline.
 
 The runner uses argument arrays rather than shell interpolation, read-only Codex
 execution or tool-disabled Claude execution, and a per-invocation timeout

@@ -31,6 +31,9 @@ class WritingTest < Minitest::Test
     assert_includes prompt, 'Intended role of 入口'
     assert_includes prompt, 'naming its referent alone'
     assert_includes prompt, 'Distinguish a public option or return field from internal state'
+    assert_includes prompt, 'Compare structure before and after revision'
+    assert_includes prompt, 'Preserve plain or polite style'
+    assert_includes prompt, '各ワーカーは最大3回再試行します'
     refute_includes prompt, 'Migrated OSS prose style profile'
   end
 

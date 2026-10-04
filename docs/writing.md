@@ -9,6 +9,15 @@ it does not supply source facts or authorize edits. Book-specific voice and
 format still come from the book. The OSS-only prose style profile remains with
 the book workflow, not the shared default.
 
+The unreleased criteria also ask reviewers to compare source and revision for
+modifier targets, condition and exception scope, quantities and their targets,
+parallel relationships, and required order. Preserve each sentence's function
+(including advice, obligations, plans, and actual behavior) separately from plain
+or polite style. Keep the author's style unless a change is requested or the
+book explicitly requires one. Sentence splitting and punctuation changes must
+retain the original relationships; these are contextual review instructions,
+not automatic semantic checks. Saved sessions retain the criteria from their scan.
+
 ```sh
 asciidoc-pubkit writing criteria --lang ja
 asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
