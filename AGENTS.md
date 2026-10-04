@@ -12,9 +12,11 @@ model provider. Explicit `replace apply` applies author-supplied mechanical rule
 review and scoring do not rewrite manuscripts. It does not publish books. Do not describe
 planned publishing features as available functionality.
 
-- [README.md](README.md) owns installation, command usage, configuration, rule
-  schemas, coverage limits, and verification semantics. Update it when changing
-  user-visible behavior rather than duplicating its full reference here.
+- [README.md](README.md) owns the feature overview and quick start; its linked
+  guides under `docs/` own detailed installation, command usage, configuration,
+  rule schemas, coverage limits, and verification semantics. Update the relevant
+  guide and overview when changing user-visible behavior rather than duplicating
+  their full reference here.
 - [CHANGELOG.md](CHANGELOG.md) records released and unreleased changes. Consult
   its Unreleased section and Git history when resuming work; a feature in the
   checkout is not necessarily present in the published gem.
@@ -26,8 +28,8 @@ planned publishing features as available functionality.
 ## Setup on another machine
 
 Use Ruby 3.2 or later and Bundler. Install the external MeCab command and a UTF-8
-IPADIC dictionary before running the full suite. See the README's morphological
-analyzer installation section for macOS and Debian/Ubuntu commands. Confirm the
+IPADIC dictionary before running the full suite. See the morphological analyzer
+installation section in `docs/installation.md` for macOS and Debian/Ubuntu commands. Confirm the
 dictionary with `mecab -D`; UniDic is not an interchangeable backend.
 
 From the repository root:

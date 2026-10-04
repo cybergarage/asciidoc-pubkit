@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0 — 2026-10-05
+
+- Release the existing document inspection, explicit prose replacement,
+  Japanese writing, review, scoring, and baseline verification workflows as
+  version 1.0.0 without changing command behavior or session schema 3.
+- Shorten the README to features, requirements, installation, and quick-start
+  usage. Move detailed references to section-specific guides under `docs/`,
+  include them in the gem, and remove the Work In Progress badge.
+- Add the English review research proposal as future design documentation;
+  English review remains unsupported.
+- Clarify that review sessions require the exact tool version that created
+  them. Preserve ongoing baselines when upgrading from earlier versions.
+
 ## 0.9.0 — 2026-10-03
 
 - Add read-only `document toc`, `document info`, `document check-xrefs`, and
