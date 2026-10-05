@@ -41,7 +41,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 1.0.0'
+gem 'asciidoc-pubkit', '~> 1.0.1'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -66,7 +66,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-1.0.0.gem
+gem install ./asciidoc-pubkit-1.0.1.gem
 asciidoc-pubkit --version
 ```
 

@@ -15,7 +15,7 @@ structure, and final edits to the reviewer.
   and separate assessment of meaning preservation and readability. Applied here:
   four limited metaphor patterns and third-sentence repetition locations inform
   candidate detection; the shared criteria require evidence for concrete rewrites.
-  The unreleased update adapts the structural comparison and sentence-function
+  The 1.0.1 update adapts the structural comparison and sentence-function
   guidance from [v1.0.6, commit 4075fc3](https://github.com/nanaism/yomiyasu/commit/4075fc34fb0333ca1fe42d32cd619338f4a138ba):
   compare modifier and quantity targets, condition scope, parallel relationships,
   and order before and after revision; preserve sentence function separately

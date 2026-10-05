@@ -16,7 +16,7 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.0.0 provides document inspection, explicit prose-only mechanical
+Version 1.0.1 provides document inspection, explicit prose-only mechanical
 replacements, and Japanese manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
@@ -26,7 +26,7 @@ Japanese manuscript excerpts and rule terms retain their original text.
 
 ## Available features
 
-The following commands are available in version 1.0.0.
+The following commands are available in version 1.0.1.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -44,10 +44,10 @@ The following commands are available in version 1.0.0.
 | [Manuscript scoring](docs/scoring.md#score-an-asciidoc-manuscript) | `review score` | Report a prose candidate-density score; explicit `--agent codex` or `--agent claude` optionally invokes a local AI CLI for readability ratings |
 | [Writing criteria and prompts](docs/writing.md#writing-commands) | `writing criteria`, `writing prompt` | Print Japanese prose criteria or generate a writing prompt without a manuscript or MeCab |
 
-The unreleased checkout extends the [shared writing criteria](docs/writing.md#writing-commands)
+Version 1.0.1 extends the [shared writing criteria](docs/writing.md#writing-commands)
 with structural comparison before and after revision and preservation of sentence
-functions and plain or polite style. The [development evaluation](docs/development.md#development-prose-benchmark)
-includes new cases for these checks; published 1.0.0 criteria remain unchanged.
+functions and plain or polite style. The [development evaluation](docs/prose-evaluation.md)
+includes new cases for these checks.
 
 ## Requirements and scope
 
@@ -78,7 +78,7 @@ asciidoc-pubkit --help
 ```
 
 To update, run `gem update asciidoc-pubkit`. For Bundler, add
-`gem 'asciidoc-pubkit', '~> 1.0.0'` to your project's `Gemfile` and run commands
+`gem 'asciidoc-pubkit', '~> 1.0.1'` to your project's `Gemfile` and run commands
 through `bundle exec`. See [source installation and local checkout usage](docs/installation.md).
 
 ## Quick start
@@ -118,7 +118,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 
 Existing review sessions require the exact tool version that created them.
 Before upgrading, finish ongoing reviews with that version or preserve their
-baselines and start a new review in a separate directory with v1.0.0. A new
+baselines and start a new review in a separate directory with v1.0.1. A new
 scan cannot verify preservation relative to an earlier baseline.
 
 ## Documentation
@@ -136,7 +136,8 @@ scan cannot verify preservation relative to an earlier baseline.
 | [Rules and coverage](docs/rules-and-coverage.md) | Candidate detection, source positions, scope, session compatibility |
 | [Custom review rules](docs/custom-rules.md) | Complete rule replacement, strict YAML schema, saved rules |
 | [Architecture](docs/architecture.md) | Review principles, analysis pipeline, scoring algorithms |
-| [Development](docs/development.md) | Tests, synthetic benchmark, explicit AI evaluation trials |
+| [Development](docs/development.md) | Setup, test suite, development validation |
+| [Prose evaluation](docs/prose-evaluation.md) | Fixed fixtures, detector metrics, AI trials, before/after comparisons |
 | [References](docs/references.md) | Editorial and research foundations |
 | [English review proposal](docs/english-review-research.md) | Future design research; English review is not implemented |
 

@@ -131,13 +131,13 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Version 1.0.0 uses session schema 3.
+Version 1.0.1 uses session schema 3.
 Sessions with a different schema or tool version cannot be loaded. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-1.0.0
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-1.0.1
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship

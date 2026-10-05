@@ -9,7 +9,7 @@ it does not supply source facts or authorize edits. Book-specific voice and
 format still come from the book. The OSS-only prose style profile remains with
 the book workflow, not the shared default.
 
-The unreleased criteria also ask reviewers to compare source and revision for
+The criteria also ask reviewers to compare source and revision for
 modifier targets, condition and exception scope, quantities and their targets,
 parallel relationships, and required order. Preserve each sentence's function
 (including advice, obligations, plans, and actual behavior) separately from plain
@@ -24,7 +24,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 1.0.0.
+review or writing criteria are shipped in 1.0.1.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain

@@ -1,6 +1,13 @@
 # Changelog
 
-## Unreleased
+## 1.0.1 — 2026-10-05
+
+- Explain the project's publishing background and link the book catalogs without
+  adding publishing functionality.
+
+- Add a dedicated prose evaluation guide covering fixtures, normal test coverage,
+  detector and AI metrics, controlled comparisons, and measured-result limits.
+  Link it from the README and retain setup and test instructions in Development.
 
 - Extend the original development corpus from 13 to 21 paragraphs and the manual
   revision calibration from 8 to 20 pairs, covering quantity and modifier targets,

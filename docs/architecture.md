@@ -256,7 +256,7 @@ artifacts are removed after the invocation, and manuscripts remain unchanged.
 | Development benchmark accuracy | Detector agreement and location accuracy | Fixed corpus with annotated targets |
 | Review verification | Mechanical preservation after editing | Original session baseline and current files |
 
-See the [development prose benchmark](development.md#development-prose-benchmark) for
+See the [prose evaluation guide](prose-evaluation.md) for
 before/after trials with gold targets, separate fact checklists, and evaluator
 calibration. Its precision, recall, and F1 evaluate the detector rather than
 providing a score for an arbitrary manuscript.
