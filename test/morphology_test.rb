@@ -21,6 +21,47 @@ class MorphologyTest < Minitest::Test
     expected.each { |surface| assert_equal 1, findings.count { |f| f['match'] == surface }, surface }
   end
 
+  def test_added_operation_and_degree_candidates_in_both_modes
+    text = "😀 分かります。置きます。変えます。作れます。発火します。発火させます。\n経路は短いです。経路は長いです。発火条件。"
+    expected = {
+      'weak-predicate' => %w[分かります 置きます 変えます 作れます 発火します 発火させます],
+      'vague-degree' => %w[短い 長い],
+      'abstract-reference' => ['発火']
+    }
+    %w[mecab literal].each do |mode|
+      findings = scan(text, @settings.merge('tokenizer' => mode))
+      expected.each do |rule, surfaces|
+        selected = findings.select { |f| f['rule'] == rule }
+        matches = surfaces.map do |surface|
+          match = selected.find { |f| f['match'].start_with?(surface) }
+          refute_nil match, "#{mode}: #{surface}"
+          match['match']
+        end
+        assert_equal matches.sort, selected.map { |f| f['match'] }.sort, "#{mode}: #{rule}"
+      end
+      first = findings.find { |f| f['rule'] == 'weak-predicate' && f['match'] == '分かります' }
+      assert_equal [10, 3], first.values_at('line', 'column')
+      assert findings.all? { |f| f['severity'] == 'hint' }
+      protected = '`分かります`。「置きます」。link:guide.html[変えます]。『発火します』。'
+      assert_empty scan(protected, @settings.merge('tokenizer' => mode))
+    end
+  end
+
+  def test_added_mecab_lemmas_preserve_inflection_polarity_and_allow_lists
+    findings = scan('分からなかった。置かない。変えません。作れません。発火しなかった。短くない。長かった。')
+    predicates = findings.select { |f| f['rule'] == 'weak-predicate' }
+    assert_equal %w[分かる 置く 変える 作る 発火する], predicates.map { |f| f['lemma'] }
+    assert predicates.all? { |f| f['negative'] }
+    degrees = findings.select { |f| f['rule'] == 'vague-degree' }
+    assert_equal %w[短くない 長かった], degrees.map { |f| f['match'] }
+    assert_equal [true, false], degrees.map { |f| f['negative'] }
+    assert_empty scan('作れます。分かります。発火します。短いです。',
+                      @settings.merge('allows' => %w[作る 分かる 発火する 短い]))
+    %w[mecab literal].each do |mode|
+      assert_empty scan('入力ファイルを作れます。', @settings.merge('tokenizer' => mode, 'allows' => ['作れます']))
+    end
+  end
+
   def test_contextual_predicates_keep_complete_inflections_and_polarity
     surfaces = %w[地味に効かなかった 静かに壊れていた 時間を溶かしてしまった 側に倒しました]
     findings = scan(surfaces.join('。') + '。').select { |f| f['rule'] == 'contextual-phrase' }

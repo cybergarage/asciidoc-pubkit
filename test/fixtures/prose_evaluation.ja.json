@@ -240,6 +240,132 @@
         "unsupported-addition"
       ],
       "reason": "The rewrite assigns responsibility that the source explicitly leaves unresolved."
+    },
+    {
+      "id": "path-length-made-performance",
+      "source": "処理経路は短いです。実行時間とメモリ使用量は未測定です。",
+      "revision": "処理は軽量で高速です。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "comparison-target",
+        "performance",
+        "unsupported-addition"
+      ],
+      "reason": "Path length does not establish performance; the revision removes the explicit measurement limitation."
+    },
+    {
+      "id": "capability-made-reuse",
+      "source": "同じ起動処理を端末と管理画面から呼び出せます。再利用性は未評価です。",
+      "revision": "起動処理を他のアプリケーションでも再利用できます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "capability-scope",
+        "reuse",
+        "unsupported-addition"
+      ],
+      "reason": "The revision expands the supported callers and replaces unevaluated reuse with a guarantee."
+    },
+    {
+      "id": "summary-made-shortening",
+      "source": "過去の履歴を要約と直近の記録から再構成します。結果の長さは比較していません。",
+      "revision": "履歴を再構成すると、入力は必ず短くなります。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "unconditional-result",
+        "information-loss"
+      ],
+      "reason": "Reconstruction became guaranteed shortening despite the explicit absence of a length comparison."
+    },
+    {
+      "id": "separate-operations-made-independent",
+      "source": "登録するパッケージを指定し、そのパッケージから読み込む資源を選びます。",
+      "revision": "パッケージの登録と資源の選択は独立して設定できます。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "dependency",
+        "independence",
+        "unsupported-addition"
+      ],
+      "reason": "Two distinct operations do not establish independent configuration; their dependency needs evidence."
+    },
+    {
+      "id": "reference-made-content-loading",
+      "source": "起動時は補助ファイルの参照先だけを読み込み、本文は必要時に取得します。",
+      "revision": "起動時に補助ファイルの本文を読み込みます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "reference-versus-content",
+        "order",
+        "information-loss"
+      ],
+      "reason": "A reference became file content and deferred loading became startup loading."
+    },
+    {
+      "id": "optional-inheritance-made-requirement",
+      "source": "既定部品を継承すると既定のキー処理を再利用できます。独自部品の実装も可能です。",
+      "revision": "入力部品を変更するには、既定部品を継承する必要があります。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "capability-versus-requirement",
+        "exception-scope"
+      ],
+      "reason": "An optional reuse technique became a requirement and the independent implementation option was lost."
+    },
+    {
+      "id": "user-side-made-local",
+      "source": "資格情報は利用者側へ置きます。保存先の環境は未確定です。",
+      "revision": "資格情報は利用者のローカル環境に保存します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "storage-location",
+        "unsupported-addition"
+      ],
+      "reason": "The source leaves the storage environment unresolved; user-side ownership does not establish local storage."
+    },
+    {
+      "id": "policy-definition-made-enforcement",
+      "source": "管理画面で確認方針を定義します。呼び出し時の適用箇所は未確認です。",
+      "revision": "管理画面でツール呼び出しを確認し、拒否します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "definition-versus-enforcement",
+        "unsupported-addition"
+      ],
+      "reason": "Policy definition does not establish where confirmation or rejection is enforced."
+    },
+    {
+      "id": "comparison-made-direct",
+      "source": "新経路は短いです。旧経路は四つのハンドラを通り、新経路は二つのハンドラを通ります。",
+      "revision": "旧経路は四つ、新経路は二つのハンドラを通ります。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "comparison-target",
+        "readability"
+      ],
+      "reason": "The explicit handler counts replace a relative degree without asserting speed or memory improvements."
+    },
+    {
+      "id": "precise-everyday-verb-kept",
+      "source": "入力ファイルを作れます。既存ファイルは変更しません。",
+      "revision": "入力ファイルを作れます。既存ファイルは変更しません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "capability-scope",
+        "necessary-plain-language"
+      ],
+      "reason": "The capability and preservation condition are precise; a candidate is not a prohibited word."
+    },
+    {
+      "id": "event-trigger-made-direct",
+      "source": "イベントは設定の変更時に発火します。通知先は監視部品です。",
+      "revision": "設定を変更すると、監視部品へイベントを通知します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "event-versus-execution",
+        "actor",
+        "readability"
+      ],
+      "reason": "The revision states the same event and recipient without adding execution of another operation."
     }
   ]
 }

@@ -5,8 +5,8 @@ criteria changes against a project-defined baseline. Keep detection performance,
 readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
-This guide describes the version 1.0.1 development checkout, including the
-`technical-prose-v2` corpus and criteria update. The evaluation runner is not an
+This guide describes version 1.0.2, including the
+`technical-prose-v2` corpus and expanded revision calibration. The evaluation runner is not an
 installed gem command. It does not measure Japanese naturalness or AI authorship
 as a single validated score.
 
@@ -42,7 +42,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 21 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 20 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 31 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -65,6 +65,17 @@ Other revision pairs cover reversed recovery order, authentication conditions
 incorrectly extended to audit logging, independent checks made conditional, and
 an unsolicited change from plain to polite style. Acceptable pairs and unresolved
 cases prevent calibration from treating every change as an error.
+
+Eleven further pairs cover path length changed into performance, capability
+expanded into reuse, reconstruction changed into guaranteed shortening,
+separate operations claimed to be independent, references changed into loaded
+content, optional inheritance made mandatory, user-side storage assumed local,
+and policy definition confused with enforcement. Controls retain precise plain
+verbs or replace relative wording with supported counts and event operations.
+Unsupported details use `needs-evidence`; contradictions and lost explicit
+conditions use `reject`. These are original editorial fixtures, not manuscript
+excerpts. The 21-paragraph corpus and judge rubric are unchanged, but the changed
+calibration fingerprint requires a new AI baseline for comparison.
 
 ## What normal tests check
 

@@ -151,7 +151,7 @@ manuscripts. Numeric title changes
 are manual-review notices, and remaining candidates do not fail verification.
 `meaning_verified` remains `false`.
 
-Version 1.0.1 uses session schema 3 and requires the exact tool version saved in
+Version 1.0.2 uses session schema 3 and requires the exact tool version saved in
 the session. Preserve or finish an ongoing review with its original tool before
 establishing a new baseline in a separate directory.
 `review score` continues to support prose only and rejects `--scope`.
@@ -187,6 +187,17 @@ one-based Unicode source columns. MeCab remains the default; only explicit
 `--tokenizer literal` disables it.
 
 ### Prompt
+
+Version 1.0.2 adds packaged prose candidates for
+`分かる`, `置く`, `変える`, `発火`, `短い`, `長い`, and potential forms of `作る`
+such as `作れます`. MeCab detects configured lemmas with inflection and negation;
+literal mode matches only the explicitly registered surfaces. `発火` is also a
+noun candidate, for example in a condition description.
+These hints ask for context, not formal synonyms: a short path does not establish
+low resource use, and an available operation does not establish reuse. Keep
+precise plain verbs, literal lengths, and established event terminology when
+appropriate. Allow lists and inline protection still apply. Custom rules replace
+the packaged set, and existing sessions keep their saved rules.
 
 ```sh
 asciidoc-pubkit review prompt .pubkit/review --mode revise --output review-prompt.md

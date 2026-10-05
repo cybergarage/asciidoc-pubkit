@@ -34,6 +34,8 @@ terms:
     # Review context before choosing a katakana technical term.
     - 木
     - 余白
+    # Event or operation wording requires context, not a fixed synonym.
+    - 発火
     question: Identify the concrete referent, components, role, or measurable work.
       For 入口, apply the shared role-metaphor criteria; a clear referent alone is
       not a sufficient reason to keep vague operation wording. Keep
@@ -51,6 +53,9 @@ terms:
     - 意味しません
     - 把握します
     - 捉えます
+    - 分かる
+    - 分かります
+    - 分かりません
     # Writing, representation, and inspection.
     - 記述します
     - 記述できます
@@ -79,6 +84,9 @@ terms:
     # Construction, preparation, and combination.
     - 用意します
     - 作ります
+    - 作れる
+    - 作れます
+    - 作れません
     - 組み立てられます
     - 組み合わせます
     - 積み重なります
@@ -104,6 +112,12 @@ terms:
     - 決まります
     # Change, transfer, and retention.
     - 変わります
+    - 変える
+    - 変えます
+    - 置く
+    - 置きます
+    - 発火します
+    - 発火させます
     - 書き換える
     - 置き換えます
     - 加えます
@@ -131,6 +145,8 @@ terms:
     terms:
     - 浅い
     - 深い
+    - 短い
+    - 長い
     question: Identify the concrete depth, level, scope, or comparison. Keep literal
       measurements and established technical meanings.
   contextual-phrase:
@@ -241,6 +257,12 @@ verbs:
   - 見落とす
   示す:
   - 示す
+  分かる:
+  - 分かる
+  置く:
+  - 置く
+  変える:
+  - 変える
   変わる:
   - 変わる
   分ける:
@@ -311,6 +333,7 @@ verbs:
   - 調べる
   作る:
   - 作る
+  - 作れる
   抜ける:
   - 抜ける
   捉える:
@@ -331,6 +354,7 @@ verbs:
   ある:
   - ある
 sahen:
+- 発火
 - 利用
 - 整理
 - 把握

@@ -71,7 +71,7 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    assert_equal 20, pairs.length
+    assert_equal 31, pairs.length
     assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
     quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
     assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)
@@ -79,6 +79,25 @@ class ProseBenchmarkTest < Minitest::Test
     %w[quantity-target order modifier-target condition-scope parallelism sentence-function
        register purpose-scope].each do |axis|
       assert pairs.any? { |item| item.fetch('review_axes').include?(axis) }, axis
+    end
+  end
+
+  def test_operation_revision_calibration_has_errors_uncertainty_and_valid_controls
+    pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
+    expected = {
+      'path-length-made-performance' => 'reject', 'capability-made-reuse' => 'reject',
+      'summary-made-shortening' => 'reject', 'separate-operations-made-independent' => 'needs-evidence',
+      'reference-made-content-loading' => 'reject', 'optional-inheritance-made-requirement' => 'reject',
+      'user-side-made-local' => 'needs-evidence', 'policy-definition-made-enforcement' => 'needs-evidence',
+      'comparison-made-direct' => 'accept', 'precise-everyday-verb-kept' => 'accept',
+      'event-trigger-made-direct' => 'accept'
+    }
+    expected.each do |id, disposition|
+      item = pairs.find { |pair| pair['id'] == id }
+      refute_nil item, id
+      assert_equal disposition, item.fetch('expected_disposition'), id
+      %w[source revision reason].each { |key| refute_empty item.fetch(key), "#{id}: #{key}" }
+      refute_empty item.fetch('review_axes'), id
     end
   end
 

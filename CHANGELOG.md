@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.2 — 2026-10-05
+
+- Add contextual prose candidates for 分かる, 置く, 変える, 発火, 短い, and 長い,
+  including MeCab potential forms of 作る such as 作れます. Preserve inflection,
+  negation, allow lists, and protected inline content; these are review hints,
+  not prohibited words or automatic replacements.
+- Extend development revision calibration from 20 to 31 pairs with operation,
+  capability, comparison, reference, dependency, and responsibility distinctions.
+  Include faithful revisions and unresolved evidence as controls; automated
+  fixture tests do not establish AI editorial accuracy.
+
 ## 1.0.1 — 2026-10-05
 
 - Explain the project's publishing background and link the book catalogs without
