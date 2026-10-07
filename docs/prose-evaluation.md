@@ -5,8 +5,9 @@ criteria changes against a project-defined baseline. Keep detection performance,
 readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
-This guide describes version 1.0.2, including the
-`technical-prose-v2` corpus and expanded revision calibration. The evaluation runner is not an
+This guide describes the version 1.0.3 development checkout, including the
+`technical-prose-v3` corpus and expanded revision calibration.
+The evaluation runner is not an
 installed gem command. It does not measure Japanese naturalness or AI authorship
 as a single validated score.
 
@@ -39,10 +40,10 @@ of Japanese writing.
 
 | File | Contents and role |
 | --- | --- |
-| [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 21 paragraphs used as the actual AsciiDoc input |
+| [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 31 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 43 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -74,8 +75,18 @@ and policy definition confused with enforcement. Controls retain precise plain
 verbs or replace relative wording with supported counts and event operations.
 Unsupported details use `needs-evidence`; contradictions and lost explicit
 conditions use `reject`. These are original editorial fixtures, not manuscript
-excerpts. The 21-paragraph corpus and judge rubric are unchanged, but the changed
-calibration fingerprint requires a new AI baseline for comparison.
+excerpts. In version 1.0.2, the 21-paragraph corpus and judge rubric were unchanged,
+but the calibration fingerprint changed and required a new AI baseline.
+
+The version 1.0.3 `technical-prose-v3` corpus adds five paragraphs for comparison
+axes, completed/current/planned status, event versus observation dates, known
+actions with unclear state terms, and source uncertainty versus editorial notes.
+Twelve new calibration pairs include faithful revisions, wrong comparisons or
+dates, lost operations, invented change history or failure states, and editing
+markers added to established facts. The five paragraphs add no detector targets
+but do reach the writer and judge. The corpus, calibration, and judge rubric all
+change; establish a fresh AI baseline with those fixed before measuring a review
+criteria change. v1 and v2 results cannot be compared directly with v3.
 
 ## What normal tests check
 
@@ -139,7 +150,7 @@ original 13-paragraph `technical-prose-v1` corpus. Its precision was 100, recall
 81.818, F1 90, and location accuracy 77.778. Later detector fixes brought the
 11-target MeCab results to 100 for all four metrics; literal recall remained
 81.818. Keep that historical report unchanged. It cannot be compared directly
-with v2: create a new baseline after expanding the corpus.
+with v2 or v3: create a new baseline after expanding the corpus.
 
 ## Compare review criteria with AI trials
 
@@ -252,6 +263,13 @@ location accuracy were all 100, with zero deltas. The suite passed 203 tests and
 2,552 assertions with real MeCab/IPADIC. These are detector and workflow checks.
 External AI rewrite-and-judge trials have not yet been run for this change, so
 its readability and preservation improvement remains unmeasured.
+
+For the version 1.0.3 yomiyasu v1.0.8 adaptation, detector evaluation on v3 before
+and after the criteria change also retained 100 for all four metrics, with zero
+deltas. The suite passed 209 tests and 2,844 assertions with real MeCab/IPADIC,
+including paragraph and excluded-block boundaries and ordinary line wrapping.
+External AI rewrite-and-judge trials remain unexecuted for this change; these
+results establish detector and workflow regression checks only.
 
 [Development](development.md) · [Manuscript scoring](scoring.md) ·
 [Back to README](../README.md)

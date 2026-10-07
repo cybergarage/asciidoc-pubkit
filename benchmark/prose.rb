@@ -31,6 +31,11 @@ module ProseBenchmark
     polite style merely because the topic is technical. Mark false for omission
     or changed meaning or violation of a supplied editorial constraint. An explicit
     lack of evidence must remain unresolved rather than becoming a new asserted fact.
+    Preserve comparison axes and rank, completed/current/planned status, event
+    versus observation or report time, and attribution. Keep known operations
+    despite unclear state terms. Retain actual source uncertainty in the body;
+    reviewer doubt and editorial questions must not become manuscript facts or
+    replace an established claim with an editing annotation.
     Report unsupported additions and substitutions separately as English reasons,
     with short Japanese evidence quotes. Empty arrays mean no such errors found.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an

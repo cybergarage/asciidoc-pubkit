@@ -16,7 +16,7 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.0.2 provides document inspection, explicit prose-only mechanical
+Version 1.0.3 provides document inspection, explicit prose-only mechanical
 replacements, and Japanese manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
@@ -26,7 +26,7 @@ Japanese manuscript excerpts and rule terms retain their original text.
 
 ## Available features
 
-The following commands are available in version 1.0.2.
+The following commands are available in version 1.0.3.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -48,6 +48,10 @@ Version 1.0.1 extended the [shared writing criteria](docs/writing.md#writing-com
 with structural comparison before and after revision and preservation of sentence
 functions and plain or polite style. The [development evaluation](docs/prose-evaluation.md)
 includes new cases for these checks.
+
+Version 1.0.3 additionally preserves comparison axes, temporal roles,
+and known actions in unclear passages, separating source uncertainty from editorial
+questions. The evaluation guide describes the expanded corpus and calibration.
 
 ## Requirements and scope
 
@@ -81,7 +85,7 @@ asciidoc-pubkit --help
 ```
 
 To update, run `gem update asciidoc-pubkit`. For Bundler, add
-`gem 'asciidoc-pubkit', '~> 1.0.2'` to your project's `Gemfile` and run commands
+`gem 'asciidoc-pubkit', '~> 1.0.3'` to your project's `Gemfile` and run commands
 through `bundle exec`. See [source installation and local checkout usage](docs/installation.md).
 
 ## Quick start
@@ -121,7 +125,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 
 Existing review sessions require the exact tool version that created them.
 Before upgrading, finish ongoing reviews with that version or preserve their
-baselines and start a new review in a separate directory with v1.0.2. A new
+baselines and start a new review in a separate directory with v1.0.3. A new
 scan cannot verify preservation relative to an earlier baseline.
 
 ## Documentation

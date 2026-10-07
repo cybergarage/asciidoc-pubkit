@@ -18,13 +18,20 @@ book explicitly requires one. Sentence splitting and punctuation changes must
 retain the original relationships; these are contextual review instructions,
 not automatic semantic checks. Saved sessions retain the criteria from their scan.
 
+The criteria also preserve the comparison axis, completed changes,
+current behavior, future plans, and the distinction between event dates and
+observation or report dates. An unclear state term does not authorize deleting
+its known action. Keep source-provided undecided or investigation status in the
+body; put reviewer doubts and questions in the separate report, without adding
+editing markers to the manuscript.
+
 ```sh
 asciidoc-pubkit writing criteria --lang ja
 asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 1.0.2.
+review or writing criteria are shipped in 1.0.3.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain

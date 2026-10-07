@@ -21,6 +21,12 @@ structure, and final edits to the reviewer.
   and order before and after revision; preserve sentence function separately
   from plain or polite style. The new examples are original project fixtures.
   Markdown-specific bold fixes and numeric style thresholds are not imported.
+  The 1.0.3 update adapts [v1.0.8, commit 9b9a847](https://github.com/nanaism/yomiyasu/commit/9b9a84757ade524ef9d477f75c6ea13190079f97)
+  for comparison axes, tense and event/report dates, and retaining known actions
+  when state terms are unclear. Source uncertainty remains in the manuscript;
+  editorial questions remain in the separate report. Regression tests preserve
+  paragraph boundaries and ordinary line wrapping. These are project-authored
+  examples; Markdown-specific scanner and updater implementations are not imported.
 - [日本語技術文書の文章規範](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d):
   informs paragraph logic, evidence scope, and meaningful uncertainty. Applied
   here: the shared criteria start from each paragraph's technical purpose and

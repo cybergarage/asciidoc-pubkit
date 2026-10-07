@@ -366,6 +366,145 @@
         "readability"
       ],
       "reason": "The revision states the same event and recipient without adding execution of another operation."
+    },
+    {
+      "id": "importance-made-frequency",
+      "source": "最も重要な問題は認証の失敗です。発生頻度は計測していません。",
+      "revision": "最も頻繁な問題は認証の失敗です。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "comparison-axis",
+        "priority",
+        "unsupported-addition"
+      ],
+      "reason": "Importance became frequency, which the source explicitly leaves unmeasured."
+    },
+    {
+      "id": "importance-axis-preserved",
+      "source": "業務への影響を基に評価すると、認証の失敗が最も重要な問題です。",
+      "revision": "業務への影響が最も大きい問題は、認証の失敗です。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "comparison-axis",
+        "priority",
+        "readability"
+      ],
+      "reason": "The same impact-based ranking remains explicit without inventing occurrence frequency."
+    },
+    {
+      "id": "completed-change-made-plan",
+      "source": "再試行の上限を3回へ変更しました。現在、サーバーは最大3回再送します。",
+      "revision": "再試行の上限を3回へ変更する予定です。現在、サーバーは最大3回再送します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "tense",
+        "completed-versus-planned"
+      ],
+      "reason": "The completed configuration change became a future plan."
+    },
+    {
+      "id": "current-behavior-made-change-history",
+      "source": "現在、サーバーは失敗した要求を最大3回再送します。以前の動作は未確認です。",
+      "revision": "今回、サーバーに最大3回の再送を追加しました。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "tense",
+        "change-history",
+        "unsupported-addition"
+      ],
+      "reason": "Current behavior does not establish when it was added or whether it is new."
+    },
+    {
+      "id": "observation-date-made-event-date",
+      "source": "9月2日に、担当者から、9月1日に障害が発生したと聞きました。",
+      "revision": "9月2日に障害が発生しました。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "observation-time",
+        "event-time",
+        "attribution"
+      ],
+      "reason": "The date of hearing the report became the event date and reported evidence became a direct assertion."
+    },
+    {
+      "id": "observation-and-event-dates-preserved",
+      "source": "9月2日に、担当者から、9月1日に障害が発生したと聞きました。",
+      "revision": "担当者によると、障害は9月1日に発生しました。この報告を聞いたのは9月2日です。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "observation-time",
+        "event-time",
+        "attribution"
+      ],
+      "reason": "Both dates and the source of the reported event remain distinct."
+    },
+    {
+      "id": "unclear-state-made-specific-failure",
+      "source": "破綻したメッセージは隔離します。破綻の詳しい状態定義は調査中です。",
+      "revision": "署名検証に失敗したメッセージは隔離します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "state-scope",
+        "unsupported-addition"
+      ],
+      "reason": "The undefined state was narrowed to a signature-verification failure without evidence."
+    },
+    {
+      "id": "known-action-moved-out-of-body",
+      "source": "破綻したメッセージは隔離します。破綻の詳しい状態定義は調査中です。",
+      "revision": "破綻の詳しい状態定義は調査中です。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "known-action",
+        "information-loss"
+      ],
+      "reason": "Uncertainty about the state does not authorize deleting the established isolation operation."
+    },
+    {
+      "id": "unclear-state-and-action-preserved",
+      "source": "破綻したメッセージは隔離します。破綻の詳しい状態定義は調査中です。",
+      "revision": "破綻したメッセージを隔離します。その詳しい状態定義は調査中です。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "state-scope",
+        "known-action",
+        "source-uncertainty"
+      ],
+      "reason": "The operation and actual investigation status remain in the body without inventing a specific failure."
+    },
+    {
+      "id": "source-undecided-status-removed",
+      "source": "障害時に再接続します。再接続の担当者は未定です。",
+      "revision": "障害時に再接続します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "source-uncertainty",
+        "information-loss"
+      ],
+      "reason": "The source reports an actual unresolved responsibility that must remain visible in the body."
+    },
+    {
+      "id": "editor-doubt-added-to-fact",
+      "source": "障害時に再接続します。通常の接続処理はサーバーが実行します。",
+      "revision": "障害時に再接続します（要確認）。通常の接続処理はサーバーが実行します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "editorial-note",
+        "assertion-strength"
+      ],
+      "reason": "An editorial check marker weakens an established operation and contaminates the reader-facing body."
+    },
+    {
+      "id": "undecided-status-preserved",
+      "source": "障害時に再接続します。再接続の担当者は未定です。",
+      "revision": "障害時には再接続します。誰が再接続を担当するかは未定です。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "source-uncertainty",
+        "actor",
+        "readability"
+      ],
+      "reason": "The definite operation and genuinely undecided actor remain separate."
     }
   ]
 }

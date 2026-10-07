@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.3 — 2026-10-07
+
+- Adapt yomiyasu v1.0.8 guidance to preserve comparison axes, completed/current/
+  planned status, event and observation dates, attribution, and known operations
+  despite unclear state descriptions. Keep actual source uncertainty in the
+  manuscript and reviewer questions in the separate report.
+- Expand the original evaluation corpus from 21 to 26 paragraphs as
+  `technical-prose-v3`, and revision calibration from 31 to 43 pairs. Extend the
+  judge rubric for these distinctions; require fresh AI baselines for the changed
+  corpus, calibration, and rubric. Add paragraph-boundary and soft-line-break
+  repetition regressions without changing detector rules or verification semantics.
+
 ## 1.0.2 — 2026-10-05
 
 - Add contextual prose candidates for 分かる, 置く, 変える, 発火, 短い, and 長い,

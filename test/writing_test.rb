@@ -33,6 +33,8 @@ class WritingTest < Minitest::Test
     assert_includes prompt, 'Distinguish a public option or return field from internal state'
     assert_includes prompt, 'Compare structure before and after revision'
     assert_includes prompt, 'Preserve plain or polite style'
+    assert_includes prompt, 'Keep source uncertainty separate from editorial questions'
+    assert_includes prompt, 'Keep completed changes, current behavior or policy, and future plans distinct'
     assert_includes prompt, '各ワーカーは最大3回再試行します'
     refute_includes prompt, 'Migrated OSS prose style profile'
   end

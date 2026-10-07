@@ -10,6 +10,7 @@
 - Make relationships explicit
 - Compare structure before and after revision
 - Keep claims within their evidence and purpose
+- Keep source uncertainty separate from editorial questions
 - Remove generated-prose patterns without flattening the meaning
 - Preserve exact technical terminology
 - Revise the complete paragraph
@@ -165,6 +166,13 @@ action, or an evaluation into an implementation goal. Sequence words such as
 behavior. When the function or actor is unresolved, retain the uncertainty and
 record what needs confirmation.
 
+Keep completed changes, current behavior or policy, and future plans distinct.
+`上限を3回へ変更しました` reports a completed change; `最大3回再送します`
+can describe current behavior; `変更する予定です` describes a plan. Do not
+change tense merely to vary endings. Current behavior alone does not establish
+that it was introduced or changed in this revision. Report a change only when
+the source establishes it; do not invent an earlier state or improvement.
+
 Preserve plain or polite style unless the author requests a change or the book's
 explicit style requirements call for one. A technical topic alone does not
 require polite style. Resolve unintended style mixing separately from each
@@ -221,6 +229,13 @@ Use these checks when splitting, joining, or rearranging sentences:
 - Preserve the scope and direction of purpose, reason, contrast, and emphasis.
   A purpose applying to two operations must still apply to both after splitting;
   necessary contrast or priority must not become simple addition or equality.
+- Preserve the comparison axis as well as the alternatives and rank. Calling
+  a problem the most important does not establish that it is the most frequent
+  or easiest to overlook. Keep an unresolved comparison unresolved.
+- Distinguish the time an event occurred from when someone observed, learned,
+  or reported it. `9月2日に、9月1日に障害が発生したと聞きました` must not
+  become `9月2日に障害が発生しました`. Preserve attribution and distinguish
+  reported evidence from direct observation.
 
 Adjust punctuation when it obscures these relationships, not merely to reduce
 comma counts. Keep a colon that maps a label to a value, such as `状態: 正常`,
@@ -241,6 +256,27 @@ the preceding explanation already excludes that reading. When a limitation
 affects use, implementation, or verification, state the concrete condition and
 connect it to the relevant action or check. Do not delete a technical boundary
 merely because it uses negative wording.
+
+## Keep source uncertainty separate from editorial questions
+
+Retain an actual undecided or under-investigation state in the reader-facing
+body, including its time and scope. A reviewer not understanding a phrase does
+not establish that the author or implementation is uncertain. Do not add
+`要確認`, questions, or editorial explanations to the manuscript; put reviewer
+questions and proposed alternatives in the separate review report. Report missing
+evidence without weakening an established operation or inventing a new actor.
+
+When a state description is unclear but its associated action is known, preserve
+both the source wording's scope and the known action in the body. For example,
+`破綻したメッセージは隔離します` does not establish a signature failure, nor
+does uncertainty about `破綻` authorize deleting the isolation operation. Retain
+the term when a faithful alternative cannot be established and record the exact
+question separately. Quoting the operation only in a confirmation item does not
+preserve it in the manuscript. Keep source-provided `未定` or `調査中` statements;
+do not turn them into reviewer notes or omit them as editing clutter.
+
+These instructions do not authorize edits to protected content or new manuscript
+annotations. Preserve the selected review scope and keep unreviewed items pending.
 
 ## Remove generated-prose patterns without flattening the meaning
 

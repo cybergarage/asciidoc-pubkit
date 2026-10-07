@@ -1,6 +1,6 @@
 # Document commands
 
-Version 1.0.2 provides four read-only document commands. They require neither
+Version 1.0.3 provides four read-only document commands. They require neither
 MeCab nor an AI CLI, accept documents in any language, and do not create review
 sessions or change manuscripts.
 

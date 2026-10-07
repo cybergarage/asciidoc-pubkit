@@ -372,6 +372,7 @@ class ReviewTest < Minitest::Test
     assert_includes saved, 'Intended role of 入口'
     assert_includes saved, 'Compare structure before and after revision'
     assert_includes saved, 'Preserve plain or polite style'
+    assert_includes saved, 'Keep source uncertainty separate from editorial questions'
     %w[構築入口 ツールを呼ぶ 無効化したりできます 設計の肝です 拡張点 見落とします 分かれて現れます].each do |example|
       assert_includes saved, example
     end
@@ -753,6 +754,27 @@ class ReviewTest < Minitest::Test
     File.write(@chapter, "== Chapter\n\n入力を確認します。出力を確認します。結果を確認します。\n")
     scan
     assert json('findings.json').any? { |f| f['rule'] == 'repeated-ending' }
+  end
+
+  def test_repeated_endings_do_not_cross_paragraphs_or_excluded_blocks
+    separators = ["\n\n", "\n\n== Next\n\n",
+                  "\n\n[source,ruby]\n----\nputs '確認します。'\n----\n\n",
+                  "\n\n* 手順を確認します。\n\n"]
+    separators.each do |separator|
+      File.write(@chapter, "== Chapter\n\n入力を確認します。出力を確認します。#{separator}結果を確認します。\n")
+      scan('--yes')
+      assert_equal 2, json('document.json')['paragraphs'].length
+      assert_empty json('findings.json').select { |finding| finding['rule'] == 'repeated-ending' }
+    end
+  end
+
+  def test_soft_line_breaks_preserve_repeated_ending_run_and_source_position
+    File.write(@chapter, "== Chapter\n\n入力を確認します。\n出力を確認します。\n結果を確認します。\n")
+    scan
+    assert_equal 1, json('document.json')['paragraphs'].length
+    findings = json('findings.json').select { |finding| finding['rule'] == 'repeated-ending' }
+    assert_equal 1, findings.length
+    assert_equal [5, 4, '確認します'], findings.first.values_at('line', 'column', 'match')
   end
 
   def test_list_continuations_and_quoted_spans_are_excluded

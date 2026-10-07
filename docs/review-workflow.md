@@ -151,7 +151,7 @@ manuscripts. Numeric title changes
 are manual-review notices, and remaining candidates do not fail verification.
 `meaning_verified` remains `false`.
 
-Version 1.0.2 uses session schema 3 and requires the exact tool version saved in
+Version 1.0.3 uses session schema 3 and requires the exact tool version saved in
 the session. Preserve or finish an ongoing review with its original tool before
 establishing a new baseline in a separate directory.
 `review score` continues to support prose only and rejects `--scope`.
