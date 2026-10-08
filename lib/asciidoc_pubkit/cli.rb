@@ -6,6 +6,10 @@ module AsciidocPubkit
       Usage: asciidoc-pubkit <group> <command> [options] [input]
 
       Commands:
+        skill list              List bundled agent skills
+        skill install NAME      Install a bundled skill with --dir PATH
+        skill status NAME       Inspect a registered skill with --dir PATH
+        skill upgrade NAME      Update an unchanged registered skill with --dir PATH
         document toc FILE      Print the parsed section outline
         document info FILE     Extract book metadata
         document check-xrefs FILE  Report unresolved local cross-references
@@ -26,6 +30,7 @@ module AsciidocPubkit
 
       Use --lang ja with writing commands and review commands. Other review and
       writing languages are not supported yet and return an error.
+      skill install and upgrade write only the selected skill directory.
       Only replace apply edits manuscripts. review score --agent explicitly invokes a
       local Codex or Claude CLI, which may connect to its configured AI service.
     TEXT
@@ -41,11 +46,12 @@ module AsciidocPubkit
         out.puts VERSION
         return 0
       end
-      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace document].any? { |group| args == [group, '--help'] }
+      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace document skill].any? { |group| args == [group, '--help'] }
         out.puts HELP
         return 0
       end
       group, command = args.shift(2)
+      return SkillCommands.run(command, args, out: out, err: err) if group == 'skill'
       if group == 'document' && %w[toc info check-xrefs index].include?(command)
         return DocumentCommands.run(command, args, out: out, err: err)
       end

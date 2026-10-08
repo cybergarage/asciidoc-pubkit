@@ -1,16 +1,23 @@
 # Integrate manuscript review into an agent skill
 
-Use the [CLI tutorial](agent-review-tutorial.md) to try individual commands first.
+Use `skill install` to register the bundled review workflow in your project.
+These registration commands are **unreleased**; use the source checkout as
+explained in [skill commands](skill-commands.md). The published 1.1.0 gem does
+not provide them. The [CLI tutorial](agent-review-tutorial.md) covers individual
+scan, prompt and verify commands.
+
 A skill makes the same process reusable: the agent selects the manuscript,
 executes the commands, reads the generated prompt, edits within scope, verifies
 and records progress. Pubkit still performs parsing and preservation checks;
-it does not discover skills or launch a reviewer.
+it installs skill files without discovering them or launching a reviewer.
 
 ## Responsibilities
 
 ```mermaid
 flowchart TD
-    U["Author: assignment and edit authorization"] --> K["Agent reads the review skill"]
+    U["Author: assignment and edit authorization"] --> K["Agent reads the registered review skill"]
+    G["Local pubkit bundle"] --> T["skill install NAME --dir PATH"]
+    T --> K
     I["Author instructions and optional review records"] --> K
     K --> S["Agent runs pubkit scan"]
     S --> B["Saved session and baseline"]
@@ -35,28 +42,44 @@ Keep shared prose and heading criteria in pubkit instead of copying them into
 each skill. Skill instructions should explain when and how to use the tool,
 while book instructions retain book-specific terminology and technology versions.
 
-## A minimal reusable example
+## 1. Register the review skill
 
-The gem includes [review-asciidoc-manuscript/SKILL.md](../examples/skills/review-asciidoc-manuscript/SKILL.md).
-It is a standalone example, not an automatically installed skill. Read it before
-adapting it to your project. It supports full review, single-scope review and
-diagnosis without adding publication or external-message permissions.
+From your manuscript directory, list the bundled skills and install the review
+workflow in the location you choose:
 
-Store the example wherever your project keeps reusable agent instructions.
-One possible layout is:
+```sh
+asciidoc-pubkit skill list
+asciidoc-pubkit skill install review-asciidoc-manuscript --dir .agents/skills
+asciidoc-pubkit skill status review-asciidoc-manuscript --dir .agents/skills
+```
+
+If you already registered this skill while following the CLI tutorial, skip
+`install` and inspect it with `status`; registration does not overwrite an
+existing copy.
+
+The resulting layout is:
 
 ```text
 manuscript-project/
   book.adoc
   AGENTS.md                 # Optional project instructions
-  .agents/skills/review-asciidoc-manuscript/SKILL.md
+  .agents/skills/review-asciidoc-manuscript/
+    SKILL.md
+    .asciidoc-pubkit-skill.json
 ```
 
-The `.agents/skills` path above is an example, not a pubkit requirement.
-Skill discovery and installation depend on your agent and project. Use the
-location configured for that environment; pubkit does not install the example.
-When automatic discovery is unavailable, explicitly ask Codex or Claude to read
-the file and follow it. This file-based handoff needs no agent-specific CLI flags.
+The registration file records the owning pubkit version and content hashes.
+Read the [bundled SKILL.md](../examples/skills/review-asciidoc-manuscript/SKILL.md)
+to understand its workflow. Leave the managed copy unchanged; keep author-specific
+scope, style and terminology in project instructions or the review request.
+
+`--dir` selects a parent directory, not a SKILL.md filename. Use the path
+configured for your agent; `.agents/skills` is an example. Discovery is owned by
+the agent, so when discovery is unavailable explicitly ask Codex or Claude to
+read the installed file. Pubkit does not change agent settings or install globally
+unless you explicitly choose a global directory.
+
+## 2. Ask the agent to use the registered skill
 
 Example request for either reviewer:
 
@@ -82,7 +105,7 @@ keep/revise/needs-evidence decisions and separate structural proposals.
 The agent checks the installed tool before using 1.1.0 options. A new session
 does not upgrade an old baseline or certify preservation against it.
 
-## Commands the skill orchestrates
+## 3. Commands the skill orchestrates
 
 For a heading-only assignment, the agent runs the following from the manuscript
 directory, reading the prompt and completing the assigned review between prompt
@@ -110,7 +133,28 @@ Use generated criteria rather than a second writing prompt. Keep the session's
 four baseline artifacts immutable; adding prompt, decision and verification
 reports beside them is permitted. Existing output files cannot be overwritten.
 
-## Adapt the skill to your project
+## 4. Check and upgrade the registered skill
+
+After deliberately updating the pubkit invocation used by your project:
+
+```sh
+asciidoc-pubkit skill status review-asciidoc-manuscript --dir .agents/skills --json
+asciidoc-pubkit skill upgrade review-asciidoc-manuscript --dir .agents/skills
+```
+
+`upgrade` installs the running package's bundle only when the registered copy is
+unchanged. `status` identifies locally modified, missing or extra files and the
+available bundle's changed files. A changed copy is kept, and an unmanaged
+manual copy is not adopted. Install to another directory to compare a managed
+copy with a custom workflow. See [skill commands](skill-commands.md) for states,
+exit codes and recovery behavior.
+
+Do not edit registration hashes to force an update. Skills and review sessions
+have separate lifecycles: updating the skill does not replace saved review
+criteria or baselines. Keep the original prompt and exact tool version for an
+ongoing session, or start a new pass in a different directory.
+
+## 5. Adapt the skill to your project
 
 Provide the book's entrypoint and the source files covered by the assignment.
 For a multi-file book, derive reading order from active includes rather than

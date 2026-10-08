@@ -101,6 +101,22 @@ Use `ARGS` instead of `make review scan book.adoc`: Make interprets positional
 words as build targets, not CLI arguments. Avoid `make -C` when manuscript paths
 should remain relative to the current directory, because it changes directories.
 
+## Register a bundled review skill
+
+The source checkout provides unreleased skill registration commands. From a
+manuscript directory, run:
+
+```sh
+make -f /path/to/asciidoc-pubkit/Makefile run ARGS="skill list"
+make -f /path/to/asciidoc-pubkit/Makefile run ARGS="skill install review-asciidoc-manuscript --dir .agents/skills"
+```
+
+Substitute your checkout path and the skill directory configured for your agent.
+The published 1.1.0 gem does not include these commands. See [skill commands](skill-commands.md)
+for inspection and upgrades, and [skill integration](skill-integration.md) for
+using the registered skill with Codex or Claude. MeCab is required for the review
+phase, not for skill registration.
+
 ## Install the morphological analyzer
 
 On macOS with Homebrew:

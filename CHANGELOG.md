@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add local bundled-skill list, install, status and upgrade commands with explicit
+  destinations, version/hash registration, local-change and downgrade protection,
+  staged replacement and restoration on failure. No AI invocation, network skill
+  fetching or review-baseline mutation is added. Update the tutorials to register
+  and maintain skills with these commands instead of manual copying.
+
 - Rewrite the CLI tutorial and skill integration guide for arbitrary AsciiDoc
   book projects. Replace publisher-specific paths with generic single-file and
   included-chapter examples, make project instructions and review records optional,

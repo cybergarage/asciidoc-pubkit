@@ -64,6 +64,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | File | Responsibility |
 | --- | --- |
 | `exe/asciidoc-pubkit`, `lib/asciidoc_pubkit/cli.rb` | Entry point, arguments, confirmation, output, exit codes |
+| `lib/asciidoc_pubkit/skill_commands.rb` | Bundled-skill registration, status, protected upgrades and staged replacement; reference: `docs/skill-commands.md` |
 | `lib/asciidoc_pubkit/settings.rb` | Configuration discovery, path resolution, option precedence |
 | `lib/asciidoc_pubkit/document.rb` | Asciidoctor parsing, source mapping, prose selection, structure |
 | `lib/asciidoc_pubkit/morphology.rb` | MeCab execution, IPADIC validation, tokens, backend identity |
@@ -77,6 +78,10 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | `test/review_test.rb`, `test/morphology_test.rb` | Workflow regression tests and real MeCab tests |
 
 ## Contracts to preserve
+
+- Skill registration manages only bundled files at an explicit `--dir`. Preserve
+  unmanaged or locally modified skills, block downgrades, and keep review session
+  baselines independent. Registration commands never invoke an AI or fetch skills.
 
 - Scoring uses the same prose scope as default prose scanning. Keep candidate-density scores
   distinct from optional model readability ratings and benchmark accuracy.

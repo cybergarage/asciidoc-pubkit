@@ -64,6 +64,12 @@ Review subject coverage, heading granularity and terminology with saved body
 evidence while protecting deeper titles, structure and section IDs. Full prompts
 and unlimited heading selection remain the defaults.
 
+Unreleased [skill commands](docs/skill-commands.md) add `skill list`,
+`skill install NAME --dir PATH`, `skill status` and `skill upgrade`. Register a
+bundled review skill, inspect its state and update unchanged copies from the
+running pubkit package. Local changes and unmanaged copies stay protected.
+These commands are available in the source checkout, not the published 1.1.0 gem.
+
 ## Requirements and scope
 
 Ruby 3.2 or later is required; RubyGems installs Asciidoctor and the other Ruby
@@ -152,7 +158,8 @@ scan cannot verify preservation relative to an earlier baseline.
 | [Document commands](docs/document-commands.md) | Outline, metadata, cross-references, English-title indexes |
 | [Outline review](docs/outline-review.md) | JSON outline, heading-depth selection, whole-outline prompts and preservation |
 | [Prose replacements](docs/replacements.md) | Rule format, imports, regex compatibility, preview/apply, preservation |
-| [Skill integration](docs/skill-integration.md) | Skill responsibilities, packaged SKILL.md example and project adaptation |
+| [Skill commands](docs/skill-commands.md) | Unreleased list/install/status/upgrade, managed files, local changes and recovery |
+| [Skill integration](docs/skill-integration.md) | Register and maintain a skill, then orchestrate review in any book project |
 | [Agent review tutorial](docs/agent-review-tutorial.md) | Illustrated first review, agent instructions, sequential scopes and verification recovery |
 | [Review workflow](docs/review-workflow.md) | Scanning, heading review, prompts, sessions, verification, exit codes |
 | [List review](docs/list-review.md) | Separate list sessions, editable items, protected syntax |
