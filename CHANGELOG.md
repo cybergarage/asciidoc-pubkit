@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add `--agent codex|claude` to skill install, status and upgrade for local
+  project registration in `.agents/skills` or `.claude/skills`. Keep `--dir`
+  for custom destinations; reject combining both options. Both agents receive
+  the same Agent Skills format, without invoking an agent or changing settings.
+
 - Add local bundled-skill list, install, status and upgrade commands with explicit
   destinations, version/hash registration, local-change and downgrade protection,
   staged replacement and restoration on failure. No AI invocation, network skill

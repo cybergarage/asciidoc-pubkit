@@ -73,6 +73,40 @@ class SkillCommandsTest < Minitest::Test
     refute File.exist?(@root)
   end
 
+  def test_agent_project_paths_share_the_standard_bundle_and_support_upgrade
+    Dir.chdir(@dir) do
+      { 'codex' => '.agents/skills', 'claude' => '.claude/skills' }.each do |agent, parent|
+        code, out, err = cli('install', NAME, '--agent', agent)
+        assert_equal 0, code, err
+        target = File.join(@dir, parent, NAME)
+        assert_includes out, target
+        assert_equal File.read(File.join(@bundle, NAME, 'SKILL.md')), File.read(File.join(target, 'SKILL.md'))
+        assert_equal 0, cli('status', NAME, '--agent', agent, '--json')[0]
+      end
+      File.open(File.join(@bundle, NAME, 'SKILL.md'), 'a') { |file| file.puts "Updated shared guidance." }
+      %w[codex claude].each do |agent|
+        assert_equal 1, cli('status', NAME, '--agent', agent)[0]
+        assert_equal 0, cli('upgrade', NAME, '--agent', agent)[0]
+        assert_equal 0, cli('status', NAME, '--agent', agent)[0]
+      end
+    end
+  end
+
+  def test_agent_validation_and_status_are_read_only
+    Dir.chdir(@dir) do
+      %w[install status upgrade].each do |command|
+        assert_equal 2, cli(command, NAME, '--agent', 'unknown')[0]
+        assert_equal 2, cli(command, NAME, '--agent', 'codex', '--dir', @root)[0]
+        assert_equal 2, cli(command, NAME, '--dir', @root, '--agent', 'claude')[0]
+      end
+      assert_equal 2, cli('list', '--agent', 'codex')[0]
+      assert_equal 1, cli('status', NAME, '--agent', 'codex')[0]
+      assert_equal 2, cli('upgrade', NAME, '--agent', 'claude')[0]
+      refute File.exist?('.agents')
+      refute File.exist?('.claude')
+    end
+  end
+
   def test_status_is_read_only_and_upgrade_does_not_create_missing_destinations
     assert_equal 1, report[0]
     assert_equal 'not-installed', report[1]['state']

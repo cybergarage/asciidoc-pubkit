@@ -14,7 +14,7 @@ later and pubkit's Ruby dependencies are required; MeCab is not required here.
 ```sh
 asciidoc-pubkit skill list
 asciidoc-pubkit skill list --json
-asciidoc-pubkit skill install review-asciidoc-manuscript --dir .agents/skills
+asciidoc-pubkit skill install review-asciidoc-manuscript --agent codex
 ```
 
 `list` describes the bundled skills. With `--json`, it also reports the
@@ -25,10 +25,37 @@ resources and recording their SHA-256 hashes in `.asciidoc-pubkit-skill.json`.
 Missing parent directories are created. Paths are caller-relative, so run from
 your manuscript directory or supply an absolute destination.
 
-`--dir` is required. Choose the skill directory configured for your agent; there
-is no agent-specific default or automatic detection. `.agents/skills` is one
-example, not a requirement. Skill discovery depends on the agent. You can always
-ask the agent to read the installed SKILL.md explicitly, as shown in
+Choose exactly one destination option for `install`, `status` and `upgrade`:
+
+| Option | Parent directory relative to the current working directory |
+| --- | --- |
+| `--agent codex` | `.agents/skills` |
+| `--agent claude` | `.claude/skills` |
+| `--dir PATH` | An explicit custom path (absolute paths are also accepted) |
+
+For Claude Code, for example:
+
+```sh
+asciidoc-pubkit skill install review-asciidoc-manuscript --agent claude
+asciidoc-pubkit skill status review-asciidoc-manuscript --agent claude
+asciidoc-pubkit skill upgrade review-asciidoc-manuscript --agent claude
+```
+
+Both agents receive the same [Agent Skills format](https://agentskills.io/specification).
+The specification defines skill contents, not their installation location.
+These project paths follow the [Codex documentation](https://learn.chatgpt.com/docs/build-skills)
+and [Claude Code documentation](https://code.claude.com/docs/en/skills).
+`--agent` selects a destination only; it does not invoke an agent, detect a
+running agent, change settings, or add agent-specific skill extensions. Run from
+the project directory where you want the skill installed; pubkit does not search
+for a repository root. `list` accepts neither destination option.
+
+For personal installation, use an explicit directory such as
+`--dir ~/.agents/skills` for Codex or `--dir ~/.claude/skills` for Claude Code.
+There is no default destination when neither option is supplied, and combining
+`--agent` with `--dir` is an error. Status and upgrade must select the same
+location used for installation. Skill discovery is owned by the agent; you can
+also ask it to read the installed SKILL.md explicitly, as shown in
 [skill integration](skill-integration.md).
 
 An existing destination, including an empty directory or manually copied skill,
@@ -40,8 +67,8 @@ remain within the named skill directory; parent-level unrelated skills are kept.
 ## Inspect registration
 
 ```sh
-asciidoc-pubkit skill status review-asciidoc-manuscript --dir .agents/skills
-asciidoc-pubkit skill status review-asciidoc-manuscript --dir .agents/skills --json
+asciidoc-pubkit skill status review-asciidoc-manuscript --agent codex
+asciidoc-pubkit skill status review-asciidoc-manuscript --agent codex --json
 ```
 
 Status is read-only and creates no directories. It compares installed file
@@ -69,8 +96,8 @@ signature or proof that the skill was reviewed by an agent.
 ```sh
 # Update pubkit deliberately after a new release becomes available.
 gem update asciidoc-pubkit
-asciidoc-pubkit skill status review-asciidoc-manuscript --dir .agents/skills
-asciidoc-pubkit skill upgrade review-asciidoc-manuscript --dir .agents/skills
+asciidoc-pubkit skill status review-asciidoc-manuscript --agent codex
+asciidoc-pubkit skill upgrade review-asciidoc-manuscript --agent codex
 ```
 
 For a Bundler-managed project, update the selected gem and run these commands

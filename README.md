@@ -65,7 +65,8 @@ evidence while protecting deeper titles, structure and section IDs. Full prompts
 and unlimited heading selection remain the defaults.
 
 Unreleased [skill commands](docs/skill-commands.md) add `skill list`,
-`skill install NAME --dir PATH`, `skill status` and `skill upgrade`. Register a
+`skill install NAME --agent codex|claude`, `skill status` and `skill upgrade`.
+Use `--dir PATH` instead for a custom destination. Register a
 bundled review skill, inspect its state and update unchanged copies from the
 running pubkit package. Local changes and unmanaged copies stay protected.
 These commands are available in the source checkout, not the published 1.1.0 gem.

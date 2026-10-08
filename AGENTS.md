@@ -79,7 +79,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 
 ## Contracts to preserve
 
-- Skill registration manages only bundled files at an explicit `--dir`. Preserve
+- Skill registration manages only bundled files at an explicit `--dir` or a caller-relative project directory selected by `--agent codex|claude`. Preserve
   unmanaged or locally modified skills, block downgrades, and keep review session
   baselines independent. Registration commands never invoke an AI or fetch skills.
 

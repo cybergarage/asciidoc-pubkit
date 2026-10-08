@@ -108,10 +108,12 @@ manuscript directory, run:
 
 ```sh
 make -f /path/to/asciidoc-pubkit/Makefile run ARGS="skill list"
-make -f /path/to/asciidoc-pubkit/Makefile run ARGS="skill install review-asciidoc-manuscript --dir .agents/skills"
+make -f /path/to/asciidoc-pubkit/Makefile run ARGS="skill install review-asciidoc-manuscript --agent codex"
 ```
 
-Substitute your checkout path and the skill directory configured for your agent.
+Substitute your checkout path. Use `--agent claude` for Claude Code, or
+`--dir PATH` instead for a custom skill directory. Agent destinations are
+relative to the current manuscript directory.
 The published 1.1.0 gem does not include these commands. See [skill commands](skill-commands.md)
 for inspection and upgrades, and [skill integration](skill-integration.md) for
 using the registered skill with Codex or Claude. MeCab is required for the review

@@ -7,9 +7,9 @@ module AsciidocPubkit
 
       Commands:
         skill list              List bundled agent skills
-        skill install NAME      Install a bundled skill with --dir PATH
-        skill status NAME       Inspect a registered skill with --dir PATH
-        skill upgrade NAME      Update an unchanged registered skill with --dir PATH
+        skill install NAME      Install a bundled skill with --agent AGENT or --dir PATH
+        skill status NAME       Inspect a registered skill with --agent AGENT or --dir PATH
+        skill upgrade NAME      Update an unchanged registered skill with --agent AGENT or --dir PATH
         document toc FILE      Print the parsed section outline
         document info FILE     Extract book metadata
         document check-xrefs FILE  Report unresolved local cross-references

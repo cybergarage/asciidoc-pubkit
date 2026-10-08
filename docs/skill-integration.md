@@ -16,7 +16,7 @@ it installs skill files without discovering them or launching a reviewer.
 ```mermaid
 flowchart TD
     U["Author: assignment and edit authorization"] --> K["Agent reads the registered review skill"]
-    G["Local pubkit bundle"] --> T["skill install NAME --dir PATH"]
+    G["Local pubkit bundle"] --> T["skill install NAME --agent codex or claude"]
     T --> K
     I["Author instructions and optional review records"] --> K
     K --> S["Agent runs pubkit scan"]
@@ -45,12 +45,12 @@ while book instructions retain book-specific terminology and technology versions
 ## 1. Register the review skill
 
 From your manuscript directory, list the bundled skills and install the review
-workflow in the location you choose:
+workflow for Codex in the current project:
 
 ```sh
 asciidoc-pubkit skill list
-asciidoc-pubkit skill install review-asciidoc-manuscript --dir .agents/skills
-asciidoc-pubkit skill status review-asciidoc-manuscript --dir .agents/skills
+asciidoc-pubkit skill install review-asciidoc-manuscript --agent codex
+asciidoc-pubkit skill status review-asciidoc-manuscript --agent codex
 ```
 
 If you already registered this skill while following the CLI tutorial, skip
@@ -73,11 +73,14 @@ Read the [bundled SKILL.md](../examples/skills/review-asciidoc-manuscript/SKILL.
 to understand its workflow. Leave the managed copy unchanged; keep author-specific
 scope, style and terminology in project instructions or the review request.
 
-`--dir` selects a parent directory, not a SKILL.md filename. Use the path
-configured for your agent; `.agents/skills` is an example. Discovery is owned by
-the agent, so when discovery is unavailable explicitly ask Codex or Claude to
-read the installed file. Pubkit does not change agent settings or install globally
-unless you explicitly choose a global directory.
+For Claude Code, substitute `--agent claude` in install, status and upgrade;
+it selects `.claude/skills`. Both options install the same Agent Skills format.
+Use `--dir PATH` instead for a custom parent directory, including a personal
+installation. Do not combine it with `--agent`. Neither option changes agent
+settings or invokes an agent. See [destination options](skill-commands.md#list-and-install).
+
+The explicit file-reading requests below use the Codex path. For Claude Code,
+replace `.agents/skills/` with `.claude/skills/`.
 
 ## 2. Ask the agent to use the registered skill
 
@@ -138,8 +141,8 @@ reports beside them is permitted. Existing output files cannot be overwritten.
 After deliberately updating the pubkit invocation used by your project:
 
 ```sh
-asciidoc-pubkit skill status review-asciidoc-manuscript --dir .agents/skills --json
-asciidoc-pubkit skill upgrade review-asciidoc-manuscript --dir .agents/skills
+asciidoc-pubkit skill status review-asciidoc-manuscript --agent codex --json
+asciidoc-pubkit skill upgrade review-asciidoc-manuscript --agent codex
 ```
 
 `upgrade` installs the running package's bundle only when the registered copy is

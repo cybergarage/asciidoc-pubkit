@@ -5,10 +5,11 @@ require 'tmpdir'
 require 'rubygems/version'
 
 module AsciidocPubkit
-  # Manages only bundled skills at an explicitly chosen destination.
+  # Manages bundled skills at an explicit path or agent-specific project path.
   class SkillCommands
     MANIFEST = '.asciidoc-pubkit-skill.json'
     LOCK = '.asciidoc-pubkit-skills.lock'
+    AGENT_DIRECTORIES = { 'codex' => '.agents/skills', 'claude' => '.claude/skills' }.freeze
 
     def self.bundled_root
       File.expand_path('../../examples/skills', __dir__)
@@ -18,8 +19,11 @@ module AsciidocPubkit
       raise Error, 'Unknown skill command. Use skill --help.' unless %w[list install status upgrade].include?(command)
       options = {}
       parser = OptionParser.new do |opts|
-        opts.banner = "Usage: asciidoc-pubkit skill #{command}#{command == 'list' ? '' : ' NAME --dir PATH'} [options]"
-        opts.on('--dir PATH', 'Explicit parent directory for installed skills') { |v| options[:dir] = v } unless command == 'list'
+        opts.banner = "Usage: asciidoc-pubkit skill #{command}#{command == 'list' ? '' : ' NAME (--agent AGENT | --dir PATH)'} [options]"
+        unless command == 'list'
+          opts.on('--dir PATH', 'Explicit parent directory for installed skills') { |v| options[:dir] = v }
+          opts.on('--agent AGENT', AGENT_DIRECTORIES.keys, 'Project destination: codex or claude (does not invoke an agent)') { |v| options[:agent] = v }
+        end
         opts.on('--json', 'Output structured skill information') { options[:json] = true } if %w[list status].include?(command)
         opts.on('-h', '--help', 'Show command help') { options[:help] = true }
       end
@@ -34,9 +38,15 @@ module AsciidocPubkit
         out.puts(options[:json] ? JSON.pretty_generate({ 'tool_version' => VERSION, 'skills' => skills }) : skills.map { |s| "#{s['name']}: #{s['description']}" }.join("\n"))
         return 0
       end
-      raise Error, 'Provide one bundled skill name and --dir PATH.' unless args.length == 1 && options[:dir] && !options[:dir].empty?
+      if options[:dir] && options[:agent]
+        raise Error, 'Choose either --agent AGENT or --dir PATH, not both.'
+      end
+      directory = options[:dir] || AGENT_DIRECTORIES[options[:agent]]
+      unless args.length == 1 && directory && !directory.empty?
+        raise Error, 'Provide one bundled skill name and either --agent AGENT or --dir PATH.'
+      end
       skill = new(args.first)
-      root = File.expand_path(options[:dir])
+      root = File.expand_path(directory)
       check_path(root)
       destination = File.join(root, skill.name)
       if command == 'status'

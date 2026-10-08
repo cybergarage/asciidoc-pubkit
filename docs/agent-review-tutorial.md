@@ -73,12 +73,13 @@ raise ArgumentError, 'Expected a nonnegative value' if value.negative?
 ADOC
 ```
 
-Register the reusable review skill in this sample project:
+Register the reusable review skill for Codex in this sample project
+(use `--agent claude` for Claude Code):
 
 ```sh
 asciidoc-pubkit skill list
-asciidoc-pubkit skill install review-asciidoc-manuscript --dir .agents/skills
-asciidoc-pubkit skill status review-asciidoc-manuscript --dir .agents/skills
+asciidoc-pubkit skill install review-asciidoc-manuscript --agent codex
+asciidoc-pubkit skill status review-asciidoc-manuscript --agent codex
 ```
 
 The installed SKILL.md can orchestrate the process when you ask the agent to
