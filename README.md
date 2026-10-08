@@ -152,7 +152,7 @@ scan cannot verify preservation relative to an earlier baseline.
 | [Document commands](docs/document-commands.md) | Outline, metadata, cross-references, English-title indexes |
 | [Outline review](docs/outline-review.md) | JSON outline, heading-depth selection, whole-outline prompts and preservation |
 | [Prose replacements](docs/replacements.md) | Rule format, imports, regex compatibility, preview/apply, preservation |
-| [Skill integration](docs/skill-integration.md) | Skill responsibilities, packaged SKILL.md example and CyberGarage orchestration |
+| [Skill integration](docs/skill-integration.md) | Skill responsibilities, packaged SKILL.md example and project adaptation |
 | [Agent review tutorial](docs/agent-review-tutorial.md) | Illustrated first review, agent instructions, sequential scopes and verification recovery |
 | [Review workflow](docs/review-workflow.md) | Scanning, heading review, prompts, sessions, verification, exit codes |
 | [List review](docs/list-review.md) | Separate list sessions, editable items, protected syntax |

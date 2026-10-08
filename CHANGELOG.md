@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Rewrite the CLI tutorial and skill integration guide for arbitrary AsciiDoc
+  book projects. Replace publisher-specific paths with generic single-file and
+  included-chapter examples, make project instructions and review records optional,
+  and retain the current Japanese-review language boundary.
+
 ## 1.1.0 — 2026-10-08
 
 - Add an illustrated agent-review tutorial with a reproducible sample, diagnosis
