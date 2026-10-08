@@ -30,6 +30,11 @@ module AsciidocPubkit
       local Codex or Claude CLI, which may connect to its configured AI service.
     TEXT
 
+    def self.positive_depth(value)
+      raise Error, 'Depth must be a positive integer.' unless value.match?(/\A[1-9][0-9]*\z/)
+      value.to_i
+    end
+
     def self.run(arguments, out: $stdout, err: $stderr, input: $stdin)
       args = arguments.dup
       if args == ['--version']
@@ -63,6 +68,7 @@ module AsciidocPubkit
           if command == 'scan'
             opts.on('--scope SCOPE', 'prose (default), headings, or lists; separate review sessions') { |v| options[:scope] = v }
             opts.on('--heading-rules FILE', 'Replace default heading rules with a YAML rule set') { |v| options[:heading_rules] = v }
+            opts.on('--depth N', 'Maximum section level; requires --scope headings') { |v| options[:depth] = positive_depth(v) }
             opts.on('-y', '--yes', 'Answer yes to replacement confirmation') { options[:yes] = true }
             opts.on('--no-input', 'Never prompt; fail on existing output unless --yes') { options[:no_input] = true }
           else
@@ -84,6 +90,7 @@ module AsciidocPubkit
           end
         elsif group == 'review' && command == 'prompt'
           opts.on('--mode MODE', 'revise (default) or diagnose') { |v| options[:mode] = v }
+          opts.on('--view VIEW', 'full (default) or outline; outline requires a heading session') { |v| options[:view] = v }
         end
         opts.on('-h', '--help', 'Show command help') { options[:help] = true }
       end
@@ -152,7 +159,7 @@ module AsciidocPubkit
         raise Error, "Requested language #{options[:language].inspect} does not match session language #{saved_language.inspect}."
       end
       if command == 'prompt'
-        output(session.prompt(options.fetch(:mode, 'revise')), options[:output], out)
+        output(session.prompt(options.fetch(:mode, 'revise'), view: options.fetch(:view, 'full')), options[:output], out)
         return 0
       end
       result = session.verify

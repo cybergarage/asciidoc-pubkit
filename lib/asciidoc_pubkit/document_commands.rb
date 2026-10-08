@@ -21,9 +21,9 @@ module AsciidocPubkit
         end
         if command == 'toc'
           opts.on('--depth N', 'Maximum section level (positive integer)') do |v|
-            raise Error, 'Depth must be a positive integer.' unless v.match?(/\A[1-9][0-9]*\z/)
-            options[:depth] = v.to_i
+            options[:depth] = CLI.positive_depth(v)
           end
+          opts.on('--json', 'Output a structured outline with source locations') { options[:json] = true }
           opts.on('-n', '--numbered', 'Output outline numbers such as 1-2') { options[:numbered] = true }
         elsif command == 'index'
           opts.on('-t', '--title TITLE', 'Prepend an AsciiDoc index title') { |v| options[:title] = v }
@@ -112,6 +112,7 @@ module AsciidocPubkit
     end
 
     def toc(doc)
+      return JSON.pretty_generate(toc_outline(doc)) + "\n" if @options[:json]
       lines = []
       walk = lambda do |sections, prefix, nesting|
         sections.each_with_index do |section, index|
@@ -125,6 +126,35 @@ module AsciidocPubkit
       end
       walk.call(doc.sections, [], 0)
       lines.empty? ? '' : lines.join("\n") + "\n"
+    end
+
+    def toc_outline(doc)
+      entries = []
+      source_lines = {}
+      walk = lambda do |sections, prefix, nesting, parent_index|
+        sections.each_with_index do |section, sibling|
+          number = prefix + [sibling + 1]
+          next if @options[:depth] && section.level > @options[:depth]
+          cursor = section.source_location
+          source_title = nil
+          if cursor && cursor.file && File.file?(cursor.file)
+            lines = source_lines[cursor.file] ||= begin
+              check_source(cursor.file, File.realpath(doc.base_dir))
+              AsciidocPubkit.read_text(cursor.file).lines
+            end
+            line = lines[cursor.lineno - 1]
+            source_title = line&.match(/\A={1,6}[ \t]+(.*?)[ \t]*\r?\n?\z/)&.[](1)
+          end
+          index = entries.length
+          entries << { 'index' => index, 'parent_index' => parent_index,
+                       'level' => section.level, 'nesting' => nesting, 'number' => number.join('-'),
+                       'section_id' => section.id, 'title' => section.title,
+                       'file' => cursor&.file, 'line' => cursor&.lineno, 'source_title' => source_title }
+          walk.call(section.sections, number, nesting + 1, index)
+        end
+      end
+      walk.call(doc.sections, [], 0, nil)
+      { 'schema_version' => 1, 'entry' => doc.attr('docfile'), 'depth' => @options[:depth], 'headings' => entries }
     end
 
     def index(directory)

@@ -36,6 +36,42 @@ class DocumentCommandsTest < Minitest::Test
     assert_equal [0, "1. Part\n1-1. Chapter\n", ''], cli('toc', @book, '-n', '--depth', '1')
   end
 
+  def test_toc_json_preserves_source_titles_locations_and_parent_links
+    chapter = File.join(@dir, 'chapter.adoc')
+    File.write(@book, "= Test\n:doctype: book\n:title: Expanded\n\n= Part\n\ninclude::chapter.adoc[]\n")
+    File.write(chapter, "[#chapter]\n== {title}\n\n=== Detail\n\n==== Deep\n\n----\n== Code\n----\n")
+    code, out, err = cli('toc', @book, '--json', '--depth', '2', '--numbered')
+    assert_equal 0, code, err
+    result = JSON.parse(out)
+    assert_equal 1, result['schema_version']
+    assert_equal @book, result['entry']
+    assert_equal 2, result['depth']
+    headings = result['headings']
+    assert_equal %w[Part Expanded Detail], headings.map { |h| h['title'] }
+    assert_equal [nil, 0, 1], headings.map { |h| h['parent_index'] }
+    assert_equal [0, 1, 2], headings.map { |h| h['level'] }
+    assert_equal %w[1 1-1 1-1-1], headings.map { |h| h['number'] }
+    assert_equal chapter, headings[1]['file']
+    assert_equal 2, headings[1]['line']
+    assert_equal '{title}', headings[1]['source_title']
+    assert_equal 'chapter', headings[1]['section_id']
+    assert_equal 'Detail', headings[2]['source_title']
+    assert_equal '1', headings[0]['number']
+    saved_code, _, saved_err = cli('toc', @book, '--json', '--output', File.join(@dir, 'toc.json'))
+    assert_equal 0, saved_code, saved_err
+    assert_equal 4, JSON.parse(File.read(File.join(@dir, 'toc.json')))['headings'].length
+    assert_equal 2, cli('toc', @book, '--json', '--output', File.join(@dir, 'toc.json')).first
+    assert_equal '{title}', File.read(chapter).lines[1].strip.delete_prefix('== ')
+  end
+
+  def test_toc_json_empty_document_and_discrete_headings
+    File.write(@book, "= Test\n\n[discrete]\n== Unlisted\n")
+    code, out, err = cli('toc', @book, '--json')
+    assert_equal 0, code, err
+    assert_equal [], JSON.parse(out)['headings']
+    assert_nil JSON.parse(out)['depth']
+  end
+
   def test_info_metadata_without_language_gate
     File.write(@book, "= Book\nJane Doe\n:lang: en\n:subtitle: Sub\n:description: Text, with commas\n:uuid: 123\n\n== Intro\n")
     code, out, err = cli('info', @book, '--json')

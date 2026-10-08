@@ -18,6 +18,11 @@ module AsciidocPubkit
       AsciidocPubkit.read_text(File.join(DATA_ROOT, language, 'headings.md'))
     end
 
+    def self.outline_criteria(language = Language::DEFAULT)
+      Language.validate!(language, operation: 'review')
+      AsciidocPubkit.read_text(File.join(DATA_ROOT, language, 'outline.md'))
+    end
+
     def self.prompt(language = Language::DEFAULT)
       guide = prompt_criteria(language)
       <<~TEXT

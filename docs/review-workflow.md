@@ -86,6 +86,12 @@ are frozen into the session; scan again after changing them.
 
 ### Heading review
 
+Unreleased [outline review](outline-review.md) adds depth-limited selection and
+`review prompt --view outline` for assessing a table of contents. Full view remains
+the default. Depth controls editable titles; changing views does not relax the
+existing title/ID/body preservation checks. Additional outline criteria are saved
+in new heading sessions rather than retrofitted into existing baselines.
+
 Review headings, prose, and list text in separate sessions. The default scan scope
 remains `prose`; `--scope headings` selects section titles and `--scope lists` selects
 supported list text. There is no combined scope.

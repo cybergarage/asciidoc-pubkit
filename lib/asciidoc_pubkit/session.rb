@@ -51,6 +51,7 @@ module AsciidocPubkit
           'protected' => protected_content(document),
           'numeric_tokens' => numeric_tokens(document)
         }
+        manifest['outline_criteria'] = Writing.outline_criteria(settings.data['language']) if settings.data['scope'] == 'headings'
         write_json(File.join(staging, 'document.json'), document.to_h)
         write_json(File.join(staging, 'findings.json'), findings)
         manifest['artifacts'] = %w[document.json findings.json].to_h do |name|
@@ -157,14 +158,21 @@ module AsciidocPubkit
       @manifest.fetch('settings').fetch('language')
     end
 
-    def prompt(mode)
+    def prompt(mode, view: 'full')
+      raise Error, 'view must be full or outline.' unless %w[full outline].include?(view)
+      if view == 'outline' && @manifest.fetch('settings').fetch('scope', 'prose') != 'headings'
+        raise Error, 'Outline view requires a heading session.'
+      end
+      if view == 'outline' && !@manifest['outline_criteria'].is_a?(String)
+        raise Error, 'Outline view requires saved outline criteria. Create a new heading session without replacing the existing baseline.'
+      end
       raise Error, 'mode must be revise or diagnose.' unless %w[revise diagnose].include?(mode)
       stale = @manifest['sources'].select do |source|
         !File.file?(source['path']) || Digest::SHA256.file(source['path']).hexdigest != source['sha256']
       end
       raise Error, 'Sources have changed since scanning. Create a new scan before generating a prompt.' unless stale.empty?
       language = Language.validate!(@manifest.fetch('settings').fetch('language'), operation: 'review')
-      return heading_prompt(mode, language) if @manifest.fetch('settings').fetch('scope', 'prose') == 'headings'
+      return heading_prompt(mode, language, view: view) if @manifest.fetch('settings').fetch('scope', 'prose') == 'headings'
       list_scope = @manifest['settings']['scope'] == 'lists'
       criteria = @manifest.fetch('writing_criteria')
       instructions = <<~TEXT
@@ -332,7 +340,7 @@ module AsciidocPubkit
       end
     end
 
-    def heading_prompt(mode, language)
+    def heading_prompt(mode, language, view: 'full')
       text = <<~TEXT
         # Japanese heading review
 
@@ -399,6 +407,14 @@ module AsciidocPubkit
         ## Selected headings
 
       TEXT
+      if view == 'outline'
+        text.sub!('# Japanese heading review', '# Japanese outline review')
+        text.sub!(prompt_data(JSON.generate(@document.fetch('outline')), 'json'), outline_view_data)
+        text.sub!('## Outline (reference data)', outline_review_guidance + "\n## Outline (reference data)")
+      end
+      if (depth = @manifest['settings']['heading_depth'])
+        text.sub!('## Selected headings', "Selected heading depth: #{depth} (maximum Asciidoctor section level).\nDeeper titles are reference data only and remain protected.\n\n## Selected headings")
+      end
       grouped = @findings.group_by { |finding| finding['heading_id'] }
       @document.fetch('headings').each do |heading|
         text << "### Heading #{heading['id']}\n\n"
@@ -413,6 +429,28 @@ module AsciidocPubkit
       end
       text << "## Verification\n\nRun `asciidoc-pubkit review verify` with this heading session directory. Report ID changes and unresolved semantic concerns. Mechanical verification keeps meaning_verified: false.\n"
       text
+    end
+
+    def outline_review_guidance
+      @manifest.fetch('outline_criteria')
+    end
+
+    def outline_view_data
+      selected = @document.fetch('headings').to_h { |h| [h['index'], h] }
+      numbers = {}
+      siblings = Hash.new(0)
+      rows = @document.fetch('outline').map do |heading|
+        parent = heading['parent_index']
+        siblings[parent] += 1
+        number = (numbers[parent] || []) + [siblings[parent]]
+        numbers[heading['index']] = number
+        source = selected[heading['index']] || heading
+        location = source['file'] ? "#{source['file']}:#{source['line'] || '?'}" : 'source position unavailable'
+        status = selected.key?(heading['index']) ? 'editable' : 'reference-only'
+        "#{'  ' * (number.length - 1)}#{number.join('-')}. #{heading['text']} " \
+          "[#{status}; level #{heading['level']}; section_id #{heading['section_id']}; #{location}]"
+      end
+      prompt_data(rows.join("\n"), 'text')
     end
 
     def review_process(unit, mode)

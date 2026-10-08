@@ -63,6 +63,14 @@ module AsciidocPubkit
                          'reason' => 'The source title is reused by multiple sections and cannot be edited independently.' }
           true
         end
+        if (depth = @settings['heading_depth'])
+          @headings.reject! do |heading|
+            next false unless heading['level'] > depth
+            @coverage << { 'context' => 'heading', 'file' => heading['file'], 'line' => heading['line'],
+                           'reason' => 'Outside the saved heading depth.', 'text' => heading['text'] }
+            true
+          end
+        end
         nodes.each { |node| collect(node) }
         if scope == 'lists'
           reused = @paragraphs.group_by { |p| [p['file'], p['line']] }.select { |_, group| group.length > 1 }
@@ -102,10 +110,11 @@ module AsciidocPubkit
     # Converted inline titles, attribute substitutions and old-style titles stay protected.
     def collect_heading(node, index)
       parent_index = @section_indexes[node.parent] if node.parent.context == :section
-      @outline << { 'index' => index, 'parent_index' => parent_index,
-                    'level' => node.level, 'section_id' => node.id, 'text' => node.title }
-      return unless @settings.fetch('scope', 'prose') == 'headings'
       cursor = node.source_location
+      @outline << { 'index' => index, 'parent_index' => parent_index,
+                    'level' => node.level, 'section_id' => node.id, 'text' => node.title,
+                    'file' => cursor&.file, 'line' => cursor&.lineno }
+      return unless @settings.fetch('scope', 'prose') == 'headings'
       path, line = cursor && [cursor.file, cursor.lineno]
       match = @heading_lines[[path, line]]
       unless match && match[2] == node.title

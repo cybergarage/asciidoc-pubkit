@@ -30,6 +30,11 @@ numbering. `--depth` must be a positive integer and limits the Asciidoctor secti
 level: chapters are level 1 and book parts are level 0. It does not generate or
 rewrite heading text.
 
+Unreleased changes add `document toc --json` with parsed and original ATX titles,
+parent relationships, section IDs and source positions. Text output is unchanged.
+See [outline review](outline-review.md#inspect-the-outline) for the JSON schema
+and the distinction between inspection locations and editable source mappings.
+
 `info` prints `key: value` lines or a JSON object with `--json`. Its fields are
 `doctitle`, `subtitle`, `description`, `keywords`, `lang`, `uuid`, `author`,
 `producer`, and `creator`. Missing attributes become empty strings. Metadata is

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Add `document toc --json` with parsed/source titles, outline positions, parent
+  relationships, section IDs and source cursor locations; keep text output unchanged.
+- Add heading-only `review scan --depth N` and `review.heading_depth` configuration.
+  Save the selection limit, retain the full reference outline/body context, protect
+  deeper titles, and reject reused titles before filtering by depth.
+- Add heading-session `review prompt --view outline` with whole-outline criteria,
+  numbered navigation and editable/reference-only labels. Freeze the criteria at
+  scan time; old sessions keep full prompts and verification, and require a fresh
+  baseline in a different directory for outline view. No automatic editing, model
+  invocation, decision validation or structural-edit permission is added.
+
 - Add evidence-based human-role criteria and heading/body terminology alignment.
   Keep developer, user, evaluator, author, and human-versus-AI meanings distinct
   without prescribing occupations, permissions, or automatic replacements.

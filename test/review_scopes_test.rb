@@ -87,6 +87,120 @@ class ReviewScopesTest < Minitest::Test
     end
   end
 
+  def test_heading_depth_is_saved_and_protects_deeper_titles
+    File.write(@book, "= Book\n:lang: ja\n\n== 設定\n\n紹介文です。\n\n=== 読み込み\n\n詳細な本文です。\n")
+    scan('headings', '--depth', '1')
+    doc = JSON.parse(File.read(File.join(@session, 'document.json')))
+    manifest = JSON.parse(File.read(File.join(@session, 'manifest.json')))
+    assert_equal 1, manifest['settings']['heading_depth']
+    assert_equal ['設定'], doc['headings'].map { |h| h['text'] }
+    assert_equal %w[設定 読み込み], doc['outline'].map { |h| h['text'] }
+    assert doc['coverage'].any? { |c| c['reason'] == 'Outside the saved heading depth.' }
+    assert_equal 2, doc['paragraphs'].length
+    original = File.read(@book)
+    File.write(@book, original.sub('== 設定', "[#_設定]\n== 設定の基本"))
+    assert_equal 0, verify.first
+    File.write(@book, original.sub('=== 読み込み', '=== 読み込みの手順'))
+    assert_equal 1, verify.first
+  end
+
+  def test_heading_depth_cannot_hide_reuse_at_a_deeper_level
+    shared = File.join(@dir, 'shared.adoc')
+    File.write(shared, "== 共通\n\n説明です。\n")
+    File.write(@book, "= Book\n:lang: ja\n\n== 親\n\ninclude::shared.adoc[leveloffset=+1]\n\ninclude::shared.adoc[leveloffset=+2]\n")
+    scan('headings', '--depth', '2')
+    doc = JSON.parse(File.read(File.join(@session, 'document.json')))
+    refute doc['headings'].any? { |h| h['file'] == shared }
+    assert doc['coverage'].any? { |c| c['reason'].include?('reused') }
+    File.write(shared, File.read(shared).sub('共通', '変更'))
+    assert_equal 1, verify.first
+  end
+
+  def test_heading_depth_configuration_precedence_and_validation
+    config = File.join(@dir, 'config.yml')
+    File.write(@book, "= Book\n:lang: ja\n\n== 親\n\n=== 子\n")
+    File.write(config, { 'review' => { 'heading_depth' => 1 } }.to_yaml)
+    scan('headings', '--config', config, '--depth', '2')
+    manifest = JSON.parse(File.read(File.join(@session, 'manifest.json')))
+    assert_equal 2, manifest['settings']['heading_depth']
+    assert_equal 2, JSON.parse(File.read(File.join(@session, 'document.json')))['headings'].length
+    scan('headings', '--config', config, '--yes')
+    assert_equal 1, JSON.parse(File.read(File.join(@session, 'manifest.json')))['settings']['heading_depth']
+    %w[0 -1 1.5 2abc +1].each do |depth|
+      assert_equal 2, cli('review', 'scan', @book, '--scope', 'headings', '--depth', depth).first
+    end
+    assert_equal 2, cli('review', 'scan', @book, '--depth', '1').first
+    assert_equal 2, cli('review', 'scan', @book, '--scope', 'lists', '--depth', '1').first
+    [0, -1, 1.5, '1', nil].each do |depth|
+      File.write(config, { 'review' => { 'heading_depth' => depth } }.to_yaml)
+      assert_equal 2, cli('review', 'scan', @book, '--scope', 'headings', '--config', config).first
+    end
+    File.write(config, { 'review' => { 'heading_depth' => 1 } }.to_yaml)
+    other = File.join(@dir, 'prose')
+    assert_equal 0, cli('review', 'scan', @book, '--config', config, '--tokenizer', 'literal', '--output', other).first
+    refute JSON.parse(File.read(File.join(other, 'manifest.json')))['settings'].key?('heading_depth')
+  end
+
+  def test_outline_view_preserves_evidence_and_does_not_expand_permissions
+    File.write(@book, "= Book\n:lang: ja\n:chno: 1\n\n== 第{chno}章\n\n章の紹介です。\n\n=== 設定\n\n設定の本文です。\n\n==== 詳細\n\n詳細な本文です。\n")
+    scan('headings', '--depth', '2')
+    before = Dir.glob(File.join(@session, '**', '*')).select { |f| File.file?(f) }.to_h { |f| [f, File.binread(f)] }
+    code, out, err = cli('review', 'prompt', @session, '--view', 'outline', '--mode', 'diagnose')
+    assert_equal 0, code, err
+    assert_includes out, '# Japanese outline review'
+    assert_includes out, '## Whole-outline assessment'
+    assert_includes out, '1. 第1章 [reference-only;'
+    assert_includes out, '1-1. 設定 [editable;'
+    assert_includes out, '1-1-1. 詳細 [reference-only;'
+    assert_includes out, 'Selected heading depth: 2'
+    assert_includes out, 'Do not edit files.'
+    assert_includes out, 'structure proposals only'
+    assert_includes out, 'meaning_verified: false'
+    %w[章の紹介です。 設定の本文です。 詳細な本文です。].each { |text| assert_equal 1, out.scan(text).length }
+    before.each { |file, bytes| assert_equal bytes, File.binread(file) }
+    full = AsciidocPubkit::Session.new(@session).prompt('revise')
+    assert_includes full, '# Japanese heading review'
+    refute_includes full, '## Whole-outline assessment'
+    assert_equal 0, verify.first
+    File.write(@book, File.read(@book).sub('設定の本文です。', '変更しました。'))
+    assert_equal 1, verify.first
+    assert_equal 2, cli('review', 'prompt', @session, '--view', 'outline').first
+  end
+
+  def test_outline_view_rejects_other_scopes_and_unknown_views
+    scan('prose')
+    assert_equal 2, cli('review', 'prompt', @session, '--view', 'outline').first
+    assert_equal 2, cli('review', 'prompt', @session, '--view', 'unknown').first
+    assert_equal 0, cli('review', 'prompt', @session, '--view', 'full').first
+    scan('lists', '--yes')
+    assert_equal 2, cli('review', 'prompt', @session, '--view', 'outline').first
+  end
+
+  def test_outline_criteria_are_frozen_and_old_sessions_keep_full_view
+    scan('headings')
+    session = AsciidocPubkit::Session.new(@session)
+    manifest_path = File.join(@session, 'manifest.json')
+    manifest = JSON.parse(File.read(manifest_path))
+    assert_includes manifest['outline_criteria'], '## Whole-outline assessment'
+    original = AsciidocPubkit::Writing.method(:outline_criteria)
+    begin
+      AsciidocPubkit::Writing.define_singleton_method(:outline_criteria) { |_language| 'Changed runtime criteria.' }
+      assert_includes session.prompt('diagnose', view: 'outline'), manifest['outline_criteria'].rstrip
+      refute_includes session.prompt('diagnose', view: 'outline'), 'Changed runtime criteria.'
+    ensure
+      AsciidocPubkit::Writing.define_singleton_method(:outline_criteria, original)
+    end
+    # Model metadata from a session created before outline view existed.
+    # Source snapshots and document/findings integrity hashes remain unchanged.
+    manifest.delete('outline_criteria')
+    File.write(manifest_path, JSON.generate(manifest))
+    assert_equal 0, cli('review', 'prompt', @session).first
+    assert_equal 0, verify.first
+    code, _, err = cli('review', 'prompt', @session, '--view', 'outline')
+    assert_equal 2, code
+    assert_includes err, 'without replacing the existing baseline'
+  end
+
   def test_list_scope_maps_original_link_text_and_columns
     scan('lists')
     doc = JSON.parse(File.read(File.join(@session, 'document.json')))

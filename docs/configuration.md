@@ -11,6 +11,7 @@ review:
   style: desu-masu
   tokenizer: mecab
   # heading_rules: heading-rules.yml  # Separate heading rule set
+  # heading_depth: 3                 # Unreleased; maximum heading section level
   # Optional overrides (dictionary paths are relative to this file):
   # mecab_command: /opt/homebrew/bin/mecab
   # mecab_dictionary: /opt/homebrew/lib/mecab/dic/ipadic
@@ -44,5 +45,10 @@ suppresses exact dictionary entries. It does not disable glossary checks.
 Regex patterns are not interpreted in glossary or allow-list entries. Unknown
 configuration keys are rejected. A bare `mecab_command` is resolved through PATH;
 use an absolute path for an explicit executable override.
+
+Unreleased `review.heading_depth` accepts a positive integer and applies only
+to heading sessions. `review scan --scope headings --depth N` overrides it.
+The effective selection is saved in the session; prompt views cannot expand it.
+See [outline review](outline-review.md).
 
 [Back to README](../README.md)

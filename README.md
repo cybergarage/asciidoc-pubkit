@@ -58,6 +58,12 @@ review hints, with terminology alignment and task-specific coverage reporting.
 These remain advisory; they do not automatically replace manuscript words or
 expand the protected edit scopes. See the [review workflow](docs/review-workflow.md).
 
+Unreleased [outline review](docs/outline-review.md) also adds `document toc --json`,
+`review scan --scope headings --depth N`, and `review prompt --view outline`.
+Review subject coverage, heading granularity and terminology with saved body
+evidence while protecting deeper titles, structure and section IDs. Full prompts
+and unlimited heading selection remain the defaults.
+
 ## Requirements and scope
 
 Ruby 3.2 or later is required; RubyGems installs Asciidoctor and the other Ruby
@@ -139,6 +145,7 @@ scan cannot verify preservation relative to an earlier baseline.
 | --- | --- |
 | [Installation](docs/installation.md) | RubyGems, Bundler, source, local checkout, MeCab/IPADIC |
 | [Document commands](docs/document-commands.md) | Outline, metadata, cross-references, English-title indexes |
+| [Outline review](docs/outline-review.md) | Unreleased JSON outline, heading-depth selection, whole-outline prompts and preservation |
 | [Prose replacements](docs/replacements.md) | Rule format, imports, regex compatibility, preview/apply, preservation |
 | [Review workflow](docs/review-workflow.md) | Scanning, heading review, prompts, sessions, verification, exit codes |
 | [List review](docs/list-review.md) | Separate list sessions, editable items, protected syntax |

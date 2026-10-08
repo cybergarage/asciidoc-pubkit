@@ -23,7 +23,7 @@ module AsciidocPubkit
       reject_keys(config, ['review'], 'configuration')
       review = config.fetch('review', {})
       raise Error, 'review must be a mapping.' unless review.is_a?(Hash)
-      reject_keys(review, %w[language style glossary exclude allows attributes base_dir tokenizer mecab_command mecab_dictionary rules heading_rules], 'review')
+      reject_keys(review, %w[language style glossary exclude allows attributes base_dir tokenizer mecab_command mecab_dictionary rules heading_rules heading_depth], 'review')
       raise Error, 'attributes must be a mapping.' unless review.fetch('attributes', {}).is_a?(Hash)
       %w[base_dir glossary mecab_command mecab_dictionary rules heading_rules].each do |key|
         raise Error, "#{key} must be a nonempty path string." if review.key?(key) && (!review[key].is_a?(String) || review[key].empty?)
@@ -37,6 +37,16 @@ module AsciidocPubkit
       end
       if scope != 'headings' && options[:heading_rules]
         raise Error, '--heading-rules requires --scope headings.'
+      end
+      if options.key?(:depth) && scope != 'headings'
+        raise Error, '--depth requires --scope headings.'
+      end
+      if review.key?('heading_depth') && (!review['heading_depth'].is_a?(Integer) || review['heading_depth'] < 1)
+        raise Error, 'heading_depth must be a positive integer.'
+      end
+      depth = options.fetch(:depth, review['heading_depth']) if scope == 'headings'
+      if depth && (!depth.is_a?(Integer) || depth < 1)
+        raise Error, 'Depth must be a positive integer.'
       end
       heading_rules_path = options[:heading_rules] ? File.expand_path(options[:heading_rules]) : (review['heading_rules'] ? File.expand_path(review['heading_rules'], base) : HeadingRuleSet.default_path(language))
       rules_path = options[:replacement] ? RuleSet.default_path(language) : options[:rules] ? File.expand_path(options[:rules]) : (review['rules'] ? File.expand_path(review['rules'], base) : RuleSet.default_path(language))
@@ -58,6 +68,7 @@ module AsciidocPubkit
         'base_dir' => File.expand_path(options[:base_dir] || review.fetch('base_dir', base), options[:base_dir] ? Dir.pwd : base),
         'glossary' => {}
       }
+      @data['heading_depth'] = depth if depth
       raise Error, 'tokenizer must be mecab or literal.' unless %w[mecab literal].include?(@data['tokenizer'])
       raise Error, 'style must be preserve, desu-masu, or dearu.' unless %w[preserve desu-masu dearu].include?(@data['style'])
       %w[exclude allows].each do |key|
