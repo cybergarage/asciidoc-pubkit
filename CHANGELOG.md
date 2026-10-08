@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 1.1.0 — 2026-10-08
+
+- Add an illustrated agent-review tutorial with a reproducible sample, diagnosis
+  and revision handoffs, separate heading/prose/list phases, verification recovery,
+  and a CyberGarage book workflow example. Add a skill integration guide and
+  packaged minimal SKILL.md example. Keep model review externally initiated
+  and distinguish mechanical preservation from editorial completion.
+
 - Add `document toc --json` with parsed/source titles, outline positions, parent
   relationships, section IDs and source cursor locations; keep text output unchanged.
 - Add heading-only `review scan --depth N` and `review.heading_depth` configuration.

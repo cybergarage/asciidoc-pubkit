@@ -16,7 +16,7 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.0.3 provides document inspection, explicit prose-only mechanical
+Version 1.1.0 provides document inspection, explicit prose-only mechanical
 replacements, and Japanese manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
@@ -26,11 +26,11 @@ Japanese manuscript excerpts and rule terms retain their original text.
 
 ## Available features
 
-The following commands are available in version 1.0.3.
+The following commands are available in version 1.1.0.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
-| [Document outline](docs/document-commands.md#document-commands) | `document toc` | Print parsed section titles, including book parts and chapters, with optional depth and outline numbering |
+| [Document outline](docs/document-commands.md#document-commands) | `document toc` | Print parsed section titles as text or JSON, including source locations, with optional depth and outline numbering |
 | [Book metadata](docs/document-commands.md#document-commands) | `document info` | Extract book attributes as text or JSON |
 | [Cross-reference checks](docs/document-commands.md#document-commands) | `document check-xrefs` | Report unresolved local cross-references with source locations |
 | [Document-title index](docs/document-commands.md#document-commands) | `document index` | Generate an alphabetical AsciiDoc index from English document titles and IDs |
@@ -53,12 +53,12 @@ Version 1.0.3 additionally preserves comparison axes, temporal roles,
 and known actions in unclear passages, separating source uncertainty from editorial
 questions. The evaluation guide describes the expanded corpus and calibration.
 
-Unreleased changes add contextual human-role guidance and standalone `人`
+Version 1.1.0 adds contextual human-role guidance and standalone `人`
 review hints, with terminology alignment and task-specific coverage reporting.
 These remain advisory; they do not automatically replace manuscript words or
 expand the protected edit scopes. See the [review workflow](docs/review-workflow.md).
 
-Unreleased [outline review](docs/outline-review.md) also adds `document toc --json`,
+Version 1.1.0 also adds [outline review](docs/outline-review.md) with `document toc --json`,
 `review scan --scope headings --depth N`, and `review prompt --view outline`.
 Review subject coverage, heading granularity and terminology with saved body
 evidence while protecting deeper titles, structure and section IDs. Full prompts
@@ -96,10 +96,15 @@ asciidoc-pubkit --help
 ```
 
 To update, run `gem update asciidoc-pubkit`. For Bundler, add
-`gem 'asciidoc-pubkit', '~> 1.0.3'` to your project's `Gemfile` and run commands
+`gem 'asciidoc-pubkit', '~> 1.1.0'` to your project's `Gemfile` and run commands
 through `bundle exec`. See [source installation and local checkout usage](docs/installation.md).
 
 ## Quick start
+
+Follow the [agent review tutorial](docs/agent-review-tutorial.md) for a complete
+scan, prompt, Codex/Claude handoff, revision and verification walkthrough.
+For a reusable agent workflow, see [skill integration](docs/skill-integration.md).
+
 
 Run these commands from the manuscript directory:
 
@@ -136,7 +141,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 
 Existing review sessions require the exact tool version that created them.
 Before upgrading, finish ongoing reviews with that version or preserve their
-baselines and start a new review in a separate directory with v1.0.3. A new
+baselines and start a new review in a separate directory with v1.1.0. A new
 scan cannot verify preservation relative to an earlier baseline.
 
 ## Documentation
@@ -145,8 +150,10 @@ scan cannot verify preservation relative to an earlier baseline.
 | --- | --- |
 | [Installation](docs/installation.md) | RubyGems, Bundler, source, local checkout, MeCab/IPADIC |
 | [Document commands](docs/document-commands.md) | Outline, metadata, cross-references, English-title indexes |
-| [Outline review](docs/outline-review.md) | Unreleased JSON outline, heading-depth selection, whole-outline prompts and preservation |
+| [Outline review](docs/outline-review.md) | JSON outline, heading-depth selection, whole-outline prompts and preservation |
 | [Prose replacements](docs/replacements.md) | Rule format, imports, regex compatibility, preview/apply, preservation |
+| [Skill integration](docs/skill-integration.md) | Skill responsibilities, packaged SKILL.md example and CyberGarage orchestration |
+| [Agent review tutorial](docs/agent-review-tutorial.md) | Illustrated first review, agent instructions, sequential scopes and verification recovery |
 | [Review workflow](docs/review-workflow.md) | Scanning, heading review, prompts, sessions, verification, exit codes |
 | [List review](docs/list-review.md) | Separate list sessions, editable items, protected syntax |
 | [Scoring](docs/scoring.md) | Candidate density, optional AI readability ratings, output |

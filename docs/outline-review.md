@@ -1,6 +1,6 @@
 # Outline review
 
-Unreleased changes extend document inspection and heading sessions for reviewing
+Version 1.1.0 extends document inspection and heading sessions for reviewing
 a book's table of contents. These commands do not invoke an AI CLI or rewrite
 the manuscript. Provide the generated prompt to your external reviewer.
 
@@ -104,5 +104,7 @@ permitted edits. Body/table/figure synchronization requires its own authorized
 scope and verification. Baseline integrity and stale-source checks still apply.
 Verification remains mechanical and keeps `meaning_verified: false`; success
 does not establish editorial completeness, semantic correctness or EPUB readiness.
+
+For an end-to-end agent handoff, see the [agent review tutorial](agent-review-tutorial.md).
 
 [Back to README](../README.md)

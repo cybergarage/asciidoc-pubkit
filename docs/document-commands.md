@@ -1,6 +1,6 @@
 # Document commands
 
-Version 1.0.3 provides four read-only document commands. They require neither
+Version 1.1.0 provides four read-only document commands. They require neither
 MeCab nor an AI CLI, accept documents in any language, and do not create review
 sessions or change manuscripts.
 
@@ -30,7 +30,7 @@ numbering. `--depth` must be a positive integer and limits the Asciidoctor secti
 level: chapters are level 1 and book parts are level 0. It does not generate or
 rewrite heading text.
 
-Unreleased changes add `document toc --json` with parsed and original ATX titles,
+Version 1.1.0 adds `document toc --json` with parsed and original ATX titles,
 parent relationships, section IDs and source positions. Text output is unchanged.
 See [outline review](outline-review.md#inspect-the-outline) for the JSON schema
 and the distinction between inspection locations and editable source mappings.

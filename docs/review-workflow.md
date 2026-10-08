@@ -1,5 +1,8 @@
 # Review workflow
 
+For a step-by-step walkthrough with Codex or Claude and workflow diagrams, see
+the [agent review tutorial](agent-review-tutorial.md).
+
 Run the following commands from the manuscript project directory:
 
 ```sh
@@ -86,7 +89,7 @@ are frozen into the session; scan again after changing them.
 
 ### Heading review
 
-Unreleased [outline review](outline-review.md) adds depth-limited selection and
+Version 1.1.0 adds [outline review](outline-review.md) with depth-limited selection and
 `review prompt --view outline` for assessing a table of contents. Full view remains
 the default. Depth controls editable titles; changing views does not relax the
 existing title/ID/body preservation checks. Additional outline criteria are saved
@@ -157,7 +160,7 @@ manuscripts. Numeric title changes
 are manual-review notices, and remaining candidates do not fail verification.
 `meaning_verified` remains `false`.
 
-Version 1.0.3 uses session schema 3 and requires the exact tool version saved in
+Version 1.1.0 uses session schema 3 and requires the exact tool version saved in
 the session. Preserve or finish an ongoing review with its original tool before
 establishing a new baseline in a separate directory.
 `review score` continues to support prose only and rejects `--scope`.
