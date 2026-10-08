@@ -253,6 +253,7 @@ An entrypoint for that layout might contain:
 :lang: ja
 
 include::chapters/introduction.adoc[]
+
 include::chapters/usage.adoc[]
 ```
 
