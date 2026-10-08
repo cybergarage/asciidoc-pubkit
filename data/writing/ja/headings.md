@@ -34,6 +34,17 @@ sections and procedures can intentionally use different forms.
 Repeated official terms and fixed section names are valid. Check duplicate
 siblings for ambiguity, without treating all repetition as a defect.
 
+## Follow terminology changes through the section
+
+When a heading introduces a technical term or clarifies a human role, check
+that the body uses it for the same operation and scope. Compare headings with
+the same role without making every section equally technical or equally long.
+Apply the shared human-actor criteria: `人の確認` may refer to a user's approval,
+an evaluator's review, or a general human-versus-AI distinction. Do not choose
+`開発者` solely from the book's subject. In a heading session, body text remains
+read-only; record needed body, table, figure, or alternative-text updates as
+separate proposals rather than changing them with the title.
+
 ## Respect the book's format
 
 The book owns preferred nominal or action forms, questions, fixed titles,

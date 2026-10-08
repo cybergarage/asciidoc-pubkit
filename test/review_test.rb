@@ -381,6 +381,34 @@ class ReviewTest < Minitest::Test
     assert_includes prompt, saved
   end
 
+  def test_role_criteria_are_saved_for_each_scope_and_not_reloaded_for_old_sessions
+    %w[headings prose lists].each do |scope|
+      @session = File.join(@dir, "role-#{scope}")
+      File.write(@chapter, "== 人の確認\n\n人が候補を選ぶ。\n\n* 人が結果を確かめる。\n")
+      scan('--scope', scope)
+      saved = json('manifest.json')['writing_criteria']
+      assert_includes saved, 'Identify human actors by their supported roles'
+      assert_includes saved, 'not imply separate people, new permissions'
+      original_criteria = AsciidocPubkit::Writing.method(:prompt_criteria)
+      begin
+        AsciidocPubkit::Writing.define_singleton_method(:prompt_criteria) { |*_args| 'Future criteria must not leak into a saved session' }
+        code, prompt, error = cli('review', 'prompt', @session)
+        assert_equal 0, code, error
+        assert_includes prompt, saved
+        refute_includes prompt, 'Future criteria must not leak'
+        assert_includes prompt, 'total scanned entries'
+        assert_includes prompt, 'does not authorize those edits'
+        assert_includes prompt, 'meaning_verified remains false'
+        assert_includes prompt, json('manifest.json')['heading_criteria'] if scope == 'headings'
+      ensure
+        AsciidocPubkit::Writing.define_singleton_method(:prompt_criteria, original_criteria)
+      end
+      code, result = verify
+      assert_equal 0, code
+      assert_equal false, result['meaning_verified']
+    end
+  end
+
   def test_review_rejects_unsupported_or_mismatched_languages
     code, _, error = cli('review', 'scan', @book, '--output', @session, '--lang', 'en')
     assert_equal 2, code

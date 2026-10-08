@@ -3,6 +3,7 @@
 ## Contents
 
 - Start with the paragraph's technical purpose
+- Identify human actors by their supported roles
 - Replace abstraction with the thing being discussed
 - Give weak predicates a concrete action or consequence
 - Explain metaphorical operations from evidence
@@ -33,6 +34,36 @@ If the summary is impossible, repair the paragraph's argument before polishing
 individual phrases. A short sentence is not automatically clear; omitted
 subjects, objects, complements, and referents must still be recoverable from the
 adjacent sentences.
+
+## Identify human actors by their supported roles
+
+Treat `人` as a cue to identify the actor, not as a forbidden word or a
+replacement instruction. Determine who performs the operation from the
+paragraph, neighboring context, and source evidence before naming a role.
+
+| Supported role in the passage | Possible wording |
+| --- | --- |
+| Designing or implementing a system, test, or execution environment | 開発者・設計者 |
+| Requesting work, operating a UI, approving an operation, or selecting a workflow | 利用者・ユーザー |
+| Reviewing samples or calibrating scoring criteria | 評価担当者 |
+| Authoring a document whose authority is being discussed | 文書の作成者 |
+| Contrasting human judgment with a model or program | 人間・人間側 |
+
+These are context-dependent examples, not a mandatory glossary. Follow the
+book's established terms. A developer can also be a user; these role names do
+not imply separate people, new permissions, qualifications, or staffing.
+Do not infer `開発者` merely because the book concerns software. For example,
+`人が候補を選ぶ` can become `利用者が候補を選ぶ` when the application displays
+candidates for selection, while constructing those candidates can be a developer's
+role. A role change must not narrow who may perform the documented operation.
+
+Keep general populations, established research terminology, and human-versus-AI
+comparisons when specificity would change their scope. `人の介入` can name a
+measure of autonomy, and `多くの人` need not mean only developers. Do not treat
+`個人`, `人数`, or `3人` as ambiguous actor wording. If the actor cannot be
+established, record the missing evidence rather than assigning an occupation.
+When an actor is unnecessary, state the concrete form instead: a displayed table
+may be described as `表形式` instead of `人が読みやすい形`.
 
 ## Replace abstraction with the thing being discussed
 

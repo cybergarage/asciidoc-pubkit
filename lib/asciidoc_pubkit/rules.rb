@@ -113,6 +113,7 @@ module AsciidocPubkit
       tokens.each_with_index do |token, index|
         next if token['unknown'] || phrase_ranges.any? { |range| range.cover?(token['offset']) }
         lemma = token['lemma']
+        next if lemma == '人' && !standalone_human?(text, token['offset'])
         rule = nil
         finish_index = index
         compound = rules.fetch('compound_nouns').find do |term|
@@ -185,6 +186,7 @@ module AsciidocPubkit
         surfaces.each do |surface|
           text.to_enum(:scan, Regexp.new(Regexp.escape(surface))).each do
             match = Regexp.last_match
+            next if surface == '人' && !standalone_human?(text, match.begin(0))
             next if contextual.any? { |start, finish, _, candidate_rule, *_| start == match.begin(0) && finish == match.end(0) && candidate_rule == rule }
             candidates << [match.begin(0), match.end(0), surface, rule, question]
           end
@@ -198,6 +200,18 @@ module AsciidocPubkit
         add(findings, paragraph, text, start, surface, rule, 'hint', question)
         findings.last.merge!(metadata) if metadata
       end
+    end
+
+    # Exclude compound words, identifiers and counts in both tokenizer modes.
+    # Hiragana context such as その人 or 人による remains a review cue.
+    def self.standalone_human?(text, offset)
+      compound = /[\p{Han}\p{N}\p{Latin}\p{Katakana}_]/
+      previous = offset.positive? ? text[offset - 1] : nil
+      following = text[offset + 1]
+      return false if previous == 'ー' || previous&.match?(compound)
+      return true if text[(offset + 1)..].start_with?('向け')
+
+      following != 'ー' && !following&.match?(compound)
     end
 
     def self.find_term(findings, paragraph, text, term, rule, severity, question)

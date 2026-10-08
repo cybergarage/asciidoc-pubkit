@@ -31,6 +31,23 @@ class DefaultRulesTest < Minitest::Test
   end
 
   %w[mecab literal].each do |mode|
+    define_method("test_human_actor_cues_preserve_compounds_counts_and_inline_in_#{mode}") do
+      text = "人が条件を定める。\nその人に確認する。人の介入を測る。人向けの説明。"
+      findings = scan(text, mode).select { |f| f['rule'] == 'abstract-reference' && f['match'] == '人' }
+      assert_equal [[1, 1], [2, 3], [2, 10], [2, 18]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['severity'] == 'hint' }
+      assert_includes findings.first['question'], 'do not automatically replace 人 with 開発者'
+      protected = '個人、人数、人間、人工、本人、3人、三人、人名、person人、ユーザー人。`人`。「人」。link:https://example.com[人]。'
+      assert_empty scan(protected, mode).select { |f| f['match'] == '人' }
+      assert_empty scan(text, mode, allows: ['人']).select { |f| f['match'] == '人' }
+      # Removing 人 from a custom complete rule set must disable this cue.
+      config = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                 'rules' => AsciidocPubkit::RuleSet.load }
+      config['rules']['terms']['abstract-reference']['terms'].delete('人')
+      paragraph = { 'id' => 'human', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], config).select { |f| f['match'] == '人' }
+    end
+
     define_method("test_technical_wording_candidates_in_#{mode}") do
       examples = {
         '木' => 'abstract-reference',

@@ -52,6 +52,7 @@ module AsciidocPubkit
             next if settings['allows'].include?(term)
             text.to_enum(:scan, Regexp.new(Regexp.escape(term))).each do
               match = Regexp.last_match
+              next if term == '人' && !Rules.standalone_human?(text, match.begin(0))
               add(findings, heading, match.begin(0), term, rule, entry['question'])
             end
           end

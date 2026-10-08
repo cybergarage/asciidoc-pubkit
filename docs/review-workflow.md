@@ -211,6 +211,18 @@ needs a passage-specific reason. Whether a matched string remains or disappears
 cannot determine that decision; unchanged paragraphs and remaining candidates
 must not receive automatic `keep` records. Unreviewed items remain pending.
 
+The default Japanese rules now flag standalone `人` as a contextual hint in
+prose, supported list text, and headings. Identify the evidenced role before
+considering `開発者`, `利用者`, `評価担当者`, `作成者`, or `人間`. Preserve general
+populations and established measures such as `人の介入` when narrowing the actor
+would change meaning. Compound words, counts, protected inline text, and allowed
+terms are excluded; literal mode uses conservative character boundaries and
+cannot establish grammatical roles. This is not a mechanical replacement rule.
+Existing sessions retain their saved rules and criteria; start a fresh session
+for this new cue without replacing an ongoing baseline. Adding a cue can change
+candidate-density scores; compare results under the same resolved rules and
+tokenizer, rather than treating a score change as improved writing quality.
+
 Version 0.8.4 prompts require the reviewer to reconcile decisions with actual
 edits (or proposed revisions in diagnose mode), review paragraphs or headings
 without candidates, and inspect newly detected or remaining candidates after
@@ -224,6 +236,23 @@ decision. A stock reason with an appended quotation is insufficient. For `入口
 the shared criteria ask whether creation, invocation, configuration, reference,
 or a learning role can be stated directly even when the referent is clear.
 Remaining role metaphors must be checked against those individual decisions.
+
+For an explicitly task-limited assignment, such as clarifying human roles,
+record the objective, relevant entry IDs, and the reasons for including those
+passages. Separate total scanned entries, task-specific reviewed entries, and
+entries assessed for general writing quality. A whole-book scan followed by a
+terminology pass is not a completed whole-book editorial review. Leave unrelated
+unreviewed entries and candidates pending; the CLI has no term-based selection
+filter or automated decision-ledger validation.
+
+When a term changes, inspect related titles, body text, table cells, figure
+labels, and alternative text for the same meaning. Tables and figures remain
+outside the heading/prose/list edit scopes. Record proposed synchronization and
+apply it only under separate author authorization. Keep each phase's baseline
+and phase-end verification; later synchronization may make an earlier phase's
+verification historical. Check the combined authorized changes against the
+original sources separately rather than relaxing protection or resetting the
+baseline to conceal a failure.
 
 These are reviewer instructions: the gem does not validate a decision ledger
 or prove that an AI or human followed the instructions. Keep session metadata

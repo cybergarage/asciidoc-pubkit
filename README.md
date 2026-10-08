@@ -53,6 +53,11 @@ Version 1.0.3 additionally preserves comparison axes, temporal roles,
 and known actions in unclear passages, separating source uncertainty from editorial
 questions. The evaluation guide describes the expanded corpus and calibration.
 
+Unreleased changes add contextual human-role guidance and standalone `人`
+review hints, with terminology alignment and task-specific coverage reporting.
+These remain advisory; they do not automatically replace manuscript words or
+expand the protected edit scopes. See the [review workflow](docs/review-workflow.md).
+
 ## Requirements and scope
 
 Ruby 3.2 or later is required; RubyGems installs Asciidoctor and the other Ruby

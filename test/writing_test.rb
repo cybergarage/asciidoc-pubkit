@@ -36,6 +36,8 @@ class WritingTest < Minitest::Test
     assert_includes prompt, 'Keep source uncertainty separate from editorial questions'
     assert_includes prompt, 'Keep completed changes, current behavior or policy, and future plans distinct'
     assert_includes prompt, '各ワーカーは最大3回再試行します'
+    assert_includes prompt, 'Identify human actors by their supported roles'
+    assert_includes prompt, '人の介入'
     refute_includes prompt, 'Migrated OSS prose style profile'
   end
 

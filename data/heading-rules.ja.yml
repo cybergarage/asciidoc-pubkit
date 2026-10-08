@@ -14,6 +14,10 @@ terms:
     - さまざまなこと
     - 入口
     question: 'Check whether the heading identifies the actual subject, operation or comparison. Use the section as evidence; apply the shared role-metaphor criteria to 入口 and preserve section IDs. Do not invent missing specificity.'
+  heading-human-role:
+    terms:
+    - 人
+    question: 'Identify the supported human role from the section. Consider developer, user, evaluator, author, or human-versus-AI wording only from evidence; keep general populations and established autonomy measures. Do not automatically replace 人 with 開発者.'
 fixed_titles:
 - はじめに
 - 本書の構成

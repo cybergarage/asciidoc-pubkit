@@ -17,6 +17,20 @@ class HeadingRulesTest < Minitest::Test
       'file' => 'chapter.adoc', 'line' => 8, 'column' => 5 }
   end
 
+  def test_human_actor_cues_in_both_modes_preserve_book_terms_and_exclusions
+    %w[literal mecab].each do |mode|
+      config = settings
+      config['tokenizer'] = mode
+      titles = ['人の確認を記録する', '人の介入を測る', '個人の記録', '人数と3人の作業', '人間の判断', '「人」の定義']
+      found = AsciidocPubkit::HeadingRules.scan(titles.map { |t| heading(t) }, config)
+      assert_equal ['人の確認を記録する', '人の介入を測る'], found.map { |f| f['heading_id'] }
+      assert found.all? { |f| f['rule'] == 'heading-human-role' }
+      assert_equal [8, 5], found.first.values_at('line', 'column')
+      config['allows'] = ['人']
+      assert_empty AsciidocPubkit::HeadingRules.scan([heading(titles.first)], config)
+    end
+  end
+
   def test_mixed_forms_are_valid_and_prose_rules_are_not_applied
     texts = ['構成要素', 'モデルを選び、接続する', '何を任せるか？', 'nullを返さない', '保存する前に確かめる', '境界と契約の整理']
     assert_empty AsciidocPubkit::HeadingRules.scan(texts.map { |t| heading(t) }, settings)

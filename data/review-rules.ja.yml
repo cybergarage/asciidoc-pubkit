@@ -15,6 +15,7 @@ terms:
     - 構成要素
     - 部品
     - 開発者
+    - 人
     - 祖先
     - 子孫
     # Scope, separation, and organization.
@@ -39,7 +40,10 @@ terms:
     question: Identify the concrete referent, components, role, or measurable work.
       For 入口, apply the shared role-metaphor criteria; a clear referent alone is
       not a sufficient reason to keep vague operation wording. Keep
-      established technical meanings. For 木 and 余白, consider a context-appropriate
+      established technical meanings. For standalone 人, identify the supported
+      human role; consider developer, user, evaluator, author, or human-versus-AI
+      wording only from evidence. Keep general populations and established
+      autonomy measures; do not automatically replace 人 with 開発者. For 木 and 余白, consider a context-appropriate
       katakana term (such as ツリー or マージン) only when it names the intended concept.
   weak-predicate:
     terms:

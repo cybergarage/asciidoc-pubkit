@@ -25,6 +25,14 @@ its known action. Keep source-provided undecided or investigation status in the
 body; put reviewer doubts and questions in the separate report, without adding
 editing markers to the manuscript.
 
+The shared criteria also distinguish human roles from human-versus-AI
+comparisons. Terms such as `開発者`, `利用者`, `評価担当者`, and `文書の作成者`
+are evidence-based alternatives to `人`, not a replacement dictionary. Preserve
+general populations and established research concepts, and do not introduce
+new permissions or imply that different roles require different people.
+Heading criteria connect terminology changes with the section's body and
+separately proposed table, figure, and alternative-text synchronization.
+
 ```sh
 asciidoc-pubkit writing criteria --lang ja
 asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md

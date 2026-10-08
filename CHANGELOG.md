@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- Add evidence-based human-role criteria and heading/body terminology alignment.
+  Keep developer, user, evaluator, author, and human-versus-AI meanings distinct
+  without prescribing occupations, permissions, or automatic replacements.
+- Add standalone 人 review hints for prose, list text, and headings, excluding
+  compounds and counts in MeCab and literal modes. Preserve allow lists, inline
+  protection, custom rule precedence, and existing saved-session baselines.
+- Clarify task-specific versus general editorial coverage and separately
+  authorized table, figure, and alternative-text synchronization. No new CLI
+  selection filter, decision validation, or semantic verification is added.
+
 ## 1.0.3 — 2026-10-07
 
 - Adapt yomiyasu v1.0.8 guidance to preserve comparison axes, completed/current/
