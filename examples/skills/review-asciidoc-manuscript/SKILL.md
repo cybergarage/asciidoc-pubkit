@@ -48,6 +48,12 @@ records must explain the specific comparison, not merely summarize the passage.
 Reporting helpers may count explicit decisions but must not create keep decisions
 or inherit paragraph summaries. Missing comparisons remain pending.
 
+Compare the strongest supported alternative with the same facts and modality.
+Do not reject a requested technical synonym merely because it preserves meaning;
+apply the author's terminology preference. Rejecting an unsupported stronger
+alternative does not establish keep. Recheck a retained passage when its comparison
+changes the claim, omits source information, or fails to address the author's concern.
+
 Retain phase-end results because later scopes can legitimately make older
 sessions fail. For further corrections after another scope has changed, start a
 separate scoped pass and retain the prior evidence. Run the project's requested

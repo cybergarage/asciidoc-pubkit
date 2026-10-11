@@ -232,6 +232,38 @@ require polite style. Resolve unintended style mixing separately from each
 sentence's function; changing `する` to `します` must not change advice into
 an asserted operation. Do not vary endings just to make these functions uniform.
 
+## Compare terminology independently of modality
+
+Preserve whether a sentence describes a capability, actual behavior, a condition,
+or an obligation while independently choosing the most accurate wording.
+`選べます → 選択できます` preserves capability; it is not the same change as
+`選べます → 選びます`. When the operation is technical selection, prefer
+`選択できます`, especially when the author requests technical terminology.
+An alternative need not change the facts to improve terminological consistency.
+"Same meaning" and "the referent is clear" alone do not justify keep. An explicit
+terminology preference takes precedence over an otherwise acceptable plain synonym.
+
+Compare the strongest faithful alternative, not an unsupported or shortened one
+that is easy to reject. Rejecting `物理的に隔離する` does not justify keeping
+`分ける` when `別の処理として実装する` explains the supported operation.
+Do not remove conditions or information from an alternative and then use that
+loss as the reason to retain the original. Compare full sentences or paragraphs
+with the same facts, modality and author requirements.
+
+| Wording | Operation-specific comparison |
+| --- | --- |
+| `次の操作を選べます` | `次の操作を選択できます` preserves the available choice and names the selection operation. |
+| `データを複数の部分に分けます` | `データを分割します` describes partitioning one object; do not use it for every separation. |
+| `許可判断と出力検査を分けています` | Identify both purposes and timings: `操作前の許可判定と、モデル入力前の出力検査を別の処理として実装しています`. Do not invent physical isolation. |
+| `両者の実装言語を分けられます` | `呼び出し元を、実行基盤とは異なる言語で実装できます` states language independence. Languages themselves are not partitioned. |
+| `固定した処理へ行動選択を組み込めます` | Name the workflow stage, the actor selecting operations, the input used for selection, and the limits on delegated operations. A vague `統合できます` or `実装できます` alone is not an improvement. |
+
+`組み込む` is not a banned word. Library embedding can be an established operation
+when the host application, API and integration method are specified. Retain a
+plain verb only after comparing the faithful alternative and explaining a real
+loss or a context-specific readability benefit consistent with author preferences.
+A failed candidate comparison is pending, not evidence that the original is best.
+
 ## Review sentence endings by their role
 
 Read the complete sentence and neighboring sentences before judging its ending.
@@ -239,13 +271,13 @@ First identify whether it announces the section's scope, describes an actual
 operation, offers a capability, gives a checking procedure, or reports history
 or a future expectation. Then name its actor, object, condition, and consequence.
 Revise only when a more direct explanation preserves those relationships;
-otherwise retain the original wording and explain its role.
+otherwise compare the wording independently of its sentence role before retaining it.
 
 | Ending and context | Decision to consider |
 | --- | --- |
 | `注目します`, `明らかにします`, `確認します`, or `たどります` in an introduction | Keep a useful scope or reading-order guide. If it only repeats an announcement, state the supported comparison, operation, or question directly; do not invent its answer. |
 | `戻します` or `組み立てます` in an operation description | Keep it when the transferred result, recipient, or constructed input is clear. Do not replace it with a noun or jargon merely to vary the ending. |
-| `使えます`, `組み込めます`, `選べます`, or `作れます` | Preserve the available option and its conditions. Changing to `使います` or `選びます` can falsely assert actual or automatic execution. |
+| `使えます`, `組み込めます`, `選べます`, or `作れます` | Preserve the available option and its conditions, not necessarily the original verb. Compare an equally potential technical expression or a concrete explanation; do not use the risks of `使います` or `選びます` to reject `適用できます` or `選択できます`. |
 | `分かりません` | Identify whether the missing evidence prevents judgment, confirmation, or identification. Use `判断できません` or `確認できません` only when that operation fits; preserve what remains unknown. |
 | `別です` or `同じではありません` | Name the compared objects and the property, purpose, or evidence that differs. Distinguish definite non-identity from insufficient evidence to infer a result. |
 | `確認します` or `調べます` in a procedure | Keep an actual check, including its target, condition, and timing. Do not turn it into a capability or a claim that the check succeeded. |
@@ -257,8 +289,10 @@ Both retain the missing evidence and the same judgment target. By contrast,
 `処理結果が分かりません` cannot become `処理は失敗しました`: an unknown
 outcome is not an established failure.
 
-Retain `利用者は候補Aと候補Bから選べます` when it states an available choice;
-`利用者は候補Aと候補Bから選びます` would assert that selection occurs. Retain
+`利用者は候補Aと候補Bから選べます` states an available choice;
+`利用者は候補Aと候補Bから選択できます` retains that choice while using technical
+selection wording. Compare this faithful alternative before keeping the plain verb.
+`利用者は候補Aと候補Bから選びます` would instead assert that selection occurs. Retain
 `実行側はツール結果をモデルへ戻します` when it describes the transfer;
 `実行結果のフィードバック` would lose the sentence's actor and predicate.
 

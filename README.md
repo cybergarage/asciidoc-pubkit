@@ -16,7 +16,7 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.2.0 provides document inspection, explicit prose-only mechanical
+Version 1.2.1 provides document inspection, explicit prose-only mechanical
 replacements, and Japanese manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
@@ -26,7 +26,7 @@ Japanese manuscript excerpts and rule terms retain their original text.
 
 ## Available features
 
-The following commands are available in version 1.2.0.
+The following commands are available in version 1.2.1.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -49,7 +49,7 @@ The 1.2.0 [sentence-ending guidance](docs/writing.md#writing-commands)
 adds contextual revision and keep examples, preserving capabilities, uncertainty,
 comparison strength, and body sentences separately from heading form. It adds
 no detector terms or automatic replacements; development calibration includes
-59 pairs, without a measured claim of improved AI proofreading.
+70 pairs, without a measured claim of improved AI proofreading.
 
 The 1.2.0 [default rules](docs/rules-and-coverage.md) add `流れ` as an
 `abstract-reference` hint for prose and list text. Review processing order,
@@ -61,6 +61,8 @@ Version 1.2.0 also requires comparison with concrete alternatives for broad or
 everyday wording. Review prompts reject automatic keep judgments and passage
 summaries used as candidate decisions; missing comparisons remain pending.
 Verification continues to check mechanical preservation only.
+
+Version 1.2.1 [compares terminology independently of modality](data/writing/ja/criteria.md#compare-terminology-independently-of-modality), honors author terminology preferences, and adds advisory `組み込む` candidates. See [faithful terminology comparisons](docs/review-workflow.md#faithful-terminology-comparisons).
 
 Version 1.0.1 extended the [shared writing criteria](docs/writing.md#writing-commands)
 with structural comparison before and after revision and preservation of sentence
@@ -166,7 +168,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 
 Existing review sessions require the exact tool version that created them.
 Before upgrading, finish ongoing reviews with that version or preserve their
-baselines and start a new review in a separate directory with v1.2.0. A new
+baselines and start a new review in a separate directory with v1.2.1. A new
 scan cannot verify preservation relative to an earlier baseline.
 
 ## Documentation

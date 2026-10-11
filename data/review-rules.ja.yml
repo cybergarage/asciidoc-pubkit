@@ -95,6 +95,11 @@ terms:
     - 作れる
     - 作れます
     - 作れません
+    - 組み込む
+    - 組み込みます
+    - 組み込めます
+    - 組み込まない
+    - 組み込めません
     - 組み立てられます
     - 組み合わせます
     - 積み重なります
@@ -150,7 +155,10 @@ terms:
     question: Identify the purpose, operation, and result, then compare a more precise
       verb or established technical term using the shared criteria. An understandable
       original is not by itself a reason to keep it. Record the alternative and the
-      passage-specific comparison. Preserve negation, conditions, and responsibility.
+      passage-specific comparison. Compare faithful alternatives with the same modality;
+      synonymy alone is not a keep reason when technical terminology is requested.
+      Do not justify keep by rejecting an unsupported stronger alternative.
+      Preserve negation, conditions, and responsibility.
   vague-degree:
     terms:
     - 浅い
@@ -306,6 +314,9 @@ verbs:
   - 渡す
   決まる:
   - 決まる
+  組み込む:
+  - 組み込む
+  - 組み込める
   組み立てる:
   - 組み立てる
   組み合わせる:

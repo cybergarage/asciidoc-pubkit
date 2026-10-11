@@ -6,7 +6,7 @@ readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
 This guide describes the development checkout, including the
-`technical-prose-v3` corpus and 59 revision calibration pairs. The sentence-ending
+`technical-prose-v3` corpus and 70 revision calibration pairs. The sentence-ending
 criteria and twelve additional pairs, plus the flow guidance and four further
 pairs, are included in version 1.2.0.
 The evaluation runner is not an
@@ -45,7 +45,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 59 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 70 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -99,6 +99,15 @@ targets remain unchanged; calibration and the judge rubric change. Establish a
 fresh AI baseline using the expanded calibration and rubric before comparing
 criteria. Normal tests check fixture integrity and prompt delivery, not whether
 an AI accepts or rejects each pair correctly.
+
+The version 1.2.1 terminology update adds eleven calibration pairs covering technical
+selection without a modality change, explicit author preferences, logical separation
+versus invented physical isolation, language independence versus partition, data
+partition, concrete workflow descriptions and legitimate library embedding. The
+optional judge receives each pair's `editorial_constraints` without its expected
+disposition or gold reason. These fixtures and deterministic plumbing tests do not
+establish improved model proofreading; an explicitly requested AI evaluation is
+required to measure that behavior.
 
 The version 1.2.0 `流れ` guidance adds four calibration pairs: a more specific
 information-transfer description, a clear operation with its condition retained,

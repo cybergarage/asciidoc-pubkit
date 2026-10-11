@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 1.2.1 - 2026-10-12
+
+- Compare faithful technical terminology independently of capability/behavior
+  preservation; honor author wording preferences even for synonyms. Reject keep
+  rationales based on unsupported stronger alternatives. Clarify selection,
+  partition, logical separation, language independence and workflow integration
+  in shared criteria, generated prompts and the bundled review skill. Add advisory
+  `組み込む` candidates in MeCab/literal modes and eleven calibration pairs (70
+  total). Pass editorial constraints to the optional evaluator without gold
+  judgments. Old sessions retain saved criteria; mechanical verification is
+  unchanged. No AI proofreading improvement has been measured.
+
 ## 1.2.0 - 2026-10-12
 
 - Require concrete alternative comparisons for broad or everyday wording in

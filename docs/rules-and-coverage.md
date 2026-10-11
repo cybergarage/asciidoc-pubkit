@@ -142,7 +142,7 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Versions 1.1.0 and 1.2.0 use session schema 3, but sessions still require their exact tool version.
+Versions 1.1.0, 1.2.0 and 1.2.1 use session schema 3, but sessions still require their exact tool version.
 Sessions with a different schema or tool version cannot be loaded. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:

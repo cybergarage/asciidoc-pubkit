@@ -180,6 +180,33 @@ class DefaultRulesTest < Minitest::Test
     end
   end
 
+  def test_embedding_inflections_are_advisory_and_preserve_scope
+    text = "😀処理を組み込めます。\n機能を組み込みます。機能を組み込まない。組み込めません。"
+    before = text.dup
+    findings = scan(text, 'mecab').select { |item| item['lemma'] == '組み込む' }
+    assert_equal %w[組み込めます 組み込みます 組み込まない 組み込めません], findings.map { |item| item['match'] }
+    assert_equal [false, false, true, true], findings.map { |item| item['negative'] }
+    assert_equal [1, 2, 2, 2], findings.map { |item| item['line'] }
+    assert_equal text.lines.first.index('組み込めます') + 1, findings.first['column']
+    assert findings.all? { |item| item['rule'] == 'weak-predicate' && item['severity'] == 'hint' }
+    assert_equal before, text
+    %w[mecab literal].each do |mode|
+      assert_empty scan('`組み込めます`。「組み込みます」。link:https://example.com[組み込む]。', mode)
+        .select { |item| item['rule'] == 'weak-predicate' }
+      surface = scan('処理を組み込めます。', mode).select { |item| item['rule'] == 'weak-predicate' }
+      assert_equal ['組み込めます'], surface.map { |item| item['match'] }
+      assert_empty scan('処理を組み込めます。', mode, allows: ['組み込めます'])
+        .select { |item| item['rule'] == 'weak-predicate' }
+    end
+    settings = { 'tokenizer' => 'mecab', 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                 'rules' => AsciidocPubkit::RuleSet.load }
+    settings['rules']['verbs'].delete('組み込む')
+    paragraph = { 'id' => 'embedding', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+    tokenizer = AsciidocPubkit::Morphology.new(settings)
+    assert_empty AsciidocPubkit::Rules.scan([paragraph], settings, tokenizer: tokenizer)
+      .select { |item| item['rule'] == 'weak-predicate' }
+  end
+
   def test_investigated_manuscript_variants_are_detected_by_lemma
     examples = {
       'ツールを呼んだ。' => ['呼ぶ', '呼んだ'],

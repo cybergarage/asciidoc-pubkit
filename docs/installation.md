@@ -66,7 +66,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-1.2.0.gem
+gem install ./asciidoc-pubkit-1.2.1.gem
 asciidoc-pubkit --version
 ```
 

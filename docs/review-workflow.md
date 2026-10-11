@@ -296,6 +296,23 @@ verify check the value against the session language. A non-Japanese language in
 `--lang`, `review.language`, or an explicit AsciiDoc `:lang:` attribute is rejected.
 An omitted `:lang:` attribute uses the selected review language.
 
+### Faithful terminology comparisons
+
+Preserve modality separately from wording: `選べます → 選択できます` retains
+capability, while `選べます → 選びます` asserts behavior. Apply author terminology
+preferences even when both expressions are understandable. Compare the strongest
+supported alternative with the same facts and conditions; rejecting invented
+physical isolation does not justify keeping vague separation wording. The saved
+shared criteria distinguish data partition, responsibility separation, independent
+implementation languages and concrete workflow integration.
+
+`組み込む` and its potential/negative inflections are advisory `weak-predicate`
+candidates in the packaged Japanese rules. They are not prohibited expressions or
+replacement instructions; named library embedding may be appropriate. Custom rules
+still replace the packaged rules. Review author-supplied concerns and paragraphs
+without matches as well. Existing sessions retain their saved rules and criteria;
+start a new scan to apply the updated guidance, preserving earlier evidence.
+
 ### Verify
 
 ```sh

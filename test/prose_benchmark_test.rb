@@ -71,7 +71,7 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    assert_equal 59, pairs.length
+    assert_equal 70, pairs.length
     assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
     quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
     assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)
@@ -174,6 +174,34 @@ class ProseBenchmarkTest < Minitest::Test
     assert_includes ProseBenchmark::RUBRIC, 'nominalizing body sentences'
   end
 
+  def test_terminology_calibration_preserves_modality_and_author_preferences
+    pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
+    expected = {
+      'terminology-selection-capability' => 'accept',
+      'terminology-selection-policy-ignored' => 'reject',
+      'terminology-logical-separation' => 'accept',
+      'terminology-physical-isolation-invented' => 'needs-evidence',
+      'terminology-language-independence' => 'accept',
+      'terminology-language-not-partition' => 'reject',
+      'terminology-data-partition' => 'accept',
+      'terminology-workflow-made-concrete' => 'reject',
+      'terminology-workflow-faithful-concrete' => 'accept',
+      'terminology-workflow-policy-ignored' => 'reject',
+      'terminology-library-embedding-kept' => 'accept'
+    }
+    expected.each do |id, disposition|
+      item = pairs.find { |pair| pair['id'] == id }
+      refute_nil item, id
+      assert_equal disposition, item.fetch('expected_disposition'), id
+      refute_empty item.fetch('reason'), id
+    end
+    %w[terminology-selection-policy-ignored terminology-workflow-policy-ignored].each do |id|
+      item = pairs.find { |pair| pair['id'] == id }
+      assert_equal item.fetch('source'), item.fetch('revision')
+      refute_empty item.fetch('editorial_constraints')
+    end
+  end
+
   def test_revision_validation_rejects_duplicates_missing_ids_and_new_paragraphs
     cases = [{ 'id' => 'a' }, { 'id' => 'b' }]
     correct = { 'paragraphs' => [{ 'id' => 'a', 'text' => '元の文章です。' }, { 'id' => 'b', 'text' => '次の文章です。' }] }
@@ -253,6 +281,13 @@ class ProseBenchmarkTest < Minitest::Test
       assert_includes captured.first.first, 'Compare structure before and after revision'
       assert_includes captured.first.first, 'Preserve plain or polite style'
       assert_includes captured.last.first, 'targets, required order'
+      sent_pairs = JSON.parse(captured.last.first.split('Calibration pairs: ', 2).last)
+      constrained = calibration.select { |pair| pair.key?('editorial_constraints') }
+      constrained.each do |pair|
+        sent = sent_pairs.find { |item| item['id'] == pair['id'] }
+        assert_equal pair.fetch('editorial_constraints'), sent.fetch('editorial_constraints')
+        refute sent.key?('expected_disposition'), 'Do not reveal gold judgments to the evaluator'
+      end
       assert_includes captured.first.first, 'Keep source uncertainty separate from editorial questions'
       assert_includes captured.last.first, 'versus observation or report time'
       assert_includes captured.last.first, 'reviewer doubt and editorial questions'

@@ -27,6 +27,13 @@ A noun-phrase heading policy does not apply to body sentences. These examples
 are contextual decisions, not new detector terms or replacement rules. See
 [Sentence-ending criteria](../data/writing/ja/criteria.md#review-sentence-endings-by-their-role).
 
+Terminology comparison is independent of sentence function. A technical synonym
+can improve consistency while retaining the same capability or condition; honor
+explicit author preferences rather than keeping a plain verb just because it is
+understandable. Compare a faithful full explanation, not an unsupported stronger
+alternative or a shortened passage. See
+[Terminology and modality](../data/writing/ja/criteria.md#compare-terminology-independently-of-modality).
+
 The criteria also preserve the comparison axis, completed changes,
 current behavior, future plans, and the distinction between event dates and
 observation or report dates. An unclear state term does not authorize deleting
@@ -48,7 +55,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 ```
 
 For example, `--lang en` exits with an unsupported-language error. No English
-review or writing criteria are shipped in 1.2.0.
+review or writing criteria are shipped in 1.2.1.
 
 For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain

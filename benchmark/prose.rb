@@ -39,6 +39,11 @@ module ProseBenchmark
     Judge sentence endings by their role: retain useful scope guides, actual
     operations, capabilities, checking procedures, and historical transitions.
     Do not make a capability an asserted action or an unknown outcome a failure.
+    Modality preservation does not require retaining the original verb: compare
+    faithful technical alternatives such as 選べます → 選択できます. Apply supplied
+    editorial_constraints to calibration pairs; synonymy does not excuse violating
+    an author terminology preference. Do not justify vague wording by rejecting an
+    unsupported stronger alternative such as physical isolation.
     Preserve definite differences separately from limits on what evidence proves;
     a noun-phrase heading preference does not license nominalizing body sentences.
     Report unsupported additions and substitutions separately as English reasons,
@@ -314,7 +319,7 @@ module ProseBenchmark
       follow each fact checklist's order. Document labels hide the run role.
       Source evidence: #{JSON.generate(cases.map { |c| c.slice('id', 'text', 'facts') })}
       Target documents: #{JSON.generate(%w[A B].zip(documents).map { |id, paras| { 'id' => id, 'paragraphs' => paras } })}
-      Calibration pairs: #{JSON.generate(gold.map { |c| c.slice('id', 'source', 'revision') })}
+      Calibration pairs: #{JSON.generate(gold.map { |c| c.slice('id', 'source', 'revision', 'editorial_constraints') })}
     TEXT
     judgment = validate_judgment(judge.call(judge_prompt, workspace, 'judge'), cases, gold.map { |c| c['id'] })
     original_id, revised_id = trial.odd? ? %w[A B] : %w[B A]

@@ -538,7 +538,7 @@
         "capability",
         "sentence-function"
       ],
-      "reason": "The sentence offers a choice; retaining the potential ending avoids claiming that selection actually occurs."
+      "reason": "The choice and potential modality are preserved in this unconstrained plain-language example. This does not justify keep when an author requests technical selection terminology; compare an equally potential alternative separately."
     },
     {
       "id": "ending-capability-made-operation",
@@ -691,6 +691,153 @@
         "information-loss"
       ],
       "reason": "Data-only wording removes the success prerequisite and the invocation operation."
+    },
+    {
+      "id": "terminology-selection-capability",
+      "source": "ツール結果を次のモデル入力に含めることで、LLMは結果に基づいて次の操作を選べます。",
+      "revision": "ツール結果を次のモデル入力に含めることで、LLMは結果に基づいて次の操作を選択できます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "The technical term changes while the actor, evidence and capability remain intact.",
+      "editorial_constraints": [
+        "Use 選択 for the technical operation of choosing the next action, while preserving capability."
+      ]
+    },
+    {
+      "id": "terminology-selection-policy-ignored",
+      "source": "ツール結果を次のモデル入力に含めることで、LLMは結果に基づいて次の操作を選べます。",
+      "revision": "ツール結果を次のモデル入力に含めることで、LLMは結果に基づいて次の操作を選べます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Unchanged wording preserves facts but violates the explicit selection terminology preference.",
+      "editorial_constraints": [
+        "Use 選択 for the technical operation of choosing the next action, while preserving capability."
+      ]
+    },
+    {
+      "id": "terminology-logical-separation",
+      "source": "操作前の許可判断と、モデル入力前のツール出力検査を分けています。",
+      "revision": "操作前の許可判定と、モデル入力前のツール出力検査を別の処理として実装しています。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Names the two operations and their distinct timing without asserting physical isolation."
+    },
+    {
+      "id": "terminology-physical-isolation-invented",
+      "source": "操作前の許可判断と、モデル入力前のツール出力検査を分けています。",
+      "revision": "許可判定とツール出力検査を別々のプロセスで物理的に隔離しています。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Logical separation does not establish separate processes or physical isolation."
+    },
+    {
+      "id": "terminology-language-independence",
+      "source": "実行基盤と呼び出し元はプロトコルで通信するため、両者の実装言語を分けられます。",
+      "revision": "実行基盤と呼び出し元はプロトコルで通信するため、呼び出し元を実行基盤とは異なる言語で実装できます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Explains independent language choice while preserving the protocol and capability."
+    },
+    {
+      "id": "terminology-language-not-partition",
+      "source": "実行基盤と呼び出し元はプロトコルで通信するため、両者の実装言語を分けられます。",
+      "revision": "実行基盤と呼び出し元はプロトコルで通信するため、一つの実装言語を複数に分割できます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Partitions a language instead of describing different languages for two components."
+    },
+    {
+      "id": "terminology-data-partition",
+      "source": "データを100件ずつの複数の部分に分けます。",
+      "revision": "データを100件ずつに分割します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Partition is accurate for one data collection and preserves the size of each part."
+    },
+    {
+      "id": "terminology-workflow-made-concrete",
+      "source": "資料分類は固定した手順で処理し、追加調査だけをエージェントへ任せます。任せる操作と利用者の判断を求める条件を定めることで、固定した処理の中へ状況に応じた行動選択を組み込めます。",
+      "revision": "資料分類は固定した手順で処理し、追加調査だけをエージェントへ任せられます。追加調査では、LLMが調査結果に応じて次の操作を選択します。エージェントに任せる操作と、利用者の判断を求める条件を事前に定めます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "The revision incorrectly changes the established delegation of additional investigation into an optional capability. Concrete terminology must also preserve sentence function.",
+      "editorial_constraints": [
+        "Explain the workflow stage, delegated operations and actor making the selection rather than leaving 組み込む abstract."
+      ]
+    },
+    {
+      "id": "terminology-workflow-faithful-concrete",
+      "source": "資料分類は固定した手順で処理し、追加調査だけをエージェントへ任せます。任せる操作と利用者の判断を求める条件を定めることで、固定した処理の中へ状況に応じた行動選択を組み込めます。",
+      "revision": "資料分類は固定した手順で処理し、追加調査だけをエージェントへ任せます。その調査では、LLMが調査結果に応じて次の操作を選択する構成にできます。エージェントに任せる操作と、利用者の判断を求める条件を事前に定めます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Names the workflow stage and selecting actor, retains existing delegation and optional configuration, and preserves user-decision conditions.",
+      "editorial_constraints": [
+        "Explain the workflow stage, delegated operations and actor making the selection rather than leaving 組み込む abstract."
+      ]
+    },
+    {
+      "id": "terminology-workflow-policy-ignored",
+      "source": "資料分類は固定した手順で処理し、追加調査だけをエージェントへ任せます。任せる操作と利用者の判断を求める条件を定めることで、固定した処理の中へ状況に応じた行動選択を組み込めます。",
+      "revision": "資料分類は固定した手順で処理し、追加調査だけをエージェントへ任せます。任せる操作と利用者の判断を求める条件を定めることで、固定した処理の中へ状況に応じた行動選択を組み込めます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Recoverable context is insufficient under an explicit request to explain the operation instead of abstract embedding.",
+      "editorial_constraints": [
+        "Explain the workflow stage, delegated operations and actor making the selection rather than leaving 組み込む abstract."
+      ]
+    },
+    {
+      "id": "terminology-library-embedding-kept",
+      "source": "ホストアプリケーションは公開APIを呼び出して、このライブラリを組み込めます。",
+      "revision": "ホストアプリケーションは公開APIを呼び出して、このライブラリを組み込めます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "operation-specificity"
+      ],
+      "reason": "Embedding names a familiar library integration operation with a host and method; no stronger author terminology constraint is supplied."
     }
   ]
 }
