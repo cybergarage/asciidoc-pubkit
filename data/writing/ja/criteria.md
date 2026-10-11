@@ -69,6 +69,10 @@ may be described as `表形式` instead of `人が読みやすい形`.
 ## Replace abstraction with the thing being discussed
 
 Identify both the referent and its role before retaining an abstract term.
+Understandability is an initial factual check, not a keep decision. For broad or
+everyday wording, compare a concrete alternative and prefer an accurate established
+technical term that narrows the intended meaning. Record the alternative and the
+specific benefit or loss; a summary of the passage does not establish this comparison.
 A named API, file, or command can make the referent recoverable while leaving
 its operation vague. Inspect terms such as:
 
@@ -79,11 +83,28 @@ its operation vague. Inspect terms such as:
 | 境界 | the two components and the call, data transfer, or ownership transfer between them |
 | 観点 | the actual comparison axis, such as type safety, shutdown behavior, allocation count, or supported OS |
 | 書き方 | syntax, implementation technique, API shape, or document notation |
+| 流れ | processing order, information transfer, invocation path, work procedure, or state changes |
 | 範囲・射程 | supported readers, covered subjects, applicable versions, or behavior guaranteed by an API |
 
 Do not improve a sentence by replacing one abstraction with another. For
 example, changing `費用` to `コスト` says nothing unless the sentence identifies
 what increases.
+
+Treat `流れ` as a cue to identify the described operation, not as a banned word.
+Even when the actors, transferred information, order, or conditions are clear,
+compare a more exact expression for the supported relationship. Prefer that
+expression when it clarifies the technical role; keep the original only with
+a specific comparison showing no improvement or a loss of scope. Examples include
+`処理順`, `情報の受け渡し`, `呼び出し経路`, or `作業手順`.
+Changing `流れ` to `処理フロー` alone does not add specificity. Use `シーケンス`
+for the order of calls or events, `データフロー` for data transfers and
+transformations, and `ライフサイクル` for creation, execution, termination or
+release only when those are the actual subject. These terms are not interchangeable;
+do not invent missing stages, narrow an explanation to data alone, or lose a
+branch condition merely to make the wording more technical. For example,
+`検査に成功した後だけ、実行関数を呼び出す流れです` already states the
+operation, order and condition and can remain unchanged only after comparing
+a direct description of that conditional invocation and finding no useful improvement.
 
 For role metaphors such as `入口`, check whether naming the actual operation or
 relationship gives the reader more useful information, even when the referent
@@ -431,7 +452,8 @@ Review unusual translations against the actual concept:
 
 | Wording to inspect | Context-dependent terminology |
 | --- | --- |
-| 木 | ツリー when referring to the data structure; keep literal trees and established mathematical usage |
+| 木 | ツリー構造・ツリー when referring to the data structure; preserve formal names such as モンテカルロ木探索 and literal or mathematical uses |
+| 安全余白 | 安全マージン when naming the reserved allowance for estimation or counting differences; retain its unit, value, and calculation |
 | 拡張点 | 拡張ポイント for the specific extension location or interface; 拡張機構 for the broader mechanism only when that is the intended referent |
 | 構築入口 | ビルドのエントリポイント only when the entry point starts a build, not object construction or initialization |
 | 実装の読解 | コードリーディング for reading code; 実装の解析 when analysis is the actual task |

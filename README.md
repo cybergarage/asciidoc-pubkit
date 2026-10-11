@@ -16,7 +16,7 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.1.0 provides document inspection, explicit prose-only mechanical
+Version 1.2.0 provides document inspection, explicit prose-only mechanical
 replacements, and Japanese manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
@@ -26,7 +26,7 @@ Japanese manuscript excerpts and rule terms retain their original text.
 
 ## Available features
 
-The following commands are available in version 1.1.0.
+The following commands are available in version 1.2.0.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -43,12 +43,24 @@ The following commands are available in version 1.1.0.
 | [Baseline verification](docs/review-workflow.md#verify) | `review verify` | Check edited sources against a saved baseline for mechanical preservation; meaning is not verified |
 | [Manuscript scoring](docs/scoring.md#score-an-asciidoc-manuscript) | `review score` | Report a prose candidate-density score; explicit `--agent codex` or `--agent claude` optionally invokes a local AI CLI for readability ratings |
 | [Writing criteria and prompts](docs/writing.md#writing-commands) | `writing criteria`, `writing prompt` | Print Japanese prose criteria or generate a writing prompt without a manuscript or MeCab |
+| [Skill registration](docs/skill-commands.md) | `skill list`, `skill install`, `skill status`, `skill upgrade` | Register bundled skills for Codex or Claude and inspect or upgrade managed copies while protecting local changes |
 
-The unreleased [sentence-ending guidance](docs/writing.md#writing-commands)
+The 1.2.0 [sentence-ending guidance](docs/writing.md#writing-commands)
 adds contextual revision and keep examples, preserving capabilities, uncertainty,
 comparison strength, and body sentences separately from heading form. It adds
 no detector terms or automatic replacements; development calibration includes
-55 pairs, without a measured claim of improved AI proofreading.
+59 pairs, without a measured claim of improved AI proofreading.
+
+The 1.2.0 [default rules](docs/rules-and-coverage.md) add `流れ` as an
+`abstract-reference` hint for prose and list text. Review processing order,
+information transfer and state changes in context; compare concrete alternatives and
+prefer accurate technical terms without automatic substitutions. Existing sessions keep their saved
+rules and criteria; start a new scan to use the update.
+
+Version 1.2.0 also requires comparison with concrete alternatives for broad or
+everyday wording. Review prompts reject automatic keep judgments and passage
+summaries used as candidate decisions; missing comparisons remain pending.
+Verification continues to check mechanical preservation only.
 
 Version 1.0.1 extended the [shared writing criteria](docs/writing.md#writing-commands)
 with structural comparison before and after revision and preservation of sentence
@@ -70,12 +82,12 @@ Review subject coverage, heading granularity and terminology with saved body
 evidence while protecting deeper titles, structure and section IDs. Full prompts
 and unlimited heading selection remain the defaults.
 
-Unreleased [skill commands](docs/skill-commands.md) add `skill list`,
+Version 1.2.0 [skill commands](docs/skill-commands.md) add `skill list`,
 `skill install NAME --agent codex|claude`, `skill status` and `skill upgrade`.
 Use `--dir PATH` instead for a custom destination. Register a
 bundled review skill, inspect its state and update unchanged copies from the
 running pubkit package. Local changes and unmanaged copies stay protected.
-These commands are available in the source checkout, not the published 1.1.0 gem.
+These commands are included in the 1.2.0 gem.
 
 ## Requirements and scope
 
@@ -109,7 +121,7 @@ asciidoc-pubkit --help
 ```
 
 To update, run `gem update asciidoc-pubkit`. For Bundler, add
-`gem 'asciidoc-pubkit', '~> 1.1.0'` to your project's `Gemfile` and run commands
+`gem 'asciidoc-pubkit', '~> 1.2.0'` to your project's `Gemfile` and run commands
 through `bundle exec`. See [source installation and local checkout usage](docs/installation.md).
 
 ## Quick start
@@ -154,7 +166,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 
 Existing review sessions require the exact tool version that created them.
 Before upgrading, finish ongoing reviews with that version or preserve their
-baselines and start a new review in a separate directory with v1.1.0. A new
+baselines and start a new review in a separate directory with v1.2.0. A new
 scan cannot verify preservation relative to an earlier baseline.
 
 ## Documentation
@@ -165,7 +177,7 @@ scan cannot verify preservation relative to an earlier baseline.
 | [Document commands](docs/document-commands.md) | Outline, metadata, cross-references, English-title indexes |
 | [Outline review](docs/outline-review.md) | JSON outline, heading-depth selection, whole-outline prompts and preservation |
 | [Prose replacements](docs/replacements.md) | Rule format, imports, regex compatibility, preview/apply, preservation |
-| [Skill commands](docs/skill-commands.md) | Unreleased list/install/status/upgrade, managed files, local changes and recovery |
+| [Skill commands](docs/skill-commands.md) | List/install/status/upgrade, managed files, local changes and recovery |
 | [Skill integration](docs/skill-integration.md) | Register and maintain a skill, then orchestrate review in any book project |
 | [Agent review tutorial](docs/agent-review-tutorial.md) | Illustrated first review, agent instructions, sequential scopes and verification recovery |
 | [Review workflow](docs/review-workflow.md) | Scanning, heading review, prompts, sessions, verification, exit codes |

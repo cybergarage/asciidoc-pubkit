@@ -14,6 +14,8 @@ terms:
     # Components, actors, and hierarchical relationships.
     - 構成要素
     - 部品
+    # Sequences, transfers, and state changes require contextual review.
+    - 流れ
     - 開発者
     - 人
     - 祖先
@@ -37,7 +39,9 @@ terms:
     - 余白
     # Event or operation wording requires context, not a fixed synonym.
     - 発火
-    question: Identify the concrete referent, components, role, or measurable work.
+    question: Identify the concrete referent, components, role, or measurable work,
+      then compare a concrete expression or established technical term using the shared
+      criteria. Recoverable meaning alone does not justify keeping broad wording.
       For 入口, apply the shared role-metaphor criteria; a clear referent alone is
       not a sufficient reason to keep vague operation wording. Keep
       established technical meanings. For standalone 人, identify the supported
@@ -143,8 +147,10 @@ terms:
     - 終えられます
     - 抜けられます
     - 解消する
-    question: Check whether the purpose, operation, or result is clear from the surrounding
-      paragraph. Preserve negation and conditions.
+    question: Identify the purpose, operation, and result, then compare a more precise
+      verb or established technical term using the shared criteria. An understandable
+      original is not by itself a reason to keep it. Record the alternative and the
+      passage-specific comparison. Preserve negation, conditions, and responsibility.
   vague-degree:
     terms:
     - 浅い

@@ -6,8 +6,9 @@ readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
 This guide describes the development checkout, including the
-`technical-prose-v3` corpus and 55 revision calibration pairs. The sentence-ending
-criteria and twelve additional pairs are unreleased.
+`technical-prose-v3` corpus and 59 revision calibration pairs. The sentence-ending
+criteria and twelve additional pairs, plus the flow guidance and four further
+pairs, are included in version 1.2.0.
 The evaluation runner is not an
 installed gem command. It does not measure Japanese naturalness or AI authorship
 as a single validated score.
@@ -44,7 +45,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 55 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 59 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -89,7 +90,7 @@ but do reach the writer and judge. The corpus, calibration, and judge rubric all
 change; establish a fresh AI baseline with those fixed before measuring a review
 criteria change. v1 and v2 results cannot be compared directly with v3.
 
-The unreleased sentence-ending update adds twelve calibration pairs for useful
+The version 1.2.0 sentence-ending update adds twelve calibration pairs for useful
 scope guidance, clear result transfers, optional selection, unknown outcomes,
 explicit comparisons, definite versus possible differences, unsupported
 mechanisms, historical transitions, and body sentences nominalized as headings.
@@ -98,6 +99,16 @@ targets remain unchanged; calibration and the judge rubric change. Establish a
 fresh AI baseline using the expanded calibration and rubric before comparing
 criteria. Normal tests check fixture integrity and prompt delivery, not whether
 an AI accepts or rejects each pair correctly.
+
+The version 1.2.0 `流れ` guidance adds four calibration pairs: a more specific
+information-transfer description, a clear operation with its condition retained,
+and rejected substitutions that invent lifecycle stages or remove a success
+condition by describing only data transfer. Default-rule tests check the new
+advisory hint, Unicode positions, allow lists, custom rules and protected inline
+text in MeCab and literal modes. The fixed detector benchmark still scores only
+its three existing kinds; its scores do not measure the new `流れ` cue. The
+calibration fingerprint changes, so establish a fresh AI baseline before comparing
+rewrite quality. Normal tests do not evaluate an AI's editorial judgments.
 
 ## What normal tests check
 

@@ -41,7 +41,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 1.1.0'
+gem 'asciidoc-pubkit', '~> 1.2.0'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -66,7 +66,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-1.1.0.gem
+gem install ./asciidoc-pubkit-1.2.0.gem
 asciidoc-pubkit --version
 ```
 
@@ -103,18 +103,17 @@ should remain relative to the current directory, because it changes directories.
 
 ## Register a bundled review skill
 
-The source checkout provides unreleased skill registration commands. From a
-manuscript directory, run:
+Version 1.2.0 provides skill registration commands. From a manuscript directory, run:
 
 ```sh
-make -f /path/to/asciidoc-pubkit/Makefile run ARGS="skill list"
-make -f /path/to/asciidoc-pubkit/Makefile run ARGS="skill install review-asciidoc-manuscript --agent codex"
+asciidoc-pubkit skill list
+asciidoc-pubkit skill install review-asciidoc-manuscript --agent codex
 ```
 
-Substitute your checkout path. Use `--agent claude` for Claude Code, or
+Use `--agent claude` for Claude Code, or
 `--dir PATH` instead for a custom skill directory. Agent destinations are
 relative to the current manuscript directory.
-The published 1.1.0 gem does not include these commands. See [skill commands](skill-commands.md)
+These commands require pubkit 1.2.0 or later. See [skill commands](skill-commands.md)
 for inspection and upgrades, and [skill integration](skill-integration.md) for
 using the registered skill with Codex or Claude. MeCab is required for the review
 phase, not for skill registration.

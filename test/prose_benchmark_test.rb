@@ -71,7 +71,7 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    assert_equal 55, pairs.length
+    assert_equal 59, pairs.length
     assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
     quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
     assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)
@@ -127,6 +127,20 @@ class ProseBenchmarkTest < Minitest::Test
     added.each do |pair|
       %w[source revision reason].each { |key| refute_empty pair.fetch(key), "#{pair['id']}: #{key}" }
     end
+  end
+
+  def test_flow_calibration_distinguishes_specificity_keeps_and_changed_scope
+    pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
+    expected = { 'flow-transfer-made-specific' => 'accept', 'flow-clear-condition-kept' => 'accept',
+                 'flow-made-lifecycle' => 'reject', 'flow-data-only-loses-condition' => 'reject' }
+    expected.each do |id, disposition|
+      pair = pairs.find { |item| item['id'] == id }
+      refute_nil pair, id
+      assert_equal disposition, pair.fetch('expected_disposition'), id
+      %w[source revision reason review_axes].each { |key| refute_empty pair.fetch(key), "#{id}: #{key}" }
+    end
+    kept = pairs.find { |item| item['id'] == 'flow-clear-condition-kept' }
+    assert_equal kept.fetch('source'), kept.fetch('revision')
   end
 
   def test_sentence_ending_calibration_covers_revisions_keeps_and_meaning_changes

@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## 1.2.0 - 2026-10-12
+
+- Require concrete alternative comparisons for broad or everyday wording in
+  shared Japanese criteria, candidate questions and review prompts. Distinguish
+  understandable wording from an editorial keep decision; prohibit automatic
+  keep records and inherited paragraph summaries in reporting helpers. Add
+  terminology examples for safety margins and tree structures while preserving
+  formal names, values and factual scope. Verification remains mechanical.
+
+- Add `流れ` as an `abstract-reference` hint for prose and list text in MeCab
+  and literal modes. Extend shared criteria to identify processing order,
+  information transfer, invocation paths, work procedures and state changes;
+  compare concrete alternatives and reject interchangeable technical-term substitutions.
+  Add four revision calibration pairs (59 total) and regression coverage for
+  positions, exclusions, custom rules, prompt delivery and unchanged sources.
+  Existing sessions retain their saved rules and criteria; no automatic
+  replacement or semantic verification is added.
+
 - Add sentence-ending decisions to the shared Japanese criteria, with contextual
   revision and keep examples for scope guides, operations, capabilities, checks,
   comparisons, uncertainty, and history. Separate body predicates from heading

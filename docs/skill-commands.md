@@ -1,8 +1,7 @@
 # Skill registration commands
 
-These commands are **unreleased** and available in the source checkout. The
-published 1.1.0 gem does not include them. See [local checkout usage](installation.md#run-from-a-local-checkout)
-to run this implementation without replacing your installed gem.
+These commands are available in pubkit **1.2.0 or later**. Install the gem or see
+[local checkout usage](installation.md#run-from-a-local-checkout) to run from source.
 
 Pubkit installs its bundled agent skills at a destination you choose. Commands
 use local package files only: they do not fetch arbitrary skills, invoke an AI,

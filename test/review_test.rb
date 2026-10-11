@@ -365,6 +365,51 @@ class ReviewTest < Minitest::Test
     assert_includes prompt[1], 'Explain this input.'
   end
 
+  def test_wording_comparison_guidance_reaches_saved_prose_and_list_sessions
+    File.write(@chapter, "== Budget\n\n安全余白を使えます。\n\n* 候補を木として保持します。\n")
+    original = File.binread(@chapter)
+    %w[prose lists].each do |scope|
+      @session = File.join(@dir, "comparison-#{scope}")
+      scan('--scope', scope)
+      findings = json('findings.json')
+      assert findings.any? { |finding| finding['question'].include?('compare') }
+      code, prompt, error = cli('review', 'prompt', @session)
+      assert_equal 0, code, error
+      assert_includes prompt, json('manifest.json')['writing_criteria']
+      assert_includes prompt, '安全マージン'
+      assert_includes prompt, 'モンテカルロ木探索'
+      assert_includes prompt, 'Missing or insufficient comparisons remain pending'
+      code, report = verify
+      assert_equal 0, code
+      assert_equal false, report['meaning_verified']
+      assert_equal original, File.binread(@chapter)
+    end
+  end
+
+  def test_flow_hints_reach_prose_and_lists_without_rewriting_sources
+    File.write(@chapter, "== Flow\n\n入力を検査してから実行する流れです。\n\n* 結果を次の入力へ渡す流れです。\n")
+    original = File.binread(@chapter)
+    %w[prose lists].each do |scope|
+      @session = File.join(@dir, "flow-#{scope}")
+      scan('--scope', scope)
+      flow = json('findings.json').select { |f| f['match'] == '流れ' }
+      assert_equal 1, flow.length
+      assert_equal 'abstract-reference', flow.first['rule']
+      assert_equal 'hint', flow.first['severity']
+      saved = json('manifest.json')['writing_criteria']
+      assert_includes saved, 'Treat `流れ` as a cue'
+      code, prompt, error = cli('review', 'prompt', @session)
+      assert_equal 0, code, error
+      assert_includes prompt, saved
+      code, result = verify
+      assert_equal 0, code
+      assert_equal true, result['passed']
+      assert_equal false, result['meaning_verified']
+      assert_equal 1, result['findings'].count { |f| f['match'] == '流れ' }
+      assert_equal original, File.binread(@chapter)
+    end
+  end
+
   def test_review_prompt_includes_the_criteria_saved_at_scan_time
     scan('--lang', 'ja')
     saved = json('manifest.json')['writing_criteria']

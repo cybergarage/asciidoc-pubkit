@@ -42,6 +42,12 @@ For each assigned scope:
    the baseline. For integrity failures, preserve evidence and report the blocker.
    Finish verification before scanning the next scope's current manuscript.
 
+Compare broad or everyday wording with a concrete alternative using the saved
+shared terminology criteria, even when the original is understandable. Keep
+records must explain the specific comparison, not merely summarize the passage.
+Reporting helpers may count explicit decisions but must not create keep decisions
+or inherit paragraph summaries. Missing comparisons remain pending.
+
 Retain phase-end results because later scopes can legitimately make older
 sessions fail. For further corrections after another scope has changed, start a
 separate scoped pass and retain the prior evidence. Run the project's requested

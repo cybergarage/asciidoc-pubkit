@@ -36,6 +36,17 @@ These are candidates for contextual review, not banned expressions. A necessary
 condition, uncertainty, or distinction must survive a revision; a redundant
 disclaimer can instead be removed or folded into a more precise main claim.
 
+The version 1.2.0 defaults also include `流れ` under `abstract-reference` for prose
+and list text. This is an advisory noun cue in MeCab mode and an exact term in
+literal mode. Identify processing order, information transfer, invocation paths,
+work procedures or state changes from the paragraph. Compare a more precise
+expression even when the target, operation and conditions are clear; retain the
+original only with a specific comparison explaining the choice. `処理フロー`, `シーケンス`,
+`データフロー` and `ライフサイクル` are not interchangeable replacements.
+Shared writing criteria own this guidance. Allow lists, custom complete rule sets
+and inline protection still apply; heading rules are unchanged. Existing sessions
+retain their saved rules and criteria, so use a new session to adopt this update.
+
 Version 0.8.5 extends the existing `入口` question and shared criteria
 without adding another prose matcher. A known referent alone does not justify
 vague role wording; direct alternatives are evaluated against the actual
@@ -131,13 +142,13 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Version 1.1.0 uses session schema 3.
+Versions 1.1.0 and 1.2.0 use session schema 3, but sessions still require their exact tool version.
 Sessions with a different schema or tool version cannot be loaded. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-1.1.0
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-1.2.0
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship

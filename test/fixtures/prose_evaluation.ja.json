@@ -642,6 +642,55 @@
         "information-loss"
       ],
       "reason": "Nominalizing the running-prose sentence violates its stated sentence form and removes the actor and transfer recipient."
+    },
+    {
+      "id": "flow-transfer-made-specific",
+      "source": "実行結果をモデルへ戻す流れを説明します。",
+      "revision": "実行結果をモデルへ返す情報の受け渡しを説明します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "referent",
+        "information-transfer",
+        "scope"
+      ],
+      "reason": "The revision names the same result transfer and recipient without adding stages."
+    },
+    {
+      "id": "flow-clear-condition-kept",
+      "source": "入力の検査に成功した後だけ、実行関数を呼び出す流れです。",
+      "revision": "入力の検査に成功した後だけ、実行関数を呼び出す流れです。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "operation",
+        "order",
+        "condition",
+        "terminology"
+      ],
+      "reason": "The operation, ordering and success prerequisite are already explicit; retaining 流れ is appropriate."
+    },
+    {
+      "id": "flow-made-lifecycle",
+      "source": "この節では、要求の受信、入力の検査、実行関数の呼び出しという処理の流れを説明します。終了や破棄は扱いません。",
+      "revision": "この節では、要求の受信から終了・破棄までのライフサイクルを説明します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "scope",
+        "unsupported-stages",
+        "terminology"
+      ],
+      "reason": "The lifecycle wording adds termination and disposal, which the source explicitly excludes."
+    },
+    {
+      "id": "flow-data-only-loses-condition",
+      "source": "入力の検査に成功した後だけ、実行関数を呼び出す流れです。",
+      "revision": "入力と実行結果のデータフローです。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "condition",
+        "operation",
+        "information-loss"
+      ],
+      "reason": "Data-only wording removes the success prerequisite and the invocation operation."
     }
   ]
 }

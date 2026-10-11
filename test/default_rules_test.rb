@@ -5,7 +5,7 @@ require 'asciidoc_pubkit'
 
 class DefaultRulesTest < Minitest::Test
   EXPRESSIONS = %w[
-    木 余白 明示選択 欠落理由 構成要素 部品 開発者 区別 単発 よいこと おそれ 準備 別枠 祖先 子孫 予算
+    木 余白 明示選択 欠落理由 構成要素 部品 流れ 開発者 区別 単発 よいこと おそれ 準備 別枠 祖先 子孫 予算
     別の 別に 空の 別々に 返す 分けて
     決まります 記述できます 組み立てられます 意味しません 用意します 記述します
     わけではありません 組み合わせます 足りません 別です 区別します 区別できます 扱います
@@ -31,6 +31,22 @@ class DefaultRulesTest < Minitest::Test
   end
 
   %w[mecab literal].each do |mode|
+    define_method("test_flow_is_an_advisory_noun_with_positions_and_exclusions_in_#{mode}") do
+      text = "😀処理の流れを確認します。\n入力を検査してから実行する流れです。"
+      flow = ->(settings = {}) { scan(text, mode, **settings).select { |f| f['match'] == '流れ' } }
+      findings = flow.call
+      assert_equal [[1, 5], [2, 14]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['rule'] == 'abstract-reference' && f['severity'] == 'hint' }
+      assert_empty flow.call(allows: ['流れ'])
+      assert_empty scan('`流れ`。「流れ」。link:https://example.com[流れ]。', mode)
+                   .select { |f| f['match'] == '流れ' }
+      settings = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                   'rules' => AsciidocPubkit::RuleSet.load }
+      settings['rules']['terms']['abstract-reference']['terms'].delete('流れ')
+      paragraph = { 'id' => 'flow', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'] == '流れ' }
+    end
+
     define_method("test_human_actor_cues_preserve_compounds_counts_and_inline_in_#{mode}") do
       text = "人が条件を定める。\nその人に確認する。人の介入を測る。人向けの説明。"
       findings = scan(text, mode).select { |f| f['rule'] == 'abstract-reference' && f['match'] == '人' }

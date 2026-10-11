@@ -220,6 +220,16 @@ needs a passage-specific reason. Whether a matched string remains or disappears
 cannot determine that decision; unchanged paragraphs and remaining candidates
 must not receive automatic `keep` records. Unreviewed items remain pending.
 
+For broad or everyday wording, generated prompts require a concrete alternative
+and a passage-specific comparison, even when the original is understandable.
+The shared criteria prefer accurate established technical terms while retaining
+formal names, facts, conditions and responsibility. A paragraph summary alone
+is insufficient. Reporting helpers must count explicit assessments instead of
+creating decisions or propagating paragraph reasons to candidates. Missing
+comparisons remain pending; `needs-evidence` is reserved for missing factual support.
+These are agent review instructions, not automatic replacements or a CLI
+validator for external decision records. `review verify` remains mechanical.
+
 The default Japanese rules now flag standalone `人` as a contextual hint in
 prose, supported list text, and headings. Identify the evidenced role before
 considering `開発者`, `利用者`, `評価担当者`, `作成者`, or `人間`. Preserve general

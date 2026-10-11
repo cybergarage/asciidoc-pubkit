@@ -9,9 +9,8 @@ or book-management workflow is required.
 The review commands currently support Japanese manuscripts. Document inspection
 can be used with other languages, but English manuscript review is not supported.
 Version 1.1.0 adds outline-oriented review for a book's table of contents.
-The `skill` commands below are **unreleased**; use a source checkout containing
-them. See [skill command setup](skill-commands.md) before following registration
-steps. Published 1.1.0 continues to support the scan/prompt/verify walkthrough.
+The `skill` commands below require **1.2.0 or later**. See
+[skill command setup](skill-commands.md) before following registration steps.
 
 The commands below do not launch an agent. You initiate the Codex or Claude
 review separately, in the manuscript workspace. The agent's configured approval
@@ -39,7 +38,7 @@ packaged SKILL.md example. This page shows the individual CLI steps.
 ## 1. Prepare a small manuscript
 
 Install Ruby 3.2 or later, pubkit with the skill commands, and MeCab with UTF-8
-IPADIC. Use the source checkout for the unreleased registration steps.
+IPADIC. Use pubkit 1.2.0 or later for the registration steps.
 See [installation](installation.md) for platform-specific steps. Confirm the
 version before creating a session; saved sessions require that exact version.
 

@@ -1,9 +1,8 @@
 # Integrate manuscript review into an agent skill
 
 Use `skill install` to register the bundled review workflow in your project.
-These registration commands are **unreleased**; use the source checkout as
-explained in [skill commands](skill-commands.md). The published 1.1.0 gem does
-not provide them. The [CLI tutorial](agent-review-tutorial.md) covers individual
+These registration commands require pubkit **1.2.0 or later**, as
+explained in [skill commands](skill-commands.md). The [CLI tutorial](agent-review-tutorial.md) covers individual
 scan, prompt and verify commands.
 
 A skill makes the same process reusable: the agent selects the manuscript,

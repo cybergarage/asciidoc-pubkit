@@ -39,6 +39,9 @@ class WritingTest < Minitest::Test
       assert_includes output, 'noun-phrase heading policy does not authorize nominalizing body sentences'
       assert_includes output, '利用者は候補Aと候補Bから選べます'
     end
+    assert_includes prompt, 'Treat `流れ` as a cue'
+    assert_includes prompt, 'These terms are not interchangeable'
+    assert_includes prompt, '検査に成功した後だけ、実行関数を呼び出す流れです'
     assert_includes prompt, 'Compare structure before and after revision'
     assert_includes prompt, 'Preserve plain or polite style'
     assert_includes prompt, 'Keep source uncertainty separate from editorial questions'
