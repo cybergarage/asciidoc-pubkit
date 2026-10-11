@@ -71,7 +71,7 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    assert_equal 43, pairs.length
+    assert_equal 55, pairs.length
     assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
     quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
     assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)
@@ -111,7 +111,14 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    added = pairs.last(12)
+    temporal_ids = %w[
+      importance-made-frequency importance-axis-preserved completed-change-made-plan
+      current-behavior-made-change-history observation-date-made-event-date observation-and-event-dates-preserved
+      unclear-state-made-specific-failure known-action-moved-out-of-body unclear-state-and-action-preserved
+      source-undecided-status-removed editor-doubt-added-to-fact undecided-status-preserved
+    ]
+    added = temporal_ids.map { |id| pairs.find { |pair| pair['id'] == id } }
+    assert added.all?, 'Every temporal calibration pair must remain present'
     assert_equal %w[accept needs-evidence reject], added.map { |pair| pair['expected_disposition'] }.uniq.sort
     %w[comparison-axis tense change-history observation-time event-time attribution
        state-scope known-action source-uncertainty editorial-note].each do |axis|
@@ -120,6 +127,37 @@ class ProseBenchmarkTest < Minitest::Test
     added.each do |pair|
       %w[source revision reason].each { |key| refute_empty pair.fetch(key), "#{pair['id']}: #{key}" }
     end
+  end
+
+  def test_sentence_ending_calibration_covers_revisions_keeps_and_meaning_changes
+    pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
+    expected = {
+      'ending-scope-guide-kept' => 'accept',
+      'ending-transfer-operation-kept' => 'accept',
+      'ending-capability-kept' => 'accept',
+      'ending-capability-made-operation' => 'reject',
+      'ending-unknown-made-judgment-limit' => 'accept',
+      'ending-unknown-made-failure' => 'reject',
+      'ending-difference-made-explicit' => 'accept',
+      'ending-difference-weakened' => 'reject',
+      'ending-unspecified-difference-invented' => 'needs-evidence',
+      'ending-history-kept' => 'accept',
+      'ending-history-made-plan' => 'reject',
+      'ending-body-made-noun-heading' => 'reject',
+    }
+    expected.each do |id, disposition|
+      pair = pairs.find { |item| item['id'] == id }
+      refute_nil pair, id
+      assert_equal disposition, pair.fetch('expected_disposition'), id
+      %w[source revision reason].each { |key| refute_empty pair.fetch(key), "#{id}: #{key}" }
+      refute_empty pair.fetch('review_axes'), id
+    end
+    %w[ending-scope-guide-kept ending-transfer-operation-kept ending-capability-kept ending-history-kept].each do |id|
+      pair = pairs.find { |item| item['id'] == id }
+      assert_equal pair.fetch('source'), pair.fetch('revision'), id
+    end
+    assert_includes ProseBenchmark::RUBRIC, 'Preserve definite differences separately'
+    assert_includes ProseBenchmark::RUBRIC, 'nominalizing body sentences'
   end
 
   def test_revision_validation_rejects_duplicates_missing_ids_and_new_paragraphs

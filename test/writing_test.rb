@@ -31,6 +31,14 @@ class WritingTest < Minitest::Test
     assert_includes prompt, 'Intended role of 入口'
     assert_includes prompt, 'naming its referent alone'
     assert_includes prompt, 'Distinguish a public option or return field from internal state'
+    %w[criteria prompt].each do |command|
+      code, output, error = cli('writing', command, '--lang', 'ja')
+      assert_equal 0, code, error
+      assert_includes output, 'Review sentence endings by their role'
+      assert_includes output, 'Do not mechanically convert `別です` to `とは限りません`'
+      assert_includes output, 'noun-phrase heading policy does not authorize nominalizing body sentences'
+      assert_includes output, '利用者は候補Aと候補Bから選べます'
+    end
     assert_includes prompt, 'Compare structure before and after revision'
     assert_includes prompt, 'Preserve plain or polite style'
     assert_includes prompt, 'Keep source uncertainty separate from editorial questions'

@@ -505,6 +505,143 @@
         "readability"
       ],
       "reason": "The definite operation and genuinely undecided actor remain separate."
+    },
+    {
+      "id": "ending-scope-guide-kept",
+      "source": "本節では、接続設定、依頼の送信、終了確認の順に手順を確認します。",
+      "revision": "本節では、接続設定、依頼の送信、終了確認の順に手順を確認します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "sentence-function",
+        "reading-order"
+      ],
+      "reason": "The ending is a useful section-scope guide with a concrete sequence, not a redundant announcement."
+    },
+    {
+      "id": "ending-transfer-operation-kept",
+      "source": "実行側はツール結果をモデルへ戻します。",
+      "revision": "実行側はツール結果をモデルへ戻します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "action",
+        "recipient"
+      ],
+      "reason": "The plain verb states an actual transfer with an explicit actor, object, and recipient; no jargon is needed."
+    },
+    {
+      "id": "ending-capability-kept",
+      "source": "利用者は候補Aと候補Bから選べます。",
+      "revision": "利用者は候補Aと候補Bから選べます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "capability",
+        "sentence-function"
+      ],
+      "reason": "The sentence offers a choice; retaining the potential ending avoids claiming that selection actually occurs."
+    },
+    {
+      "id": "ending-capability-made-operation",
+      "source": "利用者は候補Aと候補Bから選べます。",
+      "revision": "利用者は候補Aと候補Bから選びます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "capability",
+        "sentence-function"
+      ],
+      "reason": "An available choice becomes an asserted action; the source does not establish that a selection occurs."
+    },
+    {
+      "id": "ending-unknown-made-judgment-limit",
+      "source": "会話形式の画面だけでは、実行できる操作の範囲は分かりません。",
+      "revision": "会話形式の画面だけでは、実行できる操作の範囲を判断できません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "evidence-scope",
+        "uncertainty",
+        "readability"
+      ],
+      "reason": "The revision specifies the same judgment target without changing the insufficiency of the UI evidence."
+    },
+    {
+      "id": "ending-unknown-made-failure",
+      "source": "応答を受信していないため、処理結果が分かりません。",
+      "revision": "応答を受信していないため、処理は失敗しました。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "uncertainty",
+        "assertion-strength"
+      ],
+      "reason": "Absence of an observed response establishes an unknown outcome, not a confirmed operation failure."
+    },
+    {
+      "id": "ending-difference-made-explicit",
+      "source": "AはJSONを、BはCSVを受け付けます。両者の入力形式は別です。",
+      "revision": "AはJSONを、BはCSVを受け付けます。両者は受け付ける入力形式が異なります。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "comparison-axis",
+        "negation-strength"
+      ],
+      "reason": "The revision names the same input-format comparison without changing its definite difference."
+    },
+    {
+      "id": "ending-difference-weakened",
+      "source": "AはJSONを、BはCSVを受け付けます。両者の入力形式は別です。",
+      "revision": "AはJSONを、BはCSVを受け付けます。両者の入力形式が同じとは限りません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "comparison-axis",
+        "negation-strength"
+      ],
+      "reason": "The definite concluding difference becomes a merely possible difference, weakening the original assertion despite the retained examples."
+    },
+    {
+      "id": "ending-unspecified-difference-invented",
+      "source": "許可の判定と実行環境の制御は別です。",
+      "revision": "許可の判定はアプリケーションが行い、実行環境はOSのサンドボックスで隔離します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "mechanism",
+        "unsupported-addition"
+      ],
+      "reason": "The source distinguishes two functions but does not identify their owners or establish OS sandbox isolation."
+    },
+    {
+      "id": "ending-history-kept",
+      "source": "初期版はTypeScriptで実装され、その後Rustへ移りました。",
+      "revision": "初期版はTypeScriptで実装され、その後Rustへ移りました。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "tense",
+        "change-history"
+      ],
+      "reason": "The past ending records a completed transition; preserving it retains the implementation history."
+    },
+    {
+      "id": "ending-history-made-plan",
+      "source": "初期版はTypeScriptで実装され、その後Rustへ移りました。",
+      "revision": "初期版はTypeScriptで実装され、今後Rustへ移る予定です。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "tense",
+        "change-history"
+      ],
+      "reason": "A completed historical migration becomes a future plan."
+    },
+    {
+      "id": "ending-body-made-noun-heading",
+      "source": "本文はですます調の文で説明します。実行側はツール結果をモデルへ戻します。",
+      "revision": "本文はですます調の文で説明します。実行結果のフィードバック。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "body-versus-heading",
+        "sentence-function",
+        "actor",
+        "information-loss"
+      ],
+      "reason": "Nominalizing the running-prose sentence violates its stated sentence form and removes the actor and transfer recipient."
     }
   ]
 }

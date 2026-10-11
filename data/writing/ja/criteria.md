@@ -8,6 +8,7 @@
 - Give weak predicates a concrete action or consequence
 - Explain metaphorical operations from evidence
 - Distinguish instructions, behavior, and capabilities
+- Review sentence endings by their role
 - Make relationships explicit
 - Compare structure before and after revision
 - Keep claims within their evidence and purpose
@@ -209,6 +210,49 @@ explicit style requirements call for one. A technical topic alone does not
 require polite style. Resolve unintended style mixing separately from each
 sentence's function; changing `する` to `します` must not change advice into
 an asserted operation. Do not vary endings just to make these functions uniform.
+
+## Review sentence endings by their role
+
+Read the complete sentence and neighboring sentences before judging its ending.
+First identify whether it announces the section's scope, describes an actual
+operation, offers a capability, gives a checking procedure, or reports history
+or a future expectation. Then name its actor, object, condition, and consequence.
+Revise only when a more direct explanation preserves those relationships;
+otherwise retain the original wording and explain its role.
+
+| Ending and context | Decision to consider |
+| --- | --- |
+| `注目します`, `明らかにします`, `確認します`, or `たどります` in an introduction | Keep a useful scope or reading-order guide. If it only repeats an announcement, state the supported comparison, operation, or question directly; do not invent its answer. |
+| `戻します` or `組み立てます` in an operation description | Keep it when the transferred result, recipient, or constructed input is clear. Do not replace it with a noun or jargon merely to vary the ending. |
+| `使えます`, `組み込めます`, `選べます`, or `作れます` | Preserve the available option and its conditions. Changing to `使います` or `選びます` can falsely assert actual or automatic execution. |
+| `分かりません` | Identify whether the missing evidence prevents judgment, confirmation, or identification. Use `判断できません` or `確認できません` only when that operation fits; preserve what remains unknown. |
+| `別です` or `同じではありません` | Name the compared objects and the property, purpose, or evidence that differs. Distinguish definite non-identity from insufficient evidence to infer a result. |
+| `確認します` or `調べます` in a procedure | Keep an actual check, including its target, condition, and timing. Do not turn it into a capability or a claim that the check succeeded. |
+| `移りました` or another past ending | Keep a supported historical transition distinct from current behavior or a future plan. |
+
+For example, `会話形式の画面だけでは、実行できる操作の範囲は分かりません`
+can become `会話形式の画面だけでは、実行できる操作の範囲を判断できません`.
+Both retain the missing evidence and the same judgment target. By contrast,
+`処理結果が分かりません` cannot become `処理は失敗しました`: an unknown
+outcome is not an established failure.
+
+Retain `利用者は候補Aと候補Bから選べます` when it states an available choice;
+`利用者は候補Aと候補Bから選びます` would assert that selection occurs. Retain
+`実行側はツール結果をモデルへ戻します` when it describes the transfer;
+`実行結果のフィードバック` would lose the sentence's actor and predicate.
+
+Do not mechanically convert `別です` to `とは限りません`. For example,
+`AはJSONを、BはCSVを受け付けます。両者の入力形式は別です` establishes a
+definite difference. Changing the last sentence to `両者の入力形式が同じとは
+限りません` weakens that claim. When an event merely fails to establish another
+result, such as completion failing to establish test success, state that
+inference limit while retaining the original scope and strength of negation.
+
+Heading form and running-prose grammar are separate decisions. A project's
+noun-phrase heading policy does not authorize nominalizing body sentences or
+removing their predicates. A proposed ending alone cannot supply new subjects,
+mechanisms, constraints, or guarantees; obtain those from the actual passage
+and its evidence. Record meaningful keep decisions as well as revisions.
 
 ## Make relationships explicit
 

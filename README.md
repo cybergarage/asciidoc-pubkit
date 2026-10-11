@@ -44,6 +44,12 @@ The following commands are available in version 1.1.0.
 | [Manuscript scoring](docs/scoring.md#score-an-asciidoc-manuscript) | `review score` | Report a prose candidate-density score; explicit `--agent codex` or `--agent claude` optionally invokes a local AI CLI for readability ratings |
 | [Writing criteria and prompts](docs/writing.md#writing-commands) | `writing criteria`, `writing prompt` | Print Japanese prose criteria or generate a writing prompt without a manuscript or MeCab |
 
+The unreleased [sentence-ending guidance](docs/writing.md#writing-commands)
+adds contextual revision and keep examples, preserving capabilities, uncertainty,
+comparison strength, and body sentences separately from heading form. It adds
+no detector terms or automatic replacements; development calibration includes
+55 pairs, without a measured claim of improved AI proofreading.
+
 Version 1.0.1 extended the [shared writing criteria](docs/writing.md#writing-commands)
 with structural comparison before and after revision and preservation of sentence
 functions and plain or polite style. The [development evaluation](docs/prose-evaluation.md)

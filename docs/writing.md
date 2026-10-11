@@ -18,6 +18,15 @@ book explicitly requires one. Sentence splitting and punctuation changes must
 retain the original relationships; these are contextual review instructions,
 not automatic semantic checks. Saved sessions retain the criteria from their scan.
 
+Sentence-ending review first identifies scope guides, actual operations,
+capabilities, checking procedures, and historical or future statements. Keep
+useful guidance and precise plain verbs; clarify vague judgment targets or
+comparison axes from passage evidence. Preserve negation strength: a definite
+difference is not interchangeable with insufficient evidence for equality.
+A noun-phrase heading policy does not apply to body sentences. These examples
+are contextual decisions, not new detector terms or replacement rules. See
+[Sentence-ending criteria](../data/writing/ja/criteria.md#review-sentence-endings-by-their-role).
+
 The criteria also preserve the comparison axis, completed changes,
 current behavior, future plans, and the distinction between event dates and
 observation or report dates. An unclear state term does not authorize deleting

@@ -36,6 +36,11 @@ module ProseBenchmark
     despite unclear state terms. Retain actual source uncertainty in the body;
     reviewer doubt and editorial questions must not become manuscript facts or
     replace an established claim with an editing annotation.
+    Judge sentence endings by their role: retain useful scope guides, actual
+    operations, capabilities, checking procedures, and historical transitions.
+    Do not make a capability an asserted action or an unknown outcome a failure.
+    Preserve definite differences separately from limits on what evidence proves;
+    a noun-phrase heading preference does not license nominalizing body sentences.
     Report unsupported additions and substitutions separately as English reasons,
     with short Japanese evidence quotes. Empty arrays mean no such errors found.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an

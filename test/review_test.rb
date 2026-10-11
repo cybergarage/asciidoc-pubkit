@@ -373,6 +373,8 @@ class ReviewTest < Minitest::Test
     assert_includes saved, 'Compare structure before and after revision'
     assert_includes saved, 'Preserve plain or polite style'
     assert_includes saved, 'Keep source uncertainty separate from editorial questions'
+    assert_includes saved, 'Review sentence endings by their role'
+    assert_includes saved, 'Do not mechanically convert `別です` to `とは限りません`'
     %w[構築入口 ツールを呼ぶ 無効化したりできます 設計の肝です 拡張点 見落とします 分かれて現れます].each do |example|
       assert_includes saved, example
     end
@@ -389,6 +391,7 @@ class ReviewTest < Minitest::Test
       saved = json('manifest.json')['writing_criteria']
       assert_includes saved, 'Identify human actors by their supported roles'
       assert_includes saved, 'not imply separate people, new permissions'
+      assert_includes saved, 'Review sentence endings by their role'
       original_criteria = AsciidocPubkit::Writing.method(:prompt_criteria)
       begin
         AsciidocPubkit::Writing.define_singleton_method(:prompt_criteria) { |*_args| 'Future criteria must not leak into a saved session' }

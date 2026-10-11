@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Add sentence-ending decisions to the shared Japanese criteria, with contextual
+  revision and keep examples for scope guides, operations, capabilities, checks,
+  comparisons, uncertainty, and history. Separate body predicates from heading
+  form and preserve negation strength. Add twelve revision calibration pairs
+  (55 total), update the judge rubric, and retain saved-session criteria.
+  Detector terms, automatic replacements, and verification semantics are unchanged;
+  no AI proofreading improvement has been measured.
+
 - Add `--agent codex|claude` to skill install, status and upgrade for local
   project registration in `.agents/skills` or `.claude/skills`. Keep `--dir`
   for custom destinations; reject combining both options. Both agents receive
