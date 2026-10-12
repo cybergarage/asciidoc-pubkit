@@ -6,7 +6,7 @@ readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
 This guide describes the development checkout, including the
-`technical-prose-v3` corpus and 70 revision calibration pairs. The sentence-ending
+`technical-prose-v3` corpus and 77 revision calibration pairs. The sentence-ending
 criteria and twelve additional pairs, plus the flow guidance and four further
 pairs, are included in version 1.2.0.
 The evaluation runner is not an
@@ -45,7 +45,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 70 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 77 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -118,6 +118,17 @@ text in MeCab and literal modes. The fixed detector benchmark still scores only
 its three existing kinds; its scores do not measure the new `流れ` cue. The
 calibration fingerprint changes, so establish a fresh AI baseline before comparing
 rewrite quality. Normal tests do not evaluate an AI's editorial judgments.
+
+The version 1.2.2 explanatory-guidance update narrows the existing
+`ending-scope-guide-kept` case to an actual user exercise and adds seven pairs
+(77 total). They distinguish content guidance, an explicit author voice,
+paragraph viewpoint, user approval, runtime checks, connection ownership and
+unsupported automatic actors. The judge rubric and calibration fingerprints
+change, while the 26-paragraph detector corpus and rules remain unchanged.
+Establish a fresh compatible AI baseline before measuring the criteria change.
+Normal tests validate fixture integrity, prompt delivery and saved criteria;
+they do not establish improved AI proofreading. See the
+[research and proposal](explanatory-guidance-research.md) for the design rationale.
 
 ## What normal tests check
 

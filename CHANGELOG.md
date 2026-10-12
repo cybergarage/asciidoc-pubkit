@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 1.2.2 - 2026-10-12
+
+- Distinguish explanatory guidance, real checking procedures, runtime behavior,
+  and learning objectives in shared Japanese criteria and the evaluation rubric.
+  Narrow the ambiguous scope-guide keep example to an actual user exercise and
+  add seven calibration pairs (77 total), including ownership and unsupported
+  actor controls. Add the classification step to the bundled review skill.
+  Detector rules, automatic replacement and mechanical verification are unchanged;
+  old sessions retain saved criteria. AI proofreading improvement is unmeasured.
+
 ## 1.2.1 - 2026-10-12
 
 - Compare faithful technical terminology independently of capability/behavior

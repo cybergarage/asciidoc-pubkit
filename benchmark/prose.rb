@@ -38,6 +38,14 @@ module ProseBenchmark
     replace an established claim with an editing annotation.
     Judge sentence endings by their role: retain useful scope guides, actual
     operations, capabilities, checking procedures, and historical transitions.
+    Separate explanatory guidance from actual checks and learning objectives.
+    Assess the whole paragraph's actors, including switches between the book's
+    explanation and a reader's checking or learning activity. A useful sequence
+    alone does not justify an ambiguous checking actor. Honor an explicit author
+    preference for explanatory narration without banning genuine exercises.
+    Preserve user approval and a program's runtime checks, including their actor,
+    target, condition and timing. Do not replace connection-owner responsibility
+    with only a developer's test; unsupported automatic actors need evidence.
     Do not make a capability an asserted action or an unknown outcome a failure.
     Modality preservation does not require retaining the original verb: compare
     faithful technical alternatives such as 選べます → 選択できます. Apply supplied

@@ -508,14 +508,16 @@
     },
     {
       "id": "ending-scope-guide-kept",
-      "source": "本節では、接続設定、依頼の送信、終了確認の順に手順を確認します。",
-      "revision": "本節では、接続設定、依頼の送信、終了確認の順に手順を確認します。",
+      "source": "この演習では、利用者が接続設定、依頼の送信、終了状態を順に確認します。",
+      "revision": "この演習では、利用者が接続設定、依頼の送信、終了状態を順に確認します。",
       "expected_disposition": "accept",
       "review_axes": [
         "sentence-function",
-        "reading-order"
+        "reading-order",
+        "actor",
+        "actual-check"
       ],
-      "reason": "The ending is a useful section-scope guide with a concrete sequence, not a redundant announcement."
+      "reason": "This is an actual user exercise with an explicit checking actor, not an ambiguous chapter-content guide."
     },
     {
       "id": "ending-transfer-operation-kept",
@@ -838,6 +840,100 @@
         "operation-specificity"
       ],
       "reason": "Embedding names a familiar library integration operation with a host and method; no stronger author terminology constraint is supplied."
+    },
+    {
+      "id": "guidance-content-revised",
+      "source": "本章では、依頼の受付と結果の返却を確認します。",
+      "revision": "本章では、依頼の受付と結果の返却を説明します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "sentence-function",
+        "explanatory-viewpoint",
+        "actor"
+      ],
+      "reason": "The chapter describes its contents; the revision honors the explanatory-voice preference and preserves both subjects.",
+      "editorial_constraints": [
+        "Use the book's explanatory viewpoint for chapter-content guidance; distinguish it from an actual reader exercise or checking procedure."
+      ]
+    },
+    {
+      "id": "guidance-ambiguous-keep-rejected",
+      "source": "本章では、依頼の受付と結果の返却を確認します。",
+      "revision": "本章では、依頼の受付と結果の返却を確認します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "explanatory-viewpoint",
+        "author-preference",
+        "actor"
+      ],
+      "reason": "Concrete subjects do not justify leaving the checking actor ambiguous under the explicit explanatory-voice preference.",
+      "editorial_constraints": [
+        "Use the book's explanatory viewpoint for chapter-content guidance; distinguish it from an actual reader exercise or checking procedure."
+      ]
+    },
+    {
+      "id": "guidance-paragraph-viewpoint-repaired",
+      "source": "本章では、エージェントの構成を説明します。モデルとツールの役割を理解し、実行制御の仕組みを確認します。",
+      "revision": "本章では、エージェントの構成を説明します。モデルとツールの役割を示し、実行制御の仕組みを説明します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "paragraph-viewpoint",
+        "actor",
+        "sentence-function"
+      ],
+      "reason": "The full paragraph is content guidance. The revision retains its subjects while separating exposition from reader learning and checking.",
+      "editorial_constraints": [
+        "Use the book's explanatory viewpoint for chapter-content guidance; distinguish it from an actual reader exercise or checking procedure."
+      ]
+    },
+    {
+      "id": "guidance-user-check-kept",
+      "source": "利用者は、変更するファイルと内容を確認してから編集を承認します。",
+      "revision": "利用者は、変更するファイルと内容を確認してから編集を承認します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "actual-check",
+        "order",
+        "approval"
+      ],
+      "reason": "A real approval procedure retains its actor, target and required order; it is not content guidance."
+    },
+    {
+      "id": "guidance-runtime-check-made-exposition",
+      "source": "実行側は、承認後にも対象が変更されていないかを検査します。",
+      "revision": "本節では、承認後の対象の変更を説明します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "runtime-behavior",
+        "actor",
+        "condition-scope"
+      ],
+      "reason": "Exposition replaces the execution side's actual post-approval validation and loses its predicate and condition."
+    },
+    {
+      "id": "guidance-owner-check-made-test",
+      "source": "接続を生成した側は、終了後の資源の状態を確認します。",
+      "revision": "開発者は、試験時に接続終了後の資源の状態を確認します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "ownership",
+        "runtime-behavior",
+        "condition-scope"
+      ],
+      "reason": "A developer's test cannot replace the connection owner's responsibility in operation."
+    },
+    {
+      "id": "guidance-unsupported-automatic-actor",
+      "source": "接続を終了した後、資源が残っていないかを確認します。確認する主体は、この記述だけでは特定できません。",
+      "revision": "Agentが自動的に、接続終了後に資源が残っていないかを確認します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "automatic-execution",
+        "source-uncertainty"
+      ],
+      "reason": "The source does not establish an Agent or automatic execution as the checking actor; the missing evidence must not be invented."
     }
   ]
 }

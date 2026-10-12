@@ -71,7 +71,7 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    assert_equal 70, pairs.length
+    assert_equal 77, pairs.length
     assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
     quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
     assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)
@@ -172,6 +172,36 @@ class ProseBenchmarkTest < Minitest::Test
     end
     assert_includes ProseBenchmark::RUBRIC, 'Preserve definite differences separately'
     assert_includes ProseBenchmark::RUBRIC, 'nominalizing body sentences'
+  end
+
+  def test_guidance_calibration_distinguishes_exposition_exercises_and_runtime_ownership
+    pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
+    expected = {
+      'ending-scope-guide-kept' => 'accept',
+      'guidance-content-revised' => 'accept',
+      'guidance-ambiguous-keep-rejected' => 'reject',
+      'guidance-paragraph-viewpoint-repaired' => 'accept',
+      'guidance-user-check-kept' => 'accept',
+      'guidance-runtime-check-made-exposition' => 'reject',
+      'guidance-owner-check-made-test' => 'reject',
+      'guidance-unsupported-automatic-actor' => 'needs-evidence'
+    }
+    expected.each do |id, disposition|
+      item = pairs.find { |pair| pair['id'] == id }
+      refute_nil item, id
+      assert_equal disposition, item.fetch('expected_disposition'), id
+      assert_includes item.fetch('review_axes'), 'actor' unless id == 'guidance-owner-check-made-test'
+      refute_empty item.fetch('reason'), id
+    end
+    %w[guidance-content-revised guidance-ambiguous-keep-rejected guidance-paragraph-viewpoint-repaired].each do |id|
+      item = pairs.find { |pair| pair['id'] == id }
+      refute_empty item.fetch('editorial_constraints'), id
+    end
+    %w[ending-scope-guide-kept guidance-user-check-kept].each do |id|
+      item = pairs.find { |pair| pair['id'] == id }
+      assert_equal item.fetch('source'), item.fetch('revision'), id
+    end
+    assert_includes ProseBenchmark::RUBRIC, 'connection-owner responsibility'
   end
 
   def test_terminology_calibration_preserves_modality_and_author_preferences

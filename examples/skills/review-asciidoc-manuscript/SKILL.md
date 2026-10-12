@@ -42,6 +42,14 @@ For each assigned scope:
    the baseline. For integrity failures, preserve evidence and report the blocker.
    Finish verification before scanning the next scope's current manuscript.
 
+Before judging a targeted sentence ending in prose or list text, classify its
+role using the saved common criteria: content guidance, an actual checking
+procedure, runtime behavior, or a learning objective. Read the whole paragraph
+and neighboring sentences; inspect table context separately when it is protected.
+Record the supported actor, target, conditions, faithful alternative and reason.
+A useful reading sequence alone is not a keep rationale. Follow the author's
+voice without inventing an actor or turning runtime responsibility into a test.
+
 Compare broad or everyday wording with a concrete alternative using the saved
 shared terminology criteria, even when the original is understandable. Keep
 records must explain the specific comparison, not merely summarize the passage.

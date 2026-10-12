@@ -9,6 +9,7 @@
 - Explain metaphorical operations from evidence
 - Distinguish instructions, behavior, and capabilities
 - Review sentence endings by their role
+- Separate explanatory guidance from actual checks
 - Make relationships explicit
 - Compare structure before and after revision
 - Keep claims within their evidence and purpose
@@ -275,7 +276,7 @@ otherwise compare the wording independently of its sentence role before retainin
 
 | Ending and context | Decision to consider |
 | --- | --- |
-| `注目します`, `明らかにします`, `確認します`, or `たどります` in an introduction | Keep a useful scope or reading-order guide. If it only repeats an announcement, state the supported comparison, operation, or question directly; do not invent its answer. |
+| `注目します`, `明らかにします`, `確認します`, or `たどります` in an introduction | Keep useful subject and reading-order guidance, but separately assess its actor and predicate. A useful sequence alone does not justify retaining `確認します`; distinguish content guidance from an actual exercise or check and honor the author's explanatory voice. If it only repeats an announcement, state the supported subject directly without inventing its answer. |
 | `戻します` or `組み立てます` in an operation description | Keep it when the transferred result, recipient, or constructed input is clear. Do not replace it with a noun or jargon merely to vary the ending. |
 | `使えます`, `組み込めます`, `選べます`, or `作れます` | Preserve the available option and its conditions, not necessarily the original verb. Compare an equally potential technical expression or a concrete explanation; do not use the risks of `使います` or `選びます` to reject `適用できます` or `選択できます`. |
 | `分かりません` | Identify whether the missing evidence prevents judgment, confirmation, or identification. Use `判断できません` or `確認できません` only when that operation fits; preserve what remains unknown. |
@@ -308,6 +309,43 @@ noun-phrase heading policy does not authorize nominalizing body sentences or
 removing their predicates. A proposed ending alone cannot supply new subjects,
 mechanisms, constraints, or guarantees; obtain those from the actual passage
 and its evidence. Record meaningful keep decisions as well as revisions.
+
+## Separate explanatory guidance from actual checks
+
+Classify the complete sentence before choosing its verb: content guidance,
+an actual checking procedure, runtime behavior, or a reader's learning objective.
+The book explaining a subject, a reader checking evidence, and a program
+validating state are different actors and actions. Read the whole paragraph and
+neighboring sentences, including inflections such as `確認し`, before judging an
+ending. Do not mix the book's explanation with the reader's `理解します` as if
+the book performed that learning. Present a learning objective explicitly when
+that is the sentence's purpose; do not mechanically rewrite every objective.
+
+When the author requests explanatory narration, compare `説明します`,
+`示します`, or `比較します` for content guidance. For example, a chapter guide
+such as `本章では、依頼の受付と結果の返却を確認します` can become
+`本章では、依頼の受付と結果の返却を説明します`. A clear subject or useful
+reading sequence does not resolve an ambiguous checking actor or justify keep.
+Apply the book's voice rather than banning all uses of `確認` in introductions.
+An actual exercise such as `この演習では、利用者が接続設定を確認します`
+can retain its checking verb and explicit actor.
+
+For genuine checks, identify the supported actor, target, conditions, and timing
+from the passage. Compare equally faithful wording such as `照合します`,
+`検査します`, `参照します`, or an explicit actor plus `確認します`; choose a
+more specific operation only when evidence establishes it. Use preceding
+sentences or table column roles when they already identify the actor, rather
+than repeating subjects mechanically. Missing actor evidence stays unresolved;
+do not invent automatic execution or assign responsibility from the book's topic.
+Do not turn a program's runtime check into only a developer's test, a connection
+owner's shutdown responsibility into a reader's observation, or an unknown
+result into confirmed completion. Naming an actor adds no guarantee.
+
+Choose `説明` and `解説` by their purpose and the author's terminology policy.
+Content guidance can use `説明`, while in-depth background or design discussion
+can use `解説`; do not make that distinction a universal replacement rule.
+Preserve tool or Skill description data, formal titles, quotations, and code
+identifiers. Compare the actual paragraph-level alternative before keeping it.
 
 ## Make relationships explicit
 
