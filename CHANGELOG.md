@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add `作用` as an advisory `abstract-reference` candidate in Japanese prose
+  and list text. Compare the actual operation, operation classification, result,
+  or state change in context; no fixed replacement is prescribed. Existing
+  sessions retain their saved rules.
+
 - Clarify communication responses versus internal return values in shared Japanese
   criteria, with HTTP acceptance, ACP completion, MCP replies and response-field
   examples. Preserve model generation, missing measurements, ordinary failure

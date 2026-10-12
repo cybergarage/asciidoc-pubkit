@@ -47,6 +47,26 @@ class DefaultRulesTest < Minitest::Test
       assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'] == '流れ' }
     end
 
+    define_method("test_operation_effect_cues_are_advisory_in_#{mode}") do
+      text = "😀対象への作用を調べます。\n外部作用が不明です。"
+      effects = ->(value, **options) { scan(value, mode, **options).select { |f| f['match'] == '作用' } }
+      findings = effects.call(text)
+      assert_equal [[1, 6], [2, 3]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['rule'] == 'abstract-reference' && f['severity'] == 'hint' }
+      assert_empty effects.call(text, allows: ['作用'])
+      assert_empty effects.call('`作用`。「作用」。link:https://example.com[作用]。')
+      if mode == 'mecab'
+        assert_empty effects.call('操作用クライアントです。')
+      else
+        assert_equal [2], effects.call('操作用クライアントです。').map { |f| f['column'] }
+      end
+      settings = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                   'rules' => AsciidocPubkit::RuleSet.load }
+      settings['rules']['terms']['abstract-reference']['terms'].delete('作用')
+      paragraph = { 'id' => 'effect', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'] == '作用' }
+    end
+
     define_method("test_human_actor_cues_preserve_compounds_counts_and_inline_in_#{mode}") do
       text = "人が条件を定める。\nその人に確認する。人の介入を測る。人向けの説明。"
       findings = scan(text, mode).select { |f| f['rule'] == 'abstract-reference' && f['match'] == '人' }

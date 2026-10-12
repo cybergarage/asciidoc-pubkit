@@ -167,3 +167,17 @@ one-based Unicode character positions, not byte offsets or display widths.
 An empty findings array does not establish full coverage or good prose.
 
 [Back to README](../README.md)
+
+## Operation-effect cues (unreleased)
+
+`作用` is an advisory `abstract-reference` candidate in prose and list text.
+Compare the actual operation, operation classification (such as an `effect`
+field), execution result, or state change against the paragraph and implementation.
+Established terminology can remain; findings do not prescribe a fixed synonym
+or an automatic replacement. Heading rules and shared writing criteria are unchanged.
+
+MeCab matches the noun token, including in `外部作用`. Literal mode searches
+the exact substring and may also flag `操作用`; inspect context rather than
+treating this overlap as the noun `作用`. Allow lists, custom complete rule sets,
+and protected-inline exclusions still apply. Existing sessions retain saved
+rules; start a new session to adopt this candidate.

@@ -137,6 +137,10 @@ To update, run `gem update asciidoc-pubkit`. For Bundler, add
 `gem 'asciidoc-pubkit', '~> 1.2.0'` to your project's `Gemfile` and run commands
 through `bundle exec`. See [source installation and local checkout usage](docs/installation.md).
 
+The checkout also adds `作用` as an advisory noun candidate. Compare its
+actual operation, classification, result, or state change in context; see
+[operation-effect cues](docs/rules-and-coverage.md#operation-effect-cues-unreleased).
+
 ## Quick start
 
 Follow the [agent review tutorial](docs/agent-review-tutorial.md) for a complete

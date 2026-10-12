@@ -39,6 +39,7 @@ terms:
     - 余白
     # Event or operation wording requires context, not a fixed synonym.
     - 発火
+    - 作用
     question: Identify the concrete referent, components, role, or measurable work,
       then compare a concrete expression or established technical term using the shared
       criteria. Recoverable meaning alone does not justify keeping broad wording.
