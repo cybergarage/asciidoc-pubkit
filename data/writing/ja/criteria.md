@@ -502,6 +502,34 @@ an inspection, enforcement mechanism, transport, or guarantee to justify a
 stronger denial. Compare complete paragraphs and record the actual alternative
 and reason, including a necessary retained inference limit.
 
+## Distinguish identification from conceptual separation
+
+Compare `区別できます` and related forms with the actual capability. Use
+`判別できます` when evidence such as an ID, origin, or recorded content lets
+someone tell which object or state is involved. Use `識別` for identity assigned
+or resolved through an identifier, `判定` for success or another outcome judged
+against a criterion, and `個別に確認` when two stages or results are checked
+separately. These are contextual comparisons, not mandatory substitutions.
+
+| Wording to inspect | Faithful alternative when supported |
+| --- | --- |
+| 同じツールへの複数の要求も、呼び出しIDで区別できます。 | 同じツールへの複数の要求も、呼び出しIDで判別できます。 Preserve the ID as evidence and the capability. |
+| フォルダ名だけでは、同じフォルダを使う二つの作業を区別できません。 | フォルダ名だけでは、同じフォルダを使う二つの作業を識別できません。 Describe identity resolution without inventing a new identifier. |
+| 本文の有無と処理の成否を区別できます。 | 本文の有無とは別に、処理の成否を判定できます。 Use this only when the result carries the success/error evidence. |
+| 受付応答と完了応答から、記録の受付と書き込み完了を区別できます。 | 受付応答と完了応答から、記録の受付と書き込み完了を個別に確認できます。 Both stages may occur; do not turn them into exclusive states. |
+
+Retain `区別` when separating concepts, responsibilities, or contributing
+influences is the actual purpose. For example, `条件をそろえなければ、手順の
+変更による効果と課題の難しさを区別できません` concerns separation of effects,
+not identification of an object. Compare the proposed alternative and record why
+it preserves or changes that purpose. An author preference for identification
+wording does not authorize replacing every conceptual distinction.
+Preserve who can judge what, the evidence used, uncertainty, negation and timing.
+Do not turn `判別できます` into asserted automatic identification, add inspection
+or classification, or claim that an unknown outcome is a failure. Keep differing
+response stages and inference limits explicit. Record the source, alternative,
+and passage-specific reason even when a detector does not emit a candidate.
+
 ## Make relationships explicit
 
 Treat `区別します` and related forms as contextual review cues, not banned

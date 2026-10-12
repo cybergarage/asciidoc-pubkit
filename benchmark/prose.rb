@@ -64,6 +64,12 @@ module ProseBenchmark
     Do not replace inability with a discretionary non-action or add enforcement.
     Preserve definite differences separately from limits on what evidence proves;
     a noun-phrase heading preference does not license nominalizing body sentences.
+    Distinguish identification from conceptual separation when comparing 区別できます.
+    Compare 判別 for telling objects or states apart from evidence, 識別 for identity,
+    判定 for an outcome against a criterion, and 個別に確認 for separate stages.
+    Retain conceptual or causal separation when that is the stated purpose.
+    Preserve capability, negation and evidence; do not invent automatic inspection
+    or classification, or make intake and completion exclusive states.
     Report unsupported additions and substitutions separately as English reasons,
     with short Japanese evidence quotes. Empty arrays mean no such errors found.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an

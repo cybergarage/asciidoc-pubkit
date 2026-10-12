@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add contextual `区別できます` comparisons for evidence-based identification,
+  identity, outcome judgment and separate stage checks. Preserve conceptual
+  separation, capability and negation; add eight calibration pairs and prompt
+  delivery regressions. Detector and automatic replacement behavior is unchanged;
+  AI proofreading improvement has not been measured.
+
 - Add direct-negation comparisons for `わけではありません`, preserving capability,
   conditions, partial negation and inference limits. Add advisory `わけではなく`
   and `わけではない` candidates, ten calibration pairs and judge guidance.

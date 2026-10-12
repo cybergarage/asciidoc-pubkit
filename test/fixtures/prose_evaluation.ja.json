@@ -44,6 +44,98 @@
   ],
   "manual_revision_cases": [
     {
+      "id": "distinction-id-evidence",
+      "source": "同じツールへの複数の要求も、呼び出しIDで区別できます。",
+      "revision": "同じツールへの複数の要求も、呼び出しIDで判別できます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "terminology",
+        "capability",
+        "evidence"
+      ],
+      "reason": "The ID supports telling requests apart; capability and evidence are unchanged."
+    },
+    {
+      "id": "distinction-identity",
+      "source": "フォルダ名だけでは、同じフォルダを使う二つの作業を区別できません。",
+      "revision": "フォルダ名だけでは、同じフォルダを使う二つの作業を識別できません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "identity",
+        "condition",
+        "negation"
+      ],
+      "reason": "Identity resolution remains unavailable under the same folder-name condition."
+    },
+    {
+      "id": "distinction-outcome",
+      "source": "応答は本文と成否を示すフラグを含みます。本文の有無と処理の成否を区別できます。",
+      "revision": "応答は本文と成否を示すフラグを含みます。本文の有無とは別に、処理の成否を判定できます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "evidence",
+        "outcome"
+      ],
+      "reason": "The existing flag supports the outcome judgment without treating text presence as success."
+    },
+    {
+      "id": "distinction-stage-checks",
+      "source": "受付応答と完了応答から、記録の受付と書き込み完了を区別できます。",
+      "revision": "受付応答と完了応答から、記録の受付と書き込み完了を個別に確認できます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "evidence",
+        "stage",
+        "capability"
+      ],
+      "reason": "The two response stages remain separately checkable without making them exclusive."
+    },
+    {
+      "id": "distinction-concept-kept",
+      "source": "条件をそろえなければ、手順の変更による効果と課題の難しさを区別できません。",
+      "revision": "条件をそろえなければ、手順の変更による効果と課題の難しさを区別できません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "conceptual-separation",
+        "condition"
+      ],
+      "reason": "The original names separation of influences rather than identifying an object."
+    },
+    {
+      "id": "distinction-capability-made-behavior",
+      "source": "利用者は出典から対象を区別できます。",
+      "revision": "利用者は出典から対象を判別します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "capability",
+        "actor"
+      ],
+      "reason": "A possible user judgment becomes an asserted action."
+    },
+    {
+      "id": "distinction-automatic-check-invented",
+      "source": "利用者は出典から対象を区別できます。",
+      "revision": "システムが出典を自動検査して対象を判別します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "inspection",
+        "capability"
+      ],
+      "reason": "The new automatic inspection and changed actor have no source support."
+    },
+    {
+      "id": "distinction-concept-made-identity",
+      "source": "両方の状態が成立する場合も、受付と完了を区別して扱います。",
+      "revision": "受付と完了のどちらの状態かを判別します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "conceptual-separation",
+        "stage"
+      ],
+      "reason": "The revision replaces separate treatment of possibly coexisting states with an exclusive choice."
+    },
+    {
       "id": "negation-direct-operation",
       "source": "ツール定義を送信しても、実行関数のコードがモデル側へ送られるわけではありません。",
       "revision": "ツール定義を送信しても、実行関数のコードはモデル側へ送信されません。",

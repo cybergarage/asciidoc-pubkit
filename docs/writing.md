@@ -1,5 +1,12 @@
 # Writing commands
 
+The [identification comparisons](../data/writing/ja/criteria.md#distinguish-identification-from-conceptual-separation)
+compare `区別できます` with `判別`, `識別`, `判定`, and separate checks according
+to evidence and purpose. They preserve conceptual separation, capability,
+negation and coexisting stages. They do not add automatic classification or
+inspection. These unreleased criteria are advisory; saved sessions retain their
+original criteria and detector behavior is unchanged.
+
 `writing criteria` prints the packaged common criteria. `writing prompt` adds
 task instructions around those same criteria. Neither command needs an AsciiDoc
 file, a review session, MeCab, or network access. Both accept `--lang ja` and
