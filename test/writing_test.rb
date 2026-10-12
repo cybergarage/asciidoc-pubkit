@@ -13,6 +13,41 @@ class WritingTest < Minitest::Test
     [code, out.string, err.string]
   end
 
+  def test_communication_response_guidance_reaches_writing_and_saved_review_prompts
+    expected = [
+      'Distinguish communication responses from function returns',
+      'HTTPでは、受付結果をステータスコード202で応答します',
+      '停止理由を含む応答を元の要求に対して送信します',
+      'MCPの接続先が処理を実行し、その結果を応答として送信します',
+      'preserve missing values as unmeasured',
+      'returning `Message`, `ToolResult`, `RunHandle` or `Promise` are different stages',
+      'never infer throw, rejection or a received error response from the word error alone'
+    ]
+    %w[criteria prompt].each do |command|
+      code, output, error = cli('writing', command, '--lang', 'ja')
+      assert_equal 0, code, error
+      expected.each { |text| assert_includes output, text }
+    end
+
+    Dir.mktmpdir('pubkit-response-') do |directory|
+      manuscript = File.join(directory, 'book.adoc')
+      source = "= Example\n\n== 呼び出し\n\nHTTPは受付の結果を202で返します。\n\n* 関数はPromiseを返します。\n"
+      File.write(manuscript, source)
+      %w[headings prose lists].each do |scope|
+        session = File.join(directory, scope)
+        code, _, error = cli('review', 'scan', manuscript, '--scope', scope,
+                             '--tokenizer', 'literal', '--output', session, '--no-input')
+        assert_equal 0, code, error
+        saved = JSON.parse(File.read(File.join(session, 'manifest.json')))['writing_criteria']
+        expected.each { |text| assert_includes saved, text }
+        code, prompt, error = cli('review', 'prompt', session)
+        assert_equal 0, code, error
+        assert_includes prompt, saved
+        assert_equal source, File.read(manuscript)
+      end
+    end
+  end
+
   def test_writing_commands_share_the_packaged_criteria_without_an_input_file
     code, criteria, error = cli('writing', 'criteria', '--lang', 'ja')
     assert_equal 0, code, error

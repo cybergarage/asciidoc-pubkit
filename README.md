@@ -51,6 +51,11 @@ comparison strength, and body sentences separately from heading form. It adds
 no detector terms or automatic replacements. Version 1.2.1 includes 70
 calibration pairs, without a measured claim of improved AI proofreading.
 
+The unreleased [communication-response criteria](data/writing/ja/criteria.md#distinguish-communication-responses-from-function-returns)
+compare HTTP, ACP and MCP replies with internal return values and model generation.
+Response fields, missing measurements and error handling remain distinct; no
+blanket replacements or changes to mechanical verification are introduced.
+
 Version 1.2.2 separates content guidance from actual checks and
 learning objectives, honoring each author's explanatory voice. Development
 calibration has 77 pairs, including valid exercises and runtime checks;

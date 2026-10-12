@@ -18,6 +18,13 @@ book explicitly requires one. Sentence splitting and punctuation changes must
 retain the original relationships; these are contextual review instructions,
 not automatic semantic checks. Saved sessions retain the criteria from their scan.
 
+The unreleased [communication-response comparisons](../data/writing/ja/criteria.md#distinguish-communication-responses-from-function-returns)
+separate HTTP, ACP and MCP responses from internal function returns and model
+generation. Identify response fields, missing measurements, error values,
+exception throwing and Promise rejection without inventing transport or moving
+responsibility. These are advisory wording comparisons; detector and verification
+behavior are unchanged, and old sessions retain their saved criteria.
+
 Sentence-ending review first identifies scope guides, actual operations,
 capabilities, checking procedures, and historical or future statements. Keep
 useful guidance and precise plain verbs; clarify vague judgment targets or

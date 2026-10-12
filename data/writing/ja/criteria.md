@@ -6,6 +6,7 @@
 - Identify human actors by their supported roles
 - Replace abstraction with the thing being discussed
 - Give weak predicates a concrete action or consequence
+- Distinguish communication responses from function returns
 - Explain metaphorical operations from evidence
 - Distinguish instructions, behavior, and capabilities
 - Review sentence endings by their role
@@ -182,6 +183,37 @@ system. Active and passive voice must preserve the same actor and responsibility
 
 Do not choose a more impressive synonym merely to vary sentence endings. Keep
 the technically correct verb when it names the real operation.
+
+## Distinguish communication responses from function returns
+
+Classify the operation before changing `返す`: responding to a communication
+request, generating model output, returning an internal value, or reporting
+failure. Honor the author's terminology preference while preserving the actor,
+recipient, data and timing. Request/response wording need not replace an accurate
+function return, and ordinary return wording is not inherently unsuitable for
+technical prose.
+
+| Wording to inspect | Operation-specific comparison |
+| --- | --- |
+| HTTPは受付の結果を202で返します | `HTTPでは、受付結果をステータスコード202で応答します` names the HTTP response and status code; do not imply that accepted work has completed |
+| ACPでは停止理由を返します | `ACPでは、停止理由を含む応答を元の要求に対して送信します` distinguishes the final response from intermediate notifications; retain the documented completion condition |
+| MCPの接続先が結果を返します | `MCPの接続先が処理を実行し、その結果を応答として送信します` names the remote response; do not assign that transport operation to a local tool function or adapter |
+| 接続先が返したトークン使用量 | `接続先の応答に含まれるトークン使用量` identifies response data; preserve missing values as unmeasured, without treating an absent field as an unreceived response |
+
+For `モデルがデータを返します`, compare `モデルがデータを生成します`
+when generation is the subject. An adapter converting that output and a function
+returning `Message`, `ToolResult`, `RunHandle` or `Promise` are different stages.
+For an internal return, compare an explicit recipient or `戻り値` when useful,
+without adding communication, display or a model invocation. Do not replace every
+`返す` with `応答する` or `応答として送信する` merely to vary sentence endings.
+
+For `エラーを返します`, check whether the implementation returns an error value,
+throws an exception, or rejects a Promise before choosing `例外を送出します`
+or describing rejection. Preserve a normal failure result as a return value;
+never infer throw, rejection or a received error response from the word error alone.
+Book-specific choices between equally accurate response expressions remain with
+the book. These examples are advisory comparisons, not replacement rules or
+semantic verification.
 
 ## Explain metaphorical operations from evidence
 

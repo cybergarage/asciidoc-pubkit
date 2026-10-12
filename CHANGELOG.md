@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Clarify communication responses versus internal return values in shared Japanese
+  criteria, with HTTP acceptance, ACP completion, MCP replies and response-field
+  examples. Preserve model generation, missing measurements, ordinary failure
+  results, exception throwing and Promise rejection as separate operations.
+  Add delivery coverage for writing commands and saved review prompts in all
+  three scopes. Detector rules, automatic replacement and mechanical verification
+  are unchanged; AI proofreading improvement has not been measured.
+
 - Clarify reader learning objectives with concrete explanation, distinction or
   decision targets. Review whole-paragraph viewpoint and repeated content guidance;
   subject-only or potential-ending-only repairs are insufficient. Retain genuine
