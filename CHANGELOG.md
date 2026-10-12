@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add advisory `届く` candidates in prose and lists, with inflected literal forms
+  and MeCab dictionary-form detection. Add shared comparisons for reception,
+  input values, model-response retrieval, late settlement and missing reports.
+  Cover polarity, positions, masking, rule overrides and criteria delivery in
+  regression tests. No automatic replacement or skill workflow change; saved
+  sessions retain their rules and criteria. AI proofreading improvement is unmeasured.
+
 - Add `作用` as an advisory `abstract-reference` candidate in Japanese prose
   and list text. Compare the actual operation, operation classification, result,
   or state change in context; no fixed replacement is prescribed. Existing

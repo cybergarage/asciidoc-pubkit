@@ -1,5 +1,20 @@
 # Rules and coverage
 
+## Arrival wording (unreleased)
+
+The checkout adds `届く` as an advisory `weak-predicate` cue in prose and list
+text. MeCab matches its dictionary form and retains inflection, negation and
+Unicode source positions. Explicit literal mode matches only listed surface
+forms; it does not provide morphological coverage. Allow lists, custom complete
+rule sets and inline masking remain applicable.
+
+Compare reception, runtime input, model-call retrieval, late result settlement,
+and missing trial reports using the shared writing criteria. A notification is
+not proof of completion, and a missing report is not proof of non-execution.
+Literal physical arrival can remain. No fixed replacement is prescribed, and
+scanning never rewrites manuscripts. Existing sessions retain saved rules and
+criteria; mechanical verification does not establish meaning or writing quality.
+
 | Rule | Severity | Purpose |
 | --- | --- | --- |
 | `abstract-reference` | hint | Ask what an abstract noun refers to |

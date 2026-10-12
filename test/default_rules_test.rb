@@ -4,6 +4,35 @@ require 'minitest/autorun'
 require 'asciidoc_pubkit'
 
 class DefaultRulesTest < Minitest::Test
+  %w[mecab literal].each do |mode|
+    define_method("test_arrival_cues_preserve_polarity_positions_and_protected_text_in_#{mode}") do
+      text = "😀応答が届きます。\n報告が届きません。"
+      arrival = ->(value, **options) { scan(value, mode, **options).select { |f| f['rule'] == 'weak-predicate' && f['match'].start_with?('届') } }
+      findings = arrival.call(text)
+      assert_equal ['届きます', '届きません'], findings.map { |f| f['match'] }
+      assert_equal [[1, 5], [2, 4]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['severity'] == 'hint' }
+      if mode == 'mecab'
+        assert_equal ['届く', '届く'], findings.map { |f| f['lemma'] }
+        refute findings.first['negative']
+        assert findings.last['negative']
+        assert_empty arrival.call(text, allows: ['届く'])
+        assert_empty arrival.call('提出届と届け出を確認します。')
+      end
+      assert_empty arrival.call(text, allows: ['届きます', '届きません'])
+      assert_empty arrival.call('`届きます`。「届きます」。link:https://example.com[届きます]。')
+      %w[届く 届いた 届いて 届かない 届かなかった].each do |surface|
+        assert_equal [surface], arrival.call("通知が#{surface}。").map { |f| f['match'] }, "#{mode}: #{surface}"
+      end
+      settings = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                   'rules' => AsciidocPubkit::RuleSet.load }
+      settings['rules']['verbs'].delete('届く')
+      settings['rules']['terms']['weak-predicate']['terms'].delete_if { |term| term.start_with?('届') }
+      paragraph = { 'id' => 'arrival', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'].start_with?('届') }
+    end
+  end
+
   EXPRESSIONS = %w[
     木 余白 明示選択 欠落理由 構成要素 部品 流れ 開発者 区別 単発 よいこと おそれ 準備 別枠 祖先 子孫 予算
     別の 別に 空の 別々に 返す 分けて

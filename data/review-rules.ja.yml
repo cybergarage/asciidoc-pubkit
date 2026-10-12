@@ -137,6 +137,16 @@ terms:
     - 加えます
     - 加わります
     - 付けます
+    # Arrival is advisory; distinguish reception, input and result settlement.
+    - 届く
+    - 届きます
+    - 届きました
+    - 届いた
+    - 届いて
+    - 届かない
+    - 届きません
+    - 届かなかった
+    - 届いていません
     - 返す
     - 返します
     - 渡します
@@ -328,6 +338,8 @@ verbs:
   - 置き換える
   加わる:
   - 加わる
+  届く:
+  - 届く
   返す:
   - 返す
   避ける:

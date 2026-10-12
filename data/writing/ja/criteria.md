@@ -7,6 +7,7 @@
 - Replace abstraction with the thing being discussed
 - Give weak predicates a concrete action or consequence
 - Distinguish communication responses from function returns
+- Distinguish arrival wording by the actual operation
 - Explain metaphorical operations from evidence
 - Distinguish instructions, behavior, and capabilities
 - Review sentence endings by their role
@@ -214,6 +215,33 @@ never infer throw, rejection or a received error response from the word error al
 Book-specific choices between equally accurate response expressions remain with
 the book. These examples are advisory comparisons, not replacement rules or
 semantic verification.
+
+## Distinguish arrival wording by the actual operation
+
+Treat `届く` as an advisory cue, not a banned verb or a replacement instruction.
+Identify the actor, source, destination, data and timing before comparing a full
+sentence. Receiving a notification, passing an input, obtaining a call result,
+settling an operation and finding a missing report are different stages.
+
+| Wording to inspect | Operation-specific comparison |
+| --- | --- |
+| 進捗が届かない | 進捗通知を受信しない when notification reception is the subject; preserve optional notifications and the inability to infer stopping or failure |
+| 外部から届くJSON | 外部から入力されるJSON when runtime input validation is the subject; do not invent network reception for a local value |
+| parseで届いた値を検査する | parseで入力値を検査する when the value is a function argument; preserve validation and conversion responsibilities |
+| 停止後に届いた回答 | 停止後に取得したモデル応答 when describing the result of a model call; preserve the stop check and whether the response is added to the conversation |
+| 遅れて届く結果 | 遅れて確定する結果 only when pending operations settle later; reception alone does not establish settlement or completion of recording |
+| 報告が届かなかった枠 | 対応する試行の報告がない枠 when comparison searches supplied records; do not infer an unreceived message, an unsubmitted report or an unexecuted trial |
+| 後から届いた証拠 | 後から追加された証拠 when evidence is added to a report; distinguish evidence addition from communication or new discovery |
+
+Do not replace every arrival with `受信する`. Preserve unsolicited events instead
+of turning them into active retrieval, and do not turn transmission into receipt.
+A cancellation notification arriving after a response and a signal passed as an
+argument are different events. Keep missing reports distinct from confirmed
+non-execution and retain planned trial counts. Literal physical arrival can remain;
+compare a faithful alternative before retaining technical arrival wording.
+These criteria do not authorize automatic replacement. Old sessions retain their
+saved rules and criteria; verification remains mechanical, with meaning_verified
+false. Effectiveness of AI proofreading has not been measured by these examples.
 
 ## Explain metaphorical operations from evidence
 

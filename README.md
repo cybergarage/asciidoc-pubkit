@@ -24,6 +24,10 @@ then review and verify edits against a saved baseline.
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
 
+The unreleased checkout adds advisory `届く` candidates and operation-specific
+arrival comparisons; see [arrival wording](docs/rules-and-coverage.md#arrival-wording-unreleased).
+These hints do not automatically replace text or establish writing quality.
+
 ## Available features
 
 The following commands are available in version 1.2.2.

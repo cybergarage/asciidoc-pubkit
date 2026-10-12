@@ -6,6 +6,41 @@ require 'stringio'
 require 'asciidoc_pubkit'
 
 class WritingTest < Minitest::Test
+  def test_arrival_guidance_is_saved_in_all_review_scopes_without_rewriting_sources
+    expected = ['Distinguish arrival wording by the actual operation',
+                '進捗通知を受信しない', '外部から入力されるJSON', 'parseで入力値を検査する',
+                '停止後に取得したモデル応答', '遅れて確定する結果', '対応する試行の報告がない枠',
+                'Do not replace every arrival with `受信する`']
+    %w[criteria prompt].each do |command|
+      code, output, error = cli('writing', command, '--lang', 'ja')
+      assert_equal 0, code, error
+      expected.each { |text| assert_includes output, text }
+    end
+    Dir.mktmpdir('pubkit-arrival-') do |directory|
+      manuscript = File.join(directory, 'book.adoc')
+      source = "= Example\n\n== 通知\n\n応答が届きます。\n\n* 報告が届かない場合も集計します。\n"
+      File.write(manuscript, source)
+      %w[headings prose lists].each do |scope|
+        session = File.join(directory, scope)
+        code, _, error = cli('review', 'scan', manuscript, '--scope', scope,
+                             '--tokenizer', 'literal', '--output', session, '--no-input')
+        assert_equal 0, code, error
+        saved = JSON.parse(File.read(File.join(session, 'manifest.json')))['writing_criteria']
+        expected.each { |text| assert_includes saved, text }
+        code, prompt, error = cli('review', 'prompt', session)
+        assert_equal 0, code, error
+        assert_includes prompt, saved
+        unless scope == 'headings'
+          findings = JSON.parse(File.read(File.join(session, 'findings.json')))
+          assert findings.any? { |f| f['rule'] == 'weak-predicate' && f['match'].start_with?('届') }
+        end
+        code, _, error = cli('review', 'verify', session)
+        assert_equal 0, code, error
+        assert_equal source, File.read(manuscript)
+      end
+    end
+  end
+
   def cli(*args)
     out = StringIO.new
     err = StringIO.new
