@@ -57,6 +57,10 @@ part introductions, lists and table descriptions within the authorized assignmen
 track their dispositions or proposals in their own scopes, including protected
 content. Do not extend a focused assignment to unrelated manuscript sections.
 
+For `行う`, consult the saved "Distinguish operations from responsibility"
+comparisons before choosing an action verb or responsibility wording. Record
+the actual alternative; a detector hint is not a replacement instruction.
+
 Compare broad or everyday wording with a concrete alternative using the saved
 shared terminology criteria, even when the original is understandable. Keep
 records must explain the specific comparison, not merely summarize the passage.

@@ -52,6 +52,18 @@ terms:
       katakana term (such as ツリー or マージン) only when it names the intended concept.
   weak-predicate:
     terms:
+    # General operation wording: compare action and responsibility in context.
+    - 行う
+    - 行います
+    - 行いました
+    - 行った
+    - 行って
+    - 行わない
+    - 行いません
+    - 行わなかった
+    - 行っていません
+    - 行えます
+    - 行えない
     # Use, interpretation, and understanding (literal-mode surfaces).
     - 利用します
     - 使えます
@@ -274,6 +286,9 @@ terms:
       beyond the surrounding prose. Keep useful framing; otherwise state the
       substantive claim directly. Do not force a uniform sentence pattern.
 verbs:
+  行う:
+  - 行う
+  - 行える
   扱う:
   - 扱う
   - 扱える

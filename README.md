@@ -24,6 +24,10 @@ then review and verify edits against a saved baseline.
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
 
+The unreleased checkout also detects `行う` as an advisory operation-wording
+cue. Compare direct actions with responsibilities rather than applying a fixed
+replacement; see [general operation wording](docs/rules-and-coverage.md#general-operation-wording-unreleased).
+
 The unreleased checkout adds advisory `届く` candidates and operation-specific
 arrival comparisons; see [arrival wording](docs/rules-and-coverage.md#arrival-wording-unreleased).
 These hints do not automatically replace text or establish writing quality.

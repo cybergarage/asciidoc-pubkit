@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add advisory `行う` operation-wording candidates in prose and supported lists,
+  including MeCab inflections/potential forms and explicit literal surfaces.
+  Compare direct actions with implementation responsibilities in shared criteria
+  and route bundled review skills to those saved comparisons. Test positions,
+  polarity, protected text, custom rules, saved sessions and source preservation.
+  No automatic replacement; AI proofreading improvement is unmeasured.
+
 - Add advisory `届く` candidates in prose and lists, with inflected literal forms
   and MeCab dictionary-form detection. Add shared comparisons for reception,
   input values, model-response retrieval, late settlement and missing reports.

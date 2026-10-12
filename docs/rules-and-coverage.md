@@ -1,5 +1,16 @@
 # Rules and coverage
 
+## General operation wording (unreleased)
+
+`行う` is an advisory `weak-predicate` cue in prose and supported list text.
+MeCab detects dictionary forms, including `行える`, and retains inflection,
+negation and Unicode positions. Literal mode matches only listed surfaces.
+Compare direct action verbs with responsibility wording through the shared
+"Distinguish operations from responsibility" criteria. Neither the cue nor
+`担当します` is an automatic replacement rule. Inline masking, allow lists
+and complete custom rule sets still apply; saved sessions retain their rules
+and criteria. Candidate detection does not establish an editorial defect.
+
 ## Arrival wording (unreleased)
 
 The checkout adds `届く` as an advisory `weak-predicate` cue in prose and list

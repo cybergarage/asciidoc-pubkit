@@ -153,6 +153,28 @@ Prefer a precise action or consequence:
 - `結果を残します` becomes `実行したコマンドと結果をプルリクエストへ記録します`
   when that is the storage location.
 
+### Distinguish operations from responsibility
+
+Treat `行う` and its inflections as advisory cues, not banned wording. Compare
+whether the sentence describes an actual operation, its purpose or order, or
+an implementation's responsibility. Read neighboring sentences and table roles.
+
+| Context | Faithful alternative to compare |
+| --- | --- |
+| 入力の検証は、利用者への確認と実行より前に行います。 | 利用者への確認と実行より前に、入力を検証します。 preserves both ordering conditions. |
+| 次のコード生成を行います。 | 次のコードを生成します。 states the generation operation directly. |
+| settings.tsは設定の読み込みと検証を行います。 in a file-responsibility table | settings.tsは設定の読み込みと検証を担当します。 names the file's role without adding execution timing. |
+| トークンの生成はモデルが行い、ファイルの読み取りはエージェントが行います。 | トークンの生成はモデルが担当し、ファイルの読み取りはエージェントが担当します。 preserves the division of responsibility. |
+
+Use `担当します` when responsibility is the point; direct verbs such as
+`検証します`, `生成します`, `変換します`, or `修正します` when explaining
+actual behavior. Do not replace every `行います` with `担当します` or a fixed
+synonym. Retain accurate established expressions when the comparison offers
+no improvement. Preserve purpose, conditions, negation, capability, actors and
+processing stage; `検証を行えます` must not become mandatory or automatic
+`検証します`. A runtime validation must not become only a developer's test.
+Record the original, faithful alternative and passage-specific comparison.
+
 For everyday verbs, identify the operation before choosing terminology:
 
 | Wording to inspect | Revision when supported by context |
