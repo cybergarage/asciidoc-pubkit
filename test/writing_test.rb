@@ -35,6 +35,10 @@ class WritingTest < Minitest::Test
       code, output, error = cli('writing', command, '--lang', 'ja')
       assert_equal 0, code, error
       assert_includes output, 'Review sentence endings by their role'
+      assert_includes output, 'Naming two objects alone does not explain their difference'
+      assert_includes output, '短い案内を毎回の入力に含め'
+      assert_includes output, '取消通知は要求IDで対象を指定し'
+      assert_includes output, 'Frequency alone does not establish a defect'
       assert_includes output, 'Separate explanatory guidance from actual checks'
       assert_includes output, 'Do not mechanically convert `別です` to `とは限りません`'
       assert_includes output, 'noun-phrase heading policy does not authorize nominalizing body sentences'

@@ -349,6 +349,31 @@ identifiers. Compare the actual paragraph-level alternative before keeping it.
 
 ## Make relationships explicit
 
+Treat `区別します` and related forms as contextual review cues, not banned
+words. Naming two objects alone does not explain their difference. Identify the
+property, purpose, processing stage, recorded state, or decision condition that
+differs, and compare a faithful sentence that states it directly. For content
+guidance, name the comparison axis; for runtime behavior, state what the actor
+processes, records, or decides. Do not merely substitute `分けます` or `異なります`.
+
+| Wording to inspect | Concrete comparison when supported by context |
+| --- | --- |
+| 短い情報と詳細な記録を区別します | 短い案内を毎回の入力に含め、詳細な記録は必要なときだけ読み込みます。 State the different loading conditions. |
+| 作業規則と許可規則を区別します | 作業規則はモデルの操作選択に用い、許可規則は選択された操作を実行してよいかの判定に用います。 State each rule's purpose. |
+| 要求IDとprogressTokenを区別します | 取消通知は要求IDで対象を指定し、進捗通知はprogressTokenで途中経過を元の要求に対応づけます。 State each identifier's use. |
+| 合格、不合格、証拠不足を区別します | 評価結果を合格、不合格、証拠不足に分類して記録します。 Describe classification only when recording those states is established. |
+| 停止要求の受付と処理の終了を区別します | 停止要求を受け付けても、起動済みの処理が終了したとは判断できません。 State the limit of the inference rather than inventing an additional check. |
+
+Retain an accurate distinction when its criterion and consequence are already
+explicit, after comparing the direct alternative. Do not invent separate storage,
+physical isolation, automatic classification, display, inspection, or approval
+steps to make the wording concrete. Preserve the actors, conditions, modality,
+negation, and technical scope. Read neighboring sentences and merge a repeated
+explanation when the revision would otherwise state the same difference twice.
+Record the original, concrete alternative, and passage-specific comparison.
+Frequency alone does not establish a defect or authorize automatic replacement.
+
+
 Inspect a sentence when it:
 
 - begins a new topic without connecting it to the preceding paragraph;

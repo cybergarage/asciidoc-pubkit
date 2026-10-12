@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Expand shared Japanese criteria for `区別します` with concrete comparisons of
+  loading conditions, rule purposes, identifier uses, recorded states, and
+  inference limits. Require the differing property or consequence and review
+  neighboring repetition without inventing mechanisms. Detector rules and
+  automatic replacement are unchanged; old sessions retain saved criteria.
+
 ## 1.2.2 - 2026-10-12
 
 - Distinguish explanatory guidance, real checking procedures, runtime behavior,

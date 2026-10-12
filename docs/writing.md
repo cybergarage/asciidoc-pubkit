@@ -62,3 +62,15 @@ paragraphs deliberately contain review candidates; its code block must remain
 unchanged.
 
 [Back to README](../README.md)
+
+## Explicit differences and decision conditions
+
+The unreleased criteria expand `区別します` comparisons with examples of loading
+conditions, rule purposes, identifier uses, recorded states, and inference limits.
+Naming two objects is insufficient when the property or consequence that differs
+is missing. Compare the full passage with a direct explanation and remove any
+resulting repetition. Retain accurate distinctions after comparison; do not infer
+physical isolation, automatic checks, or extra approval steps. These are prompt
+criteria, not detector rules or automatic replacements. Existing sessions retain
+the criteria saved at scan time. See
+[Relationship criteria](../data/writing/ja/criteria.md#make-relationships-explicit).
