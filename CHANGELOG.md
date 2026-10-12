@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Clarify reader learning objectives with concrete explanation, distinction or
+  decision targets. Review whole-paragraph viewpoint and repeated content guidance;
+  subject-only or potential-ending-only repairs are insufficient. Retain genuine
+  learning activities. Add six calibration pairs and judge guidance, and strengthen
+  related-content inventories in the bundled review skill. Detector rules, saved
+  sessions and mechanical verification are unchanged; AI improvement is unmeasured.
+
 - Expand shared Japanese criteria for `区別します` with concrete comparisons of
   loading conditions, rule purposes, identifier uses, recorded states, and
   inference limits. Require the differing property or consequence and review

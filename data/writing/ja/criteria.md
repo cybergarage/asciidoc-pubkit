@@ -321,6 +321,21 @@ ending. Do not mix the book's explanation with the reader's `理解します` as
 the book performed that learning. Present a learning objective explicitly when
 that is the sentence's purpose; do not mechanically rewrite every objective.
 
+For content guidance, compare the whole paragraph, not only its last verb.
+Adding `読者は` to `理解します`, or changing it to `理解できます`, does not by
+itself repair a switch from the book's explanation to a reader outcome. State
+what the book explains, presents or compares, and consolidate repeated guidance
+without losing subjects, conditions or reading order. Do not assert that reading
+necessarily produces understanding.
+
+For a learning objective, identify the reader and what the knowledge is meant
+to help them explain, distinguish or decide. Prefer a concrete goal over generic
+`設計を理解することが目的です`, using only supported targets and conditions.
+Express an intended objective rather than a guaranteed achievement; do not invent
+an exercise or a decision merely to make it concrete. Retain actual learning
+activities, reader-interest guides and research about understanding when that is
+their subject. These criteria do not ban `理解`, `学ぶ` or `把握`.
+
 When the author requests explanatory narration, compare `説明します`,
 `示します`, or `比較します` for content guidance. For example, a chapter guide
 such as `本章では、依頼の受付と結果の返却を確認します` can become

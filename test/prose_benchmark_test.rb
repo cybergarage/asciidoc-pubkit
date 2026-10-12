@@ -71,7 +71,7 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    assert_equal 77, pairs.length
+    assert_equal 83, pairs.length
     assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
     quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
     assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)
@@ -184,7 +184,13 @@ class ProseBenchmarkTest < Minitest::Test
       'guidance-user-check-kept' => 'accept',
       'guidance-runtime-check-made-exposition' => 'reject',
       'guidance-owner-check-made-test' => 'reject',
-      'guidance-unsupported-automatic-actor' => 'needs-evidence'
+      'guidance-unsupported-automatic-actor' => 'needs-evidence',
+      'learning-reader-subject-only-rejected' => 'reject',
+      'learning-potential-ending-only-rejected' => 'reject',
+      'learning-objective-concrete-decision' => 'accept',
+      'learning-vague-objective-keep-rejected' => 'reject',
+      'learning-actual-study-kept' => 'accept',
+      'learning-paragraph-redundancy-repaired' => 'accept'
     }
     expected.each do |id, disposition|
       item = pairs.find { |pair| pair['id'] == id }

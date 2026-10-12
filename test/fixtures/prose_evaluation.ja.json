@@ -934,6 +934,99 @@
         "source-uncertainty"
       ],
       "reason": "The source does not establish an Agent or automatic execution as the checking actor; the missing evidence must not be invented."
+    },
+    {
+      "id": "learning-reader-subject-only-rejected",
+      "source": "本章では、保存と再開の仕組みを説明します。引き継ぐ情報と操作を再実行しない条件を理解します。",
+      "revision": "本章では、保存と再開の仕組みを説明します。読者は引き継ぐ情報と操作を再実行しない条件を理解します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "paragraph-viewpoint",
+        "author-preference"
+      ],
+      "reason": "Adding a reader subject leaves the content guide switching to an asserted reader learning outcome; it does not state what the book presents.",
+      "editorial_constraints": [
+        "For content guidance, use the author's explanatory viewpoint. State learning objectives as goals with a concrete explanation, distinction or decision target; adding a reader subject or a potential ending alone is insufficient. Preserve genuine learning activities."
+      ]
+    },
+    {
+      "id": "learning-potential-ending-only-rejected",
+      "source": "本章では、要約生成の仕組みを説明します。失敗時の継続条件を理解します。",
+      "revision": "本章では、要約生成の仕組みを説明します。失敗時の継続条件を理解できます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "paragraph-viewpoint",
+        "learning-outcome"
+      ],
+      "reason": "A potential ending still replaces content guidance with an unsupported reader-effect claim instead of presenting the continuation conditions.",
+      "editorial_constraints": [
+        "For content guidance, use the author's explanatory viewpoint. State learning objectives as goals with a concrete explanation, distinction or decision target; adding a reader subject or a potential ending alone is insufficient. Preserve genuine learning activities."
+      ]
+    },
+    {
+      "id": "learning-objective-concrete-decision",
+      "source": "停止後の状態と記録から再試行や継続を判断するために、実行制御の設計を理解することが、この部の目的です。",
+      "revision": "この部では、読者が停止後の状態と記録を基に再試行や継続の可否を判断できるようになることを目指します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "learning-objective",
+        "decision-target",
+        "purpose-scope"
+      ],
+      "reason": "The same retry/continuation decision becomes an explicit reader goal, with its evidence retained and no promise that learning has been achieved.",
+      "editorial_constraints": [
+        "For content guidance, use the author's explanatory viewpoint. State learning objectives as goals with a concrete explanation, distinction or decision target; adding a reader subject or a potential ending alone is insufficient. Preserve genuine learning activities."
+      ]
+    },
+    {
+      "id": "learning-vague-objective-keep-rejected",
+      "source": "この部では、停止後の状態を説明します。設計を理解することが目的です。",
+      "revision": "この部では、停止後の状態を説明します。設計を理解することが目的です。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "learning-objective",
+        "decision-target"
+      ],
+      "reason": "Under the supplied concrete-goal constraint, the generic design-understanding objective identifies neither the reader nor what knowledge is used to explain, distinguish or decide. Missing intended targets require investigation rather than invention.",
+      "editorial_constraints": [
+        "For content guidance, use the author's explanatory viewpoint. State learning objectives as goals with a concrete explanation, distinction or decision target; adding a reader subject or a potential ending alone is insufficient. Preserve genuine learning activities."
+      ]
+    },
+    {
+      "id": "learning-actual-study-kept",
+      "source": "読者は入力を変更したときの出力を予測し、実行結果との差を調べて、理解していない条件を見つけます。",
+      "revision": "読者は入力を変更したときの出力を予測し、実行結果との差を調べて、理解していない条件を見つけます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "actual-learning",
+        "order",
+        "purpose-scope"
+      ],
+      "reason": "This is a supported reader learning activity with prediction, execution-result comparison and a concrete investigation target. Understanding is the actual subject, so no explanatory-voice substitution is needed.",
+      "editorial_constraints": [
+        "For content guidance, use the author's explanatory viewpoint. State learning objectives as goals with a concrete explanation, distinction or decision target; adding a reader subject or a potential ending alone is insufficient. Preserve genuine learning activities."
+      ]
+    },
+    {
+      "id": "learning-paragraph-redundancy-repaired",
+      "source": "本章では、会話を要約して次のモデル入力へ反映する仕組みを説明します。要約生成と次のモデル入力への反映を理解します。要約に失敗した場合の継続条件も理解します。",
+      "revision": "本章では、会話の要約生成と次のモデル入力への反映を説明し、要約に失敗した場合の継続条件を示します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "paragraph-viewpoint",
+        "redundancy",
+        "condition-scope"
+      ],
+      "reason": "The revision consolidates repeated scope guidance, retains both processing stages and the failure condition, and presents the subjects without asserting reader comprehension.",
+      "editorial_constraints": [
+        "For content guidance, use the author's explanatory viewpoint. State learning objectives as goals with a concrete explanation, distinction or decision target; adding a reader subject or a potential ending alone is insufficient. Preserve genuine learning activities."
+      ]
     }
   ]
 }

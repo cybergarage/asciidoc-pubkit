@@ -6,7 +6,7 @@ readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
 This guide describes the development checkout, including the
-`technical-prose-v3` corpus and 77 revision calibration pairs. The sentence-ending
+`technical-prose-v3` corpus and 83 revision calibration pairs. The sentence-ending
 criteria and twelve additional pairs, plus the flow guidance and four further
 pairs, are included in version 1.2.0.
 The evaluation runner is not an
@@ -45,7 +45,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 77 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 83 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -129,6 +129,18 @@ Establish a fresh compatible AI baseline before measuring the criteria change.
 Normal tests validate fixture integrity, prompt delivery and saved criteria;
 they do not establish improved AI proofreading. See the
 [research and proposal](explanatory-guidance-research.md) for the design rationale.
+
+## Reader learning objectives and paragraph guidance
+
+The development criteria add six calibration pairs for reader-subject-only
+repairs, potential-ending-only repairs, concrete learning goals, vague goals,
+actual learning activities, and paragraph-level consolidation with a failure
+condition retained. Goals identify supported explanation, distinction or decision
+targets without promising comprehension. Understanding is not a banned term.
+The judge rubric and calibration fingerprints change; establish a compatible AI
+baseline before comparing rewrite quality. The detector corpus, rules and
+mechanical verification are unchanged. Normal tests exercise fixture integrity
+and evaluator data delivery, not the correctness of an AI's editorial decisions.
 
 ## What normal tests check
 

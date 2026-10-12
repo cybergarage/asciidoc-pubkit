@@ -43,6 +43,11 @@ module ProseBenchmark
     explanation and a reader's checking or learning activity. A useful sequence
     alone does not justify an ambiguous checking actor. Honor an explicit author
     preference for explanatory narration without banning genuine exercises.
+    Content guides must identify what is explained; adding a reader subject or
+    a potential understanding ending alone does not repair paragraph viewpoint.
+    Assess repeated guidance across the paragraph. Learning objectives should name
+    supported explanation, distinction or decision targets and remain intended
+    goals, not guaranteed outcomes. Retain actual learning activities and research.
     Preserve user approval and a program's runtime checks, including their actor,
     target, condition and timing. Do not replace connection-owner responsibility
     with only a developer's test; unsupported automatic actors need evidence.

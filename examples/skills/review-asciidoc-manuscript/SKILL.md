@@ -50,6 +50,13 @@ Record the supported actor, target, conditions, faithful alternative and reason.
 A useful reading sequence alone is not a keep rationale. Follow the author's
 voice without inventing an actor or turning runtime responsibility into a test.
 
+For an assigned content guide or learning objective, record the whole-paragraph
+viewpoint and any repeated guidance along with the source, alternative and reason.
+Use pubkit's saved common criteria for the judgment. Inventory related prefaces,
+part introductions, lists and table descriptions within the authorized assignment;
+track their dispositions or proposals in their own scopes, including protected
+content. Do not extend a focused assignment to unrelated manuscript sections.
+
 Compare broad or everyday wording with a concrete alternative using the saved
 shared terminology criteria, even when the original is understandable. Keep
 records must explain the specific comparison, not merely summarize the passage.
