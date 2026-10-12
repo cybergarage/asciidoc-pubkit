@@ -32,6 +32,11 @@ The unreleased checkout adds advisory `届く` candidates and operation-specific
 arrival comparisons; see [arrival wording](docs/rules-and-coverage.md#arrival-wording-unreleased).
 These hints do not automatically replace text or establish writing quality.
 
+The unreleased checkout adds direct-negation comparisons and advisory variants
+for `わけではありません`; see [direct negation](docs/writing.md#direct-negation-and-inference-limits-unreleased).
+Existing sessions retain their saved rules and criteria. No automatic rewriting
+is added.
+
 ## Available features
 
 The following commands are available in version 1.2.2.

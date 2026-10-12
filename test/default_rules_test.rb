@@ -305,12 +305,12 @@ class DefaultRulesTest < Minitest::Test
   def test_tree_whole_phrase_is_independent_of_ipadic_surname_segmentation
     %w[mecab literal].each do |mode|
       text = "😀木全体を読むわけではなく。\n木全体を確認します。"
-      findings = scan(text, mode).select { |f| f['rule'] == 'contextual-phrase' }
+      findings = scan(text, mode).select { |f| f['rule'] == 'contextual-phrase' && f['match'] == '木全体' }
       assert_equal %w[木全体 木全体], findings.map { |f| f['match'] }
       assert_equal [[1, 2], [2, 1]], findings.map { |f| f.values_at('line', 'column') }
-      assert_empty scan(text, mode, allows: ['木全体']).select { |f| f['rule'] == 'contextual-phrase' }
+      assert_empty scan(text, mode, allows: ['木全体']).select { |f| f['rule'] == 'contextual-phrase' && f['match'] == '木全体' }
       assert_empty scan('`木全体`。「木全体」。', mode)
-      assert_empty scan('木全さん。', mode).select { |f| f['rule'] == 'contextual-phrase' }
+      assert_empty scan('木全さん。', mode).select { |f| f['rule'] == 'contextual-phrase' && f['match'] == '木全体' }
     end
   end
 

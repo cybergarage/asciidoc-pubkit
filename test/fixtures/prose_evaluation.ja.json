@@ -44,6 +44,117 @@
   ],
   "manual_revision_cases": [
     {
+      "id": "negation-direct-operation",
+      "source": "ツール定義を送信しても、実行関数のコードがモデル側へ送られるわけではありません。",
+      "revision": "ツール定義を送信しても、実行関数のコードはモデル側へ送信されません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "operation",
+        "condition",
+        "negation-strength"
+      ],
+      "reason": "The direct denial preserves the transmitted object and the tool-definition condition."
+    },
+    {
+      "id": "negation-capability",
+      "source": "入力にない読み取り結果を根拠として使えるわけではありません。",
+      "revision": "入力にない読み取り結果を根拠として使えません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "capability",
+        "negation-scope"
+      ],
+      "reason": "The unavailable capability is denied directly without asserting a discretionary action."
+    },
+    {
+      "id": "negation-insufficient-condition",
+      "source": "定義を送信するだけでファイルが読み込まれるわけではありません。",
+      "revision": "定義を送信するだけではファイルは読み込まれません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "condition-scope",
+        "operation"
+      ],
+      "reason": "Only sending the definition remains insufficient for reading the file."
+    },
+    {
+      "id": "negation-partial-token",
+      "source": "トークンは一文字と常に一致するわけではなく、語の一部になることもあります。",
+      "revision": "トークンは一文字と必ずしも一致せず、語の一部になることもあります。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "partial-negation",
+        "negation-scope"
+      ],
+      "reason": "The revision denies universal agreement, while retaining possible agreement and word fragments."
+    },
+    {
+      "id": "negation-partial-restoration",
+      "source": "保存した会話を開き直しても、以前の作業環境がすべて復元されるわけではありません。",
+      "revision": "保存した会話を開き直しても、以前の作業環境のすべては復元されません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "partial-negation",
+        "condition-scope"
+      ],
+      "reason": "The revision denies complete restoration, not the restoration of every individual component."
+    },
+    {
+      "id": "negation-partial-made-total",
+      "source": "トークンは一文字と常に一致するわけではありません。",
+      "revision": "トークンは一文字と一致しません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "partial-negation",
+        "negation-strength"
+      ],
+      "reason": "The source denies always matching; the revision denies matching altogether."
+    },
+    {
+      "id": "negation-inference-made-absence",
+      "source": "応答を観測していないため、処理が終了したとは判断できません。",
+      "revision": "応答を観測していないため、処理は終了していません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "inference-limit",
+        "uncertainty"
+      ],
+      "reason": "Missing observation cannot establish that execution has not finished."
+    },
+    {
+      "id": "negation-capability-made-choice",
+      "source": "入力にない読み取り結果を根拠として使えるわけではありません。",
+      "revision": "入力にない読み取り結果を根拠として使いません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "capability",
+        "actual-behavior"
+      ],
+      "reason": "The unavailable capability becomes an asserted choice or behavior."
+    },
+    {
+      "id": "negation-inference-retained",
+      "source": "応答を観測していないため、処理が終了したとは判断できません。",
+      "revision": "応答を観測していないため、処理が終了したとは判断できません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "inference-limit",
+        "uncertainty"
+      ],
+      "reason": "The necessary inference limit is already concrete and should remain."
+    },
+    {
+      "id": "negation-added-enforcement",
+      "source": "Skillの文書だけで操作権限が生じるわけではありません。",
+      "revision": "Skillの文書だけでは操作権限は生じず、OSがすべての操作を拒否します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "unsupported-mechanism",
+        "responsibility"
+      ],
+      "reason": "The direct denial is supported, but OS enforcement and total rejection require additional evidence."
+    },
+    {
       "id": "preserved-policy",
       "source": "採否を判断できない項目は除外する側に倒します。",
       "revision": "採否を判断できない項目は除外します。",

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add direct-negation comparisons for `わけではありません`, preserving capability,
+  conditions, partial negation and inference limits. Add advisory `わけではなく`
+  and `わけではない` candidates, ten calibration pairs and judge guidance.
+  Cover both tokenizers, protected text, saved rules/criteria and prompt delivery.
+  No automatic replacement; AI proofreading improvement has not been measured.
+
 - Add contextual comparisons for `決めます`: selection, calculation, configuration,
   state/permission classification, evidence assessment, establishing conditions,
   explicit decisions, and results determined by inputs. Preserve actors, timing,

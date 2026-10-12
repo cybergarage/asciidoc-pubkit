@@ -210,6 +210,8 @@ terms:
     - あるものとします
     # Retain this specific phrase for existing allow lists and fuller evidence.
     - わけではありません
+    - わけではなく
+    - わけではない
     - 別です
     # Unusual technical translations; shared criteria own the alternatives.
     - 木全体

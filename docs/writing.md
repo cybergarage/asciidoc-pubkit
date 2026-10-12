@@ -93,3 +93,14 @@ physical isolation, automatic checks, or extra approval steps. These are prompt
 criteria, not detector rules or automatic replacements. Existing sessions retain
 the criteria saved at scan time. See
 [Relationship criteria](../data/writing/ja/criteria.md#make-relationships-explicit).
+
+## Direct negation and inference limits (unreleased)
+
+Compare `わけではありません` with a direct denial of the actual operation or
+capability, while retaining its actor and conditions. Keep partial negation such
+as `必ずしも一致しません` distinct from total denial, and retain a concrete
+inference limit when evidence does not establish an outcome. The canonical
+criteria include examples for sending tool definitions, unavailable input,
+insufficient conditions and incomplete restoration. These are contextual
+comparisons, not automatic replacement rules. Existing sessions retain their
+saved criteria; use a new session to review under changed criteria.

@@ -57,6 +57,11 @@ module ProseBenchmark
     editorial_constraints to calibration pairs; synonymy does not excuse violating
     an author terminology preference. Do not justify vague wording by rejecting an
     unsupported stronger alternative such as physical isolation.
+    Distinguish direct operation denial, unavailable capability, partial negation,
+    insufficient conditions, and inference limits. Preserve negation scope and
+    strength; never turn partial negation into total denial. Missing observation
+    does not establish non-implementation, impossibility, failure, or completion.
+    Do not replace inability with a discretionary non-action or add enforcement.
     Preserve definite differences separately from limits on what evidence proves;
     a noun-phrase heading preference does not license nominalizing body sentences.
     Report unsupported additions and substitutions separately as English reasons,

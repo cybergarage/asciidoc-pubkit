@@ -207,3 +207,15 @@ the exact substring and may also flag `操作用`; inspect context rather than
 treating this overlap as the noun `作用`. Allow lists, custom complete rule sets,
 and protected-inline exclusions still apply. Existing sessions retain saved
 rules; start a new session to adopt this candidate.
+
+## Indirect negation candidates (unreleased)
+
+`わけではありません`, `わけではなく`, and `わけではない` are advisory
+`contextual-phrase` candidates in running prose and supported lists, in both
+MeCab and literal modes. Matching preserves the existing inline masking, exact
+allow-list behavior and longest-overlap selection. Protected code and quotations
+are not edited. These are explicit surfaces, not exhaustive negation detection.
+Review operation denial, capability, partial negation and inference limits using
+[the writing criteria](writing.md#direct-negation-and-inference-limits-unreleased).
+No candidate prescribes a fixed replacement. Existing sessions retain their saved
+rules and criteria; the new defaults apply to new scans.

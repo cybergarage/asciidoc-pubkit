@@ -13,6 +13,7 @@
 - Distinguish instructions, behavior, and capabilities
 - Review sentence endings by their role
 - Separate explanatory guidance from actual checks
+- Distinguish direct negation, partial negation, and inference limits
 - Make relationships explicit
 - Compare structure before and after revision
 - Keep claims within their evidence and purpose
@@ -472,6 +473,34 @@ Content guidance can use `説明`, while in-depth background or design discussio
 can use `解説`; do not make that distinction a universal replacement rule.
 Preserve tool or Skill description data, formal titles, quotations, and code
 identifiers. Compare the actual paragraph-level alternative before keeping it.
+
+## Distinguish direct negation, partial negation, and inference limits
+
+For `わけではありません`, `わけではなく`, and `わけではない`, compare
+negating the actual operation directly. Identify the actor, target, condition,
+and scope first; these expressions are review cues, not banned wording.
+
+| Original wording | Faithful comparison |
+| --- | --- |
+| ツール定義を送信しても、実行関数のコードがモデル側へ送られるわけではありません。 | ツール定義を送信しても、実行関数のコードはモデル側へ送信されません。 |
+| 入力にない読み取り結果を根拠として使えるわけではありません。 | 入力にない読み取り結果を根拠として使えません。 Preserve inability, not a claim that the actor chooses not to use it. |
+| 定義を送信するだけでファイルが読み込まれるわけではありません。 | 定義を送信するだけではファイルは読み込まれません。 Keep the insufficient condition. |
+| トークンは一文字と常に一致するわけではなく、語の一部になることもあります。 | トークンは一文字と必ずしも一致せず、語の一部になることもあります。 |
+| 保存した会話を開き直しても、以前の作業環境がすべて復元されるわけではありません。 | 保存した会話を開き直しても、以前の作業環境のすべては復元されません。 |
+| 応答を観測していないため、処理が終了したとは判断できません。 | Retain the inference limit; absence of observation does not establish that the operation never finishes. |
+
+Distinguish an operation that does not occur, an unavailable capability, a
+condition that is insufficient, and a conclusion that evidence does not support.
+Do not turn `できません` into `しません`, or missing evidence into a claim of
+non-implementation, impossibility, failure, or completion. Preserve negation scope
+and strength: `常に`, `すべて`, `だけで`, `自動的に`, and `そのまま` can change
+what is denied. Use `必ずしも`, `すべては`, or `とは限りません` when needed for
+partial negation; never turn partial negation into total denial. A known operation
+must not be weakened into an uncertain inference merely to sound cautious.
+Keep actors, responsibility, timing, and supported conditions. Do not introduce
+an inspection, enforcement mechanism, transport, or guarantee to justify a
+stronger denial. Compare complete paragraphs and record the actual alternative
+and reason, including a necessary retained inference limit.
 
 ## Make relationships explicit
 
