@@ -7,6 +7,13 @@ negation and coexisting stages. They do not add automatic classification or
 inspection. These unreleased criteria are advisory; saved sessions retain their
 original criteria and detector behavior is unchanged.
 
+The [replacement comparisons](../data/writing/ja/criteria.md#distinguish-replacement-from-interpretation-and-permitted-use)
+compare `置き換えません` with interpretation rules (`みなしません`) and use
+limits (`扱えません`), while retaining actual value, history, and implementation
+replacement. They preserve conditions, negation strength, missing evidence and
+responsibility. These unreleased criteria do not change detection or perform
+automatic replacements; existing sessions retain their saved criteria.
+
 `writing criteria` prints the packaged common criteria. `writing prompt` adds
 task instructions around those same criteria. Neither command needs an AsciiDoc
 file, a review session, MeCab, or network access. Both accept `--lang ja` and

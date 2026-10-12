@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add contextual `置き換えません` comparisons for interpretation rules and use
+  limits, retaining actual value/history/implementation replacement and missing
+  evidence. Add nine calibration pairs, judge guidance, and saved-prompt delivery
+  regressions. Detector and automatic replacement behavior is unchanged; AI
+  proofreading improvement has not been measured.
+
 - Add contextual `区別できます` comparisons for evidence-based identification,
   identity, outcome judgment and separate stage checks. Preserve conceptual
   separation, capability and negation; add eight calibration pairs and prompt

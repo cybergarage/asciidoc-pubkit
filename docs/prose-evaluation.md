@@ -6,7 +6,7 @@ readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
 This guide describes the development checkout, including the
-`technical-prose-v3` corpus and 93 revision calibration pairs. The sentence-ending
+`technical-prose-v3` corpus and 110 revision calibration pairs. The sentence-ending
 criteria and twelve additional pairs, plus the flow guidance and four further
 pairs, are included in version 1.2.0.
 The evaluation runner is not an
@@ -45,7 +45,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 93 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 110 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -338,3 +338,15 @@ An invented OS enforcement mechanism needs evidence. These controls and the
 judge rubric require compatible new AI baselines; no model evaluation was run
 and no improvement in AI proofreading has been measured. Mechanical verification
 continues to report `meaning_verified: false`.
+
+## Replacement, interpretation, and use limits
+
+Nine added calibration pairs cover `置き換えません`: five faithful revisions
+for approval, fixed-response testing, missing usage, progress notices and impression
+scoring; one retained actual history-replacement description; and three rejected
+changes that lose history construction, assert non-completion from missing evidence,
+or turn an unavailable use into a discretionary choice. The judge rubric names
+these distinctions. Normal tests check fixture integrity, existing MeCab detection,
+and saved criteria delivery, not whether an AI judges the pairs correctly.
+AI proofreading improvement has not been measured. Fix a fresh calibration and
+rubric baseline before comparing AI results with an earlier run.

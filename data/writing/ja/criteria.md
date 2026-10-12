@@ -15,6 +15,7 @@
 - Separate explanatory guidance from actual checks
 - Distinguish direct negation, partial negation, and inference limits
 - Make relationships explicit
+- Distinguish replacement from interpretation and permitted use
 - Compare structure before and after revision
 - Keep claims within their evidence and purpose
 - Keep source uncertainty separate from editorial questions
@@ -576,6 +577,33 @@ every sentence when it is already unambiguous.
 Use prose for a sequence in which one event causes or conditions the next; use
 a list when the items are genuinely parallel. Do not turn a causal explanation
 into disconnected bullets or impose an order on independent items.
+
+## Distinguish replacement from interpretation and permitted use
+
+Compare `置き換えません` and related forms with what the passage actually denies.
+Use `みなしません` for a rule against interpreting one event or result as another,
+and `扱えません` when it cannot serve a specified evaluation or check. Preserve
+actual value, history, or implementation replacement when that is the operation.
+These are contextual comparisons, not automatic substitution instructions.
+
+| Original wording | Faithful comparison when supported |
+| --- | --- |
+| 画面を表示できなかったことを、利用者が承認したことに置き換えません。 | 画面を表示できなかったことを、利用者の承認とはみなしません。 Retain the rule against interpreting display failure as approval. |
+| MCPの進捗通知は、この終了確認を置き換えません。 | MCPの進捗通知は、処理が終了したことの確認としては扱えません。 State the notice's use limit, not that the operation never finishes. |
+| 固定応答でプログラムの分岐が通った結果を、モデルの判断品質の評価に置き換えません。 | 固定応答でプログラムの分岐が通った結果を、モデルの判断品質を評価した結果とはみなしません。 Keep fixed-response testing distinct from actual-model evaluation. |
+| トークン数が取得できない場合は、未取得とし、使用量がゼロだったという測定値へ置き換えません。 | トークン数が取得できない場合は、未取得とし、使用量がゼロだったとはみなしません。 Preserve the missing record and the limit on inferring zero usage. |
+| 印象評価でコードの実行可否やテストの成否の検査を置き換えません。 | 印象評価は、コードの実行可否やテストの成否を確かめる検査としては扱えません。 Preserve the need for the actual checks. |
+| 要約だけで会話全体を置き換えず、保持範囲を組み合わせる方式です。 | Retain the actual history-replacement description: treating the summary as the whole conversation is a different claim. |
+
+Distinguish a discretionary rule (`みなしません`) from an unavailable use
+(`扱えません`) and from a data transformation that does or does not occur.
+Do not change inability into a choice not to act, missing evidence into failure
+or zero usage, or an actual replacement into an interpretation. Keep the actor,
+target, conditions, negation strength, timing, and responsibility. Do not invent
+an automatic check, classification, enforcement mechanism, or guarantee.
+Compare the complete paragraph and record the actual alternative and reason;
+an understandable original alone is not a reason to retain vague replacement
+wording. Existing sessions retain their saved criteria.
 
 ## Compare structure before and after revision
 

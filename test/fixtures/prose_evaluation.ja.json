@@ -44,6 +44,115 @@
   ],
   "manual_revision_cases": [
     {
+      "id": "replacement-approval",
+      "source": "画面を表示できなかったことを、利用者が承認したことに置き換えません。",
+      "revision": "画面を表示できなかったことを、利用者の承認とはみなしません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "interpretation",
+        "approval",
+        "negation"
+      ],
+      "reason": "Display failure is not interpreted as user approval; the rule and actor are retained."
+    },
+    {
+      "id": "replacement-progress-use",
+      "source": "MCPの進捗通知は、処理が終了したことの確認を置き換えません。",
+      "revision": "MCPの進捗通知は、処理が終了したことの確認としては扱えません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "use-limit",
+        "completion",
+        "negation"
+      ],
+      "reason": "Progress cannot serve as completion confirmation; no claim of non-completion is added."
+    },
+    {
+      "id": "replacement-fixed-response",
+      "source": "固定応答でプログラムの分岐が通った結果を、モデルの判断品質の評価に置き換えません。",
+      "revision": "固定応答でプログラムの分岐が通った結果を、モデルの判断品質を評価した結果とはみなしません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "interpretation",
+        "evaluation",
+        "evidence"
+      ],
+      "reason": "Fixed-response branch success is not interpreted as an actual-model quality evaluation."
+    },
+    {
+      "id": "replacement-missing-usage",
+      "source": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったという測定値へ置き換えません。",
+      "revision": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったとはみなしません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "interpretation",
+        "missing-evidence",
+        "condition-scope"
+      ],
+      "reason": "The unavailable count stays unmeasured and does not imply zero usage."
+    },
+    {
+      "id": "replacement-impression-use",
+      "source": "印象評価でコードの実行可否やテストの成否の検査を置き換えません。",
+      "revision": "印象評価は、コードの実行可否やテストの成否を確かめる検査としては扱えません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "use-limit",
+        "evaluation",
+        "responsibility"
+      ],
+      "reason": "Impression scoring cannot stand in for execution and test checks; both targets are retained."
+    },
+    {
+      "id": "replacement-actual-history-kept",
+      "source": "要約だけで会話全体を置き換えず、保持範囲を組み合わせる方式です。",
+      "revision": "要約だけで会話全体を置き換えず、保持範囲を組み合わせる方式です。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actual-replacement",
+        "history",
+        "scope"
+      ],
+      "reason": "Actual history construction is the subject; interpretation wording would obscure the replacement range."
+    },
+    {
+      "id": "replacement-actual-history-made-interpretation",
+      "source": "要約だけで会話全体を置き換えず、保持範囲を組み合わせる方式です。",
+      "revision": "要約を会話全体とはみなさない方式です。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actual-replacement",
+        "history",
+        "omission"
+      ],
+      "reason": "The revision substitutes an interpretation rule for history construction and omits the retained conversation range."
+    },
+    {
+      "id": "replacement-missing-made-failure",
+      "source": "進捗通知だけでは、処理が終了したか判断できません。",
+      "revision": "進捗通知だけでは、処理は終了しません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "missing-evidence",
+        "completion",
+        "negation"
+      ],
+      "reason": "Insufficient evidence of completion is changed into a claim that the operation does not finish."
+    },
+    {
+      "id": "replacement-use-limit-made-choice",
+      "source": "進捗通知は、終了確認としては扱えません。",
+      "revision": "進捗通知は、終了確認として扱いません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "use-limit",
+        "capability",
+        "sentence-function"
+      ],
+      "reason": "An unavailable use is changed into a discretionary decision not to use the notice."
+    },
+
+    {
       "id": "distinction-id-evidence",
       "source": "同じツールへの複数の要求も、呼び出しIDで区別できます。",
       "revision": "同じツールへの複数の要求も、呼び出しIDで判別できます。",

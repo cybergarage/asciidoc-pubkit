@@ -72,6 +72,10 @@ module ProseBenchmark
     or classification, or make intake and completion exclusive states.
     Report unsupported additions and substitutions separately as English reasons,
     with short Japanese evidence quotes. Empty arrays mean no such errors found.
+    Distinguish actual replacement from interpretation and permitted use when
+    comparing 置き換えません with みなしません or 扱えません. Retain literal
+    value, history, and implementation replacement; preserve rules separately
+    from unavailable uses. Missing evidence does not imply failure or zero usage.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an
     omitted or changed established fact or violated explicit editorial constraint;
     needs-evidence for newly asserted details that cannot be established;
