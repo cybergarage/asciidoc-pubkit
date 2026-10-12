@@ -13,6 +13,20 @@ The evaluation runner is not an
 installed gem command. It does not measure Japanese naturalness or AI authorship
 as a single validated score.
 
+## Stopping comparisons (unreleased)
+
+`test/fixtures/stop_wording.ja.json` contains manual source/revision pairs for
+stopping, ending iteration, cancellation requests, pre-execution refusal,
+unstarted work, disabled operations and supported temporary pauses. Rejection
+cases cover lost conditions, capability strengthened into behavior, requests
+misreported as completion, invented forceful termination or resumption, and
+idiomatic `受け止める` misread as a stopping operation.
+
+The fixture is separate from the runner's revision calibration corpus. Its
+regression tests check fixture integrity and delivery of the criteria through
+writing and saved review prompts; they do not run an AI judge, measure Japanese
+quality, or establish semantic correctness. Detector rules are unchanged.
+
 ## Three different evaluations
 
 | Evaluation | Input and method | What the number means |

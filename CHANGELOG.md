@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add contextual stopping comparisons for termination, cancellation requests,
+  pre-execution refusal, unstarted work, disabled operations and resumable pauses.
+  Add manual comparison fixtures and saved-prompt regressions, preserving
+  capability, unfinished work and idiomatic uses. Detector and replacement
+  behavior are unchanged; AI proofreading improvement has not been measured.
+
 - Add contextual `段階` / `フェーズ` comparisons for execution states and
   processing divisions, preserving timing, state conditions, progressive
   disclosure, counts and research scope. Add manual comparison fixtures and

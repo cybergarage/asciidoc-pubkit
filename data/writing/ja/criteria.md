@@ -6,6 +6,7 @@
 - Identify human actors by their supported roles
 - Replace abstraction with the thing being discussed
 - Give weak predicates a concrete action or consequence
+- Distinguish stopping, cancellation requests, and non-execution
 - Distinguish decisions by the actual operation
 - Distinguish communication responses from function returns
 - Distinguish arrival wording by the actual operation
@@ -166,6 +167,41 @@ and do not add calculation, configuration, inspection, execution, or approval
 merely to make a verb more technical. Record the original, actual alternative,
 and passage-specific reason. These are contextual prompt criteria, not automatic
 replacement instructions; existing sessions retain their saved criteria.
+
+## Distinguish stopping, cancellation requests, and non-execution
+
+Compare `止める` and its inflections with `停止する` when describing the
+stopping of execution, a process, or request intake. Honor the author's
+terminology preference, but identify the actual operation before choosing a
+verb; these are contextual comparisons, not automatic replacements.
+
+| Intended operation | Faithful comparison when supported |
+| --- | --- |
+| Stopping a running process or request intake | `プロセスを停止します`・`新規受付を停止します`; preserve the target, condition, and responsibility |
+| Ending iteration or traversal | `上限に達したら反復を終了します`・`repoで探索を終了せず、上位ディレクトリも対象にします`; retain the limit and traversal scope |
+| Requesting cancellation through an API | `Runの取消を要求する場合は、取消APIを呼び出します`; an API call or signal notification does not establish actual termination |
+| Refusing an operation before execution | `実行前フックで要求を拒否できます`・`規則に従って送信を拒否します`; do not claim the ability to terminate a running process |
+| Preventing unstarted subsequent work | `失敗時は後続を開始しません`; do not imply that subsequent work has already started |
+| Disabling an operation through configuration | `Offでは、イベントの保持と通知を行いません`; do not turn non-execution into interruption of an active operation |
+| Temporarily pausing with supported resumption | `処理を一時停止します`; use only when temporary suspension and resumption are established |
+
+Preserve capability independently of terminology: `反復を止められます` can
+become `反復を終了できます`, not an assertion that termination occurs.
+Keep desire, requests, notifications, observed termination, and confirmation
+separate. `停止を要求した後、処理の終了を確認します` must not become
+`停止を要求すると処理が終了します`. A timeout or an unknown operation result
+does not establish that external work has terminated. Retain unfinished work,
+record preservation, conditions, negation, and the owner responsible for stopping
+or closing resources; do not invent forceful termination or a restart facility.
+
+Compare literal and idiomatic uses separately. `現実的な選択肢と受け止められて
+いません` describes perception, not stopping; preserve it rather than changing
+it to `停止されていません`. Do not ban every occurrence of `止める`, prescribe
+one replacement for all contexts, or infer a resumable pause from stopping alone.
+Record the original, faithful alternative, and passage-specific reason even when
+no detector candidate is emitted. Synchronize related authorized tables, figures,
+and alternative text separately from protected review scopes. Existing sessions
+retain their saved criteria; these comparisons add no detector or replacement rule.
 
 ## Give weak predicates a concrete action or consequence
 
