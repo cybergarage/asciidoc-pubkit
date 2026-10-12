@@ -225,6 +225,13 @@ scan cannot verify preservation relative to an earlier baseline.
 
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 
+## Contextual phase terminology (unreleased)
+
+Japanese writing and new review prompts compare `段階` with `フェーズ` for
+processing divisions, while preserving timing and progressive disclosure. See
+[phase terminology guidance](docs/writing.md#processing-phases-timing-and-progressive-disclosure-unreleased).
+This does not add detector rules or automatic replacement.
+
 ## License
 
 Copyright 2026 CyberGarage.

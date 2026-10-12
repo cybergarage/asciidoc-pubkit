@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add contextual `段階` / `フェーズ` comparisons for execution states and
+  processing divisions, preserving timing, state conditions, progressive
+  disclosure, counts and research scope. Add manual comparison fixtures and
+  writing/saved-review-prompt regressions. Detector and automatic replacement
+  behavior are unchanged; AI proofreading improvement has not been measured.
+
 - Add contextual `置き換えません` comparisons for interpretation rules and use
   limits, retaining actual value/history/implementation replacement and missing
   evidence. Add nine calibration pairs, judge guidance, and saved-prompt delivery

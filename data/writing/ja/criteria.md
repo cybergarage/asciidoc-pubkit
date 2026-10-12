@@ -834,3 +834,34 @@ File paths and type names belong where they help explain a specific operation;
 avoid a list of identifiers before the reader knows their roles. Bibliographic
 and implementation-file descriptions introduce the referenced material, rather
 than narrating the author's research activity.
+
+## Compare processing phases with timing and progressive disclosure
+
+When the author proposes `段階 → フェーズ`, compare the actual processing or
+work division with the same actor, conditions, order and scope. Use `フェーズ`
+for named execution states such as `phase`, extraction and consolidation, or
+preparation, execution and evaluation divisions when it matches the described
+operation and the author's terminology preference. Do not require a factual
+error to honor that preference; synonymy alone is not a keep reason.
+
+| Source wording | Contextual comparison |
+| --- | --- |
+| `phaseは現在の実行段階です。` | `phaseは現在の実行フェーズです。` names the same execution-state field; preserve its values. |
+| `抽出と統合を別段階で実行します。` | `抽出と統合を別のフェーズで実行します。` preserves the two operations without asserting independence or concurrency. |
+| `会話の加工と形式変換の二段階を示します。` | `会話の加工と形式変換の2つのフェーズを示します。` retains the count and the two targets. |
+| `保留入力がなくなった段階で終了フックを呼び出します。` | Compare the same conditional timing with `フェーズで`; retain `段階で` or use `時点で` when timing, rather than a named execution division, is intended. |
+| `設定だけがある段階では保存を保留します。` | Retain the state condition; do not invent a dedicated setup phase or change the first-message saving trigger. |
+| `必要に応じて本文と補助資料を段階的に読み込みます。` | Retain progressive disclosure; `フェーズ別に` must not impose fixed phases or mandatory loading of all material. |
+| `論文は単一段階のツール利用を検証しています。` | Preserve the study's stated evaluation scope; do not infer repeated use or a new phase model from terminology alone. |
+
+`段階` can also denote a point in progress, a degree or learning progression;
+`フェーズ` is not a universal replacement. Compare the full passage before a
+keep decision and record the author's actual alternative and the specific
+benefit or loss. Do not add state transitions, checks, guarantees or runtime
+mechanisms. Changing a label does not establish that an implementation has a
+phase enum. Preserve identifiers, conditions, negation, phase count and order.
+
+Follow accepted terminology into authorized headings, tables, figure labels and
+alternative text using their own edit scopes. Do not rewrite historical records
+or mutate existing session criteria. These are contextual prompt criteria, not
+new detector rules or automatic replacement instructions.

@@ -118,3 +118,17 @@ criteria include examples for sending tool definitions, unavailable input,
 insufficient conditions and incomplete restoration. These are contextual
 comparisons, not automatic replacement rules. Existing sessions retain their
 saved criteria; use a new session to review under changed criteria.
+
+## Processing phases, timing and progressive disclosure (unreleased)
+
+The shared criteria compare `段階` with `フェーズ` for execution-state fields and
+processing or work divisions, while preserving counts, order and conditions.
+Timing, state predicates, progressive disclosure and research evaluation scope
+need individual comparisons; no blanket replacement is prescribed. See
+[the contextual examples](../data/writing/ja/criteria.md#compare-processing-phases-with-timing-and-progressive-disclosure).
+
+Writing commands and new heading, prose and list sessions include these criteria.
+Existing sessions keep their saved criteria. Detection and automatic replacement
+behavior are unchanged. Manual accept/reject examples are maintained in
+`test/fixtures/phase_terminology.ja.json`; their labels and regression tests do
+not measure AI proofreading accuracy.
