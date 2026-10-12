@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Add contextual comparisons for `決めます`: selection, calculation, configuration,
+  state/permission classification, evidence assessment, establishing conditions,
+  explicit decisions, and results determined by inputs. Preserve actors, timing,
+  contributing factors and modality without inventing operations. Test delivery
+  to writing and saved review prompts and retention of existing session criteria.
+  Detector rules and automatic replacement are unchanged; AI proofreading
+  improvement has not been measured.
+
 - Add advisory `行う` operation-wording candidates in prose and supported lists,
   including MeCab inflections/potential forms and explicit literal surfaces.
   Compare direct actions with implementation responsibilities in shared criteria

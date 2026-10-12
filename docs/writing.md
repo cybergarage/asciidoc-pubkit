@@ -68,6 +68,18 @@ For a small trial, use `examples/book.adoc` as the scan input. Its Japanese
 paragraphs deliberately contain review candidates; its code block must remain
 unchanged.
 
+## Decision wording
+
+The unreleased criteria compare `決めます` with `決定します` and with the actual
+operation: selecting tools or information, computing budgets, configuring values,
+classifying states or permission outcomes, assessing evidence, and establishing
+design or evaluation conditions. Describe causal relationships with `定まります`
+when inputs determine a result, retaining every contributing factor. Do not
+invent calculation, runtime changes, checks, or approvals for a more technical
+verb. These are contextual prompt comparisons, not detector or replacement
+rules; existing sessions retain their saved criteria. See
+[Decision criteria](../data/writing/ja/criteria.md#distinguish-decisions-by-the-actual-operation).
+
 [Back to README](../README.md)
 
 ## Explicit differences and decision conditions

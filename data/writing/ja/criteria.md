@@ -6,6 +6,7 @@
 - Identify human actors by their supported roles
 - Replace abstraction with the thing being discussed
 - Give weak predicates a concrete action or consequence
+- Distinguish decisions by the actual operation
 - Distinguish communication responses from function returns
 - Distinguish arrival wording by the actual operation
 - Explain metaphorical operations from evidence
@@ -135,6 +136,34 @@ a change mechanism. Literal entrances and clearly established technical usage
 can remain. For keep, explain the role and why retaining the wording serves the
 reader better than the considered direct alternative; naming its referent alone
 or appending the original sentence to a generic reason is insufficient.
+
+## Distinguish decisions by the actual operation
+
+Compare `決めます` with `決定します` and with the operation actually described.
+`決定します` can suit a technical book's voice, but it is not automatically more
+precise. Identify the actor, target, evidence, condition, and processing stage
+before choosing the verb; honor the author's terminology preference while
+preserving the facts and modality.
+
+| Intended operation | Faithful comparison when supported |
+| --- | --- |
+| Choosing a tool, information, or an improvement target | `呼び出すツールを選択します`・`外部へ送信する情報を選択します`; retain selection criteria and the scope of the choice |
+| Computing an input budget or capacity limit | `入力予算を算出します`; establish the calculation before using 算出, and retain reservations, margins, units, and limits |
+| Specifying a configured value | `上限を設定します`; do not imply automatic calculation or runtime mutation when only a design choice is established |
+| Classifying an execution state or permission outcome | `実行全体の状態を判定します`・`実行可否を判定します`; preserve the observations, rules, and timing used for the classification |
+| Assessing whether records can serve as evidence | `証拠として利用できるかを判断します`; do not turn limited evidence into a guaranteed outcome |
+| Establishing design policies, evaluation conditions, or expected states | `評価前に条件を定めます`; retain who establishes them and when, rather than adding a runtime check |
+| Deciding the next process, adoption start, or ordering | `次の処理を決定します`・`適用を開始する依頼を決定します`; do not invent an algorithm, tie-break direction, or approval step |
+| Describing how inputs or configuration determine a result | `最終設定は、読み込んだファイルと値を反映する順序によって定まります`; preserve every contributing factor and do not attribute decision-making to an inert value |
+
+A sentence can contain different operations: `呼び出すツールを選択し、どの操作を
+同時に進められるかを判定します` distinguishes selection from eligibility.
+Compare the complete paragraph and related tables, figures, and alternative text
+within the authorized scope. Do not replace every occurrence with `決定します`,
+and do not add calculation, configuration, inspection, execution, or approval
+merely to make a verb more technical. Record the original, actual alternative,
+and passage-specific reason. These are contextual prompt criteria, not automatic
+replacement instructions; existing sessions retain their saved criteria.
 
 ## Give weak predicates a concrete action or consequence
 
