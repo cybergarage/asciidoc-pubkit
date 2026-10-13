@@ -61,6 +61,14 @@ For `行う`, consult the saved "Distinguish operations from responsibility"
 comparisons before choosing an action verb or responsibility wording. Record
 the actual alternative; a detector hint is not a replacement instruction.
 
+For `渡す`, `受け渡す`, `受け渡し` and related inflections, use the saved
+"Distinguish input, transmission, delegation, inheritance, and handoff"
+comparisons when the selected CLI provides them. Record each actual alternative
+and reason, including retained wording. Inspect authorized tables, figures and
+alternative text for agreement; record protected or out-of-scope proposals
+separately. Detector hints do not prescribe replacements. If the selected version
+lacks these comparisons, report that limitation and retain historical sessions.
+
 Compare broad or everyday wording with a concrete alternative using the saved
 shared terminology criteria, even when the original is understandable. Keep
 records must explain the specific comparison, not merely summarize the passage.

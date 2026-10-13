@@ -148,3 +148,14 @@ Existing sessions keep their saved criteria. Detection and automatic replacement
 behavior are unchanged. Manual accept/reject examples are maintained in
 `test/fixtures/phase_terminology.ja.json`; their labels and regression tests do
 not measure AI proofreading accuracy.
+
+## Input, transmission, and handoff (unreleased)
+
+Use the canonical [transfer comparisons](../data/writing/ja/criteria.md#distinguish-input-transmission-delegation-inheritance-and-handoff)
+for `渡す` and related forms. Compare model input construction, API transmission,
+arguments, configuration, notifications, delegation, continuity and artifact
+handoff before revising or retaining a passage. `連携` describes cooperation;
+it must not hide a concrete data operation. Preserve conditions, modality,
+negation, recipients and order. The bundled skill routes focused reviews to
+saved criteria; existing sessions retain their original criteria.
+No detector or automatic replacement rule is added.

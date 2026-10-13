@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add operation-specific `渡す` / `受け渡し` comparisons for input, transmission,
+  arguments, configuration, notification, delegation, inheritance and handoff.
+  Add 18 manual comparison examples, judge guidance, frozen-session regressions
+  and bundled skill routing. Detector and replacement behavior are unchanged;
+  AI proofreading improvement has not been measured.
+
 - Add contextual `分かれます` comparisons for purpose/type classification,
   responsibility sharing, execution branching, content partitioning, route
   differences and table correspondences. Preserve classification actors,

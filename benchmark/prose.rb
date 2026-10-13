@@ -82,6 +82,14 @@ module ProseBenchmark
     comparing 置き換えません with みなしません or 扱えません. Retain literal
     value, history, and implementation replacement; preserve rules separately
     from unavailable uses. Missing evidence does not imply failure or zero usage.
+    Distinguish input, transmission, delegation, inheritance, and handoff
+    when comparing 渡す and 受け渡し. Model input construction is not API
+    transmission; function arguments are not later notifications. Value delivery
+    alone does not establish delegation. Preserve continuity separately from
+    persistence and ownership transfer; handoff does not prove acceptance or
+    downstream completion. Cooperation must not obscure a specific data action.
+    Preserve recipients, order, negation and capability; compare before retaining
+    a general or bidirectional contract, without narrowing it to one-way sending.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an
     omitted or changed established fact or violated explicit editorial constraint;
     needs-evidence for newly asserted details that cannot be established;

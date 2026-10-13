@@ -274,6 +274,37 @@ system. Active and passive voice must preserve the same actor and responsibility
 Do not choose a more impressive synonym merely to vary sentence endings. Keep
 the technically correct verb when it names the real operation.
 
+## Distinguish input, transmission, delegation, inheritance, and handoff
+
+Compare `渡す`, `受け渡す`, `受け渡し` and related inflections with the actual
+operation. Identify the actor, source, destination, value and timing before
+choosing a full-sentence alternative; understandable everyday wording alone
+is not a reason to skip comparison.
+
+| Context | Operation-specific comparison |
+| --- | --- |
+| Constructing model input | `ツール結果をモデル入力に追加します` describes input construction; use `送信します` only for the actual model API request. |
+| A local function call | `取消シグナルを引数として指定します` describes an argument; it does not establish transmission or a later cancellation notification. |
+| Configuration | `接続先を設定します` describes configuration; a declaration can specify its purpose without claiming that the type executes configuration. |
+| Event delivery | `購読者にイベントを通知します` names notification; transmission does not establish reception, processing, or acknowledgment. |
+| Delegating work | `子エージェントへ処理を委譲します` describes responsibility for execution; supplying a value alone does not establish delegation. |
+| Continuing with existing history or state | `再開時に会話履歴を引き継ぎます` describes continuity; do not add persistence, full history, ownership transfer, or automatic resumption. |
+| Output used by a later stage | `工程の出力を次の工程の入力として指定します` names the input/output relationship; do not infer shared mutable state. |
+| Delivering an artifact or request to a next owner | Compare `成果物を後続の担当へ引き渡します` when delivery is the subject; do not imply ownership release, acceptance, or completed downstream work. |
+| Cooperation between components | Compare `連携します` only when cooperation is the subject; name input, transmission or notification when describing a particular data operation. |
+| A general or bidirectional interface contract | Compare a concrete operation before retaining `データの受け渡し`; retain a general contract when a one-way verb would narrow its scope. |
+
+Preserve capability, conditions, negation, recipients, responsibility and order.
+In particular, `送信しません` must not become `受信しません`, and `入力できます`
+must not become an assertion that input occurs. `引き継ぐ` and `引き渡す` are
+contextual alternatives, not universal technical synonyms. Keep code identifiers,
+reference IDs and URLs. Check authorized tables, figures and alternative text
+against the revised prose, recording protected or out-of-scope proposals separately.
+Record the original, actual alternative and reason for each revise or keep decision.
+These advisory comparisons add no detector or automatic replacement rule. Saved
+sessions retain their original criteria; mechanical verification keeps
+`meaning_verified: false`. AI proofreading improvement has not been measured.
+
 ## Distinguish communication responses from function returns
 
 Classify the operation before changing `返す`: responding to a communication

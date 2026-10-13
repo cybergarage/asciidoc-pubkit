@@ -26,6 +26,10 @@ sharing, branching and partitioning by context; see
 [classification and related relationships](docs/writing.md#classification-and-related-relationships-unreleased).
 These prompt criteria add no detector or automatic replacement rules.
 
+The unreleased checkout also compares `渡す` and `受け渡し` by their actual
+operation; see [input, transmission, and handoff](docs/writing.md#input-transmission-and-handoff-unreleased).
+These comparisons and skill routing do not automatically replace manuscript text.
+
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
 

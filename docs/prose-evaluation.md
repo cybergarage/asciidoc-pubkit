@@ -379,3 +379,16 @@ these distinctions. Normal tests check fixture integrity, existing MeCab detecti
 and saved criteria delivery, not whether an AI judges the pairs correctly.
 AI proofreading improvement has not been measured. Fix a fresh calibration and
 rubric baseline before comparing AI results with an earlier run.
+
+## Transfer wording comparisons (unreleased)
+
+`test/fixtures/transfer_wording.ja.json` contains 18 manual examples: nine accept,
+eight reject and one needs-evidence. They contrast input with transport, arguments
+with events, value delivery with delegation, continuity with persistence, and
+handoff with acceptance or completion. They also preserve bidirectional contracts,
+negation and capability. This standalone fixture is not added to the measured
+benchmark corpus or calibration runner. Tests check fixture integrity and delivery
+of criteria to writing and saved review prompts, including historical-session
+preservation; they do not establish AI judgment accuracy. The updated judge rubric
+requires a compatible fresh baseline for future AI comparisons. No AI evaluation
+was run; improvement remains unmeasured and `meaning_verified` remains false.
