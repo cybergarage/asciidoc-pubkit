@@ -21,6 +21,11 @@ replacements, and Japanese manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
 
+The unreleased checkout compares `分かれます` with classification, responsibility
+sharing, branching and partitioning by context; see
+[classification and related relationships](docs/writing.md#classification-and-related-relationships-unreleased).
+These prompt criteria add no detector or automatic replacement rules.
+
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
 

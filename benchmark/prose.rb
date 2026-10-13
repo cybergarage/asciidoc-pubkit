@@ -57,6 +57,12 @@ module ProseBenchmark
     editorial_constraints to calibration pairs; synonymy does not excuse violating
     an author terminology preference. Do not justify vague wording by rejecting an
     unsupported stronger alternative such as physical isolation.
+    Distinguish classification, responsibility sharing, branching, and partitioning
+    when comparing 分かれます. State the classification axis and preserve whether
+    the actor is a reader or a program. A defined category scheme is not merely
+    a possible classification. Preserve branch conditions, both selected paths,
+    counts and joins; branching does not establish parallel execution. Do not
+    turn table correspondences into successful inspection or routes into isolation.
     Distinguish direct operation denial, unavailable capability, partial negation,
     insufficient conditions, and inference limits. Preserve negation scope and
     strength; never turn partial negation into total denial. Missing observation

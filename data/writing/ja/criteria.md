@@ -332,6 +332,44 @@ These criteria do not authorize automatic replacement. Old sessions retain their
 saved rules and criteria; verification remains mechanical, with meaning_verified
 false. Effectiveness of AI proofreading has not been measured by these examples.
 
+## Distinguish classification, responsibility sharing, branching, and partitioning
+
+Compare `分かれます` and related inflections with the relationship actually
+explained. Types, purposes, responsibilities, execution paths, and partitions
+are different claims; do not replace them all with `分類できます`.
+
+| Context | Faithful comparison |
+| --- | --- |
+| Organizing tools by purpose | `組み込みツールは、用途に応じて検索、読み込み、変更、コマンド実行に分類できます` names the classification axis without claiming a runtime classifier. |
+| An established category definition | `仕様では、要求を読み込みと変更に分類しています` describes a defined classification; do not weaken it to a possible reader classification. |
+| Assignment of responsibilities | `実行と採点、記録の検査、結果の比較は、次の担当が分担します` names responsibility sharing; retain each owner and operation. |
+| Execution-path branching | `判定処理が両方を返すと、処理が二つの工程へ分岐します` retains the condition and both destinations. |
+| Partitioning conversation content | `要約対象と原文で保持する範囲をターンの区切りで分割します` names the two ranges and split boundary. |
+| Different loading routes | `ユーザー全体の指示は、プロジェクトの指示とは異なる経路で読み込みます` states the route relationship, not a category. |
+| A table of checks and targets | `次の表に、検査対象と各検査で確認する内容を示します` introduces the correspondence without asserting successful checks. |
+
+State the classification axis: purpose, type, or response after failure, for
+example. Reader classification (`分類できます`) does not establish that a
+program classifies values. Retain actual classification behavior, a defined
+category scheme, and available classification capability separately. Terms such
+as `分類されます` or `次の種類があります` must match that sentence's role;
+modality alone does not establish a runtime actor.
+
+Do not turn responsibility sharing into classification or independence. Do not
+turn branching into a reader capability, exclusive choice, or guaranteed parallel
+execution. Preserve both destinations when both are selected, branch conditions,
+counts, order, and join conditions. Partitioning is a boundary within one object;
+it does not imply duplication, deletion, or classification of that object.
+Name actual route differences without inventing isolation. Table introductions
+should name their targets and correspondence rather than promise successful
+inspection. Retain literal separation or other established uses after a concrete
+comparison when classification, branching, or partitioning would misstate them.
+
+These comparisons add no detector or automatic replacement rule. Existing
+sessions retain their saved criteria; new sessions capture the updated criteria.
+Manual comparison labels and prompt-delivery tests do not measure AI proofreading
+accuracy or establish semantic correctness.
+
 ## Explain metaphorical operations from evidence
 
 Inspect expressions such as `地味に効く`, `側に倒す`, `時間を溶かす`, and

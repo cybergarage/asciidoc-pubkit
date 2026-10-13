@@ -14,6 +14,22 @@ replacement. They preserve conditions, negation strength, missing evidence and
 responsibility. These unreleased criteria do not change detection or perform
 automatic replacements; existing sessions retain their saved criteria.
 
+## Classification and related relationships (unreleased)
+
+Compare `分かれます` by the actual relationship: classification by purpose or
+type, assignment of responsibilities, execution-path branching, content
+partitioning, route differences, or the correspondence presented in a table.
+`分類できます` may describe reader organization without a runtime classifier;
+a defined category scheme and actual classification behavior need their own
+wording. Preserve owners, conditions, destinations, counts, modality and joins;
+branching alone does not guarantee parallel execution or exclusive choice.
+See [the canonical comparisons](../data/writing/ja/criteria.md#distinguish-classification-responsibility-sharing-branching-and-partitioning).
+
+Writing commands and new heading, prose and list sessions include this guidance.
+Existing sessions keep their saved criteria. Detector and automatic replacement
+behavior are unchanged. Manual comparison fixtures and regression tests check
+criteria delivery and session preservation, not measured editorial accuracy.
+
 `writing criteria` prints the packaged common criteria. `writing prompt` adds
 task instructions around those same criteria. Neither command needs an AsciiDoc
 file, a review session, MeCab, or network access. Both accept `--lang ja` and

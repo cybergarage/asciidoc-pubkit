@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add contextual `分かれます` comparisons for purpose/type classification,
+  responsibility sharing, execution branching, content partitioning, route
+  differences and table correspondences. Preserve classification actors,
+  modality, branch conditions and join requirements. Add manual accept/reject
+  fixtures and frozen-session regressions; detector and replacement behavior
+  are unchanged. AI proofreading improvement has not been measured.
+
 - Add contextual stopping comparisons for termination, cancellation requests,
   pre-execution refusal, unstarted work, disabled operations and resumable pauses.
   Add manual comparison fixtures and saved-prompt regressions, preserving

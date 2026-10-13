@@ -27,6 +27,21 @@ regression tests check fixture integrity and delivery of the criteria through
 writing and saved review prompts; they do not run an AI judge, measure Japanese
 quality, or establish semantic correctness. Detector rules are unchanged.
 
+## Classification and related relationships (unreleased)
+
+`test/fixtures/classification_wording.ja.json` contains fourteen manually labeled
+source/revision pairs. Accepted examples identify classification axes, defined
+categories, responsibilities, branching, partition boundaries, loading routes
+and table correspondences. Rejection examples cover invented runtime classifiers,
+weakened defined categories, classification substituted for branching, lost
+conditions or joins, invented parallel execution and inspection success.
+
+This fixture is separate from the runner's calibration corpus. The judge rubric
+also distinguishes these relationships. Tests check fixture integrity, rubric
+instructions, delivery through writing and all three review scopes, and historical
+session preservation. They do not invoke an AI judge or measure editing accuracy.
+No detector or automatic replacement rules are added.
+
 ## Three different evaluations
 
 | Evaluation | Input and method | What the number means |
