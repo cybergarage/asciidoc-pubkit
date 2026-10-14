@@ -90,6 +90,14 @@ module ProseBenchmark
     downstream completion. Cooperation must not obscure a specific data action.
     Preserve recipients, order, negation and capability; compare before retaining
     a general or bidirectional contract, without narrowing it to one-way sending.
+    Check the actor of each clause and adjacent sentence, including omitted
+    subjects after a conditional clause. Separate a model requesting an operation
+    from the agent executing it, a user rejecting it from the program skipping it,
+    and runtime control from caller investigation. Accept evidence-supported actor
+    clarification while preserving modality and conditions. Keep clear continued
+    subjects and table roles without forcing repetition. A newly assigned actor or
+    approver requires evidence; actor clarification must not add automatic checks,
+    change permission ownership, or claim that a request completed.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an
     omitted or changed established fact or violated explicit editorial constraint;
     needs-evidence for newly asserted details that cannot be established;

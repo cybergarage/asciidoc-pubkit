@@ -1,5 +1,12 @@
 # Writing commands
 
+The unreleased [actor-change criteria](../data/writing/ja/criteria.md#clarify-omitted-subjects-when-actors-change)
+compare omitted and explicit subjects across clauses, sentences and table roles.
+They distinguish requesting, approving, executing and investigating, preserve
+clear continued subjects, and require evidence before naming an actor. These are
+contextual review criteria, with no new subject-omission detector or automatic
+replacement. New sessions save the criteria; older sessions retain their originals.
+
 The [identification comparisons](../data/writing/ja/criteria.md#distinguish-identification-from-conceptual-separation)
 compare `区別できます` with `判別`, `識別`, `判定`, and separate checks according
 to evidence and purpose. They preserve conceptual separation, capability,

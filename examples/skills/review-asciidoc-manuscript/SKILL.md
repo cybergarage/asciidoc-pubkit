@@ -50,6 +50,15 @@ Record the supported actor, target, conditions, faithful alternative and reason.
 A useful reading sequence alone is not a keep rationale. Follow the author's
 voice without inventing an actor or turning runtime responsibility into a test.
 
+Review actor changes through the saved common criteria, including entries
+without detector candidates. Compare an explicit subject when adjacent clauses
+or sentences change responsibility; establish the actor from context and evidence,
+and record the original, alternative and reason. Keep clear continued subjects
+without forcing repetition. Inspect related authorized table/figure roles in their
+own scopes; report missing actor evidence rather than assigning a plausible role.
+If the selected CLI lacks the actor-change examples, report that criteria limitation
+and retain saved sessions; keep the canonical examples in pubkit.
+
 For an assigned content guide or learning objective, record the whole-paragraph
 viewpoint and any repeated guidance along with the source, alternative and reason.
 Use pubkit's saved common criteria for the judgment. Inventory related prefaces,

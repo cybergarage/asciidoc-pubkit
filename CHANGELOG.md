@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Clarify omitted subjects when actors change across clauses, sentences and table
+  roles. Add twelve source/revision calibration pairs and saved-session coverage
+  for paragraphs without detector candidates. Preserve continued subjects,
+  evidence limits, modality and permission ownership; route bundled review skills
+  to the shared criteria. No detector changes or measured AI quality improvement.
+
 - Add operation-specific `渡す` / `受け渡し` comparisons for input, transmission,
   arguments, configuration, notification, delegation, inheritance and handoff.
   Add 18 manual comparison examples, judge guidance, frozen-session regressions

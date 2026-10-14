@@ -1,12 +1,23 @@
 # Prose evaluation
 
+## Actor clarity comparisons (unreleased)
+
+Twelve additional calibration pairs cover conditional actor changes, user refusal
+versus program control, caller investigation, continued subjects, optional
+repetition, table roles, unsupported actors/approvers, invented automatic checks,
+and capability changed into behavior. The judge rubric checks each clause's actor
+and evidence. Candidate-free paragraphs remain in review prompts. Mechanical
+verification can accept a wrong actor while keeping `meaning_verified: false`;
+these regression tests and calibration data do not measure AI review quality.
+
+
 Use a fixed set of Japanese technical paragraphs to compare detector or review
 criteria changes against a project-defined baseline. Keep detection performance,
 readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
 This guide describes the development checkout, including the
-`technical-prose-v3` corpus and 110 revision calibration pairs. The sentence-ending
+`technical-prose-v3` corpus and 122 revision calibration pairs. The sentence-ending
 criteria and twelve additional pairs, plus the flow guidance and four further
 pairs, are included in version 1.2.0.
 The evaluation runner is not an

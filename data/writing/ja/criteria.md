@@ -3,6 +3,7 @@
 ## Contents
 
 - Start with the paragraph's technical purpose
+- Clarify omitted subjects when actors change
 - Identify human actors by their supported roles
 - Replace abstraction with the thing being discussed
 - Give weak predicates a concrete action or consequence
@@ -42,6 +43,43 @@ If the summary is impossible, repair the paragraph's argument before polishing
 individual phrases. A short sentence is not automatically clear; omitted
 subjects, objects, complements, and referents must still be recoverable from the
 adjacent sentences.
+
+## Clarify omitted subjects when actors change
+
+Identify the actor of each action from the complete paragraph and its evidence.
+A subject in a conditional or subordinate clause does not automatically identify
+the main clause's actor. When a model requests an operation but an agent executes
+it, or a user rejects an operation but a program skips it, name the main clause's
+actor. Apply the same comparison across adjacent sentences when responsibility
+changes between design, request generation, approval, execution, recording, and
+investigation. A possible reading recovered from context alone does not justify
+keeping an omission that invites a different actor reading.
+
+Compare an explicit subject while preserving the same facts and modality:
+
+| Passage and supported context | Comparison |
+| --- | --- |
+| The agent controls file changes: `モデルが変更を要求しても、許可されるまではファイルを変更しません。` | `モデルが変更を要求しても、エージェントは許可されるまではファイルを変更しません。` separates requesting from executing without naming an unsupported approver. |
+| The program applies the user's decision: `利用者が拒否した場合、その要求を実行しません。` | `利用者が拒否した場合、プログラムはその要求を実行しません。` separates refusal from execution control. |
+| The preceding sentence names the agent: `エージェントはファイルを読み込みます。その結果を会話へ追加します。` | Compare repeating `エージェントは` in the second sentence; retain omission when both actions belong to that agent and repetition adds no useful distinction. |
+| A table separates runtime results from recovery steps | Identify the runtime actor and the caller investigating the result; use clear row/column roles instead of repeating subjects in every cell. |
+
+When runtime failure is followed by a checking or recovery procedure, establish
+who investigates it. Do not assign a caller's check to the failing tool, or turn
+a program's automatic check into a developer's manual test. Likewise, distinguish
+an API provider from an adapter that parses its response. Name only roles supported
+by the passage or owning implementation; do not assume every check is performed
+by a user, developer, or agent.
+
+Keep a continued subject, a clear table label, a noun-phrase heading, or a suitable
+passive construction when an explicit actor would only repeat context or misstate
+the responsibility. These criteria do not require a subject in every sentence.
+If evidence cannot identify an actor, record needs-evidence rather than supplying
+a plausible one. An explicit actor must not introduce automatic execution,
+approval ownership, permission changes, inspections, or guarantees. Preserve
+conditions, partial negation, capability, and the difference between a request
+and its completion. Record the original, faithful alternative, and specific reason
+for revising or retaining each assigned passage, even without detector candidates.
 
 ## Identify human actors by their supported roles
 

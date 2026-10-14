@@ -44,6 +44,150 @@
   ],
   "manual_revision_cases": [
     {
+      "id": "actor-model-request-agent-execution",
+      "source": "エージェントは操作の許可を管理します。モデルが変更を要求しても、許可されるまではファイルを変更しません。",
+      "revision": "エージェントは操作の許可を管理します。モデルが変更を要求しても、エージェントは許可されるまではファイルを変更しません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "The preceding agent owns execution control; the conditional model remains the requester."
+    },
+    {
+      "id": "actor-wrong-model-executor",
+      "source": "エージェントは操作の許可を管理します。モデルが変更を要求しても、許可されるまではファイルを変更しません。",
+      "revision": "エージェントは操作の許可を管理します。モデルが変更を要求しても、モデルは許可されるまではファイルを変更しません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "Assigns file execution to the model instead of the established agent."
+    },
+    {
+      "id": "actor-user-refusal-program-control",
+      "source": "プログラムは利用者の返答で操作を制御します。利用者が拒否した場合、その要求を実行しません。",
+      "revision": "プログラムは利用者の返答で操作を制御します。利用者が拒否した場合、プログラムはその要求を実行しません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "Names the program applying the refusal while keeping the user as the decision maker."
+    },
+    {
+      "id": "actor-caller-investigation",
+      "source": "呼び出し側の復旧手順では、ツールが失敗した場合、対象パスを確認してから再実行します。",
+      "revision": "呼び出し側の復旧手順では、ツールが失敗した場合、呼び出し側は対象パスを確認してから再実行します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "The documented recovery procedure belongs to the caller, not the failing tool."
+    },
+    {
+      "id": "actor-continued-subject",
+      "source": "エージェントはファイルを読み込みます。その結果を会話へ追加します。",
+      "revision": "エージェントはファイルを読み込みます。その結果を会話へ追加します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "The same agent performs both actions; no repetition is required."
+    },
+    {
+      "id": "actor-optional-repetition",
+      "source": "エージェントはファイルを読み込みます。その結果を会話へ追加します。",
+      "revision": "エージェントはファイルを読み込みます。エージェントはその結果を会話へ追加します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "Explicit repetition preserves both actions and their actor, though omission is also clear."
+    },
+    {
+      "id": "actor-table-role",
+      "source": "表の「利用者が行う確認」欄には「対象パスと変更内容を確認します」と記載します。",
+      "revision": "表の「利用者が行う確認」欄には「対象パスと変更内容を確認します」と記載します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "The column label identifies the checking actor; adding a subject to each cell is unnecessary."
+    },
+    {
+      "id": "actor-unknown-actor",
+      "source": "失敗した場合は記録を確認します。",
+      "revision": "失敗した場合はエージェントが記録を確認します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "The source does not establish whether an agent, developer, or caller checks the record."
+    },
+    {
+      "id": "actor-invented-automatic-check",
+      "source": "表の「利用者が行う確認」欄には「対象パスと変更内容を確認します」と記載します。",
+      "revision": "表の「利用者が行う確認」欄には「エージェントが対象パスと変更内容を自動検査します」と記載します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "Changes a user check into automatic agent inspection."
+    },
+    {
+      "id": "actor-capability-to-behavior",
+      "source": "呼び出し側は対象の状態を確認できます。",
+      "revision": "呼び出し側は対象の状態を確認します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "Changes a capability into asserted behavior while retaining the actor."
+    },
+    {
+      "id": "actor-unsupported-approver",
+      "source": "エージェントは許可されるまではファイルを変更しません。",
+      "revision": "利用者が許可するまでは、エージェントはファイルを変更しません。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "Permission may come from configured policy; the approver is not established."
+    },
+    {
+      "id": "actor-unsupported-failure-owner",
+      "source": "処理が失敗した場合は記録を調査します。",
+      "revision": "処理が失敗した場合は開発者が記録を調査します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "condition",
+        "responsibility"
+      ],
+      "reason": "The passage does not identify who investigates the failure; technical context alone does not establish a developer."
+    },
+    {
       "id": "replacement-approval",
       "source": "画面を表示できなかったことを、利用者が承認したことに置き換えません。",
       "revision": "画面を表示できなかったことを、利用者の承認とはみなしません。",
