@@ -42,6 +42,13 @@ For each assigned scope:
    the baseline. For integrity failures, preserve evidence and report the blocker.
    Finish verification before scanning the next scope's current manuscript.
 
+For headings containing `区別`, consult the saved heading criteria's
+"Distinguish comparison subjects from distinguishing actions" section when
+available. Compare the section's actual subjects and role using its body as
+read-only evidence; record the alternative even without a detector candidate.
+If the selected version lacks this section, report the criteria limitation and
+retain existing sessions. Keep canonical examples in asciidoc-pubkit.
+
 Before judging a targeted sentence ending in prose or list text, classify its
 role using the saved common criteria: content guidance, an actual checking
 procedure, runtime behavior, or a learning objective. Read the whole paragraph

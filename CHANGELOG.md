@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add heading comparisons for `区別`, `違い`, `相違`, relationships and
+  observation limits. Recheck comparison subjects against the body, preserve
+  actual distinguishing actions, and route review skills to the saved heading
+  criteria. Add snapshot and title-only preservation regressions. No detector
+  or automatic replacement changes; AI proofreading quality is not measured.
+
 - Clarify omitted subjects when actors change across clauses, sentences and table
   roles. Add twelve source/revision calibration pairs and saved-session coverage
   for paragraphs without detector candidates. Preserve continued subjects,

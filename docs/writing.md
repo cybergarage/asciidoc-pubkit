@@ -166,3 +166,15 @@ it must not hide a concrete data operation. Preserve conditions, modality,
 negation, recipients and order. The bundled skill routes focused reviews to
 saved criteria; existing sessions retain their original criteria.
 No detector or automatic replacement rule is added.
+
+## Comparison headings (unreleased)
+
+Heading review prompts include the saved "Distinguish comparison subjects from
+distinguishing actions" criteria. Compare `違い` / `相違` for differences,
+`関係` for source correspondence, or a confirmation scope for observation limits.
+Both `違い` and `相違` are noun phrases. Retain `区別` for actual distinguishing
+actions and follow the book's tone. Recheck the compared subjects using the body;
+changing a heading does not authorize body edits. Advisory examples do not add
+detection or automatic replacement rules. New sessions save these criteria;
+existing sessions retain their original criteria. The regression fixtures test
+prompt delivery and mechanical preservation, not AI editorial accuracy.
