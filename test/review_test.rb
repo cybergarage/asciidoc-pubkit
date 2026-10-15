@@ -436,6 +436,8 @@ class ReviewTest < Minitest::Test
       saved = json('manifest.json')['writing_criteria']
       assert_includes saved, 'Identify human actors by their supported roles'
       assert_includes saved, 'not imply separate people, new permissions'
+      assert_includes saved, 'Distinguish receiving, returning, and their actual operations'
+      assert_includes saved, 'Keep `値を返す`, `Promiseを返す`'
       assert_includes saved, 'Separate explanatory guidance from actual checks'
       assert_includes saved, 'Review sentence endings by their role'
       original_criteria = AsciidocPubkit::Writing.method(:prompt_criteria)

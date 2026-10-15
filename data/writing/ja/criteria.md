@@ -9,6 +9,8 @@
 - Give weak predicates a concrete action or consequence
 - Distinguish stopping, cancellation requests, and non-execution
 - Distinguish decisions by the actual operation
+- Distinguish rules, definitions, and configured values
+- Distinguish receiving, returning, and their actual operations
 - Distinguish communication responses from function returns
 - Distinguish arrival wording by the actual operation
 - Explain metaphorical operations from evidence
@@ -193,7 +195,7 @@ preserving the facts and modality.
 | Specifying a configured value | `上限を設定します`; do not imply automatic calculation or runtime mutation when only a design choice is established |
 | Classifying an execution state or permission outcome | `実行全体の状態を判定します`・`実行可否を判定します`; preserve the observations, rules, and timing used for the classification |
 | Assessing whether records can serve as evidence | `証拠として利用できるかを判断します`; do not turn limited evidence into a guaranteed outcome |
-| Establishing design policies, evaluation conditions, or expected states | `評価前に条件を定めます`; retain who establishes them and when, rather than adding a runtime check |
+| Establishing design policies, evaluation conditions, or expected states | `評価前に条件を規定します`; compare rule-making with definition and configuration below, retaining who establishes the conditions and when |
 | Deciding the next process, adoption start, or ordering | `次の処理を決定します`・`適用を開始する依頼を決定します`; do not invent an algorithm, tie-break direction, or approval step |
 | Describing how inputs or configuration determine a result | `最終設定は、読み込んだファイルと値を反映する順序によって定まります`; preserve every contributing factor and do not attribute decision-making to an inert value |
 
@@ -205,6 +207,39 @@ and do not add calculation, configuration, inspection, execution, or approval
 merely to make a verb more technical. Record the original, actual alternative,
 and passage-specific reason. These are contextual prompt criteria, not automatic
 replacement instructions; existing sessions retain their saved criteria.
+
+## Distinguish rules, definitions, and configured values
+
+Compare `定める` with `規定する` when the passage establishes rules,
+specifications, evaluation conditions, or responsibilities. Honor the author's
+technical terminology preference while retaining the actor, timing, conditions,
+negation, and modality. Greater formality alone does not establish a more exact
+operation; compare these equally faithful alternatives in the complete paragraph:
+
+| Intended operation | Faithful comparison when supported |
+| --- | --- |
+| Stating a rule, contract, or evaluation condition | `評価前に条件を規定します`・`APIの提供元が要求の形式を規定します`; preserve who specifies the rule and when |
+| Describing a structure, schema, or workflow | `工程と分岐を定義します`; do not imply compilation or execution from a definition alone |
+| Specifying a configured value or destination | `上限や接続先を設定します`; do not turn a design policy into an actual runtime mutation |
+| Describing a type used to supply values | `RunLimitsは上限を指定する型です`; a type declaration does not itself configure, enforce, or execute a limit |
+| Deciding whether an option applies | `Skillを追加するか決定します`; do not substitute general rule-making for a particular adoption decision |
+| Describing a result determined by inputs | `保存方式は実装によって定まります`; retain the causal factors rather than assigning rule-making to an inert value |
+
+Write different operations separately when they occur in one sentence:
+`許可範囲を規定し、通知先を設定します` distinguishes an authorization rule
+from a configured destination. Preserve capability: `条件を規定できます` must
+not become an assertion that the conditions have been specified or enforced.
+A rule can permit ignoring a notification; `無視できると仕様に規定されています`
+must not become an obligation to ignore it. Recommendations and plans do not
+become requirements merely because `規定` sounds more technical.
+
+Do not reject `規定します` merely because `定めます` is understandable or
+synonymous when the author prefers the former. Conversely, do not replace every
+`定める` with `規定する`, ban valid plain wording, or add calculation,
+configuration, checks, enforcement, approvals, or guarantees. Distinguish defining
+a policy from enforcing it at runtime. Record the original, actual alternative,
+and passage-specific reason; check related tables, figures, and alternative text
+within the authorized scope. Existing sessions retain their saved criteria.
 
 ## Distinguish stopping, cancellation requests, and non-execution
 
@@ -311,6 +346,41 @@ system. Active and passive voice must preserve the same actor and responsibility
 
 Do not choose a more impressive synonym merely to vary sentence endings. Keep
 the technically correct verb when it names the real operation.
+
+## Distinguish receiving, returning, and their actual operations
+
+Treat `受け取る` and `返す` as contextual review cues, not banned verbs.
+Identify the actor, source, destination, data, condition, and processing stage
+before choosing a more specific expression. Compare a faithful full sentence;
+a blanket change to `取得する`, `受信する`, or `返却する` is not a policy.
+
+| Wording to inspect | Operation-specific comparison |
+| --- | --- |
+| 利用者から依頼を受け取る | 依頼を受け付ける for request intake; do not imply authorization, successful admission, or execution merely from receipt |
+| 応答イベントを受け取る | 応答イベントを受信する when communication or a response stream is established; do not invent a network transport for a local callback |
+| 関数が設定を受け取る | 設定を引数として受け取る when describing arguments; distinguish constructor configuration, callback arguments, and external input |
+| 検索結果・ファイル内容を受け取る | 取得する・読み込む when retrieval or reading is the operation; preserve pushed events and unsolicited delivery rather than making every receipt an active lookup |
+| モデルが操作要求を返す | モデルが操作要求を生成する when the model's generation is the subject; an API or adapter returning that response is a different stage |
+| 応答本文を標準出力へ返す | 応答本文を標準出力へ出力する; stdout writes and a function's return value are different operations |
+| 実行側が結果をモデルへ返す | 実行側が結果をモデルの入力へ追加する when input assembly is established; otherwise describe result delivery without assigning assembly to the tool or execution environment |
+| 利用者が判断を返す | 利用者が判断を伝える when communicating a decision; keep its recipient, timing, approval condition, and capability |
+| 実行関数が例外を返す・呼び出し側が例外を受け取る | 例外を送出する・捕捉する only when throw/catch or equivalent behavior is established; preserve returned error values as return values |
+
+Keep `値を返す`, `Promiseを返す`, and an API returning a response when they
+accurately describe a return value or request/response relationship. Compare
+`戻り値として返却する` before retaining the plain verb; a longer nominalized
+synonym alone does not improve an already precise return operation. Where the
+input/output distinction is the subject, naming `引数` and `戻り値` may be clearer
+than repeating receiving and returning verbs.
+
+Do not move responsibility while making the wording specific. An execution
+environment returning stdout or an error does not by itself assemble model
+input. A service returning a display message does not necessarily display it;
+a UI may own that step. A cancellation signal passed as an argument and its
+later cancellation notification are separate events: changing receiving wording
+must not move stopping to argument delivery. Preserve negation, modality,
+conditions, data formats, and ownership; obtain missing implementation evidence
+rather than inventing a receiver, transport, exception, or approval step.
 
 ## Distinguish input, transmission, delegation, inheritance, and handoff
 
@@ -724,8 +794,10 @@ into disconnected bullets or impose an order on independent items.
 ## Distinguish replacement from interpretation and permitted use
 
 Compare `置き換えません` and related forms with what the passage actually denies.
-Use `みなしません` for a rule against interpreting one event or result as another,
-and `扱えません` when it cannot serve a specified evaluation or check. Preserve
+Compare direct predicates for interpretation and evidence limits, including
+`確認できません`, `判断できません`, `評価できません`, and `証拠にはなりません`.
+Retain `みなしません` when it specifies a discretionary interpretation rule,
+and use `扱えません` when it cannot serve a specified evaluation or check. Preserve
 actual value, history, or implementation replacement when that is the operation.
 These are contextual comparisons, not automatic substitution instructions.
 
@@ -733,10 +805,29 @@ These are contextual comparisons, not automatic substitution instructions.
 | --- | --- |
 | 画面を表示できなかったことを、利用者が承認したことに置き換えません。 | 画面を表示できなかったことを、利用者の承認とはみなしません。 Retain the rule against interpreting display failure as approval. |
 | MCPの進捗通知は、この終了確認を置き換えません。 | MCPの進捗通知は、処理が終了したことの確認としては扱えません。 State the notice's use limit, not that the operation never finishes. |
-| 固定応答でプログラムの分岐が通った結果を、モデルの判断品質の評価に置き換えません。 | 固定応答でプログラムの分岐が通った結果を、モデルの判断品質を評価した結果とはみなしません。 Keep fixed-response testing distinct from actual-model evaluation. |
-| トークン数が取得できない場合は、未取得とし、使用量がゼロだったという測定値へ置き換えません。 | トークン数が取得できない場合は、未取得とし、使用量がゼロだったとはみなしません。 Preserve the missing record and the limit on inferring zero usage. |
+| 固定応答でプログラムの分岐が通った結果を、モデルの判断品質の評価に置き換えません。 | 固定応答でプログラムの分岐が通った結果だけでは、モデルの判断品質は評価できません。 Keep fixed-response testing distinct from actual-model evaluation. |
+| トークン数が取得できない場合は、未取得とし、使用量がゼロだったという測定値へ置き換えません。 | トークン数が取得できない場合は、未取得とし、使用量がゼロだったかは判断できません。 Preserve the missing record and the limit on inferring zero usage. |
 | 印象評価でコードの実行可否やテストの成否の検査を置き換えません。 | 印象評価は、コードの実行可否やテストの成否を確かめる検査としては扱えません。 Preserve the need for the actual checks. |
 | 要約だけで会話全体を置き換えず、保持範囲を組み合わせる方式です。 | Retain the actual history-replacement description: treating the summary as the whole conversation is a different claim. |
+
+Compare `とはみなしません` and `とみなしません` with direct wording in the
+complete paragraph. Prefer a faithful direct predicate when it clarifies what
+cannot be confirmed, judged or evaluated, or what does not constitute evidence.
+These expressions are review cues, not forbidden words. Examples:
+
+| Original wording | Faithful comparison when supported |
+| --- | --- |
+| 実行結果が不明な操作は先に調査し、要約によって不明な状態を解消したとはみなしません。 | 実行結果が不明な操作は先に調査します。要約だけでは、操作の実行結果は確認できません。 Preserve the prior investigation and the summary-only limit. |
+| 収集されなかった観測情報を、操作が行われなかった証拠とみなしません。 | 観測情報の未収集は、操作が行われなかった証拠にはなりません。 Missing observation does not prove a non-event. |
+| この運用規則では、無回答を承認とはみなしません。 | Retain the explicit interpretation policy unless an equally faithful direct formulation improves it; do not rewrite it as an inability to determine approval. |
+
+Do not turn an inference limit into a denial of the underlying event, a
+nonzero measurement, or an unconditional inability to evaluate. Retain `だけでは`
+and other conditions. A policy not to count something as approval differs from
+insufficient evidence to determine whether approval occurred. Do not add automatic
+classification, checks or enforcement. Honor explicit author preferences by
+comparing the actual faithful alternative rather than retaining an indirect phrase
+only because its meaning is recoverable. Record each comparison and disposition.
 
 Distinguish a discretionary rule (`みなしません`) from an unavailable use
 (`扱えません`) and from a data transformation that does or does not occur.

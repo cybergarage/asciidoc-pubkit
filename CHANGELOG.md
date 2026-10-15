@@ -27,6 +27,13 @@
   fixtures and frozen-session regressions; detector and replacement behavior
   are unchanged. AI proofreading improvement has not been measured.
 
+- Compare `とはみなしません` and `とみなしません` with direct evidence-limit
+  predicates, preserving explicit interpretation policies, missing measurements,
+  prior investigation and conditional evaluation. Add two advisory surfaces,
+  update fixed-response/missing-usage examples, and add ten calibration pairs.
+  Test both tokenizers, protected text, custom rules, saved sessions and criteria
+  delivery. No automatic replacement or measured AI proofreading improvement.
+
 - Add contextual stopping comparisons for termination, cancellation requests,
   pre-execution refusal, unstarted work, disabled operations and resumable pauses.
   Add manual comparison fixtures and saved-prompt regressions, preserving
@@ -56,6 +63,15 @@
   and `わけではない` candidates, ten calibration pairs and judge guidance.
   Cover both tokenizers, protected text, saved rules/criteria and prompt delivery.
   No automatic replacement; AI proofreading improvement has not been measured.
+
+- Compare `定める` with `規定する` for rules, specifications, evaluation conditions,
+  and responsibilities; distinguish structure/workflow definition, configured
+  values, and types that describe limit inputs. Preserve mixed operations,
+  author terminology preferences, timing and modality without inventing runtime
+  enforcement or obligations. Add ten calibration pairs, judge
+  guidance and writing/review prompt regressions, including historical session
+  retention. Detector rules and automatic replacement are unchanged; AI
+  proofreading improvement has not been measured.
 
 - Add contextual comparisons for `決めます`: selection, calculation, configuration,
   state/permission classification, evidence assessment, establishing conditions,
@@ -104,6 +120,15 @@
   inference limits. Require the differing property or consequence and review
   neighboring repetition without inventing mechanisms. Detector rules and
   automatic replacement are unchanged; old sessions retain saved criteria.
+
+- Add contextual receiving/returning comparisons to the shared Japanese criteria:
+  intake, reception, retrieval, arguments, generation, stdout output, input assembly,
+  decisions, and established exception handling. Preserve accurate value returns,
+  actors, approval conditions and cancellation timing. Add advisory `受け取る`
+  hints with inflected/potential forms and thirteen calibration pairs,
+  plus evaluator guidance and regression tests. Old sessions retain saved criteria
+  and rules; automatic replacement and mechanical verification are unchanged.
+  AI proofreading improvement has not been measured.
 
 ## 1.2.2 - 2026-10-12
 

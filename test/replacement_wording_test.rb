@@ -17,7 +17,7 @@ class ReplacementWordingTest < Minitest::Test
   def test_comparisons_reach_writing_and_saved_scopes_without_rewriting
     expected = ['Distinguish replacement from interpretation and permitted use',
                 '利用者の承認とはみなしません', '終了したことの確認としては扱えません',
-                '使用量がゼロだったとはみなしません',
+                '使用量がゼロだったかは判断できません',
                 'Do not change inability into a choice not to act']
     %w[criteria prompt].each do |command|
       code, output, error = cli('writing', command, '--lang', 'ja')

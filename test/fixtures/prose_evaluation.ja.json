@@ -214,7 +214,7 @@
     {
       "id": "replacement-fixed-response",
       "source": "固定応答でプログラムの分岐が通った結果を、モデルの判断品質の評価に置き換えません。",
-      "revision": "固定応答でプログラムの分岐が通った結果を、モデルの判断品質を評価した結果とはみなしません。",
+      "revision": "固定応答でプログラムの分岐が通った結果だけでは、モデルの判断品質は評価できません。",
       "expected_disposition": "accept",
       "review_axes": [
         "interpretation",
@@ -226,7 +226,7 @@
     {
       "id": "replacement-missing-usage",
       "source": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったという測定値へ置き換えません。",
-      "revision": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったとはみなしません。",
+      "revision": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったかは判断できません。",
       "expected_disposition": "accept",
       "review_axes": [
         "interpretation",
@@ -1392,6 +1392,166 @@
       "reason": "The source does not establish an Agent or automatic execution as the checking actor; the missing evidence must not be invented."
     },
     {
+      "id": "receive-approval-intake",
+      "source": "実行側は利用者の返答を受け取ってから、許可された操作だけを実行します。",
+      "revision": "実行側は利用者の返答を受け付けてから、許可された操作だけを実行します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "request-intake",
+        "actor",
+        "approval-condition",
+        "required-order"
+      ],
+      "reason": "The response intake wording preserves the actor, order, and the separate requirement that only authorized operations execute."
+    },
+    {
+      "id": "receive-stream-reception",
+      "source": "クライアントは応答ストリームからイベントを受け取るたびに、使用量を記録します。",
+      "revision": "クライアントは応答ストリームからイベントを受信するたびに、使用量を記録します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "stream-reception",
+        "actor",
+        "event-frequency"
+      ],
+      "reason": "The established response stream supports reception terminology and retains per-event recording."
+    },
+    {
+      "id": "receive-function-argument",
+      "source": "設定を引数に指定すると、生成関数が設定を受け取り、実行用オブジェクトを構築します。",
+      "revision": "設定を引数に指定すると、生成関数が設定を引数として受け取り、実行用オブジェクトを構築します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "function-argument",
+        "data-role",
+        "actor"
+      ],
+      "reason": "The source explicitly establishes an argument; the revision clarifies its role without adding parsing or validation."
+    },
+    {
+      "id": "return-stdout-output",
+      "source": "CLIは一回の依頼を処理し、応答本文を標準出力へ返して終了します。",
+      "revision": "CLIは一回の依頼を処理し、応答本文を標準出力へ出力して終了します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "stdout-output",
+        "return-value",
+        "required-order"
+      ],
+      "reason": "Stdout output is named directly while processing and termination order remain unchanged."
+    },
+    {
+      "id": "return-model-generation",
+      "source": "モデルは会話に基づいて操作要求を返します。実行側がその要求を検査してツールを実行します。",
+      "revision": "モデルは会話に基づいて操作要求を生成します。実行側がその要求を検査してツールを実行します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "model-generation",
+        "actor",
+        "responsibility"
+      ],
+      "reason": "Generation belongs to the model; validation and tool execution remain with the execution side."
+    },
+    {
+      "id": "return-model-input-assembly",
+      "source": "実行側はツール結果を会話へ追加し、モデルへ返して次の応答を求めます。",
+      "revision": "実行側はツール結果を会話へ追加し、モデルの入力へ追加して次の応答を求めます。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "model-input-assembly",
+        "actor",
+        "data-flow"
+      ],
+      "reason": "The execution side already owns conversation assembly; the revision makes its next-input use explicit without moving it to the tool."
+    },
+    {
+      "id": "return-function-value-kept",
+      "source": "平均値の関数は、空の配列を引数に指定した場合、0を返します。",
+      "revision": "平均値の関数は、空の配列を引数に指定した場合、0を返します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "return-value",
+        "condition-scope",
+        "quantity-target"
+      ],
+      "reason": "Return is an accurate language operation for the explicitly stated value and input condition; nominalized return wording adds no precision."
+    },
+    {
+      "id": "receive-author-terminology-ignored",
+      "source": "応答ストリームからイベントを受け取ります。",
+      "revision": "応答ストリームからイベントを受け取ります。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "stream-reception",
+        "author-preference",
+        "terminology"
+      ],
+      "reason": "The explicitly requested reception terminology is supported by the stream context; unchanged wording ignores that preference.",
+      "editorial_constraints": [
+        "Use 受信する for event reception from the explicitly established response stream."
+      ]
+    },
+    {
+      "id": "return-exception-throw-catch",
+      "source": "実行関数はthrowで例外を返します。呼び出し側はcatchでその例外を受け取り、エラー結果へ変換します。",
+      "revision": "実行関数はthrowで例外を送出します。呼び出し側はcatchでその例外を捕捉し、エラー結果へ変換します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "exception-mechanism",
+        "actor",
+        "responsibility"
+      ],
+      "reason": "Explicit throw and catch support sending and catching exceptions, distinct from returned error values."
+    },
+    {
+      "id": "return-execution-responsibility-changed",
+      "source": "Pythonの実行環境はコードを実行し、出力やエラーを呼び出し側へ返します。呼び出し側がモデル入力を構築します。",
+      "revision": "Pythonの実行環境はコードを実行し、出力やエラーをモデル入力へ追加します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "model-input-assembly",
+        "actor",
+        "responsibility"
+      ],
+      "reason": "The revision moves input assembly from the caller to the execution environment and removes the stated result recipient."
+    },
+    {
+      "id": "return-service-display-changed",
+      "source": "サービスは案内のメッセージを返します。画面がそのメッセージを表示します。",
+      "revision": "サービスは案内のメッセージを表示します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "display",
+        "actor",
+        "responsibility"
+      ],
+      "reason": "The service only provides a message; the revision moves display responsibility away from the UI."
+    },
+    {
+      "id": "receive-network-transport-invented",
+      "source": "コールバックは設定を受け取ります。",
+      "revision": "コールバックはHTTPで設定を受信します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "function-argument",
+        "transport",
+        "unsupported-mechanism"
+      ],
+      "reason": "No transport is stated; receiving wording alone does not establish HTTP."
+    },
+    {
+      "id": "receive-signal-timing-changed",
+      "source": "ツールはsignalを引数として受け取ります。後でsignalが取消を通知すると、子プロセスを停止します。",
+      "revision": "ツールはsignalを引数として受け取った時点で、子プロセスを停止します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "cancellation-notification",
+        "required-order",
+        "condition-scope"
+      ],
+      "reason": "Argument delivery and later cancellation are separate; the revision stops before the specified notification."
+    },
+    {
       "id": "learning-reader-subject-only-rejected",
       "source": "本章では、保存と再開の仕組みを説明します。引き継ぐ情報と操作を再実行しない条件を理解します。",
       "revision": "本章では、保存と再開の仕組みを説明します。読者は引き継ぐ情報と操作を再実行しない条件を理解します。",
@@ -1482,6 +1642,268 @@
       "reason": "The revision consolidates repeated scope guidance, retains both processing stages and the failure condition, and presents the subjects without asserting reader comprehension.",
       "editorial_constraints": [
         "For content guidance, use the author's explanatory viewpoint. State learning objectives as goals with a concrete explanation, distinction or decision target; adding a reader subject or a potential ending alone is insufficient. Preserve genuine learning activities."
+      ]
+    },
+    {
+      "id": "rule-condition-made-specific",
+      "source": "評価担当者は比較前に採用条件を定めます。",
+      "revision": "評価担当者は比較前に採用条件を規定します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "timing",
+        "author-preference"
+      ],
+      "reason": "The same evaluator establishes the same adoption conditions before comparison; the requested terminology is honored.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "rule-graph-definition-specific",
+      "source": "開発者は工程と分岐を定めます。",
+      "revision": "開発者は工程と分岐を定義します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "operation",
+        "scope"
+      ],
+      "reason": "The revision names the workflow definition without adding compilation or execution.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "rule-config-value-specific",
+      "source": "利用者は起動時に接続先を定めます。",
+      "revision": "利用者は起動時に接続先を設定します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "timing",
+        "operation"
+      ],
+      "reason": "The same startup destination is configured; no common rule or automatic calculation is introduced.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "rule-mixed-operations-specific",
+      "source": "開発者は許可範囲と通知先を定めます。",
+      "revision": "開発者は許可範囲を規定し、通知先を設定します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "operation",
+        "responsibility"
+      ],
+      "reason": "The authorization rule and configured destination are separated without new responsibilities.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "rule-type-not-runtime-actor",
+      "source": "RunLimitsは時間と呼び出し回数の上限を定めます。",
+      "revision": "RunLimitsは時間と呼び出し回数の上限を指定する型です。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "type-role",
+        "operation",
+        "scope"
+      ],
+      "reason": "The supplied context identifies RunLimits as an input type, so the revision explains supplied values without assigning runtime enforcement to the type.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement.",
+        "RunLimits is an interface type whose fields supply time and call-count limits; the declaration itself performs no runtime enforcement."
+      ]
+    },
+    {
+      "id": "rule-definition-made-enforcement",
+      "source": "開発者は編集可能な範囲を定めます。",
+      "revision": "開発者は編集可能な範囲を規定し、OSが範囲外の書き込みを拒否します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "enforcement",
+        "unsupported-addition"
+      ],
+      "reason": "Defining an editing rule does not establish OS enforcement or rejection behavior.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "rule-permission-made-obligation",
+      "source": "対象の要求が完了している場合は、取消通知を無視できると仕様に定められています。",
+      "revision": "対象の要求が完了している場合は、取消通知を必ず無視すると仕様に規定されています。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "condition",
+        "modality",
+        "obligation"
+      ],
+      "reason": "The permission to ignore a notification has become an obligation; changing terminology does not authorize this change.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "rule-plan-made-runtime-check",
+      "source": "開発者は評価前に合格条件を定める予定です。",
+      "revision": "実行基盤は評価前に合格条件を規定し、条件が満たされたかを検査します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "planned-status",
+        "operation"
+      ],
+      "reason": "A developer plan becomes asserted runtime rule-making and inspection with a different actor.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "rule-author-preference-ignored",
+      "source": "評価担当者は比較前に採用条件を定めます。",
+      "revision": "評価担当者は比較前に採用条件を定めます。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "author-preference",
+        "terminology"
+      ],
+      "reason": "The assigned rule-establishment passage remains unchanged despite the supplied preference for 規定する; synonymy alone does not excuse ignoring it.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "rule-accurate-setting-retained",
+      "source": "利用者は接続先を設定します。",
+      "revision": "利用者は接続先を設定します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "operation",
+        "author-preference"
+      ],
+      "reason": "Configuration is already named accurately; the rule-making preference does not require changing a configured destination to 規定する.",
+      "editorial_constraints": [
+        "When rules or evaluation conditions are being specified, prefer 規定する; use 定義する for structures, 設定する for configured values, and preserve actors, timing, modality and rule definition versus enforcement."
+      ]
+    },
+    {
+      "id": "interpretation-summary-direct",
+      "source": "実行結果が不明な操作は先に調査し、要約によって不明な状態を解消したとはみなしません。",
+      "revision": "実行結果が不明な操作は先に調査します。要約だけでは、操作の実行結果は確認できません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "evidence-limit",
+        "order"
+      ],
+      "reason": "Prior investigation and the summary-only evidence limit are preserved."
+    },
+    {
+      "id": "interpretation-observation-direct",
+      "source": "収集されなかった観測情報を、操作が行われなかった証拠とみなしません。",
+      "revision": "観測情報の未収集は、操作が行われなかった証拠にはなりません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "evidence-limit",
+        "negation"
+      ],
+      "reason": "Missing observation remains distinct from evidence of non-execution."
+    },
+    {
+      "id": "interpretation-evaluation-direct",
+      "source": "固定応答でプログラムの分岐が通った結果を、モデルの判断品質を評価した結果とはみなしません。",
+      "revision": "固定応答でプログラムの分岐が通った結果だけでは、モデルの判断品質は評価できません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "evaluation",
+        "condition-scope"
+      ],
+      "reason": "The limitation applies to fixed-response branch results alone."
+    },
+    {
+      "id": "interpretation-usage-direct",
+      "source": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったとはみなしません。",
+      "revision": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったかは判断できません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "missing-evidence",
+        "condition-scope"
+      ],
+      "reason": "Unavailable counts remain unmeasured, without asserting zero or nonzero usage."
+    },
+    {
+      "id": "interpretation-usage-made-nonzero",
+      "source": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったとはみなしません。",
+      "revision": "トークン数が取得できない場合は、未取得とし、使用量はゼロではありません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "inference-limit",
+        "negation-strength"
+      ],
+      "reason": "Missing counts do not establish nonzero usage."
+    },
+    {
+      "id": "interpretation-evaluation-made-unconditional",
+      "source": "固定応答でプログラムの分岐が通った結果を、モデルの判断品質を評価した結果とはみなしません。",
+      "revision": "モデルの判断品質は評価できません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "condition-scope",
+        "capability"
+      ],
+      "reason": "Removing the fixed-response condition denies evaluation without that limit."
+    },
+    {
+      "id": "interpretation-observation-made-nonexecution",
+      "source": "収集されなかった観測情報を、操作が行われなかった証拠とみなしません。",
+      "revision": "観測情報が収集されなかった操作は行われませんでした。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "inference-limit",
+        "negation-strength"
+      ],
+      "reason": "No observation does not establish that an operation never occurred."
+    },
+    {
+      "id": "interpretation-policy-retained",
+      "source": "この運用規則では、無回答を承認とはみなしません。",
+      "revision": "この運用規則では、無回答を承認とはみなしません。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "policy",
+        "approval"
+      ],
+      "reason": "The explicit policy forbids counting non-response as approval; it is not an evidence shortage."
+    },
+    {
+      "id": "interpretation-policy-made-uncertainty",
+      "source": "この運用規則では、無回答を承認とはみなしません。",
+      "revision": "この運用規則では、無回答の場合に承認されたかは判断できません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "policy",
+        "modality"
+      ],
+      "reason": "An inability to determine approval loses the stated rule against counting non-response as approval."
+    },
+    {
+      "id": "interpretation-author-preference-ignored",
+      "source": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったとはみなしません。",
+      "revision": "トークン数が取得できない場合は、未取得とし、使用量がゼロだったとはみなしません。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "author-preference",
+        "evidence-limit"
+      ],
+      "reason": "The unchanged indirect predicate ignores an explicit request for a faithful direct evidence-limit predicate.",
+      "editorial_constraints": [
+        "Prefer a faithful direct predicate over とはみなしません when it explains the same evidence limit."
       ]
     }
   ]

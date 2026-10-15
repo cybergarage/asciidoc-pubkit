@@ -41,6 +41,9 @@ The unreleased checkout adds advisory `届く` candidates and operation-specific
 arrival comparisons; see [arrival wording](docs/rules-and-coverage.md#arrival-wording-unreleased).
 These hints do not automatically replace text or establish writing quality.
 
+The unreleased checkout also compares `定める` with `規定する`, `定義する`, and
+`設定する` by the actual operation; see [rule wording](docs/writing.md#rules-definitions-and-configured-values).
+
 The unreleased checkout adds direct-negation comparisons and advisory variants
 for `わけではありません`; see [direct negation](docs/writing.md#direct-negation-and-inference-limits-unreleased).
 Existing sessions retain their saved rules and criteria. No automatic rewriting
@@ -108,6 +111,12 @@ questions. The evaluation guide describes the expanded corpus and calibration.
 
 Version 1.1.0 adds contextual human-role guidance and standalone `人`
 review hints, with terminology alignment and task-specific coverage reporting.
+The checkout adds advisory `受け取る` candidates and
+[receiving/returning comparisons](data/writing/ja/criteria.md#distinguish-receiving-returning-and-their-actual-operations)
+(unreleased). Distinguish intake, reception, retrieval, arguments, generation,
+stdout output, input assembly and exception handling; keep accurate value returns
+and the original actor's responsibility.
+
 These remain advisory; they do not automatically replace manuscript words or
 expand the protected edit scopes. See the [review workflow](docs/review-workflow.md).
 
@@ -240,6 +249,13 @@ Japanese writing and new review prompts compare `段階` with `フェーズ` for
 processing divisions, while preserving timing and progressive disclosure. See
 [phase terminology guidance](docs/writing.md#processing-phases-timing-and-progressive-disclosure-unreleased).
 This does not add detector rules or automatic replacement.
+
+## Direct interpretation-limit wording (unreleased)
+
+New scans flag `とはみなしません` and `とみなしません` for contextual comparison
+with direct evidence-limit predicates. Preserve interpretation policies, missing
+evidence and conditions; see [interpretation limits](docs/writing.md#direct-interpretation-limits-unreleased).
+These hints do not automatically replace text or establish writing quality.
 
 ## License
 

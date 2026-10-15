@@ -35,7 +35,7 @@ class DefaultRulesTest < Minitest::Test
 
   EXPRESSIONS = %w[
     木 余白 明示選択 欠落理由 構成要素 部品 流れ 開発者 区別 単発 よいこと おそれ 準備 別枠 祖先 子孫 予算
-    別の 別に 空の 別々に 返す 分けて
+    別の 別に 空の 別々に 受け取る 受け取ります 返す 分けて
     決まります 記述できます 組み立てられます 意味しません 用意します 記述します
     わけではありません 組み合わせます 足りません 別です 区別します 区別できます 扱います
     もあります 把握します 置き換えます まとまっています 必要がありません 加えます 加わります
@@ -149,6 +149,29 @@ class DefaultRulesTest < Minitest::Test
       assert_equal ['構築入口'], scan('構築入口。', mode).map { |f| f['match'] }
       assert_empty scan('構築入口。', mode, allows: ['構築入口'])
       assert_empty scan('人を呼ぶ。落ち葉を拾う。信号を読み取る。', mode).select { |f| f['rule'] == 'contextual-phrase' }
+    end
+
+    define_method("test_receive_return_cues_are_advisory_and_preserve_positions_in_#{mode}") do
+      text = "😀応答を受け取ります。\n関数は設定を受け取れません。"
+      findings = scan(text, mode).select { |f| f['rule'] == 'weak-predicate' && f['match'].start_with?('受け取') }
+      assert_equal ['受け取ります', '受け取れません'], findings.map { |f| f['match'] }
+      assert_equal [[1, 5], [2, 7]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['severity'] == 'hint' }
+      if mode == 'mecab'
+        assert findings.last['negative']
+        assert_equal '受け取る', findings.last['lemma']
+      end
+      assert_empty scan(text, mode, allows: ['受け取ります', '受け取れません'])
+      assert_empty scan('`受け取ります`。「受け取ります」。link:https://example.com[受け取ります]。', mode)
+      returns = scan('関数は0を返します。', mode).select { |f| f['rule'] == 'weak-predicate' && f['match'] == '返します' }
+      assert_equal 1, returns.length
+      assert_equal 'hint', returns.first['severity']
+      settings = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                   'rules' => AsciidocPubkit::RuleSet.load }
+      settings['rules']['verbs'].delete('受け取る')
+      settings['rules']['terms']['weak-predicate']['terms'].delete_if { |term| term.start_with?('受け取') }
+      paragraph = { 'id' => 'receive', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'].start_with?('受け取') }
     end
 
     define_method("test_extension_wording_candidates_in_#{mode}") do

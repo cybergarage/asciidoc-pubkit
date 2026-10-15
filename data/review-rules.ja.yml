@@ -149,6 +149,19 @@ terms:
     - 加えます
     - 加わります
     - 付けます
+    # Receiving is advisory; its actual operation comes from context.
+    - 受け取る
+    - 受け取ります
+    - 受け取りました
+    - 受け取った
+    - 受け取って
+    - 受け取り
+    - 受け取らない
+    - 受け取りません
+    - 受け取れる
+    - 受け取れます
+    - 受け取れません
+    - 受け取れない
     # Arrival is advisory; distinguish reception, input and result settlement.
     - 届く
     - 届きます
@@ -212,6 +225,9 @@ terms:
     - わけではありません
     - わけではなく
     - わけではない
+    # Interpretation limits invite direct comparisons, not mandatory rewrites.
+    - とはみなしません
+    - とみなしません
     - 別です
     # Unusual technical translations; shared criteria own the alternatives.
     - 木全体
@@ -355,6 +371,9 @@ verbs:
   - 置き換える
   加わる:
   - 加わる
+  受け取る:
+  - 受け取る
+  - 受け取れる
   届く:
   - 届く
   返す:

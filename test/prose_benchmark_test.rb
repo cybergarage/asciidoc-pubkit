@@ -8,6 +8,27 @@ class ProseBenchmarkTest < Minitest::Test
     { 'case_id' => id, 'kind' => kind, 'offset' => offset }
   end
 
+  def test_rule_wording_calibration_preserves_operations_and_author_preferences
+    pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
+    expected = {
+      'rule-condition-made-specific' => 'accept', 'rule-graph-definition-specific' => 'accept',
+      'rule-config-value-specific' => 'accept', 'rule-mixed-operations-specific' => 'accept',
+      'rule-type-not-runtime-actor' => 'accept', 'rule-definition-made-enforcement' => 'needs-evidence',
+      'rule-permission-made-obligation' => 'reject', 'rule-plan-made-runtime-check' => 'reject',
+      'rule-author-preference-ignored' => 'reject', 'rule-accurate-setting-retained' => 'accept'
+    }
+    expected.each do |id, disposition|
+      pair = pairs.find { |item| item['id'] == id }
+      refute_nil pair, id
+      assert_equal disposition, pair.fetch('expected_disposition'), id
+      %w[source revision reason review_axes editorial_constraints].each do |key|
+        refute_empty pair.fetch(key), "#{id}: #{key}"
+      end
+    end
+    assert_includes ProseBenchmark::RUBRIC, 'Distinguish rule specification, structure definition, and configured values'
+    assert_includes ProseBenchmark::RUBRIC, 'Type declarations do not perform runtime configuration or enforcement'
+  end
+
   def test_scores_distinguish_detection_from_position_and_false_positives
     expected = [event('a', 'repeated-ending', 30), event('b', 'metaphor-operation', 5)]
     found = [event('a', 'repeated-ending', 2), event('c', 'metaphor-operation', 7)]
@@ -71,7 +92,7 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    assert_equal 122, pairs.length
+    assert_equal 155, pairs.length
     assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
     quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
     assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)
@@ -127,6 +148,35 @@ class ProseBenchmarkTest < Minitest::Test
     added.each do |pair|
       %w[source revision reason].each { |key| refute_empty pair.fetch(key), "#{pair['id']}: #{key}" }
     end
+  end
+
+  def test_receive_return_calibration_preserves_operations_and_responsibility
+    pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
+    expected = {
+      'receive-approval-intake' => 'accept',
+      'receive-stream-reception' => 'accept',
+      'receive-function-argument' => 'accept',
+      'return-stdout-output' => 'accept',
+      'return-model-generation' => 'accept',
+      'return-model-input-assembly' => 'accept',
+      'return-function-value-kept' => 'accept',
+      'receive-author-terminology-ignored' => 'reject',
+      'return-exception-throw-catch' => 'accept',
+      'return-execution-responsibility-changed' => 'reject',
+      'return-service-display-changed' => 'reject',
+      'receive-network-transport-invented' => 'needs-evidence',
+      'receive-signal-timing-changed' => 'reject'
+    }
+    expected.each do |id, disposition|
+      pair = pairs.find { |item| item['id'] == id }
+      refute_nil pair, id
+      assert_equal disposition, pair.fetch('expected_disposition'), id
+      %w[source revision reason review_axes].each { |key| refute_empty pair.fetch(key), "#{id}: #{key}" }
+    end
+    kept = pairs.find { |item| item['id'] == 'return-function-value-kept' }
+    assert_equal kept.fetch('source'), kept.fetch('revision')
+    assert_includes ProseBenchmark::RUBRIC, 'Keep accurate value or Promise'
+    assert_includes ProseBenchmark::RUBRIC, 'Signal argument delivery and later cancellation notification differ'
   end
 
   def test_flow_calibration_distinguishes_specificity_keeps_and_changed_scope

@@ -63,6 +63,21 @@ module ProseBenchmark
     a possible classification. Preserve branch conditions, both selected paths,
     counts and joins; branching does not establish parallel execution. Do not
     turn table correspondences into successful inspection or routes into isolation.
+    Distinguish rule specification, structure definition, and configured values
+    when comparing 定める with 規定する, 定義する, and 設定する. Honor a supplied
+    preference for 規定する in rule-making passages; synonymy alone is not a keep
+    reason. Separate mixed operations such as 許可範囲を規定し、通知先を設定します.
+    Type declarations do not perform runtime configuration or enforcement.
+    Specifying a policy does not establish that it is enforced. Preserve who
+    specifies conditions and when; do not turn permissions into obligations,
+    plans into runtime checks, or a configured destination into a rule.
+    Distinguish request intake, stream reception, retrieval, function arguments,
+    model generation, stdout writes, input assembly, and decision communication
+    before revising receiving/returning wording. Keep accurate value or Promise
+    returns. Do not turn returned errors into thrown exceptions, assign model-input
+    assembly to an execution environment, or display to a service that only returns
+    a message. Signal argument delivery and later cancellation notification differ.
+    An unstated network transport or throw/catch mechanism requires evidence.
     Distinguish direct operation denial, unavailable capability, partial negation,
     insufficient conditions, and inference limits. Preserve negation scope and
     strength; never turn partial negation into total denial. Missing observation
@@ -82,6 +97,11 @@ module ProseBenchmark
     comparing 置き換えません with みなしません or 扱えません. Retain literal
     value, history, and implementation replacement; preserve rules separately
     from unavailable uses. Missing evidence does not imply failure or zero usage.
+    Compare とはみなしません and とみなしません with direct evidence-limit predicates.
+    Prefer faithful direct wording when the author requests it; preserve explicit
+    interpretation policies separately from inability to determine an outcome.
+    Do not infer nonzero usage from missing counts or make a conditional evaluation
+    limit unconditional. Do not add automatic checks or enforcement.
     Distinguish input, transmission, delegation, inheritance, and handoff
     when comparing 渡す and 受け渡し. Model input construction is not API
     transmission; function arguments are not later notifications. Value delivery

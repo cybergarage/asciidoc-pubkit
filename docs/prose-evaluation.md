@@ -17,7 +17,7 @@ readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
 This guide describes the development checkout, including the
-`technical-prose-v3` corpus and 122 revision calibration pairs. The sentence-ending
+`technical-prose-v3` corpus and 155 revision calibration pairs. The sentence-ending
 criteria and twelve additional pairs, plus the flow guidance and four further
 pairs, are included in version 1.2.0.
 The evaluation runner is not an
@@ -85,7 +85,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 110 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 155 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -181,6 +181,19 @@ The judge rubric and calibration fingerprints change; establish a compatible AI
 baseline before comparing rewrite quality. The detector corpus, rules and
 mechanical verification are unchanged. Normal tests exercise fixture integrity
 and evaluator data delivery, not the correctness of an AI's editorial decisions.
+
+## Rules, definitions, and configured values
+
+Ten unreleased calibration pairs compare rule specification, structure and workflow
+definition, configured destinations, mixed operations, and limit types. They include
+faithful revisions and controls, newly invented enforcement (`needs-evidence`),
+permissions changed into obligations, plans changed into runtime checks, and a
+rejected unchanged passage under an explicit terminology preference. These are
+project-authored examples, not measurements of AI proofreading improvement.
+The calibration and judge rubric fingerprints change, so a compatible fresh AI
+baseline is needed before measuring rewrite quality. The detector corpus, rules,
+and mechanical verification are unchanged. Regression tests check criteria
+propagation to new prompts and preserve historical session criteria.
 
 ## What normal tests check
 
@@ -368,6 +381,21 @@ results establish detector and workflow regression checks only.
 [Development](development.md) · [Manuscript scoring](scoring.md) ·
 [Back to README](../README.md)
 
+## Receiving and returning calibration (unreleased)
+
+Thirteen additional pairs cover request intake, stream reception,
+function arguments, stdout output, model generation, input assembly, an accurate
+unchanged value return, an explicit terminology preference, established
+throw/catch, changed execution/display responsibilities, unsupported HTTP, and
+signal-delivery versus cancellation timing. The evaluator rubric names these
+operation and ownership distinctions without supplying the gold decisions.
+The fixed detector corpus still measures only its original three kinds, so its
+scores do not measure the new `受け取る` cue. Regression tests check that cue in
+MeCab and literal modes and check prompt delivery and fixture integrity.
+No AI rewrite/judge trials were run for this change; improved proofreading is
+unmeasured. Old AI reports have different criteria/calibration fingerprints and
+need a fresh compatible baseline for quality comparison.
+
 ## Direct-negation calibration (unreleased)
 
 Ten added calibration pairs compare direct operation denial, unavailable
@@ -390,6 +418,17 @@ these distinctions. Normal tests check fixture integrity, existing MeCab detecti
 and saved criteria delivery, not whether an AI judges the pairs correctly.
 AI proofreading improvement has not been measured. Fix a fresh calibration and
 rubric baseline before comparing AI results with an earlier run.
+
+## Direct interpretation-limit calibration (unreleased)
+
+Ten additional pairs cover direct summary, observation, evaluation and missing-usage
+limits; nonzero usage inferred from missing counts; unconditional evaluation denial;
+non-execution inferred from missing observation; a retained interpretation policy;
+a policy weakened into uncertainty; and an ignored explicit author preference.
+The earlier fixed-response and missing-usage replacement examples now use direct
+predicates. Fixture and rubric fingerprints change, requiring compatible new AI
+baselines. Normal tests check detector behavior, fixture integrity and saved-prompt
+contracts; no AI evaluation or improvement measurement was performed.
 
 ## Transfer wording comparisons (unreleased)
 

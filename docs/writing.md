@@ -21,22 +21,6 @@ replacement. They preserve conditions, negation strength, missing evidence and
 responsibility. These unreleased criteria do not change detection or perform
 automatic replacements; existing sessions retain their saved criteria.
 
-## Classification and related relationships (unreleased)
-
-Compare `分かれます` by the actual relationship: classification by purpose or
-type, assignment of responsibilities, execution-path branching, content
-partitioning, route differences, or the correspondence presented in a table.
-`分類できます` may describe reader organization without a runtime classifier;
-a defined category scheme and actual classification behavior need their own
-wording. Preserve owners, conditions, destinations, counts, modality and joins;
-branching alone does not guarantee parallel execution or exclusive choice.
-See [the canonical comparisons](../data/writing/ja/criteria.md#distinguish-classification-responsibility-sharing-branching-and-partitioning).
-
-Writing commands and new heading, prose and list sessions include this guidance.
-Existing sessions keep their saved criteria. Detector and automatic replacement
-behavior are unchanged. Manual comparison fixtures and regression tests check
-criteria delivery and session preservation, not measured editorial accuracy.
-
 `writing criteria` prints the packaged common criteria. `writing prompt` adds
 task instructions around those same criteria. Neither command needs an AsciiDoc
 file, a review session, MeCab, or network access. Both accept `--lang ja` and
@@ -119,6 +103,49 @@ rules; existing sessions retain their saved criteria. See
 
 [Back to README](../README.md)
 
+## Rules, definitions, and configured values
+
+The unreleased criteria compare `定める` with `規定する` for specifications,
+rules, evaluation conditions, and responsibilities, honoring an author's
+terminology preference without adding obligations or enforcement. Use `定義する`
+for structures, schemas, and workflows, and `設定する` for configured values and
+destinations when those are the actual operations. A limit type describes supplied
+values; its declaration does not itself configure or enforce a limit. Split mixed
+operations such as `許可範囲を規定し、通知先を設定します` while preserving actor,
+timing, conditions, negation, and modality. Do not turn a plan into a runtime check
+or permission into an obligation. These contextual comparisons add no detector
+terms or automatic replacements, and existing sessions retain saved criteria.
+See [Rule wording criteria](../data/writing/ja/criteria.md#distinguish-rules-definitions-and-configured-values).
+
+## Classification and related relationships (unreleased)
+
+Compare `分かれます` by the actual relationship: classification by purpose or
+type, assignment of responsibilities, execution-path branching, content
+partitioning, route differences, or the correspondence presented in a table.
+`分類できます` may describe reader organization without a runtime classifier;
+a defined category scheme and actual classification behavior need their own
+wording. Preserve owners, conditions, destinations, counts, modality and joins;
+branching alone does not guarantee parallel execution or exclusive choice.
+See [the canonical comparisons](../data/writing/ja/criteria.md#distinguish-classification-responsibility-sharing-branching-and-partitioning).
+
+Writing commands and new heading, prose and list sessions include this guidance.
+Existing sessions keep their saved criteria. Detector and automatic replacement
+behavior are unchanged. Manual comparison fixtures and regression tests check
+criteria delivery and session preservation, not measured editorial accuracy.
+
+## Receiving and returning
+
+The unreleased criteria compare `受け取る` and `返す` with the actual operation:
+request intake, response-stream reception, retrieval/reading, arguments and return
+values, model generation, stdout output, input assembly, decision communication,
+and established exception throwing/catching. Keep accurate value or Promise
+returns; do not replace every receipt with retrieval or every return with
+nominalized return wording. Preserve the actor and processing stage: a service
+returning a display message need not display it, and an execution environment
+returning a result need not assemble model input. Signal argument delivery and
+later cancellation notification are distinct. See the
+[shared criteria](../data/writing/ja/criteria.md#distinguish-receiving-returning-and-their-actual-operations).
+
 ## Explicit differences and decision conditions
 
 The unreleased criteria expand `区別します` comparisons with examples of loading
@@ -155,6 +182,19 @@ Existing sessions keep their saved criteria. Detection and automatic replacement
 behavior are unchanged. Manual accept/reject examples are maintained in
 `test/fixtures/phase_terminology.ja.json`; their labels and regression tests do
 not measure AI proofreading accuracy.
+
+## Direct interpretation limits (unreleased)
+
+Compare `とはみなしません` and `とみなしません` with `確認できません`,
+`判断できません`, `評価できません`, or `証拠にはなりません` by the actual
+claim. Fixed-response branch results alone cannot evaluate model judgment;
+unavailable token counts do not determine whether usage was zero. Keep `だけでは`
+and other limits. Missing observation does not establish non-execution or nonzero
+usage. Retain an explicit policy not to count non-response as approval; do not
+change it into an inability to determine approval. Honor author wording preferences
+through faithful comparisons. See [the shared criteria](../data/writing/ja/criteria.md#distinguish-replacement-from-interpretation-and-permitted-use).
+No automatic checks or replacements are added. Existing sessions retain saved
+rules and criteria; use a fresh scan for these comparisons.
 
 ## Input, transmission, and handoff (unreleased)
 

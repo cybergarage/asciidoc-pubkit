@@ -208,6 +208,19 @@ treating this overlap as the noun `作用`. Allow lists, custom complete rule se
 and protected-inline exclusions still apply. Existing sessions retain saved
 rules; start a new session to adopt this candidate.
 
+## Receiving cues (unreleased)
+
+`受け取る` is a `weak-predicate` hint, including inflected forms and the potential
+lemma `受け取れる` in MeCab mode. Literal mode matches the packaged listed
+surfaces; it does not analyze arbitrary inflections. Allow lists, complete custom
+rule replacement, positions, and protected-inline exclusions still apply.
+`返す` remains advisory even when a function correctly returns a value. A finding
+requests contextual comparison, not a mandatory change or automatic replacement.
+Use the [shared operation comparisons](../data/writing/ja/criteria.md#distinguish-receiving-returning-and-their-actual-operations)
+to decide whether intake, reception, retrieval, arguments, output, or a retained
+plain verb best describes the evidence. Saved sessions retain their old rules
+and criteria; use a new session to adopt the additions.
+
 ## Indirect negation candidates (unreleased)
 
 `わけではありません`, `わけではなく`, and `わけではない` are advisory
@@ -219,3 +232,13 @@ Review operation denial, capability, partial negation and inference limits using
 [the writing criteria](writing.md#direct-negation-and-inference-limits-unreleased).
 No candidate prescribes a fixed replacement. Existing sessions retain their saved
 rules and criteria; the new defaults apply to new scans.
+
+## Interpretation-limit candidates (unreleased)
+
+`contextual-phrase` flags the explicit surfaces `とはみなしません` and
+`とみなしません` in prose and supported list text with either tokenizer.
+Longest-overlap selection yields one cue for `とはみなしません`; allow lists,
+custom replacement rule sets and protected-inline masking still apply. These
+are not exhaustive inflection detection or automatic substitutions. Compare
+[direct interpretation limits](writing.md#direct-interpretation-limits-unreleased),
+keeping policies separate from evidence shortages. Old sessions retain saved rules.
