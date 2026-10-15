@@ -7,6 +7,16 @@ clear continued subjects, and require evidence before naming an actor. These are
 contextual review criteria, with no new subject-omission detector or automatic
 replacement. New sessions save the criteria; older sessions retain their originals.
 
+The unreleased [directory hierarchy comparisons](../data/writing/ja/criteria.md#compare-directory-hierarchy-terms-with-concrete-locations)
+compare ancestor/descendant translations with `上位・下位ディレクトリ`, while
+preserving direct-parent/direct-child relationships and exact grandchild depth.
+Describe inherited settings by their directory locations; keep process, agent,
+tree-node and conversation-record relationships distinct. These are advisory
+comparisons, not automatic substitutions. `孫ディレクトリ` is an additional
+contextual candidate; standalone `親`, `子` and `孫` are not new detector terms.
+Saved sessions retain their original rules and criteria. Regression fixtures
+and prompt-delivery tests do not measure AI proofreading quality.
+
 The [identification comparisons](../data/writing/ja/criteria.md#distinguish-identification-from-conceptual-separation)
 compare `区別できます` with `判別`, `識別`, `判定`, and separate checks according
 to evidence and purpose. They preserve conceptual separation, capability,

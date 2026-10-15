@@ -46,6 +46,13 @@
   writing/saved-review-prompt regressions. Detector and automatic replacement
   behavior are unchanged; AI proofreading improvement has not been measured.
 
+- Add directory hierarchy comparisons for ancestor, descendant, child and
+  grandchild translations. Preserve traversal endpoints, exact depths,
+  direct relationships, inheritance and code identifiers; retain process,
+  agent and tree terminology. Add the advisory `孫ディレクトリ` candidate,
+  comparison fixtures and saved-prompt regressions. No automatic replacement;
+  AI proofreading improvement has not been measured.
+
 - Add contextual `置き換えません` comparisons for interpretation rules and use
   limits, retaining actual value/history/implementation replacement and missing
   evidence. Add nine calibration pairs, judge guidance, and saved-prompt delivery

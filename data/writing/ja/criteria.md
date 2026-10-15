@@ -18,6 +18,7 @@
 - Review sentence endings by their role
 - Separate explanatory guidance from actual checks
 - Distinguish direct negation, partial negation, and inference limits
+- Compare directory hierarchy terms with concrete locations
 - Make relationships explicit
 - Distinguish replacement from interpretation and permitted use
 - Compare structure before and after revision
@@ -743,6 +744,36 @@ Do not turn `判別できます` into asserted automatic identification, add ins
 or classification, or claim that an unknown outcome is a failure. Keep differing
 response stages and inference limits explicit. Record the source, alternative,
 and passage-specific reason even when a detector does not emit a candidate.
+
+## Compare directory hierarchy terms with concrete locations
+
+In directory descriptions, translations of ancestor, descendant, child and
+grandchild can produce `祖先ディレクトリ`, `子孫ディレクトリ`, `子` and
+`孫ディレクトリ`. Compare natural location-based wording even when the original
+referent is recoverable; these are contextual alternatives, not banned words.
+
+| Original wording | Faithful comparison when supported |
+| --- | --- |
+| ファイルシステムのルートまで祖先ディレクトリをたどります。 | ファイルシステムのルートまで上位ディレクトリをたどります。 Preserve the endpoint and traversal direction. |
+| 子孫ディレクトリを再帰的に探索します。 | 下位ディレクトリを再帰的に探索します。 Retain recursion and whether the starting directory is included. |
+| 孫ディレクトリだけを対象にします。 | 2階層下のディレクトリだけを対象にします。 Bare 下位ディレクトリ would lose the exact depth and the restriction. |
+| 子の設定で省略した値を親の設定から引き継ぎます。 | 下位ディレクトリの設定で省略した値を上位ディレクトリの設定から引き継ぎます。 Name the locations rather than an unspecified priority rank. |
+| 親から子へ指示を並べます。 | 上位から下位のディレクトリの順に指示を並べます。 Preserve application order separately from discovery order. |
+
+Keep `親ディレクトリ` or `直上のディレクトリ` when exactly one level above is
+intended; compare `子ディレクトリ` with `直下のディレクトリ` when exactly one
+level below matters. Do not broaden direct children to all descendants or
+grandchildren to every lower level. Preserve exclusions, depth limits, roots,
+starting locations, traversal order, inheritance and override conditions.
+Do not infer recursion or a configuration priority merely from hierarchy.
+
+Do not mechanically change `子プロセス`, `子エージェント`, tree nodes, conversation
+record parent IDs, span parent-child relationships, or biological ancestry.
+Those describe different relationships; compare their established terminology
+in context. Preserve code identifiers such as parent, child and parent-model.
+Synchronize authorized headings, tables, diagrams and alternative text with the
+prose, recording each original, alternative and reason in the existing review
+record. Detector hints do not determine which alternative to adopt.
 
 ## Make relationships explicit
 

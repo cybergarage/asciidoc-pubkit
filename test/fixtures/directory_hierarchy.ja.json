@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ancestor-root",
+    "source": "ファイルシステムのルートまで祖先ディレクトリをたどります。",
+    "revision": "ファイルシステムのルートまで上位ディレクトリをたどります。",
+    "expected_disposition": "accept",
+    "reason": "The root endpoint and upward traversal are retained."
+  },
+  {
+    "id": "descendant-recursion",
+    "source": "子孫ディレクトリを再帰的に探索します。",
+    "revision": "下位ディレクトリを再帰的に探索します。",
+    "expected_disposition": "accept",
+    "reason": "Recursion is retained without inventing inclusion of the starting directory."
+  },
+  {
+    "id": "grandchild-depth",
+    "source": "孫ディレクトリだけを対象にします。",
+    "revision": "2階層下のディレクトリだけを対象にします。",
+    "expected_disposition": "accept",
+    "reason": "Exactly two levels and the exclusive restriction are retained."
+  },
+  {
+    "id": "grandchild-broadened",
+    "source": "孫ディレクトリだけを対象にします。",
+    "revision": "下位ディレクトリをすべて対象にします。",
+    "expected_disposition": "reject",
+    "reason": "The exact depth and exclusive scope were broadened."
+  },
+  {
+    "id": "settings-location",
+    "source": "子の設定で省略した値を親の設定から引き継ぎます。",
+    "revision": "下位ディレクトリの設定で省略した値を上位ディレクトリの設定から引き継ぎます。",
+    "expected_disposition": "accept",
+    "reason": "Locations and the omitted-value inheritance condition are explicit."
+  },
+  {
+    "id": "application-order",
+    "source": "親から子へ指示を並べます。",
+    "revision": "上位から下位のディレクトリの順に指示を並べます。",
+    "expected_disposition": "accept",
+    "reason": "Instruction ordering is retained without changing discovery order."
+  },
+  {
+    "id": "direct-child-broadened",
+    "source": "直下の子ディレクトリだけを検査します。",
+    "revision": "下位ディレクトリを再帰的に検査します。",
+    "expected_disposition": "reject",
+    "reason": "A one-level restriction became recursive inspection."
+  },
+  {
+    "id": "process-kept",
+    "source": "子プロセスにも制限を適用します。",
+    "revision": "子プロセスにも制限を適用します。",
+    "expected_disposition": "accept",
+    "reason": "Child process is established process terminology, not a directory location."
+  },
+  {
+    "id": "tree-kept",
+    "source": "ツリーの子ノードに親の識別子を記録します。",
+    "revision": "ツリーの子ノードに親の識別子を記録します。",
+    "expected_disposition": "accept",
+    "reason": "The explicit parent-node relation is retained."
+  },
+  {
+    "id": "priority-invented",
+    "source": "下位ディレクトリの設定を読み込みます。",
+    "revision": "優先順位の低い設定を読み込みます。",
+    "expected_disposition": "reject",
+    "reason": "A directory location does not establish a lower priority."
+  }
+]
