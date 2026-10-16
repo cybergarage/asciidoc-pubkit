@@ -1,6 +1,6 @@
 ---
 name: review-asciidoc-manuscript
-description: Review and revise an existing Japanese AsciiDoc manuscript with asciidoc-pubkit in separate verified heading, prose, and list sessions; use for proofreading or outline diagnosis, not new-book authoring.
+description: Review and revise an existing Japanese or English AsciiDoc manuscript with asciidoc-pubkit in separate verified heading, prose, and list sessions; use for proofreading or outline diagnosis, not new-book authoring.
 ---
 
 # Review an AsciiDoc manuscript
@@ -26,11 +26,16 @@ Use the project's installed asciidoc-pubkit invocation, with bundle exec when
 configured. Check its version and command help. Existing sessions require their
 exact saved tool version; retain earlier sessions when starting a new pass.
 Choose unused session and output paths. Never rescan to hide a failed check.
+Select the manuscript language explicitly. English requires a version supporting
+--lang en; do not substitute Japanese or reset old sessions when unavailable.
+Use the saved English criteria; Japanese term-specific guidance below applies
+only to Japanese assignments. Translation fidelity requires source evidence
+and remains separate from mechanical preservation.
 
 For each assigned scope:
 
 1. Scan from the manuscript directory with --scope headings, prose or lists,
-   --lang ja, --no-input and a unique --output session path. For an assigned
+   the selected --lang ja or --lang en, --no-input and a unique --output session path. For an assigned
    chapter, use --only FILE with the book entrypoint. Do not narrow a whole-book
    assignment to one file. Match the publishing parser settings.
 2. Generate review prompt before editing. Use --mode diagnose for proposals
@@ -52,7 +57,7 @@ For each assigned scope:
    the baseline. For integrity failures, preserve evidence and report the blocker.
    Finish verification before scanning the next scope's current manuscript.
 
-For headings containing `区別`, consult the saved heading criteria's
+For Japanese headings containing `区別`, consult the saved heading criteria's
 "Distinguish comparison subjects from distinguishing actions" section when
 available. Compare the section's actual subjects and role using its body as
 read-only evidence; record the alternative even without a detector candidate.
@@ -83,11 +88,11 @@ part introductions, lists and table descriptions within the authorized assignmen
 track their dispositions or proposals in their own scopes, including protected
 content. Do not extend a focused assignment to unrelated manuscript sections.
 
-For `行う`, consult the saved "Distinguish operations from responsibility"
+For Japanese `行う`, consult the saved "Distinguish operations from responsibility"
 comparisons before choosing an action verb or responsibility wording. Record
 the actual alternative; a detector hint is not a replacement instruction.
 
-For `渡す`, `受け渡す`, `受け渡し` and related inflections, use the saved
+For Japanese `渡す`, `受け渡す`, `受け渡し` and related inflections, use the saved
 "Distinguish input, transmission, delegation, inheritance, and handoff"
 comparisons when the selected CLI provides them. Record each actual alternative
 and reason, including retained wording. Inspect authorized tables, figures and

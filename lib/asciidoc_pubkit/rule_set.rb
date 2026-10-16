@@ -30,6 +30,7 @@ module AsciidocPubkit
     end
 
     def self.validate(data)
+      return EnglishRuleSet.validate(data) if data.is_a?(Hash) && data['schema_version'] == 2
       mapping(data, KEYS, 'Rule set')
       raise Error, 'Rule schema_version must be integer 1.' unless data['schema_version'].is_a?(Integer) && data['schema_version'] == 1
       mapping(data['terms'], CATEGORIES, 'Rule terms')

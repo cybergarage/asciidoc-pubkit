@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Add English lexical review, writing/heading/outline criteria, separate prose,
+  heading and list sessions, and language-specific readability prompts. Preserve
+  Japanese MeCab/IPADIC behavior and candidate-density-v1 arithmetic; explicitly
+  label score units and lack of calibration. English matching is not grammar
+  analysis. Regional tags and English replacement remain unsupported.
+- Use development version 1.3.0.pre.1 to distinguish new sessions and managed
+  skills from released 1.2.3. English support is not yet published.
+
 ## 1.2.3 - 2026-10-16
 
 - Clarify figure/table introductions with contextual Japanese comparisons,

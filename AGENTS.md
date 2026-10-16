@@ -3,7 +3,7 @@
 ## Scope and sources of truth
 
 This repository provides the `asciidoc-pubkit` Ruby gem and CLI. Its implemented
-workflow emits Japanese writing prompts, scans Japanese AsciiDoc running prose,
+workflow emits Japanese and English writing prompts, scans AsciiDoc running prose,
 reviews section headings in separate sessions, emits review prompts, scores
 running prose, and verifies edited manuscripts
 against a baseline. Only `review score --agent` invokes an installed Codex or
@@ -99,7 +99,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
   instructions. Preserve negation, conditions, terminology, source text, and
   protected content. Columns are one-based Unicode character positions.
   Ambiguous source mappings must produce coverage notices instead of guesses.
-- MeCab is the default. Never silently fall back to literal matching; require
+- MeCab is the Japanese default; English uses built-in `english-lexical`. Never silently fall back to literal matching; require
   explicit `--tokenizer literal`. Literal-mode success does not validate MeCab.
 - Rule precedence is `--rules`, then configuration `review.rules`, then packaged
   defaults. Custom rules replace the complete set. Keep YAML validation strict
@@ -126,7 +126,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
   Preserve exit codes: 0 for success, 1 for verification violations, 2 for invalid
   arguments/configuration/session/input/output failures.
 - `writing criteria` and `writing prompt` require no manuscript or analyzer.
-  They and all review commands accept `--lang ja`; reject unsupported languages
+  They and all review commands accept `--lang ja` and `--lang en`; reject unsupported languages
   explicitly. Keep common criteria in the packaged language-specific file, not
   duplicated in book skills or rule questions. Save the criteria used by each
   review session and include them in its generated prompt.

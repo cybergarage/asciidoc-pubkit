@@ -141,9 +141,11 @@ AI CLI. Japanese review and scoring use external MeCab with UTF-8 IPADIC by
 default. See [installation and analyzer setup](docs/installation.md).
 Explicit `--tokenizer literal` offers limited phrase matching without MeCab.
 
-Document commands accept any language. Writing, replacement, and review support
-`--lang ja` only. English review is a [research proposal](docs/english-review-research.md),
-not an available feature. Node.js and textlint are not required.
+Document commands accept any language. The unreleased 1.3.0.pre.1 checkout adds
+`--lang en` to writing and review, including scoring, headings and lists.
+Replacement remains Japanese-only. See [English review](docs/english-review.md)
+for boundaries, rules and score limits. Published 1.2.3 supports Japanese review
+only. Node.js and textlint are not required.
 
 Only `replace apply` edits manuscripts directly. Review prompts guide an external
 human or agent; scan, prompt, verify, and scoring do not edit manuscripts.

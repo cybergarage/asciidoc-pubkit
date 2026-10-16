@@ -461,30 +461,30 @@ class ReviewTest < Minitest::Test
   end
 
   def test_review_rejects_unsupported_or_mismatched_languages
-    code, _, error = cli('review', 'scan', @book, '--output', @session, '--lang', 'en')
+    code, _, error = cli('review', 'scan', @book, '--output', @session, '--lang', 'fr')
     assert_equal 2, code
-    assert_includes error, 'Unsupported review language "en"'
+    assert_includes error, 'Unsupported review language "fr"'
     refute File.exist?(@session)
 
     config = File.join(@dir, '.asciidoc-pubkit.yml')
-    File.write(config, { 'review' => { 'language' => 'en' } }.to_yaml)
+    File.write(config, { 'review' => { 'language' => 'fr' } }.to_yaml)
     code, _, error = cli('review', 'scan', @book, '--output', @session)
     assert_equal 2, code
-    assert_includes error, 'Unsupported review language "en"'
+    assert_includes error, 'Unsupported review language "fr"'
     File.unlink(config)
 
-    File.write(@book, "= Test Book\n:lang: en\n\ninclude::chapter.adoc[]\n")
+    File.write(@book, "= Test Book\n:lang: fr\n\ninclude::chapter.adoc[]\n")
     code, _, error = cli('review', 'scan', @book, '--output', @session)
     assert_equal 2, code
-    assert_includes error, 'Unsupported review language "en"'
+    assert_includes error, 'Unsupported review language "fr"'
     refute File.exist?(@session)
 
     File.write(@book, "= Test Book\n:lang: ja\n\ninclude::chapter.adoc[]\n")
     scan
     %w[prompt verify].each do |command|
-      code, _, error = cli('review', command, @session, '--lang', 'en')
+      code, _, error = cli('review', command, @session, '--lang', 'fr')
       assert_equal 2, code
-      assert_includes error, 'Unsupported review language "en"'
+      assert_includes error, 'Unsupported review language "fr"'
     end
   end
 

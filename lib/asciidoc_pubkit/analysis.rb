@@ -5,7 +5,8 @@ module AsciidocPubkit
     def self.build(settings)
       case settings.fetch('tokenizer', 'mecab')
       when 'mecab' then Morphology.new(settings)
-      when 'literal' then nil
+      when 'english-lexical' then EnglishLexical.new(settings)
+      when 'literal' then settings['language'] == 'en' ? EnglishLexical.new(settings) : nil
       else raise Error, "Unsupported analysis backend: #{settings['tokenizer'].inspect}."
       end
     end

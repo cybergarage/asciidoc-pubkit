@@ -166,9 +166,9 @@ class WritingTest < Minitest::Test
 
   def test_writing_rejects_unsupported_languages_and_input_files
     %w[criteria prompt].each do |command|
-      code, _, error = cli('writing', command, '--lang', 'en')
+      code, _, error = cli('writing', command, '--lang', 'fr')
       assert_equal 2, code
-      assert_includes error, 'Unsupported writing language "en"; supported: ja.'
+      assert_includes error, 'Unsupported writing language "fr"; supported: ja, en.'
     end
     assert_equal 2, cli('writing', 'prompt', 'book.adoc').first
   end

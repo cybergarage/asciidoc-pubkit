@@ -28,7 +28,10 @@ Configuration paths are relative to the configuration file. Without configuratio
 the base directory is the entrypoint's directory. Exclusion patterns match source
 paths relative to the base directory; excluded files can still supply attributes
 and are preserved by verification. The default style is `preserve`; explicit
-alternatives are `desu-masu` and `dearu`. Only `ja` is currently supported.
+alternatives are `desu-masu` and `dearu`. The unreleased checkout also supports `en` with `preserve` style only.
+English defaults to `english-lexical`; explicit `literal` is also supported.
+Japanese keeps the MeCab default. Invalid language/backend combinations fail;
+regional tags are not silently normalized. See [English review](english-review.md).
 
 A glossary maps canonical terms to variant strings:
 
@@ -37,6 +40,10 @@ JavaScript:
   - Javascript
   - Java Script
 ```
+
+For English, glossary matching is case-sensitive lexical phrase matching and
+`allows` suppresses exact surfaces (and phrase-rule terms under their case policy).
+Use lexical terms separated by whitespace; unsupported glossary syntax is rejected.
 
 Variants are review candidates, not automatic replacement instructions. In MeCab
 mode, `allows` can suppress a canonical dictionary form (all its inflections) or

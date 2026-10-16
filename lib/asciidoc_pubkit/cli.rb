@@ -14,11 +14,11 @@ module AsciidocPubkit
         document info FILE     Extract book metadata
         document check-xrefs FILE  Report unresolved local cross-references
         document index DIRECTORY  Generate an English-title AsciiDoc index
-        writing criteria      Print the shared Japanese prose criteria
-        writing prompt        Generate a Japanese technical writing prompt
-        review scan FILE       Collect Japanese prose, headings, or list text and review candidates
-        review score FILE      Score Japanese prose; optionally use a local AI CLI
-        review prompt SESSION  Generate an English review prompt with Japanese source excerpts
+        writing criteria      Print the shared Japanese or English prose criteria
+        writing prompt        Generate a technical writing prompt
+        review scan FILE       Collect Japanese or English prose, headings, or list text and review candidates
+        review score FILE      Score Japanese or English prose; optionally use a local AI CLI
+        review prompt SESSION  Generate an English review prompt with source-language excerpts
         review verify SESSION  Compare edited sources with the saved baseline
         replace check FILE     Report prose-only replacement candidates
         replace diff FILE      Preview prose replacements as a unified diff
@@ -28,8 +28,8 @@ module AsciidocPubkit
         --help                 Show help (also supported for each command)
         --version              Show the version
 
-      Use --lang ja with writing commands and review commands. Other review and
-      writing languages are not supported yet and return an error.
+      Use --lang ja (default) or en with writing commands and review commands. Other
+      languages and regional tags are unsupported and return an error.
       skill install and upgrade write only the selected skill directory.
       Only replace apply edits manuscripts. review score --agent explicitly invokes a
       local Codex or Claude CLI, which may connect to its configured AI service.
@@ -64,7 +64,7 @@ module AsciidocPubkit
         input_name = group == 'writing' ? '' : ((group == 'replace' || %w[scan score].include?(command)) ? ' FILE' : ' SESSION')
         opts.banner = "Usage: asciidoc-pubkit #{group} #{command} [options]#{input_name}"
         opts.on('-o', '--output PATH', group == 'review' && command == 'scan' ? 'New session directory (default: .pubkit/review, .pubkit/headings, or .pubkit/lists)' : 'New output file (default: standard output)') { |v| options[:output] = v }
-        opts.on('--lang LANG', 'Language (ja only in this release)') { |v| options[:language] = v }
+        opts.on('--lang LANG', 'Language: ja (default) or en; replacement supports ja only') { |v| options[:language] = v }
         if group == 'replace'
           opts.on('--rules FILE', 'Required prh-format replacement rules (limited compatibility)') { |v| options[:rules] = v }
           opts.on('--base-dir DIR', 'Set the Asciidoctor base directory') { |v| options[:base_dir] = v }
@@ -87,7 +87,7 @@ module AsciidocPubkit
           opts.on('--config FILE', 'Use an explicit YAML configuration') { |v| options[:config] = v }
           opts.on('--rules FILE', 'Replace default review rules with a YAML rule set') { |v| options[:rules] = v }
           opts.on('--base-dir DIR', 'Set the Asciidoctor base directory') { |v| options[:base_dir] = v }
-          opts.on('--tokenizer NAME', 'mecab (default) or literal (limited phrase matching)') { |v| options[:tokenizer] = v }
+          opts.on('--tokenizer NAME', 'mecab (ja default), english-lexical (en default), or explicit literal') { |v| options[:tokenizer] = v }
           opts.on('--style STYLE', 'preserve (default), desu-masu, or dearu') { |v| options[:style] = v }
           opts.on('-a', '--attribute NAME=VALUE', 'Set an Asciidoctor attribute; repeat as needed') do |v|
             key, value = v.split('=', 2)
@@ -154,7 +154,7 @@ module AsciidocPubkit
           out.puts "Scanned #{result['paragraphs']} paragraphs; found #{result['findings']} review candidates."
           out.puts "List text is excluded. Review it in a separate session with --scope lists."
         end
-        out.puts "Tokenizer: #{result['tokenizer']}#{result['tokenizer'] == 'literal' ? ' (limited phrase matching; no morphological analysis)' : ' (UTF-8 IPADIC)'}"
+        out.puts "Tokenizer: #{result['tokenizer']}#{result['tokenizer'] == 'literal' ? ' (limited phrase matching; no morphological analysis)' : (result['tokenizer'] == 'mecab' ? ' (UTF-8 IPADIC)' : ' (English lexical matching; no grammar analysis)')}"
         out.puts "Coverage notices: #{result['coverage_notices']}. See document.json for limitations."
         out.puts "Review session: #{result['session']}"
         return 0
