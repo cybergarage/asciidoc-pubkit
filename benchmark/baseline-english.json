@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "split": "all",
+  "corpus_sha256": "776a51c28d9c41ea323f3a70f45e44e2d4961e27fa9bb01865b21313dd7bf3b8",
+  "paragraphs": 120,
+  "documents": 12,
+  "lexical_words": 1652,
+  "thresholds": {
+    "precision": 0.9,
+    "recall": 0.9,
+    "location_accuracy": 1.0
+  },
+  "metrics": {
+    "true_positives": 59,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "location_accuracy": 1.0,
+    "false_positives_per_1000_words": 0.0
+  },
+  "by_rule": {
+    "redundant-framing": {
+      "true_positives": 22,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "wordy-expression": {
+      "true_positives": 24,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "repeated-word": {
+      "true_positives": 13,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  },
+  "passed": true,
+  "score": {
+    "score_type": "candidate-density-v1",
+    "score": 65.853,
+    "candidate_density_score": 65.853,
+    "candidate_count": 59,
+    "characters": 8639,
+    "density_unit": "candidates per 1000 non-space unmasked Unicode characters",
+    "calibrated_quality_score": false,
+    "analysis": {
+      "engine": "english-lexical",
+      "language": "en",
+      "version": "1",
+      "boundary_policy": "unicode-lexical-v1"
+    },
+    "rules_sha256": "87687fa6ca210c15195bc29eff499564791d2ac68487d82117e8e6d6eecd416f"
+  },
+  "semantic_evaluation": "not_run",
+  "limitations": "Original agent-authored technical prose and expected lexical spans; no external dataset reuse or independent human annotation. Held-out documents are a reserved regression partition, not a blind evaluation."
+}

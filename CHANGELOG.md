@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add 120 original English regression paragraphs split by document, exact span
+  labels, per-rule precision/recall/F1 and location gates, and a density baseline.
+  Add 24 revision calibration cases and an offline imported-judgment evaluator
+  separating readability from fact retention. Tests use synthetic judgments;
+  no AI editing-quality improvement or independent human validation is claimed.
+
 - Add English lexical review, writing/heading/outline criteria, separate prose,
   heading and list sessions, and language-specific readability prompts. Preserve
   Japanese MeCab/IPADIC behavior and candidate-density-v1 arithmetic; explicitly

@@ -1,0 +1,1205 @@
+{
+  "schema_version": 1,
+  "provenance": "Original agent-authored technical prose and expected lexical spans; no external dataset reuse or independent human annotation. Held-out documents are a reserved regression partition, not a blind evaluation.",
+  "thresholds": {
+    "precision": 0.9,
+    "recall": 0.9,
+    "location_accuracy": 1.0
+  },
+  "paragraphs": [
+    {
+      "id": "api-reference-01",
+      "document": "api-reference",
+      "split": "development",
+      "text": "It is important to note that the client returns a request identifier before the upload finishes.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "api-reference-02",
+      "document": "api-reference",
+      "split": "development",
+      "text": "The caller supplies a cursor in order to retrieve the next page. An empty cursor selects the first page.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 29,
+          "match": "in order to"
+        }
+      ]
+    },
+    {
+      "id": "api-reference-03",
+      "document": "api-reference",
+      "split": "development",
+      "text": "The response contains the the number of records accepted by the server.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 22,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "api-reference-04",
+      "document": "api-reference",
+      "split": "development",
+      "text": "The endpoint rejects the request due to the fact that its signature has expired.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 33,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "api-reference-05",
+      "document": "api-reference",
+      "split": "development",
+      "text": "It should be noted that a successful response confirms acceptance, not completion.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "api-reference-06",
+      "document": "api-reference",
+      "split": "development",
+      "text": "The client may omit the timeout. This permission does not require the server to wait indefinitely.",
+      "expected": []
+    },
+    {
+      "id": "api-reference-07",
+      "document": "api-reference",
+      "split": "development",
+      "text": "The field named `in order to` belongs to a legacy format and must remain unchanged.",
+      "expected": []
+    },
+    {
+      "id": "api-reference-08",
+      "document": "api-reference",
+      "split": "development",
+      "text": "The can_retry flag records a capability; it does not grant authorization to retry.",
+      "expected": []
+    },
+    {
+      "id": "api-reference-09",
+      "document": "api-reference",
+      "split": "development",
+      "text": "The parser had had a valid token before the input stream closed.",
+      "expected": []
+    },
+    {
+      "id": "api-reference-10",
+      "document": "api-reference",
+      "split": "development",
+      "text": "A response can contain zero entries. The count describes the current page rather than the entire collection.",
+      "expected": []
+    },
+    {
+      "id": "procedures-01",
+      "document": "procedures",
+      "split": "development",
+      "text": "In order to rotate a key, create its replacement before disabling the old key.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 0,
+          "match": "In order to"
+        }
+      ]
+    },
+    {
+      "id": "procedures-02",
+      "document": "procedures",
+      "split": "development",
+      "text": "It is important to note that the maintenance command pauses new jobs but leaves running jobs active.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "procedures-03",
+      "document": "procedures",
+      "split": "development",
+      "text": "Open open the settings panel and select the existing workspace.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 0,
+          "match": "Open open"
+        }
+      ]
+    },
+    {
+      "id": "procedures-04",
+      "document": "procedures",
+      "split": "development",
+      "text": "The restore command stops due to the fact that the backup checksum does not match.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 26,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "procedures-05",
+      "document": "procedures",
+      "split": "development",
+      "text": "After the transaction commits, remove the the temporary archive.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 38,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "procedures-06",
+      "document": "procedures",
+      "split": "development",
+      "text": "Run the checker before deployment. A successful check does not publish the configuration.",
+      "expected": []
+    },
+    {
+      "id": "procedures-07",
+      "document": "procedures",
+      "split": "development",
+      "text": "The documentation lists due `status_code` to the fact that as separate tokens in a malformed example.",
+      "expected": []
+    },
+    {
+      "id": "procedures-08",
+      "document": "procedures",
+      "split": "development",
+      "text": "The operator can cancel the upload while it is waiting for a connection.",
+      "expected": []
+    },
+    {
+      "id": "procedures-09",
+      "document": "procedures",
+      "split": "development",
+      "text": "Do not delete the previous snapshot until the restored files have been inspected.",
+      "expected": []
+    },
+    {
+      "id": "procedures-10",
+      "document": "procedures",
+      "split": "development",
+      "text": "The guide explains that that setting applies only to newly created sessions.",
+      "expected": []
+    },
+    {
+      "id": "architecture-01",
+      "document": "architecture",
+      "split": "development",
+      "text": "It should be noted that the queue owns scheduling while the worker owns execution.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "architecture-02",
+      "document": "architecture",
+      "split": "development",
+      "text": "The coordinator records the task identifier in order to correlate later notifications.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 44,
+          "match": "in order to"
+        }
+      ]
+    },
+    {
+      "id": "architecture-03",
+      "document": "architecture",
+      "split": "development",
+      "text": "Each partition has a a leader that assigns sequence numbers.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 19,
+          "match": "a a"
+        }
+      ]
+    },
+    {
+      "id": "architecture-04",
+      "document": "architecture",
+      "split": "development",
+      "text": "The adapter retains a local copy due to the fact that the upstream service can be unavailable.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 33,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "architecture-05",
+      "document": "architecture",
+      "split": "development",
+      "text": "It is important to note that the boundary separates authorization domains rather than operating-system processes.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "architecture-06",
+      "document": "architecture",
+      "split": "development",
+      "text": "The contract specifies request fields and response states. It does not guarantee delivery.",
+      "expected": []
+    },
+    {
+      "id": "architecture-07",
+      "document": "architecture",
+      "split": "development",
+      "text": "An event is stored after validation. The implementation does not identify a separate persistence actor.",
+      "expected": []
+    },
+    {
+      "id": "architecture-08",
+      "document": "architecture",
+      "split": "development",
+      "text": "The service-to-service channel carries notifications; the database stores durable state.",
+      "expected": []
+    },
+    {
+      "id": "architecture-09",
+      "document": "architecture",
+      "split": "development",
+      "text": "The server exposes can.connect as an identifier in a diagnostic example.",
+      "expected": []
+    },
+    {
+      "id": "architecture-10",
+      "document": "architecture",
+      "split": "development",
+      "text": "A shared cache improves reuse, but the source provides no measurement of latency.",
+      "expected": []
+    },
+    {
+      "id": "failure-analysis-01",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "The retry is delayed due to the fact that the connection pool has no available slots.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 21,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "failure-analysis-02",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "The flag is is set only after the acknowledgement arrives.",
+      "expected": []
+    },
+    {
+      "id": "failure-analysis-03",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "It should be noted that a missing completion event does not establish that execution failed.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "failure-analysis-04",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "The investigator compares timestamps in order to distinguish a late report from a late operation.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 37,
+          "match": "in order to"
+        }
+      ]
+    },
+    {
+      "id": "failure-analysis-05",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "The log records the the first rejected sequence number.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 16,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "failure-analysis-06",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "A timeout means the response was not observed before the deadline. The remote action may still finish.",
+      "expected": []
+    },
+    {
+      "id": "failure-analysis-07",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "The article discusses why the word is is a copula in a quoted sentence.",
+      "expected": []
+    },
+    {
+      "id": "failure-analysis-08",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "The diagnostic string contains in https://example.org/order order to; the link is not prose.",
+      "expected": []
+    },
+    {
+      "id": "failure-analysis-09",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "The transaction was rolled back, but the caller did not receive the rollback notification.",
+      "expected": []
+    },
+    {
+      "id": "failure-analysis-10",
+      "document": "failure-analysis",
+      "split": "development",
+      "text": "Neither the log nor the trace identifies which component removed the temporary file.",
+      "expected": []
+    },
+    {
+      "id": "storage-01",
+      "document": "storage",
+      "split": "development",
+      "text": "In order to reclaim space, the store removes pages that no active snapshot references.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 0,
+          "match": "In order to"
+        }
+      ]
+    },
+    {
+      "id": "storage-02",
+      "document": "storage",
+      "split": "development",
+      "text": "It is important to note that flushing a buffer is separate from committing a transaction.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "storage-03",
+      "document": "storage",
+      "split": "development",
+      "text": "The index retains the the original key bytes for comparison.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 18,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "storage-04",
+      "document": "storage",
+      "split": "development",
+      "text": "The reader retries due to the fact that the selected page changed during validation.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 19,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "storage-05",
+      "document": "storage",
+      "split": "development",
+      "text": "It should be noted that the retention period is measured from the commit timestamp.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "storage-06",
+      "document": "storage",
+      "split": "development",
+      "text": "A zero-length value is valid. A missing value is represented by a different marker.",
+      "expected": []
+    },
+    {
+      "id": "storage-07",
+      "document": "storage",
+      "split": "development",
+      "text": "The identifier in_order_to is preserved in imported metadata.",
+      "expected": []
+    },
+    {
+      "id": "storage-08",
+      "document": "storage",
+      "split": "development",
+      "text": "The storage engine can't reclaim pages referenced by a snapshot.",
+      "expected": []
+    },
+    {
+      "id": "storage-09",
+      "document": "storage",
+      "split": "development",
+      "text": "The backup includes table definitions and records, while temporary indexes are rebuilt after restore.",
+      "expected": []
+    },
+    {
+      "id": "storage-10",
+      "document": "storage",
+      "split": "development",
+      "text": "The implementation had had exclusive ownership of the segment before it transferred the handle.",
+      "expected": []
+    },
+    {
+      "id": "deployment-01",
+      "document": "deployment",
+      "split": "development",
+      "text": "The deployment job checks the image digest in order to avoid pulling an unintended build.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 43,
+          "match": "in order to"
+        }
+      ]
+    },
+    {
+      "id": "deployment-02",
+      "document": "deployment",
+      "split": "development",
+      "text": "It should be noted that the readiness probe checks dependencies but does not accept user traffic.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "deployment-03",
+      "document": "deployment",
+      "split": "development",
+      "text": "The rollout keeps the the previous revision available until the new pods become ready.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 18,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "deployment-04",
+      "document": "deployment",
+      "split": "development",
+      "text": "The scheduler leaves the job pending due to the fact that no node satisfies its constraints.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 37,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "deployment-05",
+      "document": "deployment",
+      "split": "development",
+      "text": "It is important to note that a planned failover is not evidence of automatic recovery.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "deployment-06",
+      "document": "deployment",
+      "split": "development",
+      "text": "Apply the manifest to the staging cluster before updating production.",
+      "expected": []
+    },
+    {
+      "id": "deployment-07",
+      "document": "deployment",
+      "split": "development",
+      "text": "The image label due-to-the-fact-that is an opaque build identifier.",
+      "expected": []
+    },
+    {
+      "id": "deployment-08",
+      "document": "deployment",
+      "split": "development",
+      "text": "The operation may take several minutes when the registry is slow.",
+      "expected": []
+    },
+    {
+      "id": "deployment-09",
+      "document": "deployment",
+      "split": "development",
+      "text": "The configuration sets a maximum of three retries; it does not require three attempts after success.",
+      "expected": []
+    },
+    {
+      "id": "deployment-10",
+      "document": "deployment",
+      "split": "development",
+      "text": "The command is documented at link:https://example.org[It is important to note that].",
+      "expected": []
+    },
+    {
+      "id": "networking-01",
+      "document": "networking",
+      "split": "held_out",
+      "text": "It is important to note that receiving a packet does not imply that its payload has been processed.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "networking-02",
+      "document": "networking",
+      "split": "held_out",
+      "text": "The gateway renews its lease in order to retain the advertised address.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 29,
+          "match": "in order to"
+        }
+      ]
+    },
+    {
+      "id": "networking-03",
+      "document": "networking",
+      "split": "held_out",
+      "text": "The sender stores the the unacknowledged payload until the retry window expires.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 18,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "networking-04",
+      "document": "networking",
+      "split": "held_out",
+      "text": "The handshake fails due to the fact that the peers have no common protocol version.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 20,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "networking-05",
+      "document": "networking",
+      "split": "held_out",
+      "text": "It should be noted that the retry interval includes jitter and is not a fixed delay.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "networking-06",
+      "document": "networking",
+      "split": "held_out",
+      "text": "The connection can close before the final frame arrives. The receiver then reports an incomplete message.",
+      "expected": []
+    },
+    {
+      "id": "networking-07",
+      "document": "networking",
+      "split": "held_out",
+      "text": "The flag can_retry differs from a policy allowing retries on behalf of another user.",
+      "expected": []
+    },
+    {
+      "id": "networking-08",
+      "document": "networking",
+      "split": "held_out",
+      "text": "The address is assigned dynamically; the source does not name the assigning component.",
+      "expected": []
+    },
+    {
+      "id": "networking-09",
+      "document": "networking",
+      "split": "held_out",
+      "text": "The documentation quotes the phrase \"in, order to\" as punctuation that changes token adjacency.",
+      "expected": []
+    },
+    {
+      "id": "networking-10",
+      "document": "networking",
+      "split": "held_out",
+      "text": "The peer had had a valid route before its interface was disabled.",
+      "expected": []
+    },
+    {
+      "id": "security-policy-01",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "In order to revoke access, remove the principal from the policy and invalidate cached grants.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 0,
+          "match": "In order to"
+        }
+      ]
+    },
+    {
+      "id": "security-policy-02",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "It should be noted that an authenticated identity can still lack permission to read the resource.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "security-policy-03",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "The server checks a a signed grant before opening the object.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 18,
+          "match": "a a"
+        }
+      ]
+    },
+    {
+      "id": "security-policy-04",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "The verifier rejects the token due to the fact that its audience differs from the requested service.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 31,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "security-policy-05",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "It is important to note that the policy describes permission rather than automatic execution.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "security-policy-06",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "A client MUST preserve the nonce when the governing protocol assigns that keyword normative force.",
+      "expected": []
+    },
+    {
+      "id": "security-policy-07",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "The policy may allow reads while prohibiting changes. These permissions are evaluated separately.",
+      "expected": []
+    },
+    {
+      "id": "security-policy-08",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "The example uses in {policy-name} order to with an attribute between the words.",
+      "expected": []
+    },
+    {
+      "id": "security-policy-09",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "The document explains that that principal is a service identity rather than a person.",
+      "expected": []
+    },
+    {
+      "id": "security-policy-10",
+      "document": "security-policy",
+      "split": "held_out",
+      "text": "The label can-read is a literal policy name, not a prose statement of capability.",
+      "expected": []
+    },
+    {
+      "id": "observability-01",
+      "document": "observability",
+      "split": "held_out",
+      "text": "The dashboard omits the latest sample due to the fact that aggregation has not finished.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 38,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "observability-02",
+      "document": "observability",
+      "split": "held_out",
+      "text": "It is important to note that an absent span can reflect sampling rather than an unexecuted operation.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "observability-03",
+      "document": "observability",
+      "split": "held_out",
+      "text": "The exporter records the the original event time alongside its delivery time.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 21,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "observability-04",
+      "document": "observability",
+      "split": "held_out",
+      "text": "The collector attaches a trace identifier in order to connect events from separate services.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 42,
+          "match": "in order to"
+        }
+      ]
+    },
+    {
+      "id": "observability-05",
+      "document": "observability",
+      "split": "held_out",
+      "text": "It should be noted that the plotted percentile describes the sampled requests only.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "observability-06",
+      "document": "observability",
+      "split": "held_out",
+      "text": "The report says significantly faster because it includes a measured comparison under the stated load.",
+      "expected": []
+    },
+    {
+      "id": "observability-07",
+      "document": "observability",
+      "split": "held_out",
+      "text": "An error count of zero does not establish that every request succeeded when reporting was interrupted.",
+      "expected": []
+    },
+    {
+      "id": "observability-08",
+      "document": "observability",
+      "split": "held_out",
+      "text": "The metric path queue.wait contains a dot and should remain one lexical token.",
+      "expected": []
+    },
+    {
+      "id": "observability-09",
+      "document": "observability",
+      "split": "held_out",
+      "text": "The observer can’t reconstruct events that were never recorded.",
+      "expected": []
+    },
+    {
+      "id": "observability-10",
+      "document": "observability",
+      "split": "held_out",
+      "text": "The note describes due xref:details[details] to the fact that as disconnected prose around a reference.",
+      "expected": []
+    },
+    {
+      "id": "concurrency-01",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "In order to publish a result, the worker acquires the state lock and checks the generation number.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 0,
+          "match": "In order to"
+        }
+      ]
+    },
+    {
+      "id": "concurrency-02",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "It should be noted that cancellation requests and completed cancellation are different events.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "concurrency-03",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "The coordinator waits for the the active reader before replacing the buffer.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 26,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "concurrency-04",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "The task remains suspended due to the fact that its dependency has not produced a result.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 27,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "concurrency-05",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "It is important to note that independent workers are not necessarily scheduled simultaneously.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "concurrency-06",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "A future can settle after its caller stops waiting. The callback still receives the stored outcome.",
+      "expected": []
+    },
+    {
+      "id": "concurrency-07",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "The scheduler had had ownership of the continuation before handing it to the executor.",
+      "expected": []
+    },
+    {
+      "id": "concurrency-08",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "The labels the, the are separated by punctuation and are not adjacent lexical repetition.",
+      "expected": []
+    },
+    {
+      "id": "concurrency-09",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "A cancellation signal requests a transition; it does not guarantee that the operation has already stopped.",
+      "expected": []
+    },
+    {
+      "id": "concurrency-10",
+      "document": "concurrency",
+      "split": "held_out",
+      "text": "The API's get_result method returns an error value rather than throwing an exception.",
+      "expected": []
+    },
+    {
+      "id": "data-import-01",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "The importer records source offsets in order to resume after a recoverable connection failure.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 36,
+          "match": "in order to"
+        }
+      ]
+    },
+    {
+      "id": "data-import-02",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "It is important to note that skipped rows remain in the audit file even when the batch succeeds.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "data-import-03",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "The decoder reads the the length prefix before allocating the payload buffer.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 18,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "data-import-04",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "The conversion stops due to the fact that a timestamp cannot be represented in the target format.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 21,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "data-import-05",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "It should be noted that duplicate keys are retained when the selected policy requires history.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "data-import-06",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "The importer preserves Unicode combining marks rather than normalizing the original field values.",
+      "expected": []
+    },
+    {
+      "id": "data-import-07",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "The escaped name in_order_to_2 is a column identifier and is not a phrase.",
+      "expected": []
+    },
+    {
+      "id": "data-import-08",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "An empty cell and a null value have different meanings in the target schema.",
+      "expected": []
+    },
+    {
+      "id": "data-import-09",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "The guide states that that delimiter must remain unchanged in quoted fields.",
+      "expected": []
+    },
+    {
+      "id": "data-import-10",
+      "document": "data-import",
+      "split": "held_out",
+      "text": "The code sample `it should be noted that` is preserved as literal input for a tokenizer example.",
+      "expected": []
+    },
+    {
+      "id": "compatibility-01",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "It should be noted that accepting an older header does not imply support for every older payload format.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It should be noted that"
+        }
+      ]
+    },
+    {
+      "id": "compatibility-02",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "The adapter retains the original status code in order to preserve the caller's error handling.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 45,
+          "match": "in order to"
+        }
+      ]
+    },
+    {
+      "id": "compatibility-03",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "The compatibility layer translates the the field name without changing the stored value.",
+      "expected": [
+        {
+          "rule": "repeated-word",
+          "offset": 35,
+          "match": "the the"
+        }
+      ]
+    },
+    {
+      "id": "compatibility-04",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "The plugin cannot load due to the fact that its declared interface version is newer than the host.",
+      "expected": [
+        {
+          "rule": "wordy-expression",
+          "offset": 23,
+          "match": "due to the fact that"
+        }
+      ]
+    },
+    {
+      "id": "compatibility-05",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "It is important to note that a proposed migration is not part of the installed release.",
+      "expected": [
+        {
+          "rule": "redundant-framing",
+          "offset": 0,
+          "match": "It is important to note that"
+        }
+      ]
+    },
+    {
+      "id": "compatibility-06",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "Version 1.2.3 accepts the documented request shape. The comparison says nothing about unreleased versions.",
+      "expected": []
+    },
+    {
+      "id": "compatibility-07",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "The value robust is a user-defined profile name rather than a promise about system behavior.",
+      "expected": []
+    },
+    {
+      "id": "compatibility-08",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "The source includes 日本can as a mixed-script token, not the English word can by itself.",
+      "expected": []
+    },
+    {
+      "id": "compatibility-09",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "The sentence explains why is is used as a linking verb in this example.",
+      "expected": []
+    },
+    {
+      "id": "compatibility-10",
+      "document": "compatibility",
+      "split": "held_out",
+      "text": "The wrapper may preserve an obsolete spelling when it is part of a public API identifier.",
+      "expected": []
+    }
+  ]
+}

@@ -96,3 +96,9 @@ identity records engine, language, implementation version and boundary policy;
 verification reports drift. Prompt generation uses saved criteria and findings
 without constructing an analyzer. Retain old sessions with their original tool;
 never rescan to hide a failed preservation check.
+
+## Development quality checks
+
+See [English evaluation](english-evaluation.md) for the 120-paragraph detection
+corpus, score baseline, regression gates and 24 revision calibration cases.
+Detection tests and evaluator-harness tests do not prove AI editing improvement.
