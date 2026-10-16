@@ -1,13 +1,46 @@
 # English review support research and proposal
 
 Research date: 2026-10-02. Repository inspected at `26cbb1e`, following release
-0.8.1. This document proposes future behavior; English review is not implemented.
+0.8.1. The original survey and proposal below describe that historical checkout.
+English review is now implemented in the unreleased 1.3.0.pre.1 checkout;
+released 1.2.3 remains Japanese-only.
+
+See the [implementation and book-skill assessment](#implementation-and-book-skill-assessment-2026-10-16)
+for the current checkout assessment and proposed delivery sequence.
 
 English review is a practical extension of the existing source-mapped review
 workflow. The recommended first release combines conservative English phrase
 and terminology candidates, contextual review prompts, and existing mechanical
 verification. Grammar engines should remain optional until their accuracy,
 source offsets, installation costs, and reproducibility have been evaluated.
+
+## Implementation status (2026-10-16)
+
+The initial implementation is documented in [English review](english-review.md)
+and [English evaluation](english-evaluation.md). The historical proposal and
+pre-implementation assessments below are retained as design context, not current
+command references.
+
+- Japanese defaults and schema 1 remain unchanged; English uses exact `en`,
+  `english-lexical` (or explicitly selected literal matching) and strict schema 2.
+- English prose, heading, list, outline and writing workflows save English
+  criteria and retain mechanical preservation. Session schema 3 and exact tool
+  version checks remain in force. Replacement still rejects English.
+- Both languages retain the same candidate-density formula, with explicit units
+  and no cross-language quality claim. The optional English readability rubric
+  is separate from detection and preservation.
+- The initial 120-paragraph corpus has 59 expected lexical candidates across
+  disjoint development/evaluation document groups. Baseline precision, recall,
+  F1 and location accuracy are 1.0 on these authored fixtures; they are not blind
+  or independently human-reviewed evidence of production quality.
+- Twenty-four revision cases and an imported-judgment evaluator test readability
+  separately from source-fact retention. Normal tests use synthetic judgments
+  to validate the harness. No actual model evaluation or measured editing
+  improvement is claimed.
+- Grammar adapters and a cybergarage-pub English review skill remain subsequent
+  work. The existing translation skill's source-comparison guidance was updated
+  separately before implementation. This gem implementation does not change
+  manuscript files, translation states or publishing workflows.
 
 ## Scope and research method
 
@@ -125,8 +158,8 @@ regression coverage even if replacement is outside the English review scope.
 
 ## Proposed initial behavior
 
-These commands illustrate the target interface and do not work in the current
-release:
+These commands illustrate the original target interface. They now work in the
+unreleased English-capable checkout, but not in published 1.2.3:
 
 ```sh
 asciidoc-pubkit review scan book.adoc --lang en
@@ -312,3 +345,279 @@ research. It does not change executable behavior or claim implementation
 readiness from tests. Product benchmarking, external integration checks,
 full-paper experimental reproduction, and dataset redistribution review remain
 future work.
+
+## Implementation and book-skill assessment (2026-10-16)
+
+Status: implementation proposal, not delivered functionality. This assessment
+inspected pubkit at `628eab8` (source version 1.2.2) and the existing
+cybergarage-pub skill files at working-tree base `5bf99342c2`. The latter has
+unrelated local changes; no book or skill was modified. Published gem contents
+and the manuscript project's installed CLI were not verified. The original
+external-tool survey was not repeated.
+
+### Feasibility and changes since the original proposal
+
+Implement the built-in lexical approach first. The existing mapped-source,
+baseline, protected-content and verification workflow is reusable. English
+requires language-specific analysis and criteria rather than a second document
+parser. Adding a grammar service is not a prerequisite.
+
+The present implementation adds requirements absent from the original plan:
+
+- `Settings` supports `prose`, `headings` and `lists`. Full English book review
+  must include supported list items, using the same phase boundaries and
+  protection rules as Japanese review.
+- Heading sessions save `outline_criteria`; `Writing.outline_criteria` reads
+  `data/writing/<language>/outline.md`. English needs this third criteria file,
+  including outline diagnosis, depth limits and read-only body evidence.
+- Session schema is now 3 and loading checks both schema and exact tool version.
+  New work must preserve this contract rather than assume old sessions migrate.
+- The bundled skill is Japanese-specific, including its description, `--lang ja`
+  commands and contextual terminology guidance. CLI support alone would not
+  make the current skill an English workflow.
+- `Rules.mask` turns protected spans into spaces. An English phrase matcher
+  that treats every whitespace run as a separator could falsely join words
+  across masked code or links. Preserve exclusion intervals as matching barriers,
+  while allowing ordinary physical line wraps within an eligible paragraph.
+- `Score.run` changes top-level `score` and `score_type` when `--agent` is used.
+  English tests must distinguish that readability result from the retained
+  candidate-density fields, including empty-input behavior.
+
+Current rejection was checked with
+`bundle exec ruby -Ilib exe/asciidoc-pubkit writing criteria --lang en`:
+exit 2, `Unsupported writing language "en"; supported: ja.` This is a language
+gate check, not an English implementation test.
+
+### Recommended initial decisions
+
+These are proposed decisions for implementation, not existing CLI contracts.
+
+| Area | Proposed initial contract |
+| --- | --- |
+| Language | Support exact `en`; keep `ja` as the default. Reject `en-US` and `en-GB` explicitly until regional tags are deliberately supported. Do not infer language from prose. |
+| Backend | Name the deterministic backend `english-lexical`; choose it by default for `en`. Preserve `ja` with MeCab and explicitly selected literal mode. Reject mismatched backend/language combinations before loading resources. |
+| Literal mode | Keep explicit `en --tokenizer literal` as limited matching with documented case and boundary behavior, no grammatical analysis, and a distinct saved identity. It must not route into Japanese detectors. |
+| Style | English initially accepts `preserve`; reject `desu-masu` and `dearu`, including inherited configuration. Regional spelling and capitalization preferences remain book-owned. |
+| Headings | Default to mixed forms. Support lexical/glossary and exact sibling-duplicate candidates. Keep action/nominal classification as prompt guidance; reject unsupported English rule options rather than pretending Japanese morphology can implement them. |
+| Rules | Preserve Japanese schema 1. Introduce an English schema 2 with explicit `language: en`, stable IDs, match kind, case/boundary policy, severity, question and exceptions. Dispatch by schema and validate against the selected language. Specify a separate compatible English heading schema as well. |
+| Sessions | Aim to retain schema 3 only if saved settings and analysis identity fit its existing semantics and all validators can handle them. Otherwise bump the schema explicitly. Retain exact-version rejection and do not migrate baselines automatically. |
+| Scoring | Preserve `candidate-density-v1` arithmetic and character denominator, explicitly label units and lack of English calibration. Compare only the same language, rule set and analysis identity. Do not introduce word-based penalties or claim Japanese/English comparability. |
+| External engines | Defer grammar adapters and model-based scanning. Only explicit `review score --agent` may invoke a model CLI. |
+
+The English schema should initially admit literal token/phrase rules and a
+dedicated repeated-word rule, not unrestricted executable rules or a broad NLP
+DSL. Define matching semantics before publishing the schema. Required examples
+include `can` versus `can't`, ASCII versus curly apostrophes, `foo_bar`,
+hyphenated terms, versions, mixed scripts, combining marks and emoji before a
+match. Preserve source surfaces and Unicode character offsets. Avoid whole-text
+normalization unless it provides an exact source-span map. Repeated words must
+not match across punctuation, protected spans or paragraph boundaries; legitimate
+sequences such as `had had` need explicit exceptions and context review.
+
+Use `hint` for English lexical candidates, including glossary variants whose
+concept identity requires judgment. Start with a small independently authored
+phrase set. Treat vague degree, passive voice, pronouns and noun stacks as
+prompt criteria until annotated evidence supports a useful detector.
+
+### Implementation units and acceptance evidence
+
+| Unit | Owning code and resources | Acceptance evidence |
+| --- | --- | --- |
+| 1. Language-neutral dispatch | `language.rb`, `settings.rb`, `morphology.rb`; new shared analysis factory; call sites in `session.rb`, `rules.rb`, `heading_rules.rb`, `score.rb` | Existing Japanese behavior and explicit literal mode pass real MeCab/IPADIC tests. Incomplete English workflows stay unavailable. |
+| 2. English matching | New lexical backend and English rule validator/detectors; `rule_set.rb`; `data/review-rules.en.yml`, `data/heading-rules.en.yml` | Boundary, case, exceptions, inline barriers, line wraps, Unicode locations, custom-rule replacement and identity drift tests pass. |
+| 3. Complete review workflows | `writing.rb`, `session.rb`, language-aware heading rules; `data/writing/en/{criteria,headings,outline}.md` | Prose, headings, lists, outline/full views, diagnose/revise modes, saved criteria, all-entry prompts and generated heading IDs work together. No Japanese-only instructions leak into English prompts. |
+| 4. Scoring and public interface | `score.rb`, CLI help, configuration validation, gem metadata, README and command guides | English rubric, explicit units, zero eligible prose, custom rules, mock evaluator responses, and no implicit external invocation tests pass. Update language gates only with complete public paths. |
+| 5. Regression and packaging | Existing review/morphology/replacement/skill tests plus English fixtures | Full suite with MeCab/IPADIC, gem build and archive inspection confirm all three English criteria files, rules and skill resources are included. Exercise `replace` shared settings without silently broadening its supported languages. |
+| 6. Editorial evaluation | Independently authored technical corpus and manually reviewed pilot copies | Report per-rule useful-candidate precision, difficult negatives and exact location accuracy separately from preservation, fluency and translation fidelity. Do not claim measured quality from regression success. |
+
+Keep these as focused implementation commits, with the public language gate
+enabled only when the complete supported interface is ready. Session verification
+must use the shared factory and engine-neutral drift diagnostics; the present
+message assumes every drift is a MeCab version/dictionary change. Prompt creation
+must remain independent of analyzer availability.
+
+The initial technical corpus should include API descriptions, procedures,
+architecture, limitations, headings and simple lists. Use document-level splits
+and predeclare the useful-candidate threshold before tuning. The earlier 90%
+precision target remains provisional; a small pilot cannot establish general
+English review quality. Public gem fixtures should be independently authored;
+book excerpts and private review artifacts stay in the manuscript project.
+
+### Proposed cybergarage-pub English review skill
+
+Add a project-owned
+`.agents/skills/review-english-technical-book/SKILL.md` after an English-capable
+CLI is available through the project's chosen invocation. Suggested description:
+
+> Review and revise an existing English AsciiDoc technical book with
+> asciidoc-pubkit in separate verified heading, prose, and list sessions. Use for
+> English proofreading and outline diagnosis; translation fidelity and release
+> readiness remain with the English-edition workflow.
+
+Keep the entrypoint concise. Add `references/review-workflow.md` only for the
+substantial phase/resumption and translation handoff details. Do not copy the
+Japanese skill's term-specific examples or create another English criteria
+library: canonical English prose, heading and outline criteria belong in pubkit
+and are frozen in each generated session prompt. Book-specific US spelling,
+glossary, technical evidence and records remain in the book.
+
+The existing skills have distinct responsibilities:
+
+| Owner | Responsibility after the addition |
+| --- | --- |
+| pubkit bundled `review-asciidoc-manuscript` | General mapped-source review workflow. Generalize its language selection and condition Japanese-specific guidance when English ships; preserve managed registration protections. |
+| cybergarage-pub `review-japanese-technical-book` | Existing Japanese project workflow; do not redirect it to English or remove Japanese criteria routing. |
+| New `review-english-technical-book` | English editorial review of existing manuscripts, with project state, scope and checks. Works for English originals as well as translations. |
+| Existing `publish-english-edition` | Japanese source baseline, translation fidelity, reference localization, translated assets, edition state and release checks. Invoke the English review workflow only for the assigned editorial pass. |
+
+The new workflow should:
+
+1. Inspect the target's instructions, working tree, entrypoint, existing review
+   records and, for translated editions, manifest/glossary/style guide. Check the
+   exact installed CLI version and English capabilities. Do not silently use
+   `--lang ja`, substitute literal mode, install another tool or reset a session
+   when English support is missing; report the dependency limitation.
+2. Default a full review to headings, prose, then supported lists. Honor focused
+   and diagnosis-only requests. For each phase, scan with `--lang en` into an
+   unused session, generate its prompt before editing, review every selected
+   entry with neighboring context, record decisions and verify before scanning
+   the next phase. Use explicit `--only` only for a limited assignment.
+3. Preserve mapped spans, protected content and exact permitted heading anchors.
+   Record out-of-scope table, image, caption and complex-list concerns separately.
+   A full review of the supported scopes is not review of every visible artifact.
+4. Preserve obligations, permission, uncertainty, negation, quantities and actors.
+   Record the actual alternative and reason for each assigned decision. Do not
+   ban passive voice or technical words and do not use lexical clues to infer
+   AI authorship. Keep unsupported factual corrections pending.
+5. For translations, compare edited passages against the immutable Japanese
+   source through the existing translation workflow. A passing English baseline
+   does not establish fidelity to Japanese. Do not advance an artifact to
+   `reviewed` without the existing source-comparison and technical checks, or to
+   `complete`/`ready` without its applicable build and release checks. Reassess
+   affected prior evidence after edits without resetting unrelated records.
+6. Report phase results, reviewed/pending IDs, applied and unapplied proposals,
+   scope exclusions, translation-check status and project checks separately.
+   Keep `meaning_verified: false`; do not claim publication readiness from it.
+
+Two inspected English editions (`ai-codex-en` and `ai-agent-en`) declare
+`:lang: en`, while their translation manifests declare `target_language: en-US`
+and `epub_language: en`. The shared manifest template uses the same distinction.
+Thus the proposed exact `en` CLI can serve these examples without rewriting
+their US-English policy. This is not a repository-wide language audit. A target
+actually declaring `:lang: en-US` needs explicit regional support or a separately
+agreed metadata decision; do not override parser attributes to hide the mismatch.
+
+When implementing the skill, update cybergarage-pub's root routing instructions,
+human-facing README and the existing translation-review reference to distinguish
+standalone English proofreading from translation/edition work. Do not make a
+translation manifest mandatory for an English-original manuscript. The custom
+project skill is not an editable copy of the gem-managed skill; do not overwrite
+it with `skill install` or alter registration hashes.
+
+Validate the new skill's frontmatter and reference links, then exercise diagnosis,
+scoped revision, full three-phase review, unsupported CLI, existing-session
+resumption and translated-edition handoff on isolated fixtures. Verify that
+review success cannot promote translation or publication state by itself. Run a
+small authorized book pilot only after the CLI/package checks pass; keep pilot
+quality findings distinct from mechanical checks.
+
+### Delivery recommendation and validation of this assessment
+
+First consider the existing translation-skill improvements below; they do not
+depend on English CLI support. Then settle the contracts above, implement and validate pubkit,
+make the validated version available to the manuscript project, add the project
+skill and routing, then evaluate a scoped English-book pilot. Avoid installing a
+discoverable skill that advertises unsupported `--lang en` review. An interim
+manual editorial pass, if requested, must be labeled as manual review without
+pubkit's English baseline verification.
+
+This assessment changes documentation only. Source inspection, the current
+English-language rejection check and documentation checks do not validate future
+English behavior. No implementation, skill installation, manuscript review,
+grammar-engine evaluation, model evaluation, package release or publication was
+performed.
+
+## Earlier adoption in the existing translation skill (2026-10-16)
+
+Recommendation: incorporate a small source-comparison procedure into
+cybergarage-pub's existing `publish-english-edition` before implementing English
+pubkit support or adding a standalone English review skill. This section assesses
+that change; it does not apply it. The existing skill, translation/review and
+setup references, style template, and translation/review prompt templates were
+inspected. No changes to those skill files were present in the inspected diff.
+
+The skill already requires source fidelity, retained confidence, natural US
+English, terminology consistency, immutable Japanese baselines, and separate
+review/build gates. Its principal gap is operational detail for comparing
+English wording against those requirements. Supplement the existing review
+procedure rather than introduce a second translation workflow or state model.
+
+### What can be adopted now
+
+| Research finding | Existing coverage and proposed addition |
+| --- | --- |
+| Clear actors and referents | Natural English is required, but actor selection is not explained. Compare the source actor, action, object and pronoun referents with the target. Supply an English subject only when the source or established context supports it; record ambiguity instead of inventing responsibility. |
+| Conditions and modal force | Confidence and qualifications are already protected. Make comparison concrete: negation, condition scope, capability versus permission, obligation versus recommendation, quantified comparisons, units and uncertainty. Do not treat `can`, `may`, `must` and `should` as interchangeable stylistic choices or automatically introduce uppercase normative keywords. |
+| Contextual voice and tense | Preserve justified passive voice when the actor is unknown, irrelevant or deliberately unstated. Prefer an explicit actor when supported and useful. Distinguish general behavior from a future plan without converting the latter into an existing capability. |
+| Wordiness and nominalization | Compare a more direct alternative against the full source proposition. Remove framing only when it carries no qualification or discourse function. Keep established technical noun phrases; do not replace terminology merely because a shorter ordinary word exists. |
+| Paragraph coherence | Read adjacent source and target paragraphs and headings. Check that connectors express the same causal, conditional or contrastive relationship. Do not insert a plausible causal explanation absent from the source. |
+| Heading purpose | Compare a heading with its source and section body. Retain appropriate task and conceptual forms; use the book's capitalization policy. Do not impose imperative headings, a universal length limit, or sentence case across existing projects. |
+| Evidence-based evaluation | Separate fluency, fidelity and structural findings. For a material proposed revision, record the source/target locations, supported alternative, reason and disposition in existing review evidence. A readable target can still omit a condition or strengthen a claim. |
+
+Apply these checks to assigned prose, headings, list text, table text and
+reader-visible labels where the translation assignment includes them. The
+current translation workflow is not limited to pubkit's mapped prose scopes;
+do not import those exclusions and accidentally leave translated tables or
+diagrams unreviewed. Retain artifact-specific structure and diagram checks.
+
+### Boundaries and conflicts to resolve
+
+- Preserve the current paragraph-boundary and AsciiDoc-structure requirements.
+  Sentence-level wording can improve within those boundaries. Splitting or
+  merging paragraphs, moving sections and adding explanations require separately
+  assigned work; simplification research does not authorize such changes.
+- Source comparison remains mandatory. Technical discrepancies continue through
+  the existing source-defect procedure; English polishing must not silently
+  repair the Japanese source or replace its claims with new implementation facts.
+- Keep these as contextual review questions, not banned-word lists, mandatory
+  active-voice rules, automatic replacements or claims of AI authorship.
+- Do not add `--lang en` commands, an English analyzer prerequisite, numeric
+  quality gates, or claims of pubkit verification before the implementation exists.
+  Grammar engines, readability scoring and research benchmark thresholds remain
+  outside this early skill update.
+- Preserve existing `translated`, `reviewed`, `complete` and `ready` requirements.
+  No new status columns or automatic promotion follows from checking the added
+  editorial questions. Prompt instructions cannot establish publication readiness.
+
+### Minimal change set for a subsequent implementation
+
+| Existing skill file | Proposed change |
+| --- | --- |
+| `references/translation-and-review.md` | Own the concise source-to-target comparison procedure and contextual exceptions, next to the existing Review section. This is the main change. |
+| `SKILL.md` | Add a short route to that procedure for translation and review; retain the current purpose, source ownership and completion model. |
+| `assets/translate-adoc-prompt.md` | Route to the procedure for source-supported subjects, modality and connections. Replace the unqualified final demand for “publication-ready AsciiDoc” with valid translated AsciiDoc subject to the existing review/build gates. |
+| `assets/review-adoc-prompt.md` | Route to the same procedure; request source/target evidence for material findings and distinguish fluency from fidelity and structural checks. |
+| `assets/style-guide-template.md` | At most add a short reference to the common procedure. Keep locale, punctuation and book-owned style here; avoid copying the complete criteria. |
+
+No change to release checks, the manifest schema, status template or discovery
+metadata is needed for this limited addition. Template edits affect future
+copies; do not overwrite customized prompts or style guides in existing books.
+An existing book can use the revised shared procedure on its next assigned pass,
+subject to that book's instructions. Earlier review results are not retroactively
+validated by the new guidance.
+
+Until pubkit supplies English criteria, keep this small translation-specific
+procedure usable without installing pubkit or reading another repository by
+absolute path. When English support ships, move general English wording criteria
+to pubkit and retain translation fidelity, source-defect handling and edition
+state in this skill. Audit the overlap then; do not copy the full research paper
+survey or build a parallel general-purpose writing guide now.
+
+Validate a subsequent update with skill frontmatter/reference checks and a small
+set of independently authored bilingual cases: an omitted but recoverable actor,
+an unknown actor requiring passive voice, permission versus capability, negated
+conditions, future plans, legitimate technical noun phrases, and an apparently
+fluent translation that omits a qualification. Include a request limited to one
+file and a structural-change proposal to check scope handling. Judge actual
+source/target decisions, not just whether prompt text contains these terms.
+Do not claim a general translation-quality gain from this small calibration set.

@@ -154,4 +154,57 @@ class EnglishReviewTest < Minitest::Test
     File.write(chapter, File.read(chapter).sub('* The', '. The'))
     refute session.verify['passed']
   end
+  def test_configuration_rule_precedence_glossary_and_allow_lists
+    File.write(@book, "= Book\n:lang: en\n\nJavascript is used in order to run this example.\n")
+    glossary = File.join(@dir, 'glossary.yml')
+    File.write(glossary, { 'JavaScript' => ['Javascript'] }.to_yaml)
+    custom = File.join(@dir, 'empty.yml')
+    File.write(custom, { 'schema_version' => 2, 'language' => 'en', 'rules' => [] }.to_yaml)
+    config = File.join(@dir, '.asciidoc-pubkit.yml')
+    File.write(config, { 'review' => { 'language' => 'en', 'rules' => 'empty.yml', 'glossary' => 'glossary.yml' } }.to_yaml)
+    report = AsciidocPubkit::Score.run(@book, {})
+    assert_equal ['glossary-variant'], report['findings'].map { |f| f['rule'] }
+    defaults = AsciidocPubkit::RuleSet.default_path('en')
+    report = AsciidocPubkit::Score.run(@book, rules: defaults)
+    assert_equal %w[glossary-variant wordy-expression], report['findings'].map { |f| f['rule'] }.sort
+    File.write(config, { 'review' => { 'language' => 'en', 'glossary' => 'glossary.yml', 'allows' => ['Javascript', 'IN ORDER TO'] } }.to_yaml)
+    assert_empty AsciidocPubkit::Score.run(@book, {})['findings']
+    File.write(glossary, { 'C++' => ['c++'] }.to_yaml)
+    assert_raises(AsciidocPubkit::Error) { AsciidocPubkit::Score.run(@book, {}) }
+  end
+
+  def test_custom_heading_rules_reject_unsupported_forms_and_keep_fixed_titles
+    File.write(@book, "= Book\n:lang: en\n\n== Overview\n\nFirst topic.\n\n== Overview\n\nSecond topic.\n")
+    rules = AsciidocPubkit::HeadingRuleSet.load(AsciidocPubkit::HeadingRuleSet.default_path('en'))
+    config = File.join(@dir, 'heading.yml')
+    rules['style'] = 'action'
+    File.write(config, rules.to_yaml)
+    assert_equal 2, cli('review', 'scan', @book, '--lang', 'en', '--scope', 'headings', '--heading-rules', config).first
+    rules['style'] = 'mixed'
+    File.write(config, rules.to_yaml)
+    session, = scan('headings', '--heading-rules', config)
+    assert_equal 2, session.verify['findings'].count { |f| f['rule'] == 'heading-duplicate' }
+    rules['fixed_titles'] = ['Overview']
+    File.write(config, rules.to_yaml)
+    assert_equal 2, session.verify['findings'].length # saved rules remain authoritative
+    data = AsciidocPubkit::Settings.new(@book, language: 'en', scope: 'headings', heading_rules: config).data
+    document = AsciidocPubkit::Document.new(@book, data)
+    assert_empty AsciidocPubkit::HeadingRules.scan(document.headings, data)
+  end
+
+  def test_english_session_integrity_safe_destinations_and_numeric_notices
+    session, path = scan
+    linked = File.join(@dir, 'linked')
+    File.symlink(path, linked)
+    assert_equal 2, cli('review', 'scan', @book, '--lang', 'en', '--output', linked, '--yes').first
+    File.write(@book, @source.sub('The key remains unavailable.', 'The key remains unavailable for 3 seconds.'))
+    result = session.verify
+    assert result['passed'] # quantities require semantic review, not automatic failure
+    assert_includes result['notices'].map { |n| n['kind'] }, 'numbers-changed'
+    refute result['meaning_verified']
+    baseline = Dir.glob("#{path}/baseline/*").first
+    File.write(baseline, 'modified')
+    assert_raises(AsciidocPubkit::Error) { AsciidocPubkit::Session.new(path) }
+  end
+
 end
