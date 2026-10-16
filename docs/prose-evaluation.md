@@ -1,15 +1,57 @@
 # Prose evaluation
 
+## Actor clarity comparisons (v1.2.3)
+
+Twelve additional calibration pairs cover conditional actor changes, user refusal
+versus program control, caller investigation, continued subjects, optional
+repetition, table roles, unsupported actors/approvers, invented automatic checks,
+and capability changed into behavior. The judge rubric checks each clause's actor
+and evidence. Candidate-free paragraphs remain in review prompts. Mechanical
+verification can accept a wrong actor while keeping `meaning_verified: false`;
+these regression tests and calibration data do not measure AI review quality.
+
+
 Use a fixed set of Japanese technical paragraphs to compare detector or review
 criteria changes against a project-defined baseline. Keep detection performance,
 readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
-This guide describes the version 1.0.3 development checkout, including the
-`technical-prose-v3` corpus and expanded revision calibration.
+This guide describes the development checkout, including the
+`technical-prose-v3` corpus and 155 revision calibration pairs. The sentence-ending
+criteria and twelve additional pairs, plus the flow guidance and four further
+pairs, are included in version 1.2.0.
 The evaluation runner is not an
 installed gem command. It does not measure Japanese naturalness or AI authorship
 as a single validated score.
+
+## Stopping comparisons (v1.2.3)
+
+`test/fixtures/stop_wording.ja.json` contains manual source/revision pairs for
+stopping, ending iteration, cancellation requests, pre-execution refusal,
+unstarted work, disabled operations and supported temporary pauses. Rejection
+cases cover lost conditions, capability strengthened into behavior, requests
+misreported as completion, invented forceful termination or resumption, and
+idiomatic `受け止める` misread as a stopping operation.
+
+The fixture is separate from the runner's revision calibration corpus. Its
+regression tests check fixture integrity and delivery of the criteria through
+writing and saved review prompts; they do not run an AI judge, measure Japanese
+quality, or establish semantic correctness. Detector rules are unchanged.
+
+## Classification and related relationships (v1.2.3)
+
+`test/fixtures/classification_wording.ja.json` contains fourteen manually labeled
+source/revision pairs. Accepted examples identify classification axes, defined
+categories, responsibilities, branching, partition boundaries, loading routes
+and table correspondences. Rejection examples cover invented runtime classifiers,
+weakened defined categories, classification substituted for branching, lost
+conditions or joins, invented parallel execution and inspection success.
+
+This fixture is separate from the runner's calibration corpus. The judge rubric
+also distinguishes these relationships. Tests check fixture integrity, rubric
+instructions, delivery through writing and all three review scopes, and historical
+session preservation. They do not invoke an AI judge or measure editing accuracy.
+No detector or automatic replacement rules are added.
 
 ## Three different evaluations
 
@@ -43,7 +85,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 43 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 155 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls
@@ -87,6 +129,71 @@ markers added to established facts. The five paragraphs add no detector targets
 but do reach the writer and judge. The corpus, calibration, and judge rubric all
 change; establish a fresh AI baseline with those fixed before measuring a review
 criteria change. v1 and v2 results cannot be compared directly with v3.
+
+The version 1.2.0 sentence-ending update adds twelve calibration pairs for useful
+scope guidance, clear result transfers, optional selection, unknown outcomes,
+explicit comparisons, definite versus possible differences, unsupported
+mechanisms, historical transitions, and body sentences nominalized as headings.
+Four pairs retain valid original wording. The 26-paragraph corpus and detector
+targets remain unchanged; calibration and the judge rubric change. Establish a
+fresh AI baseline using the expanded calibration and rubric before comparing
+criteria. Normal tests check fixture integrity and prompt delivery, not whether
+an AI accepts or rejects each pair correctly.
+
+The version 1.2.1 terminology update adds eleven calibration pairs covering technical
+selection without a modality change, explicit author preferences, logical separation
+versus invented physical isolation, language independence versus partition, data
+partition, concrete workflow descriptions and legitimate library embedding. The
+optional judge receives each pair's `editorial_constraints` without its expected
+disposition or gold reason. These fixtures and deterministic plumbing tests do not
+establish improved model proofreading; an explicitly requested AI evaluation is
+required to measure that behavior.
+
+The version 1.2.0 `流れ` guidance adds four calibration pairs: a more specific
+information-transfer description, a clear operation with its condition retained,
+and rejected substitutions that invent lifecycle stages or remove a success
+condition by describing only data transfer. Default-rule tests check the new
+advisory hint, Unicode positions, allow lists, custom rules and protected inline
+text in MeCab and literal modes. The fixed detector benchmark still scores only
+its three existing kinds; its scores do not measure the new `流れ` cue. The
+calibration fingerprint changes, so establish a fresh AI baseline before comparing
+rewrite quality. Normal tests do not evaluate an AI's editorial judgments.
+
+The version 1.2.2 explanatory-guidance update narrows the existing
+`ending-scope-guide-kept` case to an actual user exercise and adds seven pairs
+(77 total). They distinguish content guidance, an explicit author voice,
+paragraph viewpoint, user approval, runtime checks, connection ownership and
+unsupported automatic actors. The judge rubric and calibration fingerprints
+change, while the 26-paragraph detector corpus and rules remain unchanged.
+Establish a fresh compatible AI baseline before measuring the criteria change.
+Normal tests validate fixture integrity, prompt delivery and saved criteria;
+they do not establish improved AI proofreading. See the
+[research and proposal](explanatory-guidance-research.md) for the design rationale.
+
+## Reader learning objectives and paragraph guidance
+
+The development criteria add six calibration pairs for reader-subject-only
+repairs, potential-ending-only repairs, concrete learning goals, vague goals,
+actual learning activities, and paragraph-level consolidation with a failure
+condition retained. Goals identify supported explanation, distinction or decision
+targets without promising comprehension. Understanding is not a banned term.
+The judge rubric and calibration fingerprints change; establish a compatible AI
+baseline before comparing rewrite quality. The detector corpus, rules and
+mechanical verification are unchanged. Normal tests exercise fixture integrity
+and evaluator data delivery, not the correctness of an AI's editorial decisions.
+
+## Rules, definitions, and configured values
+
+Ten v1.2.3 calibration pairs compare rule specification, structure and workflow
+definition, configured destinations, mixed operations, and limit types. They include
+faithful revisions and controls, newly invented enforcement (`needs-evidence`),
+permissions changed into obligations, plans changed into runtime checks, and a
+rejected unchanged passage under an explicit terminology preference. These are
+project-authored examples, not measurements of AI proofreading improvement.
+The calibration and judge rubric fingerprints change, so a compatible fresh AI
+baseline is needed before measuring rewrite quality. The detector corpus, rules,
+and mechanical verification are unchanged. Regression tests check criteria
+propagation to new prompts and preserve historical session criteria.
 
 ## What normal tests check
 
@@ -273,3 +380,65 @@ results establish detector and workflow regression checks only.
 
 [Development](development.md) · [Manuscript scoring](scoring.md) ·
 [Back to README](../README.md)
+
+## Receiving and returning calibration (v1.2.3)
+
+Thirteen additional pairs cover request intake, stream reception,
+function arguments, stdout output, model generation, input assembly, an accurate
+unchanged value return, an explicit terminology preference, established
+throw/catch, changed execution/display responsibilities, unsupported HTTP, and
+signal-delivery versus cancellation timing. The evaluator rubric names these
+operation and ownership distinctions without supplying the gold decisions.
+The fixed detector corpus still measures only its original three kinds, so its
+scores do not measure the new `受け取る` cue. Regression tests check that cue in
+MeCab and literal modes and check prompt delivery and fixture integrity.
+No AI rewrite/judge trials were run for this change; improved proofreading is
+unmeasured. Old AI reports have different criteria/calibration fingerprints and
+need a fresh compatible baseline for quality comparison.
+
+## Direct-negation calibration (v1.2.3)
+
+Ten added calibration pairs compare direct operation denial, unavailable
+capability, insufficient conditions, partial negation and necessary inference
+limits. Reject partial negation made into total denial, missing observation
+made into an asserted non-event, and inability made into a discretionary action.
+An invented OS enforcement mechanism needs evidence. These controls and the
+judge rubric require compatible new AI baselines; no model evaluation was run
+and no improvement in AI proofreading has been measured. Mechanical verification
+continues to report `meaning_verified: false`.
+
+## Replacement, interpretation, and use limits
+
+Nine added calibration pairs cover `置き換えません`: five faithful revisions
+for approval, fixed-response testing, missing usage, progress notices and impression
+scoring; one retained actual history-replacement description; and three rejected
+changes that lose history construction, assert non-completion from missing evidence,
+or turn an unavailable use into a discretionary choice. The judge rubric names
+these distinctions. Normal tests check fixture integrity, existing MeCab detection,
+and saved criteria delivery, not whether an AI judges the pairs correctly.
+AI proofreading improvement has not been measured. Fix a fresh calibration and
+rubric baseline before comparing AI results with an earlier run.
+
+## Direct interpretation-limit calibration (v1.2.3)
+
+Ten additional pairs cover direct summary, observation, evaluation and missing-usage
+limits; nonzero usage inferred from missing counts; unconditional evaluation denial;
+non-execution inferred from missing observation; a retained interpretation policy;
+a policy weakened into uncertainty; and an ignored explicit author preference.
+The earlier fixed-response and missing-usage replacement examples now use direct
+predicates. Fixture and rubric fingerprints change, requiring compatible new AI
+baselines. Normal tests check detector behavior, fixture integrity and saved-prompt
+contracts; no AI evaluation or improvement measurement was performed.
+
+## Transfer wording comparisons (v1.2.3)
+
+`test/fixtures/transfer_wording.ja.json` contains 18 manual examples: nine accept,
+eight reject and one needs-evidence. They contrast input with transport, arguments
+with events, value delivery with delegation, continuity with persistence, and
+handoff with acceptance or completion. They also preserve bidirectional contracts,
+negation and capability. This standalone fixture is not added to the measured
+benchmark corpus or calibration runner. Tests check fixture integrity and delivery
+of criteria to writing and saved review prompts, including historical-session
+preservation; they do not establish AI judgment accuracy. The updated judge rubric
+requires a compatible fresh baseline for future AI comparisons. No AI evaluation
+was run; improvement remains unmeasured and `meaning_verified` remains false.

@@ -30,6 +30,12 @@ module AsciidocPubkit
       end
       base = @path ? File.dirname(@path) : File.dirname(File.expand_path(entry))
       language = Language.validate!(options[:language] || review.fetch('language', Language::DEFAULT), operation: 'review')
+      raise Error, 'Replacement currently supports Japanese review settings only.' if options[:replacement] && language != 'ja'
+      tokenizer = options[:tokenizer] || review.fetch('tokenizer', language == 'en' ? 'english-lexical' : 'mecab')
+      supported_tokenizers = language == 'en' ? %w[english-lexical literal] : %w[mecab literal]
+      raise Error, "Tokenizer #{tokenizer.inspect} is unsupported for #{language}; use #{supported_tokenizers.join(' or ')}." unless supported_tokenizers.include?(tokenizer)
+      style = options[:style] || review.fetch('style', 'preserve')
+      raise Error, 'English style currently supports preserve only.' if language == 'en' && style != 'preserve'
       scope = options.fetch(:scope, 'prose')
       raise Error, 'scope must be prose, headings, or lists.' unless %w[prose headings lists].include?(scope)
       if scope == 'headings' && (options[:rules] || options[:style])
@@ -58,10 +64,10 @@ module AsciidocPubkit
         'rules' => scope != 'headings' ? RuleSet.load(rules_path) : nil,
         'rules_path' => rules_path,
         'language' => language,
-        'style' => options[:style] || review.fetch('style', 'preserve'),
+        'style' => style,
         'exclude' => review.fetch('exclude', []),
         'allows' => review.fetch('allows', []),
-        'tokenizer' => options[:tokenizer] || review.fetch('tokenizer', 'mecab'),
+        'tokenizer' => tokenizer,
         'mecab_command' => review.fetch('mecab_command', 'mecab'),
         'mecab_dictionary' => review['mecab_dictionary'] && File.expand_path(review['mecab_dictionary'], base),
         'attributes' => review.fetch('attributes', {}).merge(options.fetch(:attributes, {})),
@@ -69,7 +75,9 @@ module AsciidocPubkit
         'glossary' => {}
       }
       @data['heading_depth'] = depth if depth
-      raise Error, 'tokenizer must be mecab or literal.' unless %w[mecab literal].include?(@data['tokenizer'])
+      selected_rules = @data[scope == 'headings' ? 'heading_rules' : 'rules']
+      rules_language = selected_rules.fetch('language', 'ja')
+      raise Error, "Rule language #{rules_language} does not match review language #{language}." unless rules_language == language
       raise Error, 'style must be preserve, desu-masu, or dearu.' unless %w[preserve desu-masu dearu].include?(@data['style'])
       %w[exclude allows].each do |key|
         raise Error, "#{key} must be an array of strings." unless @data[key].is_a?(Array) && @data[key].all? { |v| v.is_a?(String) }
@@ -80,6 +88,12 @@ module AsciidocPubkit
         glossary = read_yaml(File.expand_path(review['glossary'], base))
         unless glossary.all? { |k, v| k.is_a?(String) && !k.empty? && v.is_a?(Array) && v.all? { |s| s.is_a?(String) && !s.empty? } }
           raise Error, 'The glossary must map canonical terms to arrays of nonempty variant strings.'
+        end
+        if language == 'en'
+          glossary.values.flatten.each do |variant|
+            words = EnglishLexical.new.tokenize(variant).map { |token| token['surface'] }
+            raise Error, 'English glossary variants must be lexical phrases separated by whitespace.' if words.empty? || words.join(' ') != variant.split.join(' ')
+          end
         end
         @data['glossary'] = glossary
       end

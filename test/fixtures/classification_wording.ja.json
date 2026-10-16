@@ -1,0 +1,100 @@
+[
+  {
+    "id": "purpose-classification",
+    "source": "ツールは、検索、読み込み、変更という用途に分かれます。",
+    "revision": "ツールは、用途に応じて検索、読み込み、変更に分類できます。",
+    "expected_disposition": "accept",
+    "reason": "The purpose axis and three categories are retained without a runtime classifier."
+  },
+  {
+    "id": "defined-categories",
+    "source": "仕様では、要求は読み込みと変更の二種類に分かれます。",
+    "revision": "仕様では、要求を読み込みと変更の二種類に分類しています。",
+    "expected_disposition": "accept",
+    "reason": "The established specification categories and count are retained."
+  },
+  {
+    "id": "responsibility-sharing",
+    "source": "実行と記録の検査は、アプリケーションと評価モジュールに分かれます。",
+    "revision": "実行と記録の検査は、アプリケーションと評価モジュールが分担します。",
+    "expected_disposition": "accept",
+    "reason": "Retains the stated owners and operations without implying independence."
+  },
+  {
+    "id": "both-paths",
+    "source": "判定処理が両方を返すと、二つの工程へ処理が分かれます。",
+    "revision": "判定処理が両方を返すと、処理が二つの工程へ分岐します。",
+    "expected_disposition": "accept",
+    "reason": "Retains the condition and both destinations without guaranteed parallel execution."
+  },
+  {
+    "id": "partition-boundary",
+    "source": "要約対象と保持範囲は、ターンの区切りで分かれます。",
+    "revision": "要約対象と保持範囲は、ターンの区切りで分割されます。",
+    "expected_disposition": "accept",
+    "reason": "Retains the two ranges and partition boundary without deletion."
+  },
+  {
+    "id": "loading-routes",
+    "source": "ユーザー指示は、プロジェクト指示とは読み込み経路が分かれています。",
+    "revision": "ユーザー指示は、プロジェクト指示とは異なる経路で読み込みます。",
+    "expected_disposition": "accept",
+    "reason": "Makes the route difference explicit without inventing isolation."
+  },
+  {
+    "id": "table-correspondence",
+    "source": "検査対象と確認する内容は、次の表のように分かれます。",
+    "revision": "次の表に、検査対象と各検査で確認する内容を示します。",
+    "expected_disposition": "accept",
+    "reason": "Introduces correspondence without claiming that the checks succeeded."
+  },
+  {
+    "id": "invented-classifier",
+    "source": "ツールは、用途に応じて検索と変更に分類できます。",
+    "revision": "プログラムはツールを自動的に検索と変更に分類します。",
+    "expected_disposition": "reject",
+    "reason": "Reader organization became an asserted automatic program operation."
+  },
+  {
+    "id": "defined-weakened",
+    "source": "仕様では、要求を読み込みと変更の二種類に分類しています。",
+    "revision": "読者は要求を任意の種類に分類できます。",
+    "expected_disposition": "reject",
+    "reason": "Defined categories and count became a discretionary reader scheme."
+  },
+  {
+    "id": "branch-as-classification",
+    "source": "判定処理が両方を返すと、処理が二つの工程へ分岐します。",
+    "revision": "処理は二種類に分類できます。",
+    "expected_disposition": "reject",
+    "reason": "Runtime branching and its condition became reader classification."
+  },
+  {
+    "id": "lost-branch-condition",
+    "source": "判定処理が両方を返すと、処理が二つの工程へ分岐します。",
+    "revision": "処理は常に二つの工程へ分岐します。",
+    "expected_disposition": "reject",
+    "reason": "A conditional branch became unconditional."
+  },
+  {
+    "id": "invented-parallelism",
+    "source": "処理が二つの工程へ分岐します。",
+    "revision": "二つの工程を必ず同時に実行します。",
+    "expected_disposition": "reject",
+    "reason": "Branching does not establish simultaneous execution."
+  },
+  {
+    "id": "lost-join",
+    "source": "両方の結果がそろってから統合する構成で、処理は二つの工程へ分かれます。",
+    "revision": "処理は二つの工程へ分岐し、一つの結果があれば統合します。",
+    "expected_disposition": "reject",
+    "reason": "Changes the join prerequisite from both results to one."
+  },
+  {
+    "id": "table-as-success",
+    "source": "次の表に、検査対象と各検査で確認する内容を示します。",
+    "revision": "次の表に示す検査は、すべて成功しています。",
+    "expected_disposition": "reject",
+    "reason": "Inspection objectives became unsupported successful outcomes."
+  }
+]

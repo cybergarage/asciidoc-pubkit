@@ -9,6 +9,8 @@ or book-management workflow is required.
 The review commands currently support Japanese manuscripts. Document inspection
 can be used with other languages, but English manuscript review is not supported.
 Version 1.1.0 adds outline-oriented review for a book's table of contents.
+The `skill` commands below require **1.2.0 or later**. See
+[skill command setup](skill-commands.md) before following registration steps.
 
 The commands below do not launch an agent. You initiate the Codex or Claude
 review separately, in the manuscript workspace. The agent's configured approval
@@ -35,7 +37,8 @@ packaged SKILL.md example. This page shows the individual CLI steps.
 
 ## 1. Prepare a small manuscript
 
-Install Ruby 3.2 or later, asciidoc-pubkit 1.1.0, and MeCab with UTF-8 IPADIC.
+Install Ruby 3.2 or later, pubkit with the skill commands, and MeCab with UTF-8
+IPADIC. Use pubkit 1.2.0 or later for the registration steps.
 See [installation](installation.md) for platform-specific steps. Confirm the
 version before creating a session; saved sessions require that exact version.
 
@@ -68,6 +71,20 @@ raise ArgumentError, 'Expected a nonnegative value' if value.negative?
 * エラーの内容を確認します。
 ADOC
 ```
+
+Register the reusable review skill for Codex in this sample project
+(use `--agent claude` for Claude Code):
+
+```sh
+asciidoc-pubkit skill list
+asciidoc-pubkit skill install review-asciidoc-manuscript --agent codex
+asciidoc-pubkit skill status review-asciidoc-manuscript --agent codex
+```
+
+The installed SKILL.md can orchestrate the process when you ask the agent to
+read it. The remaining steps expose the same CLI operations individually. See
+[skill integration](skill-integration.md) for agent requests and the `skill status`
+and `skill upgrade` maintenance workflow.
 
 Explicit heading IDs make the example easy to follow. Existing manuscripts need
 not add them in advance: eligible generated headings carry an exact permitted

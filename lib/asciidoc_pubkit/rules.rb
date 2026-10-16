@@ -11,11 +11,12 @@ module AsciidocPubkit
     end
 
     def self.scan(paragraphs, settings, tokenizer: nil)
+      return EnglishRules.scan(paragraphs, settings, tokenizer: tokenizer) if settings['language'] == 'en'
       rules = RuleSet.validate(settings.fetch('rules') { RuleSet.load })
       terms = rules.fetch('terms').transform_values { |entry| entry.values_at('terms', 'question') }
       findings = []
       if settings.fetch('tokenizer', 'mecab') == 'mecab'
-        tokenizer ||= Morphology.new(settings)
+        tokenizer ||= Analysis.build(settings)
       end
       token_groups = tokenizer ? tokenize_paragraphs(paragraphs, tokenizer) : []
       paragraphs.each_with_index do |paragraph, index|

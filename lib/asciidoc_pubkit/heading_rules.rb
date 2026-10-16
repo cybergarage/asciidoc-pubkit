@@ -16,6 +16,7 @@ module AsciidocPubkit
     end
 
     def self.validate(data)
+      return EnglishRuleSet.validate(data, headings: true) if data.is_a?(Hash) && data['schema_version'] == 2
       RuleSet.mapping(data, KEYS, 'Heading rule set')
       raise Error, 'Heading rule schema_version must be integer 1.' unless data['schema_version'].is_a?(Integer) && data['schema_version'] == 1
       raise Error, 'Heading terms must be a mapping.' unless data['terms'].is_a?(Hash)
@@ -38,8 +39,9 @@ module AsciidocPubkit
 
   class HeadingRules
     def self.scan(headings, settings, tokenizer: nil)
+      return EnglishRules.scan(headings, settings, tokenizer: tokenizer, headings: true) if settings['language'] == 'en'
       rules = HeadingRuleSet.validate(settings.fetch('heading_rules'))
-      tokenizer ||= Morphology.new(settings) if settings.fetch('tokenizer', 'mecab') == 'mecab'
+      tokenizer ||= Analysis.build(settings) if settings.fetch('tokenizer', 'mecab') == 'mecab'
       findings = []
       duplicates = headings.group_by { |h| [h['parent_index'], h['text']] }
       # Use the configured analyzer; never silently substitute literal analysis.

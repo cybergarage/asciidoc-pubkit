@@ -1,0 +1,27 @@
+schema_version: 2
+language: en
+rules:
+  - id: redundant-framing
+    match: phrase
+    terms: [it is important to note that, it should be noted that]
+    case: insensitive
+    boundary: lexical
+    severity: hint
+    question: Compare a direct statement while retaining any actual qualification or discourse function.
+    exceptions: []
+  - id: wordy-expression
+    match: phrase
+    terms: [due to the fact that, in order to]
+    case: insensitive
+    boundary: lexical
+    severity: hint
+    question: Compare a shorter expression in the complete sentence; retain causal and purpose relationships.
+    exceptions: []
+  - id: repeated-word
+    match: repeated-word
+    terms: []
+    case: insensitive
+    boundary: lexical
+    severity: hint
+    question: Check whether this adjacent repetition is accidental, grammatical, quoted or intentional.
+    exceptions: [had had, that that, is is]

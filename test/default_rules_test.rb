@@ -4,9 +4,38 @@ require 'minitest/autorun'
 require 'asciidoc_pubkit'
 
 class DefaultRulesTest < Minitest::Test
+  %w[mecab literal].each do |mode|
+    define_method("test_arrival_cues_preserve_polarity_positions_and_protected_text_in_#{mode}") do
+      text = "😀応答が届きます。\n報告が届きません。"
+      arrival = ->(value, **options) { scan(value, mode, **options).select { |f| f['rule'] == 'weak-predicate' && f['match'].start_with?('届') } }
+      findings = arrival.call(text)
+      assert_equal ['届きます', '届きません'], findings.map { |f| f['match'] }
+      assert_equal [[1, 5], [2, 4]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['severity'] == 'hint' }
+      if mode == 'mecab'
+        assert_equal ['届く', '届く'], findings.map { |f| f['lemma'] }
+        refute findings.first['negative']
+        assert findings.last['negative']
+        assert_empty arrival.call(text, allows: ['届く'])
+        assert_empty arrival.call('提出届と届け出を確認します。')
+      end
+      assert_empty arrival.call(text, allows: ['届きます', '届きません'])
+      assert_empty arrival.call('`届きます`。「届きます」。link:https://example.com[届きます]。')
+      %w[届く 届いた 届いて 届かない 届かなかった].each do |surface|
+        assert_equal [surface], arrival.call("通知が#{surface}。").map { |f| f['match'] }, "#{mode}: #{surface}"
+      end
+      settings = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                   'rules' => AsciidocPubkit::RuleSet.load }
+      settings['rules']['verbs'].delete('届く')
+      settings['rules']['terms']['weak-predicate']['terms'].delete_if { |term| term.start_with?('届') }
+      paragraph = { 'id' => 'arrival', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'].start_with?('届') }
+    end
+  end
+
   EXPRESSIONS = %w[
-    木 余白 明示選択 欠落理由 構成要素 部品 開発者 区別 単発 よいこと おそれ 準備 別枠 祖先 子孫 予算
-    別の 別に 空の 別々に 返す 分けて
+    木 余白 明示選択 欠落理由 構成要素 部品 流れ 開発者 区別 単発 よいこと おそれ 準備 別枠 祖先 子孫 予算
+    別の 別に 空の 別々に 受け取る 受け取ります 返す 分けて
     決まります 記述できます 組み立てられます 意味しません 用意します 記述します
     わけではありません 組み合わせます 足りません 別です 区別します 区別できます 扱います
     もあります 把握します 置き換えます まとまっています 必要がありません 加えます 加わります
@@ -31,6 +60,42 @@ class DefaultRulesTest < Minitest::Test
   end
 
   %w[mecab literal].each do |mode|
+    define_method("test_flow_is_an_advisory_noun_with_positions_and_exclusions_in_#{mode}") do
+      text = "😀処理の流れを確認します。\n入力を検査してから実行する流れです。"
+      flow = ->(settings = {}) { scan(text, mode, **settings).select { |f| f['match'] == '流れ' } }
+      findings = flow.call
+      assert_equal [[1, 5], [2, 14]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['rule'] == 'abstract-reference' && f['severity'] == 'hint' }
+      assert_empty flow.call(allows: ['流れ'])
+      assert_empty scan('`流れ`。「流れ」。link:https://example.com[流れ]。', mode)
+                   .select { |f| f['match'] == '流れ' }
+      settings = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                   'rules' => AsciidocPubkit::RuleSet.load }
+      settings['rules']['terms']['abstract-reference']['terms'].delete('流れ')
+      paragraph = { 'id' => 'flow', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'] == '流れ' }
+    end
+
+    define_method("test_operation_effect_cues_are_advisory_in_#{mode}") do
+      text = "😀対象への作用を調べます。\n外部作用が不明です。"
+      effects = ->(value, **options) { scan(value, mode, **options).select { |f| f['match'] == '作用' } }
+      findings = effects.call(text)
+      assert_equal [[1, 6], [2, 3]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['rule'] == 'abstract-reference' && f['severity'] == 'hint' }
+      assert_empty effects.call(text, allows: ['作用'])
+      assert_empty effects.call('`作用`。「作用」。link:https://example.com[作用]。')
+      if mode == 'mecab'
+        assert_empty effects.call('操作用クライアントです。')
+      else
+        assert_equal [2], effects.call('操作用クライアントです。').map { |f| f['column'] }
+      end
+      settings = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                   'rules' => AsciidocPubkit::RuleSet.load }
+      settings['rules']['terms']['abstract-reference']['terms'].delete('作用')
+      paragraph = { 'id' => 'effect', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'] == '作用' }
+    end
+
     define_method("test_human_actor_cues_preserve_compounds_counts_and_inline_in_#{mode}") do
       text = "人が条件を定める。\nその人に確認する。人の介入を測る。人向けの説明。"
       findings = scan(text, mode).select { |f| f['rule'] == 'abstract-reference' && f['match'] == '人' }
@@ -84,6 +149,29 @@ class DefaultRulesTest < Minitest::Test
       assert_equal ['構築入口'], scan('構築入口。', mode).map { |f| f['match'] }
       assert_empty scan('構築入口。', mode, allows: ['構築入口'])
       assert_empty scan('人を呼ぶ。落ち葉を拾う。信号を読み取る。', mode).select { |f| f['rule'] == 'contextual-phrase' }
+    end
+
+    define_method("test_receive_return_cues_are_advisory_and_preserve_positions_in_#{mode}") do
+      text = "😀応答を受け取ります。\n関数は設定を受け取れません。"
+      findings = scan(text, mode).select { |f| f['rule'] == 'weak-predicate' && f['match'].start_with?('受け取') }
+      assert_equal ['受け取ります', '受け取れません'], findings.map { |f| f['match'] }
+      assert_equal [[1, 5], [2, 7]], findings.map { |f| f.values_at('line', 'column') }
+      assert findings.all? { |f| f['severity'] == 'hint' }
+      if mode == 'mecab'
+        assert findings.last['negative']
+        assert_equal '受け取る', findings.last['lemma']
+      end
+      assert_empty scan(text, mode, allows: ['受け取ります', '受け取れません'])
+      assert_empty scan('`受け取ります`。「受け取ります」。link:https://example.com[受け取ります]。', mode)
+      returns = scan('関数は0を返します。', mode).select { |f| f['rule'] == 'weak-predicate' && f['match'] == '返します' }
+      assert_equal 1, returns.length
+      assert_equal 'hint', returns.first['severity']
+      settings = { 'tokenizer' => mode, 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                   'rules' => AsciidocPubkit::RuleSet.load }
+      settings['rules']['verbs'].delete('受け取る')
+      settings['rules']['terms']['weak-predicate']['terms'].delete_if { |term| term.start_with?('受け取') }
+      paragraph = { 'id' => 'receive', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+      assert_empty AsciidocPubkit::Rules.scan([paragraph], settings).select { |f| f['match'].start_with?('受け取') }
     end
 
     define_method("test_extension_wording_candidates_in_#{mode}") do
@@ -164,6 +252,33 @@ class DefaultRulesTest < Minitest::Test
     end
   end
 
+  def test_embedding_inflections_are_advisory_and_preserve_scope
+    text = "😀処理を組み込めます。\n機能を組み込みます。機能を組み込まない。組み込めません。"
+    before = text.dup
+    findings = scan(text, 'mecab').select { |item| item['lemma'] == '組み込む' }
+    assert_equal %w[組み込めます 組み込みます 組み込まない 組み込めません], findings.map { |item| item['match'] }
+    assert_equal [false, false, true, true], findings.map { |item| item['negative'] }
+    assert_equal [1, 2, 2, 2], findings.map { |item| item['line'] }
+    assert_equal text.lines.first.index('組み込めます') + 1, findings.first['column']
+    assert findings.all? { |item| item['rule'] == 'weak-predicate' && item['severity'] == 'hint' }
+    assert_equal before, text
+    %w[mecab literal].each do |mode|
+      assert_empty scan('`組み込めます`。「組み込みます」。link:https://example.com[組み込む]。', mode)
+        .select { |item| item['rule'] == 'weak-predicate' }
+      surface = scan('処理を組み込めます。', mode).select { |item| item['rule'] == 'weak-predicate' }
+      assert_equal ['組み込めます'], surface.map { |item| item['match'] }
+      assert_empty scan('処理を組み込めます。', mode, allows: ['組み込めます'])
+        .select { |item| item['rule'] == 'weak-predicate' }
+    end
+    settings = { 'tokenizer' => 'mecab', 'allows' => [], 'glossary' => {}, 'style' => 'preserve',
+                 'rules' => AsciidocPubkit::RuleSet.load }
+    settings['rules']['verbs'].delete('組み込む')
+    paragraph = { 'id' => 'embedding', 'file' => '/example.adoc', 'line' => 1, 'text' => text }
+    tokenizer = AsciidocPubkit::Morphology.new(settings)
+    assert_empty AsciidocPubkit::Rules.scan([paragraph], settings, tokenizer: tokenizer)
+      .select { |item| item['rule'] == 'weak-predicate' }
+  end
+
   def test_investigated_manuscript_variants_are_detected_by_lemma
     examples = {
       'ツールを呼んだ。' => ['呼ぶ', '呼んだ'],
@@ -213,12 +328,12 @@ class DefaultRulesTest < Minitest::Test
   def test_tree_whole_phrase_is_independent_of_ipadic_surname_segmentation
     %w[mecab literal].each do |mode|
       text = "😀木全体を読むわけではなく。\n木全体を確認します。"
-      findings = scan(text, mode).select { |f| f['rule'] == 'contextual-phrase' }
+      findings = scan(text, mode).select { |f| f['rule'] == 'contextual-phrase' && f['match'] == '木全体' }
       assert_equal %w[木全体 木全体], findings.map { |f| f['match'] }
       assert_equal [[1, 2], [2, 1]], findings.map { |f| f.values_at('line', 'column') }
-      assert_empty scan(text, mode, allows: ['木全体']).select { |f| f['rule'] == 'contextual-phrase' }
+      assert_empty scan(text, mode, allows: ['木全体']).select { |f| f['rule'] == 'contextual-phrase' && f['match'] == '木全体' }
       assert_empty scan('`木全体`。「木全体」。', mode)
-      assert_empty scan('木全さん。', mode).select { |f| f['rule'] == 'contextual-phrase' }
+      assert_empty scan('木全さん。', mode).select { |f| f['rule'] == 'contextual-phrase' && f['match'] == '木全体' }
     end
   end
 

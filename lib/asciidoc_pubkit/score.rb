@@ -26,6 +26,10 @@ module AsciidocPubkit
       Return every supplied paragraph ID exactly once.
     TEXT
 
+    def self.rubric(language)
+      language == 'en' ? RUBRIC.gsub('Japanese', 'English') : RUBRIC
+    end
+
     def self.run(entry, options)
       if options[:agent]
         raise Error, 'Agent must be codex or claude.' unless %w[codex claude].include?(options[:agent])
@@ -34,11 +38,12 @@ module AsciidocPubkit
         raise Error, '--model and --timeout require --agent.'
       end
       settings = Settings.new(entry, options)
+      selected_rubric = rubric(settings.data['language'])
       document = Document.new(entry, settings.data, only: options[:only])
       unless document.diagnostics.empty?
         raise Error, "Document diagnostics must be resolved before scoring:\n" + document.diagnostics.map { |d| "#{d['severity']}: #{d['message']}" }.join("\n")
       end
-      tokenizer = settings.data['tokenizer'] == 'mecab' ? Morphology.new(settings.data) : nil
+      tokenizer = Analysis.build(settings.data)
       findings = Rules.scan(document.paragraphs, settings.data, tokenizer: tokenizer)
       eligible = document.paragraphs.select { |paragraph| prose_length(paragraph['text']).positive? }
       characters = eligible.sum { |paragraph| prose_length(paragraph['text']) }
@@ -46,6 +51,9 @@ module AsciidocPubkit
       score = density && [0.0, 100.0 - PENALTY_PER_CANDIDATE_PER_1000 * density].max.round(3)
       report = {
         'schema_version' => 1, 'tool_version' => VERSION, 'input' => File.realpath(entry),
+        'density_unit' => 'candidates per 1000 non-space unmasked Unicode characters',
+        'calibrated_quality_score' => false,
+        'comparison_scope' => 'same language, rules and analysis identity only',
         'language' => settings.data['language'], 'score_type' => 'candidate-density-v1',
         'score' => score, 'candidate_density_score' => score,
         'candidate_density_per_1000' => density&.round(3),
@@ -53,19 +61,19 @@ module AsciidocPubkit
         'characters' => characters, 'paragraphs' => document.paragraphs.length,
         'scored_paragraphs' => eligible.length, 'candidate_count' => findings.length,
         'by_rule' => findings.group_by { |finding| finding['rule'] }.transform_values(&:length),
-        'analysis' => tokenizer ? tokenizer.identity : { 'engine' => 'literal' },
+        'analysis' => Analysis.identity(tokenizer),
         'rules_sha256' => AsciidocPubkit.hash_text(JSON.generate(settings.data['rules'])),
         'coverage' => document.coverage, 'findings' => findings, 'meaning_verified' => false
       }
       if options[:agent] && eligible.any?
         evaluator = LocalEvaluator.new(options[:agent], model: options[:model], timeout: options.fetch(:timeout, 300))
         Dir.mktmpdir('pubkit-score-') do |directory|
-          prompt = RUBRIC + "\nParagraph data:\n" + JSON.generate(eligible.map { |p| p.slice('id', 'headings', 'text') })
+          prompt = selected_rubric + "\nParagraph data:\n" + JSON.generate(eligible.map { |p| p.slice('id', 'headings', 'text') })
           result = evaluator.call(prompt, directory, 'score')
           report['readability'] = readability(result, eligible)
         end
         report['evaluator'] = evaluator.metadata
-        report['rubric_sha256'] = AsciidocPubkit.hash_text(RUBRIC)
+        report['rubric_sha256'] = AsciidocPubkit.hash_text(selected_rubric)
         report['score'] = report['readability']['score']
         report['score_type'] = 'llm-readability-v1'
       elsif options[:agent]
@@ -114,6 +122,7 @@ module AsciidocPubkit
         text << "Evaluator: #{report['evaluator']['agent']} (#{report['evaluator']['actual_model'] || 'model not reported'})\n"
         text << "Candidate density score: #{report['candidate_density_score']}/100\n"
       end
+      text << "Density unit: #{report['density_unit']}; compare only the same language, rules and analysis identity.\n"
       text << "Scores are review indicators; meaning and technical accuracy are not verified.\n"
     end
   end

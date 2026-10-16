@@ -1,0 +1,58 @@
+[
+  {
+    "id": "suggestion-execution",
+    "source": "修正案の提示と編集実行の区別",
+    "revision": "修正案の提示と編集実行の違い",
+    "body": "モデルが提示した修正案は利用者が反映します。編集要求はプログラムが許可条件を検査して適用します。",
+    "expected_disposition": "accept",
+    "reason": "The heading names differences in execution and actor."
+  },
+  {
+    "id": "evaluation-target",
+    "source": "構成検証と作業品質の区別",
+    "revision": "構成検証と作業品質評価の違い",
+    "body": "構成検証はノードと接続の条件を検査します。作業品質の評価は成果物が依頼条件を満たすかを調べます。",
+    "expected_disposition": "accept",
+    "reason": "Both comparison subjects name the actual checks."
+  },
+  {
+    "id": "source-relation",
+    "source": "共有知識と元の履歴の区別",
+    "revision": "共有知識と元の履歴の関係",
+    "body": "抜粋を編集しても元メッセージへの出典参照を保持し、元の根拠と照合します。",
+    "expected_disposition": "accept",
+    "reason": "Source correspondence is the topic rather than classification."
+  },
+  {
+    "id": "observation-scope",
+    "source": "観測形式と実行証拠の区別",
+    "revision": "観測情報から確認できる範囲",
+    "body": "spanが欠けることがあります。観測だけから操作の不実行や成果物の合格を断定しません。",
+    "expected_disposition": "accept",
+    "reason": "The body explains the limits of inference."
+  },
+  {
+    "id": "comparison-subjects",
+    "source": "証拠の欠落と新規測定の区別",
+    "revision": "評価処理の検証と新規測定の違い",
+    "body": "記録を加工して判定規則を検証します。課題を新しく実行して成果物と利用量を測定します。",
+    "expected_disposition": "accept",
+    "reason": "Rechecks the subjects instead of changing only the suffix."
+  },
+  {
+    "id": "distinguishing-action",
+    "source": "型タグによる正常値とエラー値の区別",
+    "revision": "型タグによる正常値とエラー値の区別",
+    "body": "呼び出し側は型タグを検査し、正常値とエラー値を見分けます。",
+    "expected_disposition": "accept",
+    "reason": "The section explains an actual distinguishing action; retain the heading."
+  },
+  {
+    "id": "unsupported-guarantee",
+    "source": "停止要求と処理終了の違い",
+    "revision": "停止要求による処理終了の保証",
+    "body": "停止要求を通知しても開始済み処理が終了したとは限りません。",
+    "expected_disposition": "reject",
+    "reason": "The new heading promises a guarantee explicitly unsupported by the body."
+  }
+]

@@ -1,5 +1,31 @@
 # Rules and coverage
 
+## General operation wording (v1.2.3)
+
+`行う` is an advisory `weak-predicate` cue in prose and supported list text.
+MeCab detects dictionary forms, including `行える`, and retains inflection,
+negation and Unicode positions. Literal mode matches only listed surfaces.
+Compare direct action verbs with responsibility wording through the shared
+"Distinguish operations from responsibility" criteria. Neither the cue nor
+`担当します` is an automatic replacement rule. Inline masking, allow lists
+and complete custom rule sets still apply; saved sessions retain their rules
+and criteria. Candidate detection does not establish an editorial defect.
+
+## Arrival wording (v1.2.3)
+
+The checkout adds `届く` as an advisory `weak-predicate` cue in prose and list
+text. MeCab matches its dictionary form and retains inflection, negation and
+Unicode source positions. Explicit literal mode matches only listed surface
+forms; it does not provide morphological coverage. Allow lists, custom complete
+rule sets and inline masking remain applicable.
+
+Compare reception, runtime input, model-call retrieval, late result settlement,
+and missing trial reports using the shared writing criteria. A notification is
+not proof of completion, and a missing report is not proof of non-execution.
+Literal physical arrival can remain. No fixed replacement is prescribed, and
+scanning never rewrites manuscripts. Existing sessions retain saved rules and
+criteria; mechanical verification does not establish meaning or writing quality.
+
 | Rule | Severity | Purpose |
 | --- | --- | --- |
 | `abstract-reference` | hint | Ask what an abstract noun refers to |
@@ -35,6 +61,17 @@ as `ではありません` cover longer qualifications without listing every sen
 These are candidates for contextual review, not banned expressions. A necessary
 condition, uncertainty, or distinction must survive a revision; a redundant
 disclaimer can instead be removed or folded into a more precise main claim.
+
+The version 1.2.0 defaults also include `流れ` under `abstract-reference` for prose
+and list text. This is an advisory noun cue in MeCab mode and an exact term in
+literal mode. Identify processing order, information transfer, invocation paths,
+work procedures or state changes from the paragraph. Compare a more precise
+expression even when the target, operation and conditions are clear; retain the
+original only with a specific comparison explaining the choice. `処理フロー`, `シーケンス`,
+`データフロー` and `ライフサイクル` are not interchangeable replacements.
+Shared writing criteria own this guidance. Allow lists, custom complete rule sets
+and inline protection still apply; heading rules are unchanged. Existing sessions
+retain their saved rules and criteria, so use a new session to adopt this update.
 
 Version 0.8.5 extends the existing `入口` question and shared criteria
 without adding another prose matcher. A known referent alone does not justify
@@ -131,13 +168,13 @@ reports analyzer changes instead of treating results from different dictionaries
 as directly comparable. Prompt generation uses saved evidence and does not need
 MeCab. Changed rules or dictionary settings require a new scan.
 
-Version 1.1.0 uses session schema 3.
+Versions 1.1.0, 1.2.0 and 1.2.1 use session schema 3, but sessions still require their exact tool version.
 Sessions with a different schema or tool version cannot be loaded. Keep the original baseline for
 an ongoing review and finish it with the original version, or start a new review
 pass in a different directory:
 
 ```sh
-asciidoc-pubkit review scan book.adoc --output .pubkit/review-1.1.0
+asciidoc-pubkit review scan book.adoc --output .pubkit/review-1.2.0
 ```
 
 Severity describes review priority, not proof of an error. There is no AI-authorship
@@ -156,3 +193,52 @@ one-based Unicode character positions, not byte offsets or display widths.
 An empty findings array does not establish full coverage or good prose.
 
 [Back to README](../README.md)
+
+## Operation-effect cues (v1.2.3)
+
+`作用` is an advisory `abstract-reference` candidate in prose and list text.
+Compare the actual operation, operation classification (such as an `effect`
+field), execution result, or state change against the paragraph and implementation.
+Established terminology can remain; findings do not prescribe a fixed synonym
+or an automatic replacement. Heading rules and shared writing criteria are unchanged.
+
+MeCab matches the noun token, including in `外部作用`. Literal mode searches
+the exact substring and may also flag `操作用`; inspect context rather than
+treating this overlap as the noun `作用`. Allow lists, custom complete rule sets,
+and protected-inline exclusions still apply. Existing sessions retain saved
+rules; start a new session to adopt this candidate.
+
+## Receiving cues (v1.2.3)
+
+`受け取る` is a `weak-predicate` hint, including inflected forms and the potential
+lemma `受け取れる` in MeCab mode. Literal mode matches the packaged listed
+surfaces; it does not analyze arbitrary inflections. Allow lists, complete custom
+rule replacement, positions, and protected-inline exclusions still apply.
+`返す` remains advisory even when a function correctly returns a value. A finding
+requests contextual comparison, not a mandatory change or automatic replacement.
+Use the [shared operation comparisons](../data/writing/ja/criteria.md#distinguish-receiving-returning-and-their-actual-operations)
+to decide whether intake, reception, retrieval, arguments, output, or a retained
+plain verb best describes the evidence. Saved sessions retain their old rules
+and criteria; use a new session to adopt the additions.
+
+## Indirect negation candidates (v1.2.3)
+
+`わけではありません`, `わけではなく`, and `わけではない` are advisory
+`contextual-phrase` candidates in running prose and supported lists, in both
+MeCab and literal modes. Matching preserves the existing inline masking, exact
+allow-list behavior and longest-overlap selection. Protected code and quotations
+are not edited. These are explicit surfaces, not exhaustive negation detection.
+Review operation denial, capability, partial negation and inference limits using
+[the writing criteria](writing.md#direct-negation-and-inference-limits-v123).
+No candidate prescribes a fixed replacement. Existing sessions retain their saved
+rules and criteria; the new defaults apply to new scans.
+
+## Interpretation-limit candidates (v1.2.3)
+
+`contextual-phrase` flags the explicit surfaces `とはみなしません` and
+`とみなしません` in prose and supported list text with either tokenizer.
+Longest-overlap selection yields one cue for `とはみなしません`; allow lists,
+custom replacement rule sets and protected-inline masking still apply. These
+are not exhaustive inflection detection or automatic substitutions. Compare
+[direct interpretation limits](writing.md#direct-interpretation-limits-v123),
+keeping policies separate from evidence shortages. Old sessions retain saved rules.

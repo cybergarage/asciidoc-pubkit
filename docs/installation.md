@@ -41,7 +41,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 1.1.0'
+gem 'asciidoc-pubkit', '~> 1.2.0'
 ```
 
 Then install dependencies and run the CLI through Bundler:
@@ -66,7 +66,7 @@ git clone https://github.com/cybergarage/asciidoc-pubkit.git
 cd asciidoc-pubkit
 bundle install
 gem build asciidoc-pubkit.gemspec
-gem install ./asciidoc-pubkit-1.1.0.gem
+gem install ./asciidoc-pubkit-1.2.1.gem
 asciidoc-pubkit --version
 ```
 
@@ -100,6 +100,23 @@ make -f "$HOME/Src/asciidoc-pubkit/Makefile" run ARGS="review scan book.adoc"
 Use `ARGS` instead of `make review scan book.adoc`: Make interprets positional
 words as build targets, not CLI arguments. Avoid `make -C` when manuscript paths
 should remain relative to the current directory, because it changes directories.
+
+## Register a bundled review skill
+
+Version 1.2.0 provides skill registration commands. From a manuscript directory, run:
+
+```sh
+asciidoc-pubkit skill list
+asciidoc-pubkit skill install review-asciidoc-manuscript --agent codex
+```
+
+Use `--agent claude` for Claude Code, or
+`--dir PATH` instead for a custom skill directory. Agent destinations are
+relative to the current manuscript directory.
+These commands require pubkit 1.2.0 or later. See [skill commands](skill-commands.md)
+for inspection and upgrades, and [skill integration](skill-integration.md) for
+using the registered skill with Codex or Claude. MeCab is required for the review
+phase, not for skill registration.
 
 ## Install the morphological analyzer
 

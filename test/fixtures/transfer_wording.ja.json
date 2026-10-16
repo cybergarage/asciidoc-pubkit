@@ -1,0 +1,128 @@
+[
+  {
+    "id": "input",
+    "source": "実行側はツール結果をモデル入力へ渡します。",
+    "revision": "実行側はツール結果をモデル入力に追加します。",
+    "expected_disposition": "accept",
+    "reason": "Names input construction without adding transport."
+  },
+  {
+    "id": "input-network",
+    "source": "実行側はツール結果をモデル入力へ渡します。",
+    "revision": "実行側はツール結果をモデルAPIへ送信します。",
+    "expected_disposition": "needs-evidence",
+    "reason": "Input construction alone does not establish an API request."
+  },
+  {
+    "id": "argument",
+    "source": "呼び出し元は取消シグナルを引数で渡します。",
+    "revision": "呼び出し元は取消シグナルを引数として指定します。",
+    "expected_disposition": "accept",
+    "reason": "Preserves local argument delivery."
+  },
+  {
+    "id": "argument-notify",
+    "source": "呼び出し元は取消シグナルを引数で渡します。",
+    "revision": "呼び出し元は取消を通知します。",
+    "expected_disposition": "reject",
+    "reason": "Replaces initialization with a cancellation event."
+  },
+  {
+    "id": "send",
+    "source": "クライアントは要求をHTTPで接続先へ渡します。",
+    "revision": "クライアントは要求をHTTPで接続先へ送信します。",
+    "expected_disposition": "accept",
+    "reason": "Names the established transport and recipient."
+  },
+  {
+    "id": "send-receipt",
+    "source": "クライアントは要求をHTTPで接続先へ渡します。",
+    "revision": "接続先は要求を受信して処理を完了します。",
+    "expected_disposition": "reject",
+    "reason": "Changes actor and asserts receipt and completion."
+  },
+  {
+    "id": "delegate",
+    "source": "親エージェントは子エージェントに検索処理を任せて渡します。",
+    "revision": "親エージェントは子エージェントに検索処理を委譲します。",
+    "expected_disposition": "accept",
+    "reason": "Names an explicitly assigned execution responsibility."
+  },
+  {
+    "id": "value-delegate",
+    "source": "呼び出し元は検索語を関数へ渡します。",
+    "revision": "呼び出し元は検索処理を関数へ委譲します。",
+    "expected_disposition": "reject",
+    "reason": "Substitutes execution responsibility for an input value."
+  },
+  {
+    "id": "inherit",
+    "source": "再開時は保存済みの会話履歴を次の実行へ渡します。",
+    "revision": "再開時は保存済みの会話履歴を次の実行へ引き継ぎます。",
+    "expected_disposition": "accept",
+    "reason": "Preserves continuity and the established saved-history condition."
+  },
+  {
+    "id": "inherit-extra",
+    "source": "再開時は会話履歴を次の実行へ渡します。",
+    "revision": "再開時は全履歴を永続化して自動的に次の実行へ引き継ぎます。",
+    "expected_disposition": "reject",
+    "reason": "Adds completeness, persistence and automatic execution."
+  },
+  {
+    "id": "handoff",
+    "source": "担当者は成果物を後続の担当へ渡します。",
+    "revision": "担当者は成果物を後続の担当へ引き渡します。",
+    "expected_disposition": "accept",
+    "reason": "Names artifact delivery without asserting acceptance."
+  },
+  {
+    "id": "handoff-complete",
+    "source": "担当者は成果物を後続の担当へ渡します。",
+    "revision": "後続の担当は成果物を承認して作業を完了します。",
+    "expected_disposition": "reject",
+    "reason": "Changes actor and adds approval and completion."
+  },
+  {
+    "id": "pipeline",
+    "source": "工程Aは出力を工程Bの入力として渡します。",
+    "revision": "工程Aは出力を工程Bの入力として指定します。",
+    "expected_disposition": "accept",
+    "reason": "Preserves the output-to-input relation."
+  },
+  {
+    "id": "cooperate-vague",
+    "source": "クライアントは要求をHTTPで接続先へ渡します。",
+    "revision": "クライアントは接続先と連携します。",
+    "expected_disposition": "reject",
+    "reason": "Drops the request, transport and direction."
+  },
+  {
+    "id": "contract",
+    "source": "インターフェースは双方向のデータの受け渡しを規定します。",
+    "revision": "インターフェースは双方向のデータの受け渡しを規定します。",
+    "expected_disposition": "accept",
+    "reason": "Compared with sending; keep preserves the general bidirectional contract."
+  },
+  {
+    "id": "contract-narrow",
+    "source": "インターフェースは双方向のデータの受け渡しを規定します。",
+    "revision": "インターフェースはデータ送信を規定します。",
+    "expected_disposition": "reject",
+    "reason": "Narrows a bidirectional contract to sending."
+  },
+  {
+    "id": "negative",
+    "source": "無効時は要求を接続先へ渡しません。",
+    "revision": "無効時は要求を接続先へ送信しません。",
+    "expected_disposition": "accept",
+    "reason": "Preserves the disabled condition and transmission denial."
+  },
+  {
+    "id": "capability",
+    "source": "利用者は追加情報を入力として渡せます。",
+    "revision": "利用者は追加情報を入力します。",
+    "expected_disposition": "reject",
+    "reason": "Turns an available capability into asserted behavior."
+  }
+]

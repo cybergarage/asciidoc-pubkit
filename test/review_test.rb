@@ -365,6 +365,51 @@ class ReviewTest < Minitest::Test
     assert_includes prompt[1], 'Explain this input.'
   end
 
+  def test_wording_comparison_guidance_reaches_saved_prose_and_list_sessions
+    File.write(@chapter, "== Budget\n\n安全余白を使えます。\n\n* 候補を木として保持します。\n")
+    original = File.binread(@chapter)
+    %w[prose lists].each do |scope|
+      @session = File.join(@dir, "comparison-#{scope}")
+      scan('--scope', scope)
+      findings = json('findings.json')
+      assert findings.any? { |finding| finding['question'].include?('compare') }
+      code, prompt, error = cli('review', 'prompt', @session)
+      assert_equal 0, code, error
+      assert_includes prompt, json('manifest.json')['writing_criteria']
+      assert_includes prompt, '安全マージン'
+      assert_includes prompt, 'モンテカルロ木探索'
+      assert_includes prompt, 'Missing or insufficient comparisons remain pending'
+      code, report = verify
+      assert_equal 0, code
+      assert_equal false, report['meaning_verified']
+      assert_equal original, File.binread(@chapter)
+    end
+  end
+
+  def test_flow_hints_reach_prose_and_lists_without_rewriting_sources
+    File.write(@chapter, "== Flow\n\n入力を検査してから実行する流れです。\n\n* 結果を次の入力へ渡す流れです。\n")
+    original = File.binread(@chapter)
+    %w[prose lists].each do |scope|
+      @session = File.join(@dir, "flow-#{scope}")
+      scan('--scope', scope)
+      flow = json('findings.json').select { |f| f['match'] == '流れ' }
+      assert_equal 1, flow.length
+      assert_equal 'abstract-reference', flow.first['rule']
+      assert_equal 'hint', flow.first['severity']
+      saved = json('manifest.json')['writing_criteria']
+      assert_includes saved, 'Treat `流れ` as a cue'
+      code, prompt, error = cli('review', 'prompt', @session)
+      assert_equal 0, code, error
+      assert_includes prompt, saved
+      code, result = verify
+      assert_equal 0, code
+      assert_equal true, result['passed']
+      assert_equal false, result['meaning_verified']
+      assert_equal 1, result['findings'].count { |f| f['match'] == '流れ' }
+      assert_equal original, File.binread(@chapter)
+    end
+  end
+
   def test_review_prompt_includes_the_criteria_saved_at_scan_time
     scan('--lang', 'ja')
     saved = json('manifest.json')['writing_criteria']
@@ -373,6 +418,8 @@ class ReviewTest < Minitest::Test
     assert_includes saved, 'Compare structure before and after revision'
     assert_includes saved, 'Preserve plain or polite style'
     assert_includes saved, 'Keep source uncertainty separate from editorial questions'
+    assert_includes saved, 'Review sentence endings by their role'
+    assert_includes saved, 'Do not mechanically convert `別です` to `とは限りません`'
     %w[構築入口 ツールを呼ぶ 無効化したりできます 設計の肝です 拡張点 見落とします 分かれて現れます].each do |example|
       assert_includes saved, example
     end
@@ -389,6 +436,10 @@ class ReviewTest < Minitest::Test
       saved = json('manifest.json')['writing_criteria']
       assert_includes saved, 'Identify human actors by their supported roles'
       assert_includes saved, 'not imply separate people, new permissions'
+      assert_includes saved, 'Distinguish receiving, returning, and their actual operations'
+      assert_includes saved, 'Keep `値を返す`, `Promiseを返す`'
+      assert_includes saved, 'Separate explanatory guidance from actual checks'
+      assert_includes saved, 'Review sentence endings by their role'
       original_criteria = AsciidocPubkit::Writing.method(:prompt_criteria)
       begin
         AsciidocPubkit::Writing.define_singleton_method(:prompt_criteria) { |*_args| 'Future criteria must not leak into a saved session' }
@@ -410,30 +461,30 @@ class ReviewTest < Minitest::Test
   end
 
   def test_review_rejects_unsupported_or_mismatched_languages
-    code, _, error = cli('review', 'scan', @book, '--output', @session, '--lang', 'en')
+    code, _, error = cli('review', 'scan', @book, '--output', @session, '--lang', 'fr')
     assert_equal 2, code
-    assert_includes error, 'Unsupported review language "en"'
+    assert_includes error, 'Unsupported review language "fr"'
     refute File.exist?(@session)
 
     config = File.join(@dir, '.asciidoc-pubkit.yml')
-    File.write(config, { 'review' => { 'language' => 'en' } }.to_yaml)
+    File.write(config, { 'review' => { 'language' => 'fr' } }.to_yaml)
     code, _, error = cli('review', 'scan', @book, '--output', @session)
     assert_equal 2, code
-    assert_includes error, 'Unsupported review language "en"'
+    assert_includes error, 'Unsupported review language "fr"'
     File.unlink(config)
 
-    File.write(@book, "= Test Book\n:lang: en\n\ninclude::chapter.adoc[]\n")
+    File.write(@book, "= Test Book\n:lang: fr\n\ninclude::chapter.adoc[]\n")
     code, _, error = cli('review', 'scan', @book, '--output', @session)
     assert_equal 2, code
-    assert_includes error, 'Unsupported review language "en"'
+    assert_includes error, 'Unsupported review language "fr"'
     refute File.exist?(@session)
 
     File.write(@book, "= Test Book\n:lang: ja\n\ninclude::chapter.adoc[]\n")
     scan
     %w[prompt verify].each do |command|
-      code, _, error = cli('review', command, @session, '--lang', 'en')
+      code, _, error = cli('review', command, @session, '--lang', 'fr')
       assert_equal 2, code
-      assert_includes error, 'Unsupported review language "en"'
+      assert_includes error, 'Unsupported review language "fr"'
     end
   end
 

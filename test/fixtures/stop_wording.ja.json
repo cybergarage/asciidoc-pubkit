@@ -1,0 +1,142 @@
+[
+  {
+    "id": "process-stop",
+    "source": "実行中のプロセスを止めます。",
+    "revision": "実行中のプロセスを停止します。",
+    "expected_disposition": "accept",
+    "reason": "Names the same stopping operation and target."
+  },
+  {
+    "id": "intake-condition",
+    "source": "終了を確認できない場合は、新規受付を止めます。",
+    "revision": "終了を確認できない場合は、新規受付を停止します。",
+    "expected_disposition": "accept",
+    "reason": "Retains the missing-termination-evidence condition and intake target."
+  },
+  {
+    "id": "iteration-end",
+    "source": "上限に達したら反復を止めます。",
+    "revision": "上限に達したら反復を終了します。",
+    "expected_disposition": "accept",
+    "reason": "Ends iteration at the same limit without inventing resumption."
+  },
+  {
+    "id": "search-endpoint",
+    "source": "repoで探索を止めず、その上位ディレクトリも対象にします。",
+    "revision": "repoで探索を終了せず、その上位ディレクトリも対象にします。",
+    "expected_disposition": "accept",
+    "reason": "Preserves negative stopping and upward traversal scope."
+  },
+  {
+    "id": "cancel-request",
+    "source": "Runを止める場合は、取消APIを呼び出します。",
+    "revision": "Runの取消を要求する場合は、取消APIを呼び出します。",
+    "expected_disposition": "accept",
+    "reason": "The API call requests cancellation; it does not establish completion."
+  },
+  {
+    "id": "refusal-capability",
+    "source": "実行前フックは、実行を止められます。",
+    "revision": "実行前フックは、実行を拒否できます。",
+    "expected_disposition": "accept",
+    "reason": "Preserves optional refusal before execution, not active-process termination."
+  },
+  {
+    "id": "send-refusal",
+    "source": "許可されない送信先なら、規則に従って送信を止めます。",
+    "revision": "許可されない送信先なら、規則に従って送信を拒否します。",
+    "expected_disposition": "accept",
+    "reason": "Retains the authorization condition and refusal before sending."
+  },
+  {
+    "id": "unstarted-work",
+    "source": "直列モードで失敗した場合は、後続を止めます。",
+    "revision": "直列モードで失敗した場合は、後続を開始しません。",
+    "expected_disposition": "accept",
+    "reason": "Names non-start of subsequent work with the same serial failure condition."
+  },
+  {
+    "id": "disabled-operation",
+    "source": "Offでは、イベントの保持と通知を止めます。",
+    "revision": "Offでは、イベントの保持と通知を行いません。",
+    "expected_disposition": "accept",
+    "reason": "Both operations are disabled under Off rather than interrupted after starting."
+  },
+  {
+    "id": "iteration-capability",
+    "source": "停止条件が成立すれば、反復を止められます。",
+    "revision": "停止条件が成立すれば、反復を終了できます。",
+    "expected_disposition": "accept",
+    "reason": "Retains the condition and capability separately from actual behavior."
+  },
+  {
+    "id": "supported-pause",
+    "source": "再開できるよう状態を保持し、処理を一時的に止めます。",
+    "revision": "再開できるよう状態を保持し、処理を一時停止します。",
+    "expected_disposition": "accept",
+    "reason": "Temporary suspension and supported resumption are explicitly established."
+  },
+  {
+    "id": "idiom-kept",
+    "source": "独自開発が現実的な選択肢と受け止められていません。",
+    "revision": "独自開発が現実的な選択肢と受け止められていません。",
+    "expected_disposition": "accept",
+    "reason": "Perception is not a stopping operation."
+  },
+  {
+    "id": "lost-intake-condition",
+    "source": "終了を確認できない場合は、新規受付を止めます。",
+    "revision": "新規受付を停止します。",
+    "expected_disposition": "reject",
+    "reason": "Loses the condition that limits when intake stops."
+  },
+  {
+    "id": "capability-strengthened",
+    "source": "停止条件が成立すれば、反復を止められます。",
+    "revision": "停止条件が成立すれば、反復を終了します。",
+    "expected_disposition": "reject",
+    "reason": "Changes available capability into asserted behavior."
+  },
+  {
+    "id": "request-as-completion",
+    "source": "停止を要求した後、処理の終了を確認します。",
+    "revision": "停止を要求すると、処理が終了します。",
+    "expected_disposition": "reject",
+    "reason": "Turns a request and subsequent check into guaranteed termination."
+  },
+  {
+    "id": "refusal-as-kill",
+    "source": "実行前フックは、実行を止められます。",
+    "revision": "実行前フックは、実行中のプロセスを強制終了できます。",
+    "expected_disposition": "reject",
+    "reason": "Invents active-process termination from a pre-execution refusal capability."
+  },
+  {
+    "id": "unstarted-as-interrupted",
+    "source": "失敗時は後続を開始しません。",
+    "revision": "失敗時は実行中の後続を停止します。",
+    "expected_disposition": "reject",
+    "reason": "Invents already-running subsequent work."
+  },
+  {
+    "id": "unsupported-pause",
+    "source": "上限に達したら反復を止めます。",
+    "revision": "上限に達したら反復を一時停止し、後で再開できます。",
+    "expected_disposition": "reject",
+    "reason": "Invents a resumable pause and restart capability."
+  },
+  {
+    "id": "idiom-as-stop",
+    "source": "独自開発が現実的な選択肢と受け止められていません。",
+    "revision": "独自開発が現実的な選択肢として停止されていません。",
+    "expected_disposition": "reject",
+    "reason": "Changes perception into execution state."
+  },
+  {
+    "id": "unknown-as-terminated",
+    "source": "タイムアウト後も、プロセスの終了は確認できません。",
+    "revision": "タイムアウトしたため、プロセスは停止しました。",
+    "expected_disposition": "reject",
+    "reason": "Unknown termination becomes an asserted completed stop."
+  }
+]

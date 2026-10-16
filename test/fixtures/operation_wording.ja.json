@@ -1,0 +1,38 @@
+[
+  {
+    "id": "validation-order",
+    "original": "入力の検証は、利用者への確認と実行より前に行います。",
+    "alternative": "利用者への確認と実行より前に、入力を検証します。",
+    "comparison": "The direct validation verb preserves both ordering conditions."
+  },
+  {
+    "id": "generation",
+    "original": "次のコード生成を行います。",
+    "alternative": "次のコードを生成します。",
+    "comparison": "Describe generation directly without changing its actor or stage."
+  },
+  {
+    "id": "file-responsibility",
+    "original": "settings.tsは設定の読み込みと検証を行います。",
+    "alternative": "settings.tsは設定の読み込みと検証を担当します。",
+    "comparison": "In a file-responsibility table, state both responsibilities without introducing execution timing."
+  },
+  {
+    "id": "actor-division",
+    "original": "トークンの生成はモデルが行い、ファイルの読み取りはエージェントが行います。",
+    "alternative": "トークンの生成はモデルが担当し、ファイルの読み取りはエージェントが担当します。",
+    "comparison": "Preserve the division of responsibility between model and agent."
+  },
+  {
+    "id": "capability",
+    "original": "実行前に入力の検証を行えます。",
+    "alternative": "実行前に入力を検証できます。",
+    "comparison": "Preserve optional capability and pre-execution timing rather than asserting mandatory validation."
+  },
+  {
+    "id": "negative",
+    "original": "停止後は次のコード生成を行いません。",
+    "alternative": "停止後は次のコードを生成しません。",
+    "comparison": "Preserve negation and the post-stop condition."
+  }
+]

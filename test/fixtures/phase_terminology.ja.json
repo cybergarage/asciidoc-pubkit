@@ -1,0 +1,79 @@
+[
+  {
+    "id": "execution-field",
+    "source": "phaseは現在の実行段階です。",
+    "revision": "phaseは現在の実行フェーズです。",
+    "expected_disposition": "accept",
+    "reason": "Names the same field without changing execution states."
+  },
+  {
+    "id": "separate-jobs",
+    "source": "抽出と統合を別段階で実行します。",
+    "revision": "抽出と統合を別のフェーズで実行します。",
+    "expected_disposition": "accept",
+    "reason": "Keeps separate operations without inventing parallelism."
+  },
+  {
+    "id": "two-phases",
+    "source": "会話の加工と形式変換の二段階を示します。",
+    "revision": "会話の加工と形式変換の2つのフェーズを示します。",
+    "expected_disposition": "accept",
+    "reason": "Preserves both processing divisions and their count."
+  },
+  {
+    "id": "count-changed",
+    "source": "会話の加工と形式変換の二段階を示します。",
+    "revision": "会話の加工と形式変換の3つのフェーズを示します。",
+    "expected_disposition": "reject",
+    "reason": "Changes the stated number of divisions."
+  },
+  {
+    "id": "conditional-timing",
+    "source": "保留入力がなくなった段階で終了フックを呼び出します。",
+    "revision": "保留入力がなくなった時点で終了フックを呼び出します。",
+    "expected_disposition": "accept",
+    "reason": "Keeps the conditional timing instead of inventing a phase."
+  },
+  {
+    "id": "condition-lost",
+    "source": "保留入力がなくなった段階で終了フックを呼び出します。",
+    "revision": "終了フェーズで必ず終了フックを呼び出します。",
+    "expected_disposition": "reject",
+    "reason": "Drops the pending-input condition and adds an unconditional guarantee."
+  },
+  {
+    "id": "state-kept",
+    "source": "設定だけがある段階では保存を保留します。",
+    "revision": "設定だけがある段階では保存を保留します。",
+    "expected_disposition": "accept",
+    "reason": "Keeps a state predicate rather than inventing a dedicated execution phase."
+  },
+  {
+    "id": "progressive-kept",
+    "source": "必要に応じて本文と補助資料を段階的に読み込みます。",
+    "revision": "必要に応じて本文と補助資料を段階的に読み込みます。",
+    "expected_disposition": "accept",
+    "reason": "Retains on-demand progressive disclosure."
+  },
+  {
+    "id": "mandatory-loading",
+    "source": "必要に応じて本文と補助資料を段階的に読み込みます。",
+    "revision": "各フェーズで本文と補助資料をすべて読み込みます。",
+    "expected_disposition": "reject",
+    "reason": "Changes conditional loading to mandatory full loading."
+  },
+  {
+    "id": "study-scope-kept",
+    "source": "論文は単一段階のツール利用を検証しています。",
+    "revision": "論文は単一段階のツール利用を検証しています。",
+    "expected_disposition": "accept",
+    "reason": "Retains the stated evaluation scope without imposing a phase model."
+  },
+  {
+    "id": "independence-invented",
+    "source": "抽出と統合を別段階で実行します。",
+    "revision": "抽出と統合を独立したフェーズとして並列実行します。",
+    "expected_disposition": "reject",
+    "reason": "Separate divisions do not establish independence or concurrency."
+  }
+]

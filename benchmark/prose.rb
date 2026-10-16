@@ -36,8 +36,88 @@ module ProseBenchmark
     despite unclear state terms. Retain actual source uncertainty in the body;
     reviewer doubt and editorial questions must not become manuscript facts or
     replace an established claim with an editing annotation.
+    Judge sentence endings by their role: retain useful scope guides, actual
+    operations, capabilities, checking procedures, and historical transitions.
+    Separate explanatory guidance from actual checks and learning objectives.
+    Assess the whole paragraph's actors, including switches between the book's
+    explanation and a reader's checking or learning activity. A useful sequence
+    alone does not justify an ambiguous checking actor. Honor an explicit author
+    preference for explanatory narration without banning genuine exercises.
+    Content guides must identify what is explained; adding a reader subject or
+    a potential understanding ending alone does not repair paragraph viewpoint.
+    Assess repeated guidance across the paragraph. Learning objectives should name
+    supported explanation, distinction or decision targets and remain intended
+    goals, not guaranteed outcomes. Retain actual learning activities and research.
+    Preserve user approval and a program's runtime checks, including their actor,
+    target, condition and timing. Do not replace connection-owner responsibility
+    with only a developer's test; unsupported automatic actors need evidence.
+    Do not make a capability an asserted action or an unknown outcome a failure.
+    Modality preservation does not require retaining the original verb: compare
+    faithful technical alternatives such as 選べます → 選択できます. Apply supplied
+    editorial_constraints to calibration pairs; synonymy does not excuse violating
+    an author terminology preference. Do not justify vague wording by rejecting an
+    unsupported stronger alternative such as physical isolation.
+    Distinguish classification, responsibility sharing, branching, and partitioning
+    when comparing 分かれます. State the classification axis and preserve whether
+    the actor is a reader or a program. A defined category scheme is not merely
+    a possible classification. Preserve branch conditions, both selected paths,
+    counts and joins; branching does not establish parallel execution. Do not
+    turn table correspondences into successful inspection or routes into isolation.
+    Distinguish rule specification, structure definition, and configured values
+    when comparing 定める with 規定する, 定義する, and 設定する. Honor a supplied
+    preference for 規定する in rule-making passages; synonymy alone is not a keep
+    reason. Separate mixed operations such as 許可範囲を規定し、通知先を設定します.
+    Type declarations do not perform runtime configuration or enforcement.
+    Specifying a policy does not establish that it is enforced. Preserve who
+    specifies conditions and when; do not turn permissions into obligations,
+    plans into runtime checks, or a configured destination into a rule.
+    Distinguish request intake, stream reception, retrieval, function arguments,
+    model generation, stdout writes, input assembly, and decision communication
+    before revising receiving/returning wording. Keep accurate value or Promise
+    returns. Do not turn returned errors into thrown exceptions, assign model-input
+    assembly to an execution environment, or display to a service that only returns
+    a message. Signal argument delivery and later cancellation notification differ.
+    An unstated network transport or throw/catch mechanism requires evidence.
+    Distinguish direct operation denial, unavailable capability, partial negation,
+    insufficient conditions, and inference limits. Preserve negation scope and
+    strength; never turn partial negation into total denial. Missing observation
+    does not establish non-implementation, impossibility, failure, or completion.
+    Do not replace inability with a discretionary non-action or add enforcement.
+    Preserve definite differences separately from limits on what evidence proves;
+    a noun-phrase heading preference does not license nominalizing body sentences.
+    Distinguish identification from conceptual separation when comparing 区別できます.
+    Compare 判別 for telling objects or states apart from evidence, 識別 for identity,
+    判定 for an outcome against a criterion, and 個別に確認 for separate stages.
+    Retain conceptual or causal separation when that is the stated purpose.
+    Preserve capability, negation and evidence; do not invent automatic inspection
+    or classification, or make intake and completion exclusive states.
     Report unsupported additions and substitutions separately as English reasons,
     with short Japanese evidence quotes. Empty arrays mean no such errors found.
+    Distinguish actual replacement from interpretation and permitted use when
+    comparing 置き換えません with みなしません or 扱えません. Retain literal
+    value, history, and implementation replacement; preserve rules separately
+    from unavailable uses. Missing evidence does not imply failure or zero usage.
+    Compare とはみなしません and とみなしません with direct evidence-limit predicates.
+    Prefer faithful direct wording when the author requests it; preserve explicit
+    interpretation policies separately from inability to determine an outcome.
+    Do not infer nonzero usage from missing counts or make a conditional evaluation
+    limit unconditional. Do not add automatic checks or enforcement.
+    Distinguish input, transmission, delegation, inheritance, and handoff
+    when comparing 渡す and 受け渡し. Model input construction is not API
+    transmission; function arguments are not later notifications. Value delivery
+    alone does not establish delegation. Preserve continuity separately from
+    persistence and ownership transfer; handoff does not prove acceptance or
+    downstream completion. Cooperation must not obscure a specific data action.
+    Preserve recipients, order, negation and capability; compare before retaining
+    a general or bidirectional contract, without narrowing it to one-way sending.
+    Check the actor of each clause and adjacent sentence, including omitted
+    subjects after a conditional clause. Separate a model requesting an operation
+    from the agent executing it, a user rejecting it from the program skipping it,
+    and runtime control from caller investigation. Accept evidence-supported actor
+    clarification while preserving modality and conditions. Keep clear continued
+    subjects and table roles without forcing repetition. A newly assigned actor or
+    approver requires evidence; actor clarification must not add automatic checks,
+    change permission ownership, or claim that a request completed.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an
     omitted or changed established fact or violated explicit editorial constraint;
     needs-evidence for newly asserted details that cannot be established;
@@ -309,7 +389,7 @@ module ProseBenchmark
       follow each fact checklist's order. Document labels hide the run role.
       Source evidence: #{JSON.generate(cases.map { |c| c.slice('id', 'text', 'facts') })}
       Target documents: #{JSON.generate(%w[A B].zip(documents).map { |id, paras| { 'id' => id, 'paragraphs' => paras } })}
-      Calibration pairs: #{JSON.generate(gold.map { |c| c.slice('id', 'source', 'revision') })}
+      Calibration pairs: #{JSON.generate(gold.map { |c| c.slice('id', 'source', 'revision', 'editorial_constraints') })}
     TEXT
     judgment = validate_judgment(judge.call(judge_prompt, workspace, 'judge'), cases, gold.map { |c| c['id'] })
     original_id, revised_id = trial.odd? ? %w[A B] : %w[B A]

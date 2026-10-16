@@ -220,6 +220,16 @@ needs a passage-specific reason. Whether a matched string remains or disappears
 cannot determine that decision; unchanged paragraphs and remaining candidates
 must not receive automatic `keep` records. Unreviewed items remain pending.
 
+For broad or everyday wording, generated prompts require a concrete alternative
+and a passage-specific comparison, even when the original is understandable.
+The shared criteria prefer accurate established technical terms while retaining
+formal names, facts, conditions and responsibility. A paragraph summary alone
+is insufficient. Reporting helpers must count explicit assessments instead of
+creating decisions or propagating paragraph reasons to candidates. Missing
+comparisons remain pending; `needs-evidence` is reserved for missing factual support.
+These are agent review instructions, not automatic replacements or a CLI
+validator for external decision records. `review verify` remains mechanical.
+
 The default Japanese rules now flag standalone `人` as a contextual hint in
 prose, supported list text, and headings. Identify the evidenced role before
 considering `開発者`, `利用者`, `評価担当者`, `作成者`, or `人間`. Preserve general
@@ -281,10 +291,28 @@ support is for local prose correction, not chapter reorganization.
 
 Source hashes are checked before generating a prompt. Modified sources, modified
 session artifacts, and incompatible session versions require a fresh scan.
-`review scan`, `review prompt`, and `review verify` accept `--lang ja`; prompt and
-verify check the value against the session language. A non-Japanese language in
-`--lang`, `review.language`, or an explicit AsciiDoc `:lang:` attribute is rejected.
+`review scan`, `review prompt`, and `review verify` accept `--lang ja` or `--lang en` in version 1.3.0; prompt and
+verify check the value against the session language. Unsupported languages,
+regional tags and mismatched explicit AsciiDoc `:lang:` attributes are rejected.
+See [English review](english-review.md) for English-specific analysis limits.
 An omitted `:lang:` attribute uses the selected review language.
+
+### Faithful terminology comparisons
+
+Preserve modality separately from wording: `選べます → 選択できます` retains
+capability, while `選べます → 選びます` asserts behavior. Apply author terminology
+preferences even when both expressions are understandable. Compare the strongest
+supported alternative with the same facts and conditions; rejecting invented
+physical isolation does not justify keeping vague separation wording. The saved
+shared criteria distinguish data partition, responsibility separation, independent
+implementation languages and concrete workflow integration.
+
+`組み込む` and its potential/negative inflections are advisory `weak-predicate`
+candidates in the packaged Japanese rules. They are not prohibited expressions or
+replacement instructions; named library embedding may be appropriate. Custom rules
+still replace the packaged rules. Review author-supplied concerns and paragraphs
+without matches as well. Existing sessions retain their saved rules and criteria;
+start a new scan to apply the updated guidance, preserving earlier evidence.
 
 ### Verify
 

@@ -21,9 +21,15 @@ technical accuracy or meaning preservation; `meaning_verified` remains `false`.
 Scoring uses the same configuration discovery, custom rules, glossary, allows,
 style, language, base directory, include handling, and prose coverage as scanning.
 It accepts `--only`, `--config`, `--rules`, `--base-dir`, `--tokenizer`, `--style`,
-`--lang ja`, and repeated `--attribute` options. Excluded, unmapped, and protected
+`--lang ja` or `--lang en`, and repeated `--attribute` options. Excluded, unmapped, and protected
 blocks are not prose-scored. Coverage notices remain important when interpreting
-a score. MeCab/IPADIC is the default; literal mode must be selected explicitly.
+a score. MeCab/IPADIC is the Japanese default; English uses built-in lexical
+matching. Literal mode must be selected explicitly. Both languages retain
+`candidate-density-v1`: max(0, 100 - 5 * candidates * 1000 / characters),
+rounded to three decimals. Characters are unmasked non-space Unicode characters.
+An empty denominator produces no score. Reports explicitly label the density
+unit and uncalibrated status. Compare only the same language, rules and analysis
+identity; a higher score alone does not establish better prose or detection.
 
 AI evaluation requires an installed, authenticated Codex or Claude CLI, and may
 send the selected paragraph text and headings to its configured provider and

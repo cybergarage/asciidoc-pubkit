@@ -1,0 +1,386 @@
+{
+  "schema_version": 1,
+  "provenance": "Agent-authored calibration cases and labels. Not independently human-reviewed; suitable for harness regression and explicit evaluator calibration, not a claim of production editing quality.",
+  "pairs": [
+    {
+      "id": "revision-058b109751ad",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The service accepted the request. Completion has not been observed.",
+      "revision": "The request was accepted, but completion has not been observed.",
+      "facts": [
+        "The request was accepted.",
+        "Completion is unobserved, not established."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "connection"
+    },
+    {
+      "id": "revision-15c4a3893068",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "It is important to note that the backup excludes temporary files.",
+      "revision": "The backup excludes temporary files.",
+      "facts": [
+        "Temporary files are excluded from the backup."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true
+      ],
+      "category": "framing"
+    },
+    {
+      "id": "revision-1ed3d39ffd8a",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The function returns an error value without throwing an exception.",
+      "revision": "The function throws an exception to return the error.",
+      "facts": [
+        "An error value is returned.",
+        "No exception is thrown."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false,
+        false
+      ],
+      "category": "terminology"
+    },
+    {
+      "id": "revision-202cf488e830",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The job does not start unless both checks pass.",
+      "revision": "The job starts only if both checks pass.",
+      "facts": [
+        "Both checks must pass before a start is possible.",
+        "The statement does not guarantee a start after passing checks."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "negation"
+    },
+    {
+      "id": "revision-21f364c129a2",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The next release is planned to support streaming.",
+      "revision": "The installed release supports streaming.",
+      "facts": [
+        "Streaming support is planned, not confirmed available.",
+        "The plan concerns the next release."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false,
+        false
+      ],
+      "category": "future"
+    },
+    {
+      "id": "revision-2562d31a5d15",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "An administrator may delete an unused token.",
+      "revision": "An administrator is permitted to delete an unused token.",
+      "facts": [
+        "Deletion is permitted, not required.",
+        "Only the stated administrator permission is described."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "permission"
+    },
+    {
+      "id": "revision-298b0f40033c",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The client can retry a failed request.",
+      "revision": "The client retries every failed request.",
+      "facts": [
+        "Retry is a capability, not guaranteed behavior.",
+        "The capability applies to failed requests."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false,
+        true
+      ],
+      "category": "capability"
+    },
+    {
+      "id": "revision-2998b5841b61",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The key was removed, but the log does not identify the actor.",
+      "revision": "The administrator removed the key.",
+      "facts": [
+        "The key was removed.",
+        "The actor is not established by the log."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        true,
+        false
+      ],
+      "category": "passive"
+    },
+    {
+      "id": "revision-3cf5c4f23941",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "It is important to note that the backup excludes temporary files.",
+      "revision": "The backup includes every file.",
+      "facts": [
+        "Temporary files are excluded from the backup."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false
+      ],
+      "category": "framing"
+    },
+    {
+      "id": "revision-4165d9a6a6fa",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The key was removed, but the log does not identify the actor.",
+      "revision": "The key was removed; the log does not say who removed it.",
+      "facts": [
+        "The key was removed.",
+        "The actor is not established by the log."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "passive"
+    },
+    {
+      "id": "revision-4db0d9d47e67",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "Under this workload, the median latency fell from 8 ms to 6 ms.",
+      "revision": "For this workload, median latency decreased from 8 ms to 6 ms.",
+      "facts": [
+        "The measurement applies to this workload.",
+        "The comparison concerns medians of 8 ms and 6 ms."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "measurement"
+    },
+    {
+      "id": "revision-5e86727ed5d2",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "An administrator may delete an unused token.",
+      "revision": "An administrator must delete every unused token.",
+      "facts": [
+        "Deletion is permitted, not required.",
+        "Only the stated administrator permission is described."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false,
+        true
+      ],
+      "category": "permission"
+    },
+    {
+      "id": "revision-6fdf675ff874",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "Under this workload, the median latency fell from 8 ms to 6 ms.",
+      "revision": "Latency is always 25 percent lower for every workload.",
+      "facts": [
+        "The measurement applies to this workload.",
+        "The comparison concerns medians of 8 ms and 6 ms."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false,
+        false
+      ],
+      "category": "measurement"
+    },
+    {
+      "id": "revision-774aac84c541",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The cache is cleared by the worker after commit.",
+      "revision": "The worker clears the cache before commit.",
+      "facts": [
+        "The worker clears the cache.",
+        "Clearing happens after commit."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        true,
+        false
+      ],
+      "category": "actor"
+    },
+    {
+      "id": "revision-7a02da48f983",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The function returns an error value without throwing an exception.",
+      "revision": "The function returns an error value; it does not throw an exception.",
+      "facts": [
+        "An error value is returned.",
+        "No exception is thrown."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "terminology"
+    },
+    {
+      "id": "revision-7f1559096ef2",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The client can retry a failed request.",
+      "revision": "The client supports retrying a failed request.",
+      "facts": [
+        "Retry is a capability, not guaranteed behavior.",
+        "The capability applies to failed requests."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "capability"
+    },
+    {
+      "id": "revision-87e821b6d16a",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The next release is planned to support streaming.",
+      "revision": "Streaming support is planned for the next release.",
+      "facts": [
+        "Streaming support is planned, not confirmed available.",
+        "The plan concerns the next release."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "future"
+    },
+    {
+      "id": "revision-a11a5ee0d517",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "Each worker retries at most three times.",
+      "revision": "Every worker retries exactly three times.",
+      "facts": [
+        "Three is an upper bound on retries.",
+        "The limit applies separately to each worker."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false,
+        true
+      ],
+      "category": "quantity"
+    },
+    {
+      "id": "revision-b94e4c4e79d7",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The timeout may reflect a delayed response.",
+      "revision": "A delayed response is one possible cause of the timeout.",
+      "facts": [
+        "The cause is possible rather than established.",
+        "The proposed cause is response delay."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "uncertainty"
+    },
+    {
+      "id": "revision-d85ce223e343",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The timeout may reflect a delayed response.",
+      "revision": "A delayed response caused the timeout.",
+      "facts": [
+        "The cause is possible rather than established.",
+        "The proposed cause is response delay."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false,
+        true
+      ],
+      "category": "uncertainty"
+    },
+    {
+      "id": "revision-e8eb72962843",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "Each worker retries at most three times.",
+      "revision": "A worker makes no more than three retry attempts.",
+      "facts": [
+        "Three is an upper bound on retries.",
+        "The limit applies separately to each worker."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "quantity"
+    },
+    {
+      "id": "revision-ec1d98106f68",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The cache is cleared by the worker after commit.",
+      "revision": "The worker clears the cache after commit.",
+      "facts": [
+        "The worker clears the cache.",
+        "Clearing happens after commit."
+      ],
+      "expected_decision": "accept",
+      "expected_retained_facts": [
+        true,
+        true
+      ],
+      "category": "actor"
+    },
+    {
+      "id": "revision-ef6145e569cb",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The job does not start unless both checks pass.",
+      "revision": "The job starts if either check passes.",
+      "facts": [
+        "Both checks must pass before a start is possible.",
+        "The statement does not guarantee a start after passing checks."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        false,
+        false
+      ],
+      "category": "negation"
+    },
+    {
+      "id": "revision-f925b276d099",
+      "context": "Review an English technical explanation without adding source facts.",
+      "source": "The service accepted the request. Completion has not been observed.",
+      "revision": "The service accepted and completed the request.",
+      "facts": [
+        "The request was accepted.",
+        "Completion is unobserved, not established."
+      ],
+      "expected_decision": "reject",
+      "expected_retained_facts": [
+        true,
+        false
+      ],
+      "category": "connection"
+    }
+  ]
+}

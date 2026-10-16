@@ -3,7 +3,7 @@
 ## Scope and sources of truth
 
 This repository provides the `asciidoc-pubkit` Ruby gem and CLI. Its implemented
-workflow emits Japanese writing prompts, scans Japanese AsciiDoc running prose,
+workflow emits Japanese and English writing prompts, scans AsciiDoc running prose,
 reviews section headings in separate sessions, emits review prompts, scores
 running prose, and verifies edited manuscripts
 against a baseline. Only `review score --agent` invokes an installed Codex or
@@ -64,6 +64,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | File | Responsibility |
 | --- | --- |
 | `exe/asciidoc-pubkit`, `lib/asciidoc_pubkit/cli.rb` | Entry point, arguments, confirmation, output, exit codes |
+| `lib/asciidoc_pubkit/skill_commands.rb` | Bundled-skill registration, status, protected upgrades and staged replacement; reference: `docs/skill-commands.md` |
 | `lib/asciidoc_pubkit/settings.rb` | Configuration discovery, path resolution, option precedence |
 | `lib/asciidoc_pubkit/document.rb` | Asciidoctor parsing, source mapping, prose selection, structure |
 | `lib/asciidoc_pubkit/morphology.rb` | MeCab execution, IPADIC validation, tokens, backend identity |
@@ -77,6 +78,10 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | `test/review_test.rb`, `test/morphology_test.rb` | Workflow regression tests and real MeCab tests |
 
 ## Contracts to preserve
+
+- Skill registration manages only bundled files at an explicit `--dir` or a caller-relative project directory selected by `--agent codex|claude`. Preserve
+  unmanaged or locally modified skills, block downgrades, and keep review session
+  baselines independent. Registration commands never invoke an AI or fetch skills.
 
 - Scoring uses the same prose scope as default prose scanning. Keep candidate-density scores
   distinct from optional model readability ratings and benchmark accuracy.
@@ -94,7 +99,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
   instructions. Preserve negation, conditions, terminology, source text, and
   protected content. Columns are one-based Unicode character positions.
   Ambiguous source mappings must produce coverage notices instead of guesses.
-- MeCab is the default. Never silently fall back to literal matching; require
+- MeCab is the Japanese default; English uses built-in `english-lexical`. Never silently fall back to literal matching; require
   explicit `--tokenizer literal`. Literal-mode success does not validate MeCab.
 - Rule precedence is `--rules`, then configuration `review.rules`, then packaged
   defaults. Custom rules replace the complete set. Keep YAML validation strict
@@ -121,7 +126,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
   Preserve exit codes: 0 for success, 1 for verification violations, 2 for invalid
   arguments/configuration/session/input/output failures.
 - `writing criteria` and `writing prompt` require no manuscript or analyzer.
-  They and all review commands accept `--lang ja`; reject unsupported languages
+  They and all review commands accept `--lang ja` and `--lang en`; reject unsupported languages
   explicitly. Keep common criteria in the packaged language-specific file, not
   duplicated in book skills or rule questions. Save the criteria used by each
   review session and include them in its generated prompt.

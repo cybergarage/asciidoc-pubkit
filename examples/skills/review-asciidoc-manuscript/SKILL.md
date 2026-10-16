@@ -1,6 +1,6 @@
 ---
 name: review-asciidoc-manuscript
-description: Review and revise an existing Japanese AsciiDoc manuscript with asciidoc-pubkit in separate verified heading, prose, and list sessions; use for proofreading or outline diagnosis, not new-book authoring.
+description: Review and revise an existing Japanese or English AsciiDoc manuscript with asciidoc-pubkit in separate verified heading, prose, and list sessions; use for proofreading or outline diagnosis, not new-book authoring.
 ---
 
 # Review an AsciiDoc manuscript
@@ -12,15 +12,30 @@ publication attributes and checks. Preserve unrelated edits. Default to headings
 prose, then supported list text only when the user requests a full review; respect
 single-scope and diagnosis-only assignments.
 
+When good/bad examples accompany a whole-text proofreading request, treat them
+as a quality or tone benchmark, not a filter for matching expressions. Review all
+selected entries for general writing quality, including those without candidates;
+keep explicitly focused assignments focused. For figure/table introductions,
+consult the saved "Introduce figures and tables by their explanatory role"
+guidance when available. Compare the actual referenced content and record missing
+evidence; handle related authorized tables, figures and alternative text in their
+own scopes. Keep canonical examples in pubkit and retain historical criteria when
+the selected version lacks the guidance.
+
 Use the project's installed asciidoc-pubkit invocation, with bundle exec when
 configured. Check its version and command help. Existing sessions require their
 exact saved tool version; retain earlier sessions when starting a new pass.
 Choose unused session and output paths. Never rescan to hide a failed check.
+Select the manuscript language explicitly. English requires a version supporting
+--lang en; do not substitute Japanese or reset old sessions when unavailable.
+Use the saved English criteria; Japanese term-specific guidance below applies
+only to Japanese assignments. Translation fidelity requires source evidence
+and remains separate from mechanical preservation.
 
 For each assigned scope:
 
 1. Scan from the manuscript directory with --scope headings, prose or lists,
-   --lang ja, --no-input and a unique --output session path. For an assigned
+   the selected --lang ja or --lang en, --no-input and a unique --output session path. For an assigned
    chapter, use --only FILE with the book entrypoint. Do not narrow a whole-book
    assignment to one file. Match the publishing parser settings.
 2. Generate review prompt before editing. Use --mode diagnose for proposals
@@ -41,6 +56,61 @@ For each assigned scope:
    output filename. Repair task-owned preservation violations without resetting
    the baseline. For integrity failures, preserve evidence and report the blocker.
    Finish verification before scanning the next scope's current manuscript.
+
+For Japanese headings containing `区別`, consult the saved heading criteria's
+"Distinguish comparison subjects from distinguishing actions" section when
+available. Compare the section's actual subjects and role using its body as
+read-only evidence; record the alternative even without a detector candidate.
+If the selected version lacks this section, report the criteria limitation and
+retain existing sessions. Keep canonical examples in asciidoc-pubkit.
+
+Before judging a targeted sentence ending in prose or list text, classify its
+role using the saved common criteria: content guidance, an actual checking
+procedure, runtime behavior, or a learning objective. Read the whole paragraph
+and neighboring sentences; inspect table context separately when it is protected.
+Record the supported actor, target, conditions, faithful alternative and reason.
+A useful reading sequence alone is not a keep rationale. Follow the author's
+voice without inventing an actor or turning runtime responsibility into a test.
+
+Review actor changes through the saved common criteria, including entries
+without detector candidates. Compare an explicit subject when adjacent clauses
+or sentences change responsibility; establish the actor from context and evidence,
+and record the original, alternative and reason. Keep clear continued subjects
+without forcing repetition. Inspect related authorized table/figure roles in their
+own scopes; report missing actor evidence rather than assigning a plausible role.
+If the selected CLI lacks the actor-change examples, report that criteria limitation
+and retain saved sessions; keep the canonical examples in pubkit.
+
+For an assigned content guide or learning objective, record the whole-paragraph
+viewpoint and any repeated guidance along with the source, alternative and reason.
+Use pubkit's saved common criteria for the judgment. Inventory related prefaces,
+part introductions, lists and table descriptions within the authorized assignment;
+track their dispositions or proposals in their own scopes, including protected
+content. Do not extend a focused assignment to unrelated manuscript sections.
+
+For Japanese `行う`, consult the saved "Distinguish operations from responsibility"
+comparisons before choosing an action verb or responsibility wording. Record
+the actual alternative; a detector hint is not a replacement instruction.
+
+For Japanese `渡す`, `受け渡す`, `受け渡し` and related inflections, use the saved
+"Distinguish input, transmission, delegation, inheritance, and handoff"
+comparisons when the selected CLI provides them. Record each actual alternative
+and reason, including retained wording. Inspect authorized tables, figures and
+alternative text for agreement; record protected or out-of-scope proposals
+separately. Detector hints do not prescribe replacements. If the selected version
+lacks these comparisons, report that limitation and retain historical sessions.
+
+Compare broad or everyday wording with a concrete alternative using the saved
+shared terminology criteria, even when the original is understandable. Keep
+records must explain the specific comparison, not merely summarize the passage.
+Reporting helpers may count explicit decisions but must not create keep decisions
+or inherit paragraph summaries. Missing comparisons remain pending.
+
+Compare the strongest supported alternative with the same facts and modality.
+Do not reject a requested technical synonym merely because it preserves meaning;
+apply the author's terminology preference. Rejecting an unsupported stronger
+alternative does not establish keep. Recheck a retained passage when its comparison
+changes the claim, omits source information, or fails to address the author's concern.
 
 Retain phase-end results because later scopes can legitimately make older
 sessions fail. For further corrections after another scope has changed, start a

@@ -14,6 +14,8 @@ terms:
     # Components, actors, and hierarchical relationships.
     - 構成要素
     - 部品
+    # Sequences, transfers, and state changes require contextual review.
+    - 流れ
     - 開発者
     - 人
     - 祖先
@@ -37,7 +39,10 @@ terms:
     - 余白
     # Event or operation wording requires context, not a fixed synonym.
     - 発火
-    question: Identify the concrete referent, components, role, or measurable work.
+    - 作用
+    question: Identify the concrete referent, components, role, or measurable work,
+      then compare a concrete expression or established technical term using the shared
+      criteria. Recoverable meaning alone does not justify keeping broad wording.
       For 入口, apply the shared role-metaphor criteria; a clear referent alone is
       not a sufficient reason to keep vague operation wording. Keep
       established technical meanings. For standalone 人, identify the supported
@@ -47,6 +52,18 @@ terms:
       katakana term (such as ツリー or マージン) only when it names the intended concept.
   weak-predicate:
     terms:
+    # General operation wording: compare action and responsibility in context.
+    - 行う
+    - 行います
+    - 行いました
+    - 行った
+    - 行って
+    - 行わない
+    - 行いません
+    - 行わなかった
+    - 行っていません
+    - 行えます
+    - 行えない
     # Use, interpretation, and understanding (literal-mode surfaces).
     - 利用します
     - 使えます
@@ -91,6 +108,11 @@ terms:
     - 作れる
     - 作れます
     - 作れません
+    - 組み込む
+    - 組み込みます
+    - 組み込めます
+    - 組み込まない
+    - 組み込めません
     - 組み立てられます
     - 組み合わせます
     - 積み重なります
@@ -127,6 +149,29 @@ terms:
     - 加えます
     - 加わります
     - 付けます
+    # Receiving is advisory; its actual operation comes from context.
+    - 受け取る
+    - 受け取ります
+    - 受け取りました
+    - 受け取った
+    - 受け取って
+    - 受け取り
+    - 受け取らない
+    - 受け取りません
+    - 受け取れる
+    - 受け取れます
+    - 受け取れません
+    - 受け取れない
+    # Arrival is advisory; distinguish reception, input and result settlement.
+    - 届く
+    - 届きます
+    - 届きました
+    - 届いた
+    - 届いて
+    - 届かない
+    - 届きません
+    - 届かなかった
+    - 届いていません
     - 返す
     - 返します
     - 渡します
@@ -143,8 +188,13 @@ terms:
     - 終えられます
     - 抜けられます
     - 解消する
-    question: Check whether the purpose, operation, or result is clear from the surrounding
-      paragraph. Preserve negation and conditions.
+    question: Identify the purpose, operation, and result, then compare a more precise
+      verb or established technical term using the shared criteria. An understandable
+      original is not by itself a reason to keep it. Record the alternative and the
+      passage-specific comparison. Compare faithful alternatives with the same modality;
+      synonymy alone is not a keep reason when technical terminology is requested.
+      Do not justify keep by rejecting an unsupported stronger alternative.
+      Preserve negation, conditions, and responsibility.
   vague-degree:
     terms:
     - 浅い
@@ -155,6 +205,7 @@ terms:
       measurements and established technical meanings.
   contextual-phrase:
     terms:
+    - 孫ディレクトリ
     # Limited exact surfaces for metaphorical operations, not banned verbs.
     - 地味に効く
     - 地味に効きます
@@ -173,6 +224,11 @@ terms:
     - あるものとします
     # Retain this specific phrase for existing allow lists and fuller evidence.
     - わけではありません
+    - わけではなく
+    - わけではない
+    # Interpretation limits invite direct comparisons, not mandatory rewrites.
+    - とはみなしません
+    - とみなしません
     - 別です
     # Unusual technical translations; shared criteria own the alternatives.
     - 木全体
@@ -249,6 +305,9 @@ terms:
       beyond the surrounding prose. Keep useful framing; otherwise state the
       substantive claim directly. Do not force a uniform sentence pattern.
 verbs:
+  行う:
+  - 行う
+  - 行える
   扱う:
   - 扱う
   - 扱える
@@ -300,6 +359,9 @@ verbs:
   - 渡す
   決まる:
   - 決まる
+  組み込む:
+  - 組み込む
+  - 組み込める
   組み立てる:
   - 組み立てる
   組み合わせる:
@@ -310,6 +372,11 @@ verbs:
   - 置き換える
   加わる:
   - 加わる
+  受け取る:
+  - 受け取る
+  - 受け取れる
+  届く:
+  - 届く
   返す:
   - 返す
   避ける:
