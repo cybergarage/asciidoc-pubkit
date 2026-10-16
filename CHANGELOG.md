@@ -2,6 +2,225 @@
 
 ## Unreleased
 
+## 1.3.0 - 2026-10-17
+
+- Add 120 original English regression paragraphs split by document, exact span
+  labels, per-rule precision/recall/F1 and location gates, and a density baseline.
+  Add 24 revision calibration cases and an offline imported-judgment evaluator
+  separating readability from fact retention. Tests use synthetic judgments;
+  no AI editing-quality improvement or independent human validation is claimed.
+
+- Add English lexical review, writing/heading/outline criteria, separate prose,
+  heading and list sessions, and language-specific readability prompts. Preserve
+  Japanese MeCab/IPADIC behavior and candidate-density-v1 arithmetic; explicitly
+  label score units and lack of calibration. English matching is not grammar
+  analysis. Regional tags and English replacement remain unsupported.
+- Release English support as 1.3.0. Sessions require the exact creating tool
+  version; preserve pre-release baselines with 1.3.0.pre.1 and start fresh
+  sessions for 1.3.0 rather than migrating saved evidence.
+
+## 1.2.3 - 2026-10-16
+
+- Clarify figure/table introductions with contextual Japanese comparisons,
+  including retained notation and comparison guidance. Treat author examples as
+  quality benchmarks within the declared review scope. Test delivery through
+  writing commands and all saved review scopes without rewriting sources;
+  detector and replacement behavior are unchanged.
+
+- Add heading comparisons for `区別`, `違い`, `相違`, relationships and
+  observation limits. Recheck comparison subjects against the body, preserve
+  actual distinguishing actions, and route review skills to the saved heading
+  criteria. Add snapshot and title-only preservation regressions. No detector
+  or automatic replacement changes; AI proofreading quality is not measured.
+
+- Clarify omitted subjects when actors change across clauses, sentences and table
+  roles. Add twelve source/revision calibration pairs and saved-session coverage
+  for paragraphs without detector candidates. Preserve continued subjects,
+  evidence limits, modality and permission ownership; route bundled review skills
+  to the shared criteria. No detector changes or measured AI quality improvement.
+
+- Add operation-specific `渡す` / `受け渡し` comparisons for input, transmission,
+  arguments, configuration, notification, delegation, inheritance and handoff.
+  Add 18 manual comparison examples, judge guidance, frozen-session regressions
+  and bundled skill routing. Detector and replacement behavior are unchanged;
+  AI proofreading improvement has not been measured.
+
+- Add contextual `分かれます` comparisons for purpose/type classification,
+  responsibility sharing, execution branching, content partitioning, route
+  differences and table correspondences. Preserve classification actors,
+  modality, branch conditions and join requirements. Add manual accept/reject
+  fixtures and frozen-session regressions; detector and replacement behavior
+  are unchanged. AI proofreading improvement has not been measured.
+
+- Compare `とはみなしません` and `とみなしません` with direct evidence-limit
+  predicates, preserving explicit interpretation policies, missing measurements,
+  prior investigation and conditional evaluation. Add two advisory surfaces,
+  update fixed-response/missing-usage examples, and add ten calibration pairs.
+  Test both tokenizers, protected text, custom rules, saved sessions and criteria
+  delivery. No automatic replacement or measured AI proofreading improvement.
+
+- Add contextual stopping comparisons for termination, cancellation requests,
+  pre-execution refusal, unstarted work, disabled operations and resumable pauses.
+  Add manual comparison fixtures and saved-prompt regressions, preserving
+  capability, unfinished work and idiomatic uses. Detector and replacement
+  behavior are unchanged; AI proofreading improvement has not been measured.
+
+- Add contextual `段階` / `フェーズ` comparisons for execution states and
+  processing divisions, preserving timing, state conditions, progressive
+  disclosure, counts and research scope. Add manual comparison fixtures and
+  writing/saved-review-prompt regressions. Detector and automatic replacement
+  behavior are unchanged; AI proofreading improvement has not been measured.
+
+- Add directory hierarchy comparisons for ancestor, descendant, child and
+  grandchild translations. Preserve traversal endpoints, exact depths,
+  direct relationships, inheritance and code identifiers; retain process,
+  agent and tree terminology. Add the advisory `孫ディレクトリ` candidate,
+  comparison fixtures and saved-prompt regressions. No automatic replacement;
+  AI proofreading improvement has not been measured.
+
+- Add contextual `置き換えません` comparisons for interpretation rules and use
+  limits, retaining actual value/history/implementation replacement and missing
+  evidence. Add nine calibration pairs, judge guidance, and saved-prompt delivery
+  regressions. Detector and automatic replacement behavior is unchanged; AI
+  proofreading improvement has not been measured.
+
+- Add contextual `区別できます` comparisons for evidence-based identification,
+  identity, outcome judgment and separate stage checks. Preserve conceptual
+  separation, capability and negation; add eight calibration pairs and prompt
+  delivery regressions. Detector and automatic replacement behavior is unchanged;
+  AI proofreading improvement has not been measured.
+
+- Add direct-negation comparisons for `わけではありません`, preserving capability,
+  conditions, partial negation and inference limits. Add advisory `わけではなく`
+  and `わけではない` candidates, ten calibration pairs and judge guidance.
+  Cover both tokenizers, protected text, saved rules/criteria and prompt delivery.
+  No automatic replacement; AI proofreading improvement has not been measured.
+
+- Compare `定める` with `規定する` for rules, specifications, evaluation conditions,
+  and responsibilities; distinguish structure/workflow definition, configured
+  values, and types that describe limit inputs. Preserve mixed operations,
+  author terminology preferences, timing and modality without inventing runtime
+  enforcement or obligations. Add ten calibration pairs, judge
+  guidance and writing/review prompt regressions, including historical session
+  retention. Detector rules and automatic replacement are unchanged; AI
+  proofreading improvement has not been measured.
+
+- Add contextual comparisons for `決めます`: selection, calculation, configuration,
+  state/permission classification, evidence assessment, establishing conditions,
+  explicit decisions, and results determined by inputs. Preserve actors, timing,
+  contributing factors and modality without inventing operations. Test delivery
+  to writing and saved review prompts and retention of existing session criteria.
+  Detector rules and automatic replacement are unchanged; AI proofreading
+  improvement has not been measured.
+
+- Add advisory `行う` operation-wording candidates in prose and supported lists,
+  including MeCab inflections/potential forms and explicit literal surfaces.
+  Compare direct actions with implementation responsibilities in shared criteria
+  and route bundled review skills to those saved comparisons. Test positions,
+  polarity, protected text, custom rules, saved sessions and source preservation.
+  No automatic replacement; AI proofreading improvement is unmeasured.
+
+- Add advisory `届く` candidates in prose and lists, with inflected literal forms
+  and MeCab dictionary-form detection. Add shared comparisons for reception,
+  input values, model-response retrieval, late settlement and missing reports.
+  Cover polarity, positions, masking, rule overrides and criteria delivery in
+  regression tests. No automatic replacement or skill workflow change; saved
+  sessions retain their rules and criteria. AI proofreading improvement is unmeasured.
+
+- Add `作用` as an advisory `abstract-reference` candidate in Japanese prose
+  and list text. Compare the actual operation, operation classification, result,
+  or state change in context; no fixed replacement is prescribed. Existing
+  sessions retain their saved rules.
+
+- Clarify communication responses versus internal return values in shared Japanese
+  criteria, with HTTP acceptance, ACP completion, MCP replies and response-field
+  examples. Preserve model generation, missing measurements, ordinary failure
+  results, exception throwing and Promise rejection as separate operations.
+  Add delivery coverage for writing commands and saved review prompts in all
+  three scopes. Detector rules, automatic replacement and mechanical verification
+  are unchanged; AI proofreading improvement has not been measured.
+
+- Clarify reader learning objectives with concrete explanation, distinction or
+  decision targets. Review whole-paragraph viewpoint and repeated content guidance;
+  subject-only or potential-ending-only repairs are insufficient. Retain genuine
+  learning activities. Add six calibration pairs and judge guidance, and strengthen
+  related-content inventories in the bundled review skill. Detector rules, saved
+  sessions and mechanical verification are unchanged; AI improvement is unmeasured.
+
+- Expand shared Japanese criteria for `区別します` with concrete comparisons of
+  loading conditions, rule purposes, identifier uses, recorded states, and
+  inference limits. Require the differing property or consequence and review
+  neighboring repetition without inventing mechanisms. Detector rules and
+  automatic replacement are unchanged; old sessions retain saved criteria.
+
+- Add contextual receiving/returning comparisons to the shared Japanese criteria:
+  intake, reception, retrieval, arguments, generation, stdout output, input assembly,
+  decisions, and established exception handling. Preserve accurate value returns,
+  actors, approval conditions and cancellation timing. Add advisory `受け取る`
+  hints with inflected/potential forms and thirteen calibration pairs,
+  plus evaluator guidance and regression tests. Old sessions retain saved criteria
+  and rules; automatic replacement and mechanical verification are unchanged.
+  AI proofreading improvement has not been measured.
+
+## 1.2.2 - 2026-10-12
+
+- Distinguish explanatory guidance, real checking procedures, runtime behavior,
+  and learning objectives in shared Japanese criteria and the evaluation rubric.
+  Narrow the ambiguous scope-guide keep example to an actual user exercise and
+  add seven calibration pairs (77 total), including ownership and unsupported
+  actor controls. Add the classification step to the bundled review skill.
+  Detector rules, automatic replacement and mechanical verification are unchanged;
+  old sessions retain saved criteria. AI proofreading improvement is unmeasured.
+
+## 1.2.1 - 2026-10-12
+
+- Compare faithful technical terminology independently of capability/behavior
+  preservation; honor author wording preferences even for synonyms. Reject keep
+  rationales based on unsupported stronger alternatives. Clarify selection,
+  partition, logical separation, language independence and workflow integration
+  in shared criteria, generated prompts and the bundled review skill. Add advisory
+  `組み込む` candidates in MeCab/literal modes and eleven calibration pairs (70
+  total). Pass editorial constraints to the optional evaluator without gold
+  judgments. Old sessions retain saved criteria; mechanical verification is
+  unchanged. No AI proofreading improvement has been measured.
+
+## 1.2.0 - 2026-10-12
+
+- Require concrete alternative comparisons for broad or everyday wording in
+  shared Japanese criteria, candidate questions and review prompts. Distinguish
+  understandable wording from an editorial keep decision; prohibit automatic
+  keep records and inherited paragraph summaries in reporting helpers. Add
+  terminology examples for safety margins and tree structures while preserving
+  formal names, values and factual scope. Verification remains mechanical.
+
+- Add `流れ` as an `abstract-reference` hint for prose and list text in MeCab
+  and literal modes. Extend shared criteria to identify processing order,
+  information transfer, invocation paths, work procedures and state changes;
+  compare concrete alternatives and reject interchangeable technical-term substitutions.
+  Add four revision calibration pairs (59 total) and regression coverage for
+  positions, exclusions, custom rules, prompt delivery and unchanged sources.
+  Existing sessions retain their saved rules and criteria; no automatic
+  replacement or semantic verification is added.
+
+- Add sentence-ending decisions to the shared Japanese criteria, with contextual
+  revision and keep examples for scope guides, operations, capabilities, checks,
+  comparisons, uncertainty, and history. Separate body predicates from heading
+  form and preserve negation strength. Add twelve revision calibration pairs
+  (55 total), update the judge rubric, and retain saved-session criteria.
+  Detector terms, automatic replacements, and verification semantics are unchanged;
+  no AI proofreading improvement has been measured.
+
+- Add `--agent codex|claude` to skill install, status and upgrade for local
+  project registration in `.agents/skills` or `.claude/skills`. Keep `--dir`
+  for custom destinations; reject combining both options. Both agents receive
+  the same Agent Skills format, without invoking an agent or changing settings.
+
+- Add local bundled-skill list, install, status and upgrade commands with explicit
+  destinations, version/hash registration, local-change and downgrade protection,
+  staged replacement and restoration on failure. No AI invocation, network skill
+  fetching or review-baseline mutation is added. Update the tutorials to register
+  and maintain skills with these commands instead of manual copying.
+
 - Rewrite the CLI tutorial and skill integration guide for arbitrary AsciiDoc
   book projects. Replace publisher-specific paths with generic single-file and
   included-chapter examples, make project instructions and review records optional,
