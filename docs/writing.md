@@ -228,3 +228,16 @@ changing a heading does not authorize body edits. Advisory examples do not add
 detection or automatic replacement rules. New sessions save these criteria;
 existing sessions retain their original criteria. The regression fixtures test
 prompt delivery and mechanical preservation, not AI editorial accuracy.
+
+## Figure/table introductions and author examples
+
+The unreleased [figure/table guidance](../data/writing/ja/criteria.md#introduce-figures-and-tables-by-their-explanatory-role)
+compares introductions by their role: describing contents, defining notation,
+guiding a comparison or identifying the kind of diagram. It includes Japanese
+before/after and retained-wording examples rather than a uniform replacement rule.
+A good/bad example accompanying a whole-text proofreading request serves as a
+quality benchmark across the assigned text; explicitly focused requests keep
+their scope. The bundled review skill routes these assignments to the saved
+criteria. Writing commands and new heading, prose and list sessions include the
+guidance; existing sessions keep their original criteria. Regression checks cover
+criteria delivery and source preservation, not measured AI proofreading quality.

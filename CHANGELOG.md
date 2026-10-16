@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Clarify figure/table introductions with contextual Japanese comparisons,
+  including retained notation and comparison guidance. Treat author examples as
+  quality benchmarks within the declared review scope. Test delivery through
+  writing commands and all saved review scopes without rewriting sources;
+  detector and replacement behavior are unchanged.
+
 - Add heading comparisons for `区別`, `違い`, `相違`, relationships and
   observation limits. Recheck comparison subjects against the body, preserve
   actual distinguishing actions, and route review skills to the saved heading

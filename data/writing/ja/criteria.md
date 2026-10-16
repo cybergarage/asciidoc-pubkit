@@ -1095,6 +1095,38 @@ or traced, and explain what the reader can establish from them. Keep identifiers
 values, ordering, and conditions consistent with the code or clearly label a
 simplified conceptual representation. Do not repeat every label as prose.
 
+### Introduce figures and tables by their explanatory role
+
+When a figure or table itself presents a structure, relationship or sequence,
+compare a sentence with the figure or table as subject and a predicate describing
+its contents. For example, compare `次の図では依頼がSessionから反復処理へ渡り、モデル要求がaiへ進む関係を示します。`
+with `次の図は、依頼がSessionから反復処理へ渡り、モデル要求がaiへ進む関係を示しています。`.
+The latter makes the subject and its relationship to the contents explicit;
+it does not authorize changing the depicted operations or their actors.
+
+Choose introductions by their role rather than forcing one sentence template:
+
+| Role | Contextual comparison |
+| --- | --- |
+| Describe a figure's contents | `次の図は、依頼の受付から結果の保存までの処理順を示しています。` is appropriate only when those endpoints and that order appear in the figure. |
+| Describe a table's comparison | Compare `次の表では設定値と適用範囲を示します。` with `次の表は、設定値とその適用範囲を示しています。` when the table presents that correspondence. |
+| Define notation within a figure | Retain natural wording such as `図では、利用者をU、応答をRと表します。`; this explains notation rather than making the figure the actor. |
+| Guide a comparison made by the text | `次の表では、3つの方式を比較します。` can naturally introduce the author's comparison; compare the surrounding paragraph before revising it. |
+| Identify the kind of diagram | `次の図は、実行状態の遷移図です。` can be sufficient when the surrounding text explains its purpose and limits. |
+
+Do not mechanically replace every `図では`, `表では` or `示します`. Compare
+neighboring prose, the actual figure or table, captions and alternative text when
+available. Preserve labels, conditions, omissions, reference IDs and the book's
+reference convention. If the referenced content is unavailable, record the limit
+and leave unsupported content claims unresolved.
+
+An author-supplied good/bad example can establish a quality or tone benchmark
+for the full assigned manuscript. Follow the declared assignment: a whole-text
+proofreading request still covers grammar, subject-predicate agreement, modifiers,
+terminology, sentence endings and redundancy in passages without similar wording
+or detector candidates. A focused request remains focused. Apply the demonstrated
+improvement by context rather than copying its wording into every passage.
+
 File paths and type names belong where they help explain a specific operation;
 avoid a list of identifiers before the reader knows their roles. Bibliographic
 and implementation-file descriptions introduce the referenced material, rather

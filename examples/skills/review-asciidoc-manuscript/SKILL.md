@@ -12,6 +12,16 @@ publication attributes and checks. Preserve unrelated edits. Default to headings
 prose, then supported list text only when the user requests a full review; respect
 single-scope and diagnosis-only assignments.
 
+When good/bad examples accompany a whole-text proofreading request, treat them
+as a quality or tone benchmark, not a filter for matching expressions. Review all
+selected entries for general writing quality, including those without candidates;
+keep explicitly focused assignments focused. For figure/table introductions,
+consult the saved "Introduce figures and tables by their explanatory role"
+guidance when available. Compare the actual referenced content and record missing
+evidence; handle related authorized tables, figures and alternative text in their
+own scopes. Keep canonical examples in pubkit and retain historical criteria when
+the selected version lacks the guidance.
+
 Use the project's installed asciidoc-pubkit invocation, with bundle exec when
 configured. Check its version and command help. Existing sessions require their
 exact saved tool version; retain earlier sessions when starting a new pass.

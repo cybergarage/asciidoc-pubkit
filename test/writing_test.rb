@@ -41,6 +41,39 @@ class WritingTest < Minitest::Test
     end
   end
 
+  def test_figure_introduction_guidance_reaches_writing_and_saved_review_prompts
+    criteria = AsciidocPubkit::Writing.criteria('ja')
+    guidance = criteria.split("### Introduce figures and tables by their explanatory role\n", 2).last
+                       .split("File paths and type names belong", 2).first
+    assert_includes criteria, '### Introduce figures and tables by their explanatory role'
+    assert_includes guidance, '次の図は、依頼がSessionから反復処理へ渡り、モデル要求がaiへ進む関係を示しています。'
+    assert_includes guidance, '図では、利用者をU、応答をRと表します。'
+    assert_includes guidance, 'A focused request remains focused.'
+    %w[criteria prompt].each do |command|
+      code, output, error = cli('writing', command, '--lang', 'ja')
+      assert_equal 0, code, error
+      assert_includes output, guidance
+    end
+
+    Dir.mktmpdir('pubkit-figure-') do |directory|
+      manuscript = File.join(directory, 'book.adoc')
+      source = "= Example\n\n== 処理の関係\n\n次の図では依頼と処理の関係を示します。\n\n* 図では利用者をUと表します。\n"
+      File.write(manuscript, source)
+      %w[headings prose lists].each do |scope|
+        session = File.join(directory, scope)
+        code, _, error = cli('review', 'scan', manuscript, '--scope', scope,
+                             '--tokenizer', 'literal', '--output', session, '--no-input')
+        assert_equal 0, code, error
+        saved = JSON.parse(File.read(File.join(session, 'manifest.json')))['writing_criteria']
+        assert_equal AsciidocPubkit::Writing.prompt_criteria('ja'), saved
+        code, prompt, error = cli('review', 'prompt', session)
+        assert_equal 0, code, error
+        assert_includes prompt, guidance
+        assert_equal source, File.read(manuscript)
+      end
+    end
+  end
+
   def cli(*args)
     out = StringIO.new
     err = StringIO.new
