@@ -28,8 +28,8 @@ module AsciidocPubkit
         end
         raise Error, 'Scan cancelled; existing session was kept.' unless yield(destination)
       end
-      tokenizer = settings.data['tokenizer'] == 'mecab' ? Morphology.new(settings.data) : nil
-      analysis = tokenizer ? tokenizer.identity : { 'engine' => 'literal' }
+      tokenizer = Analysis.build(settings.data)
+      analysis = Analysis.identity(tokenizer)
       findings = scan_candidates(document, settings.data, tokenizer)
       parent = File.dirname(destination)
       FileUtils.mkdir_p(parent)
@@ -298,10 +298,10 @@ module AsciidocPubkit
       changed = @manifest['sources'].filter_map do |source|
         source['path'] if document.sources[source['path']] && AsciidocPubkit.hash_text(document.sources[source['path']]) != source['sha256']
       end
-      tokenizer = @manifest['settings']['tokenizer'] == 'mecab' ? Morphology.new(@manifest['settings']) : nil
-      analysis = tokenizer ? tokenizer.identity : { 'engine' => 'literal' }
+      tokenizer = Analysis.build(@manifest['settings'])
+      analysis = Analysis.identity(tokenizer)
       if analysis != @manifest['analysis']
-        issues << { 'kind' => 'analyzer-changed', 'message' => 'The MeCab version or dictionary changed. Finish verification with the original analyzer or start a new review pass.' }
+        issues << { 'kind' => 'analyzer-changed', 'message' => 'The analysis engine, version, dictionary or configuration changed. Finish verification with the original analyzer or start a new review pass.' }
       end
       {
         'passed' => issues.empty?, 'meaning_verified' => false, 'changed_files' => changed,

@@ -38,7 +38,7 @@ module AsciidocPubkit
       unless document.diagnostics.empty?
         raise Error, "Document diagnostics must be resolved before scoring:\n" + document.diagnostics.map { |d| "#{d['severity']}: #{d['message']}" }.join("\n")
       end
-      tokenizer = settings.data['tokenizer'] == 'mecab' ? Morphology.new(settings.data) : nil
+      tokenizer = Analysis.build(settings.data)
       findings = Rules.scan(document.paragraphs, settings.data, tokenizer: tokenizer)
       eligible = document.paragraphs.select { |paragraph| prose_length(paragraph['text']).positive? }
       characters = eligible.sum { |paragraph| prose_length(paragraph['text']) }
@@ -53,7 +53,7 @@ module AsciidocPubkit
         'characters' => characters, 'paragraphs' => document.paragraphs.length,
         'scored_paragraphs' => eligible.length, 'candidate_count' => findings.length,
         'by_rule' => findings.group_by { |finding| finding['rule'] }.transform_values(&:length),
-        'analysis' => tokenizer ? tokenizer.identity : { 'engine' => 'literal' },
+        'analysis' => Analysis.identity(tokenizer),
         'rules_sha256' => AsciidocPubkit.hash_text(JSON.generate(settings.data['rules'])),
         'coverage' => document.coverage, 'findings' => findings, 'meaning_verified' => false
       }
