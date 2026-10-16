@@ -291,7 +291,7 @@ support is for local prose correction, not chapter reorganization.
 
 Source hashes are checked before generating a prompt. Modified sources, modified
 session artifacts, and incompatible session versions require a fresh scan.
-`review scan`, `review prompt`, and `review verify` accept `--lang ja` or `--lang en` in the unreleased checkout; prompt and
+`review scan`, `review prompt`, and `review verify` accept `--lang ja` or `--lang en` in version 1.3.0; prompt and
 verify check the value against the session language. Unsupported languages,
 regional tags and mismatched explicit AsciiDoc `:lang:` attributes are rejected.
 See [English review](english-review.md) for English-specific analysis limits.

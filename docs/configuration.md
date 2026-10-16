@@ -28,7 +28,7 @@ Configuration paths are relative to the configuration file. Without configuratio
 the base directory is the entrypoint's directory. Exclusion patterns match source
 paths relative to the base directory; excluded files can still supply attributes
 and are preserved by verification. The default style is `preserve`; explicit
-alternatives are `desu-masu` and `dearu`. The unreleased checkout also supports `en` with `preserve` style only.
+alternatives are `desu-masu` and `dearu`. Version 1.3.0 also supports `en` with `preserve` style only.
 English defaults to `english-lexical`; explicit `literal` is also supported.
 Japanese keeps the MeCab default. Invalid language/backend combinations fail;
 regional tags are not silently normalized. See [English review](english-review.md).

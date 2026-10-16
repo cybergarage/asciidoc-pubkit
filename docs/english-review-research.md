@@ -2,8 +2,7 @@
 
 Research date: 2026-10-02. Repository inspected at `26cbb1e`, following release
 0.8.1. The original survey and proposal below describe that historical checkout.
-English review is now implemented in the unreleased 1.3.0.pre.1 checkout;
-released 1.2.3 remains Japanese-only.
+English review is available in version 1.3.0; version 1.2.3 remains Japanese-only.
 
 See the [implementation and book-skill assessment](#implementation-and-book-skill-assessment-2026-10-16)
 for the current checkout assessment and proposed delivery sequence.
@@ -159,7 +158,7 @@ regression coverage even if replacement is outside the English review scope.
 ## Proposed initial behavior
 
 These commands illustrate the original target interface. They now work in the
-unreleased English-capable checkout, but not in published 1.2.3:
+English-capable version 1.3.0, but not in version 1.2.3:
 
 ```sh
 asciidoc-pubkit review scan book.adoc --lang en

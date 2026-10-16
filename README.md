@@ -16,8 +16,8 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.2.3 provides document inspection, explicit prose-only mechanical
-replacements, and Japanese manuscript review. Inspect a book's outline,
+Version 1.3.0 provides document inspection, explicit prose-only mechanical
+replacements, and Japanese and English manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
 
@@ -51,7 +51,7 @@ is added.
 
 ## Available features
 
-The following commands are available in version 1.2.3.
+The following commands are available in version 1.3.0.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -141,11 +141,10 @@ AI CLI. Japanese review and scoring use external MeCab with UTF-8 IPADIC by
 default. See [installation and analyzer setup](docs/installation.md).
 Explicit `--tokenizer literal` offers limited phrase matching without MeCab.
 
-Document commands accept any language. The unreleased 1.3.0.pre.1 checkout adds
+Document commands accept any language. Version 1.3.0 adds
 `--lang en` to writing and review, including scoring, headings and lists.
 Replacement remains Japanese-only. See [English review](docs/english-review.md)
-for boundaries, rules and score limits. Published 1.2.3 supports Japanese review
-only. Node.js and textlint are not required.
+for boundaries, rules and score limits. Node.js and textlint are not required.
 
 Only `replace apply` edits manuscripts directly. Review prompts guide an external
 human or agent; scan, prompt, verify, and scoring do not edit manuscripts.
@@ -216,7 +215,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 
 Existing review sessions require the exact tool version that created them.
 Before upgrading, finish ongoing reviews with that version or preserve their
-baselines and start a new review in a separate directory with v1.2.3. A new
+baselines and start a new review in a separate directory with v1.3.0. A new
 scan cannot verify preservation relative to an earlier baseline.
 
 ## Documentation
@@ -241,7 +240,9 @@ scan cannot verify preservation relative to an earlier baseline.
 | [Development](docs/development.md) | Setup, test suite, development validation |
 | [Prose evaluation](docs/prose-evaluation.md) | Fixed fixtures, detector metrics, AI trials, before/after comparisons |
 | [References](docs/references.md) | Editorial and research foundations |
-| [English review proposal](docs/english-review-research.md) | Future design research; English review is not implemented |
+| [English review](docs/english-review.md) | English lexical matching, rules and preservation limits |
+| [English evaluation](docs/english-evaluation.md) | Detection corpus, score baseline and editorial calibration |
+| [English review research](docs/english-review-research.md) | Historical research and design decisions |
 
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.3.0 - 2026-10-17
+
 - Add 120 original English regression paragraphs split by document, exact span
   labels, per-rule precision/recall/F1 and location gates, and a density baseline.
   Add 24 revision calibration cases and an offline imported-judgment evaluator
@@ -13,8 +15,9 @@
   Japanese MeCab/IPADIC behavior and candidate-density-v1 arithmetic; explicitly
   label score units and lack of calibration. English matching is not grammar
   analysis. Regional tags and English replacement remain unsupported.
-- Use development version 1.3.0.pre.1 to distinguish new sessions and managed
-  skills from released 1.2.3. English support is not yet published.
+- Release English support as 1.3.0. Sessions require the exact creating tool
+  version; preserve pre-release baselines with 1.3.0.pre.1 and start fresh
+  sessions for 1.3.0 rather than migrating saved evidence.
 
 ## 1.2.3 - 2026-10-16
 

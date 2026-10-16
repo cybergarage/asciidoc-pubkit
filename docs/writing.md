@@ -33,7 +33,7 @@ automatic replacements; existing sessions retain their saved criteria.
 
 `writing criteria` prints the packaged common criteria. `writing prompt` adds
 task instructions around those same criteria. Neither command needs an AsciiDoc
-file, a review session, MeCab, or network access. Both accept `--lang ja` or `--lang en` in the unreleased checkout and
+file, a review session, MeCab, or network access. Both accept `--lang ja` or `--lang en` in version 1.3.0 and
 `--output FILE`; output defaults to stdout, and an existing output file is never
 overwritten. The prompt asks the agent to read project instructions and evidence;
 it does not supply source facts or authorize edits. Book-specific voice and

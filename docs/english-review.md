@@ -1,6 +1,6 @@
-# English review (unreleased)
+# English review
 
-The 1.3.0.pre.1 checkout supports English; released 1.2.3 does not. Run the
+Version 1.3.0 supports English; version 1.2.3 and earlier do not. Run the
 selected invocation's `--version` and help before using these commands.
 
 ```sh

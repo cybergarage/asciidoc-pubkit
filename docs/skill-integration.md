@@ -176,8 +176,7 @@ already has one. Pubkit does not prescribe or validate report filenames.
 Select the project's installed invocation, such as `asciidoc-pubkit` or
 `bundle exec asciidoc-pubkit`. Record its version. Use the author's publishing
 attributes and base directory; do not rewrite include conventions merely to
-make a scan succeed. The commands above demonstrate Japanese review with MeCab/IPADIC. The unreleased
-English-capable checkout can instead use `--lang en` and built-in lexical
+make a scan succeed. The commands above demonstrate Japanese review with MeCab/IPADIC. Version 1.3.0 and later can instead use `--lang en` and built-in lexical
 analysis; check the selected invocation before using it. See [English review](english-review.md).
 
 Adapt checks to the actual project: inspect diffs, validate local references,

@@ -9,7 +9,7 @@ require 'pathname'
 require 'optparse'
 
 module AsciidocPubkit
-  VERSION = '1.3.0.pre.1'
+  VERSION = '1.3.0'
   class Error < StandardError; end
 
   def self.hash_text(text)
