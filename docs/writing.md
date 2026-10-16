@@ -1,13 +1,13 @@
 # Writing commands
 
-The unreleased [actor-change criteria](../data/writing/ja/criteria.md#clarify-omitted-subjects-when-actors-change)
+The v1.2.3 [actor-change criteria](../data/writing/ja/criteria.md#clarify-omitted-subjects-when-actors-change)
 compare omitted and explicit subjects across clauses, sentences and table roles.
 They distinguish requesting, approving, executing and investigating, preserve
 clear continued subjects, and require evidence before naming an actor. These are
 contextual review criteria, with no new subject-omission detector or automatic
 replacement. New sessions save the criteria; older sessions retain their originals.
 
-The unreleased [directory hierarchy comparisons](../data/writing/ja/criteria.md#compare-directory-hierarchy-terms-with-concrete-locations)
+The v1.2.3 [directory hierarchy comparisons](../data/writing/ja/criteria.md#compare-directory-hierarchy-terms-with-concrete-locations)
 compare ancestor/descendant translations with `上位・下位ディレクトリ`, while
 preserving direct-parent/direct-child relationships and exact grandchild depth.
 Describe inherited settings by their directory locations; keep process, agent,
@@ -21,14 +21,14 @@ The [identification comparisons](../data/writing/ja/criteria.md#distinguish-iden
 compare `区別できます` with `判別`, `識別`, `判定`, and separate checks according
 to evidence and purpose. They preserve conceptual separation, capability,
 negation and coexisting stages. They do not add automatic classification or
-inspection. These unreleased criteria are advisory; saved sessions retain their
+inspection. These v1.2.3 criteria are advisory; saved sessions retain their
 original criteria and detector behavior is unchanged.
 
 The [replacement comparisons](../data/writing/ja/criteria.md#distinguish-replacement-from-interpretation-and-permitted-use)
 compare `置き換えません` with interpretation rules (`みなしません`) and use
 limits (`扱えません`), while retaining actual value, history, and implementation
 replacement. They preserve conditions, negation strength, missing evidence and
-responsibility. These unreleased criteria do not change detection or perform
+responsibility. These v1.2.3 criteria do not change detection or perform
 automatic replacements; existing sessions retain their saved criteria.
 
 `writing criteria` prints the packaged common criteria. `writing prompt` adds
@@ -49,7 +49,7 @@ book explicitly requires one. Sentence splitting and punctuation changes must
 retain the original relationships; these are contextual review instructions,
 not automatic semantic checks. Saved sessions retain the criteria from their scan.
 
-The unreleased [communication-response comparisons](../data/writing/ja/criteria.md#distinguish-communication-responses-from-function-returns)
+The v1.2.3 [communication-response comparisons](../data/writing/ja/criteria.md#distinguish-communication-responses-from-function-returns)
 separate HTTP, ACP and MCP responses from internal function returns and model
 generation. Identify response fields, missing measurements, error values,
 exception throwing and Promise rejection without inventing transport or moving
@@ -101,7 +101,7 @@ unchanged.
 
 ## Decision wording
 
-The unreleased criteria compare `決めます` with `決定します` and with the actual
+The v1.2.3 criteria compare `決めます` with `決定します` and with the actual
 operation: selecting tools or information, computing budgets, configuring values,
 classifying states or permission outcomes, assessing evidence, and establishing
 design or evaluation conditions. Describe causal relationships with `定まります`
@@ -115,7 +115,7 @@ rules; existing sessions retain their saved criteria. See
 
 ## Rules, definitions, and configured values
 
-The unreleased criteria compare `定める` with `規定する` for specifications,
+The v1.2.3 criteria compare `定める` with `規定する` for specifications,
 rules, evaluation conditions, and responsibilities, honoring an author's
 terminology preference without adding obligations or enforcement. Use `定義する`
 for structures, schemas, and workflows, and `設定する` for configured values and
@@ -127,7 +127,7 @@ or permission into an obligation. These contextual comparisons add no detector
 terms or automatic replacements, and existing sessions retain saved criteria.
 See [Rule wording criteria](../data/writing/ja/criteria.md#distinguish-rules-definitions-and-configured-values).
 
-## Classification and related relationships (unreleased)
+## Classification and related relationships (v1.2.3)
 
 Compare `分かれます` by the actual relationship: classification by purpose or
 type, assignment of responsibilities, execution-path branching, content
@@ -145,7 +145,7 @@ criteria delivery and session preservation, not measured editorial accuracy.
 
 ## Receiving and returning
 
-The unreleased criteria compare `受け取る` and `返す` with the actual operation:
+The v1.2.3 criteria compare `受け取る` and `返す` with the actual operation:
 request intake, response-stream reception, retrieval/reading, arguments and return
 values, model generation, stdout output, input assembly, decision communication,
 and established exception throwing/catching. Keep accurate value or Promise
@@ -158,7 +158,7 @@ later cancellation notification are distinct. See the
 
 ## Explicit differences and decision conditions
 
-The unreleased criteria expand `区別します` comparisons with examples of loading
+The v1.2.3 criteria expand `区別します` comparisons with examples of loading
 conditions, rule purposes, identifier uses, recorded states, and inference limits.
 Naming two objects is insufficient when the property or consequence that differs
 is missing. Compare the full passage with a direct explanation and remove any
@@ -168,7 +168,7 @@ criteria, not detector rules or automatic replacements. Existing sessions retain
 the criteria saved at scan time. See
 [Relationship criteria](../data/writing/ja/criteria.md#make-relationships-explicit).
 
-## Direct negation and inference limits (unreleased)
+## Direct negation and inference limits (v1.2.3)
 
 Compare `わけではありません` with a direct denial of the actual operation or
 capability, while retaining its actor and conditions. Keep partial negation such
@@ -179,7 +179,7 @@ insufficient conditions and incomplete restoration. These are contextual
 comparisons, not automatic replacement rules. Existing sessions retain their
 saved criteria; use a new session to review under changed criteria.
 
-## Processing phases, timing and progressive disclosure (unreleased)
+## Processing phases, timing and progressive disclosure (v1.2.3)
 
 The shared criteria compare `段階` with `フェーズ` for execution-state fields and
 processing or work divisions, while preserving counts, order and conditions.
@@ -193,7 +193,7 @@ behavior are unchanged. Manual accept/reject examples are maintained in
 `test/fixtures/phase_terminology.ja.json`; their labels and regression tests do
 not measure AI proofreading accuracy.
 
-## Direct interpretation limits (unreleased)
+## Direct interpretation limits (v1.2.3)
 
 Compare `とはみなしません` and `とみなしません` with `確認できません`,
 `判断できません`, `評価できません`, or `証拠にはなりません` by the actual
@@ -206,7 +206,7 @@ through faithful comparisons. See [the shared criteria](../data/writing/ja/crite
 No automatic checks or replacements are added. Existing sessions retain saved
 rules and criteria; use a fresh scan for these comparisons.
 
-## Input, transmission, and handoff (unreleased)
+## Input, transmission, and handoff (v1.2.3)
 
 Use the canonical [transfer comparisons](../data/writing/ja/criteria.md#distinguish-input-transmission-delegation-inheritance-and-handoff)
 for `渡す` and related forms. Compare model input construction, API transmission,
@@ -217,7 +217,7 @@ negation, recipients and order. The bundled skill routes focused reviews to
 saved criteria; existing sessions retain their original criteria.
 No detector or automatic replacement rule is added.
 
-## Comparison headings (unreleased)
+## Comparison headings (v1.2.3)
 
 Heading review prompts include the saved "Distinguish comparison subjects from
 distinguishing actions" criteria. Compare `違い` / `相違` for differences,
@@ -231,7 +231,7 @@ prompt delivery and mechanical preservation, not AI editorial accuracy.
 
 ## Figure/table introductions and author examples
 
-The unreleased [figure/table guidance](../data/writing/ja/criteria.md#introduce-figures-and-tables-by-their-explanatory-role)
+The v1.2.3 [figure/table guidance](../data/writing/ja/criteria.md#introduce-figures-and-tables-by-their-explanatory-role)
 compares introductions by their role: describing contents, defining notation,
 guiding a comparison or identifying the kind of diagram. It includes Japanese
 before/after and retained-wording examples rather than a uniform replacement rule.

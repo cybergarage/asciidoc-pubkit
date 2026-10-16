@@ -16,42 +16,42 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.2.2 provides document inspection, explicit prose-only mechanical
+Version 1.2.3 provides document inspection, explicit prose-only mechanical
 replacements, and Japanese manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
 
-The unreleased checkout compares `分かれます` with classification, responsibility
+Version 1.2.3 compares `分かれます` with classification, responsibility
 sharing, branching and partitioning by context; see
-[classification and related relationships](docs/writing.md#classification-and-related-relationships-unreleased).
+[classification and related relationships](docs/writing.md#classification-and-related-relationships-v123).
 These prompt criteria add no detector or automatic replacement rules.
 
-The unreleased checkout also compares `渡す` and `受け渡し` by their actual
-operation; see [input, transmission, and handoff](docs/writing.md#input-transmission-and-handoff-unreleased).
+Version 1.2.3 also compares `渡す` and `受け渡し` by their actual
+operation; see [input, transmission, and handoff](docs/writing.md#input-transmission-and-handoff-v123).
 These comparisons and skill routing do not automatically replace manuscript text.
 
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
 
-The unreleased checkout also detects `行う` as an advisory operation-wording
+Version 1.2.3 also detects `行う` as an advisory operation-wording
 cue. Compare direct actions with responsibilities rather than applying a fixed
-replacement; see [general operation wording](docs/rules-and-coverage.md#general-operation-wording-unreleased).
+replacement; see [general operation wording](docs/rules-and-coverage.md#general-operation-wording-v123).
 
-The unreleased checkout adds advisory `届く` candidates and operation-specific
-arrival comparisons; see [arrival wording](docs/rules-and-coverage.md#arrival-wording-unreleased).
+Version 1.2.3 adds advisory `届く` candidates and operation-specific
+arrival comparisons; see [arrival wording](docs/rules-and-coverage.md#arrival-wording-v123).
 These hints do not automatically replace text or establish writing quality.
 
-The unreleased checkout also compares `定める` with `規定する`, `定義する`, and
+Version 1.2.3 also compares `定める` with `規定する`, `定義する`, and
 `設定する` by the actual operation; see [rule wording](docs/writing.md#rules-definitions-and-configured-values).
 
-The unreleased checkout adds direct-negation comparisons and advisory variants
-for `わけではありません`; see [direct negation](docs/writing.md#direct-negation-and-inference-limits-unreleased).
+Version 1.2.3 adds direct-negation comparisons and advisory variants
+for `わけではありません`; see [direct negation](docs/writing.md#direct-negation-and-inference-limits-v123).
 Existing sessions retain their saved rules and criteria. No automatic rewriting
 is added.
 
 ## Available features
 
-The following commands are available in version 1.2.2.
+The following commands are available in version 1.2.3.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -76,7 +76,7 @@ comparison strength, and body sentences separately from heading form. It adds
 no detector terms or automatic replacements. Version 1.2.1 includes 70
 calibration pairs, without a measured claim of improved AI proofreading.
 
-The unreleased [communication-response criteria](data/writing/ja/criteria.md#distinguish-communication-responses-from-function-returns)
+The v1.2.3 [communication-response criteria](data/writing/ja/criteria.md#distinguish-communication-responses-from-function-returns)
 compare HTTP, ACP and MCP replies with internal return values and model generation.
 Response fields, missing measurements and error handling remain distinct; no
 blanket replacements or changes to mechanical verification are introduced.
@@ -113,7 +113,7 @@ Version 1.1.0 adds contextual human-role guidance and standalone `人`
 review hints, with terminology alignment and task-specific coverage reporting.
 The checkout adds advisory `受け取る` candidates and
 [receiving/returning comparisons](data/writing/ja/criteria.md#distinguish-receiving-returning-and-their-actual-operations)
-(unreleased). Distinguish intake, reception, retrieval, arguments, generation,
+(v1.2.3). Distinguish intake, reception, retrieval, arguments, generation,
 stdout output, input assembly and exception handling; keep accurate value returns
 and the original actor's responsibility.
 
@@ -170,7 +170,7 @@ through `bundle exec`. See [source installation and local checkout usage](docs/i
 
 The checkout also adds `作用` as an advisory noun candidate. Compare its
 actual operation, classification, result, or state change in context; see
-[operation-effect cues](docs/rules-and-coverage.md#operation-effect-cues-unreleased).
+[operation-effect cues](docs/rules-and-coverage.md#operation-effect-cues-v123).
 
 ## Quick start
 
@@ -214,7 +214,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 
 Existing review sessions require the exact tool version that created them.
 Before upgrading, finish ongoing reviews with that version or preserve their
-baselines and start a new review in a separate directory with v1.2.2. A new
+baselines and start a new review in a separate directory with v1.2.3. A new
 scan cannot verify preservation relative to an earlier baseline.
 
 ## Documentation
@@ -243,18 +243,18 @@ scan cannot verify preservation relative to an earlier baseline.
 
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 
-## Contextual phase terminology (unreleased)
+## Contextual phase terminology (v1.2.3)
 
 Japanese writing and new review prompts compare `段階` with `フェーズ` for
 processing divisions, while preserving timing and progressive disclosure. See
-[phase terminology guidance](docs/writing.md#processing-phases-timing-and-progressive-disclosure-unreleased).
+[phase terminology guidance](docs/writing.md#processing-phases-timing-and-progressive-disclosure-v123).
 This does not add detector rules or automatic replacement.
 
-## Direct interpretation-limit wording (unreleased)
+## Direct interpretation-limit wording (v1.2.3)
 
 New scans flag `とはみなしません` and `とみなしません` for contextual comparison
 with direct evidence-limit predicates. Preserve interpretation policies, missing
-evidence and conditions; see [interpretation limits](docs/writing.md#direct-interpretation-limits-unreleased).
+evidence and conditions; see [interpretation limits](docs/writing.md#direct-interpretation-limits-v123).
 These hints do not automatically replace text or establish writing quality.
 
 ## License

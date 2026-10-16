@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.2.3 - 2026-10-16
+
 - Clarify figure/table introductions with contextual Japanese comparisons,
   including retained notation and comparison guidance. Treat author examples as
   quality benchmarks within the declared review scope. Test delivery through

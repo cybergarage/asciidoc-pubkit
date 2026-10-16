@@ -1,6 +1,6 @@
 # Prose evaluation
 
-## Actor clarity comparisons (unreleased)
+## Actor clarity comparisons (v1.2.3)
 
 Twelve additional calibration pairs cover conditional actor changes, user refusal
 versus program control, caller investigation, continued subjects, optional
@@ -24,7 +24,7 @@ The evaluation runner is not an
 installed gem command. It does not measure Japanese naturalness or AI authorship
 as a single validated score.
 
-## Stopping comparisons (unreleased)
+## Stopping comparisons (v1.2.3)
 
 `test/fixtures/stop_wording.ja.json` contains manual source/revision pairs for
 stopping, ending iteration, cancellation requests, pre-execution refusal,
@@ -38,7 +38,7 @@ regression tests check fixture integrity and delivery of the criteria through
 writing and saved review prompts; they do not run an AI judge, measure Japanese
 quality, or establish semantic correctness. Detector rules are unchanged.
 
-## Classification and related relationships (unreleased)
+## Classification and related relationships (v1.2.3)
 
 `test/fixtures/classification_wording.ja.json` contains fourteen manually labeled
 source/revision pairs. Accepted examples identify classification axes, defined
@@ -184,7 +184,7 @@ and evaluator data delivery, not the correctness of an AI's editorial decisions.
 
 ## Rules, definitions, and configured values
 
-Ten unreleased calibration pairs compare rule specification, structure and workflow
+Ten v1.2.3 calibration pairs compare rule specification, structure and workflow
 definition, configured destinations, mixed operations, and limit types. They include
 faithful revisions and controls, newly invented enforcement (`needs-evidence`),
 permissions changed into obligations, plans changed into runtime checks, and a
@@ -381,7 +381,7 @@ results establish detector and workflow regression checks only.
 [Development](development.md) · [Manuscript scoring](scoring.md) ·
 [Back to README](../README.md)
 
-## Receiving and returning calibration (unreleased)
+## Receiving and returning calibration (v1.2.3)
 
 Thirteen additional pairs cover request intake, stream reception,
 function arguments, stdout output, model generation, input assembly, an accurate
@@ -396,7 +396,7 @@ No AI rewrite/judge trials were run for this change; improved proofreading is
 unmeasured. Old AI reports have different criteria/calibration fingerprints and
 need a fresh compatible baseline for quality comparison.
 
-## Direct-negation calibration (unreleased)
+## Direct-negation calibration (v1.2.3)
 
 Ten added calibration pairs compare direct operation denial, unavailable
 capability, insufficient conditions, partial negation and necessary inference
@@ -419,7 +419,7 @@ and saved criteria delivery, not whether an AI judges the pairs correctly.
 AI proofreading improvement has not been measured. Fix a fresh calibration and
 rubric baseline before comparing AI results with an earlier run.
 
-## Direct interpretation-limit calibration (unreleased)
+## Direct interpretation-limit calibration (v1.2.3)
 
 Ten additional pairs cover direct summary, observation, evaluation and missing-usage
 limits; nonzero usage inferred from missing counts; unconditional evaluation denial;
@@ -430,7 +430,7 @@ predicates. Fixture and rubric fingerprints change, requiring compatible new AI
 baselines. Normal tests check detector behavior, fixture integrity and saved-prompt
 contracts; no AI evaluation or improvement measurement was performed.
 
-## Transfer wording comparisons (unreleased)
+## Transfer wording comparisons (v1.2.3)
 
 `test/fixtures/transfer_wording.ja.json` contains 18 manual examples: nine accept,
 eight reject and one needs-evidence. They contrast input with transport, arguments
