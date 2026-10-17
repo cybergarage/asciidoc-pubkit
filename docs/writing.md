@@ -265,3 +265,19 @@ They reach writing commands and new Japanese heading, prose and list sessions;
 existing sessions keep their saved criteria. English guidance, scoring and
 mechanical verification are unchanged. Manual comparison fixtures and delivery
 regressions do not measure AI editing quality or semantic correctness.
+
+
+## Explanation, presentation and state indication (Unreleased)
+
+The [shared Japanese criteria](../data/writing/ja/criteria.md#distinguish-explanation-presentation-and-state-indication)
+compare `示す` by its role: announcing an explanation, stating technical behavior,
+displaying or recording information, presenting an actual figure/table/example,
+or indicating a value's meaning. Compare whole paragraphs, including repeated
+`説明し…示します` guidance and method/outcome relationships. Preserve valid
+presentation and state-indication wording; do not replace every use with
+`説明します` or strengthen an inspection into a guarantee.
+
+Writing commands and new Japanese heading, prose and list sessions include the
+guidance; existing sessions retain their saved criteria. No detector, automatic
+replacement, score or semantic-verification behavior changes. Delivery tests
+check prompt contents and source preservation, not AI proofreading quality.

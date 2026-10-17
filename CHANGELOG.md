@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Clarify Japanese `示す` comparisons by explanatory role, with direct
+  method/outcome explanations, retained artifact/state examples and explicit
+  continuation targets. Deliver the guidance through writing and saved review
+  prompts without changing detectors, replacements, scores or old sessions.
+  Prompt-delivery regressions do not measure AI editing quality.
+
 - Extend Japanese actor comparisons to explicit but vague role names, separating
   system, internal recipient, execution environment and communication peer from
   verb accuracy. Add ten calibration pairs, qualify the retained-return example,

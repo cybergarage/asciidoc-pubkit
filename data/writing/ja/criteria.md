@@ -12,6 +12,7 @@
 - Distinguish rules, definitions, and configured values
 - Distinguish retention from inclusion, storage, and assignment
 - Distinguish representation from evidence and state indication
+- Distinguish explanation, presentation, and state indication
 - Distinguish receiving, returning, and their actual operations
 - Distinguish communication responses from function returns
 - Distinguish arrival wording by the actual operation
@@ -385,6 +386,47 @@ record each original, alternative and reason. These comparisons add no detector
 or automatic replacement rule, do not change scoring or mechanical verification,
 and do not measure AI proofreading quality. Existing sessions keep their saved
 criteria; use a separate new session for updated guidance.
+
+## Distinguish explanation, presentation, and state indication
+
+For `示す` and its inflections, identify the sentence's role before choosing
+its predicate. A content guide, a technical explanation, a displayed output,
+a figure or example being presented, and a value indicating a state are different
+uses. Read the complete paragraph and the referenced content when available;
+these comparisons do not prescribe a blanket change to `説明します`.
+
+| Role and wording to inspect | Faithful comparison when supported |
+| --- | --- |
+| Announcing explanatory content: `反復を継続・終了する条件を示します。` | Compare `反復を継続・終了する条件を説明します。` when the section explains those conditions; keep both continuation and termination. |
+| Repeating one explanatory action: `保存方法を説明し、再開する条件を示します。` | Compare `保存方法と再開する条件を説明します。` when both are explanatory subjects. Preserve a meaningful order, separate artifact or distinct presentation purpose instead of merging merely to vary endings. |
+| Naming an unspecified aid: `判断材料を示します。` | Name what is being selected or checked and which information supports that judgment. Use only criteria evidenced in the paragraph; do not invent a fixed decision rule. |
+| Describing a screen: `画面には、使用を停止する範囲を示します。` | Compare `画面には、使用を停止する範囲を表示します。` when screen output is the operation. Do not assign display to a service that only returns data. |
+| Describing a definition: `ツール定義は、引数の入力条件を示します。` | Compare `ツール定義には、引数の入力条件を記述します。` for authoring a definition, or `記述されています` for its existing contents. Preserve the distinction between writing a definition and enforcing it. |
+| Recording scope: `計測した区間を示します。` | Compare `計測した区間を記録します。` when the passage specifies what to record; keep the measured interval and clock conditions. |
+| Presenting an actual artifact: `次の表に、検査対象と確認内容を示します。` or `設定ファイルの例を示します。` | Retain these when the table or following example actually presents that content. `説明します` would shift from presenting the artifact to describing it. |
+| Indicating a state: `結果は、返答を記録したことを示します。` | Retain the indication when that is the result's meaning. Compare contents wording such as `結果に記録の成否が含まれます` only when included data is the subject; recorded acceptance does not establish successful execution. |
+| Leaving the indicated target implicit: `結果が継続を示します。` | Compare `一回分の処理結果が、次の回へ進むことを示します。` when that is the continuation being described. Keeping `示します` can be the clearest revision. |
+
+In the middle or at the end of a technical explanation, compare stating the
+relationship directly instead of promising another explanation. For example,
+`プロセス内の順序制御で防ぐ競合と、外部からの変更に備えて検査する競合を示します。`
+can become `プロセス内の競合は、操作の順序を制御して防ぎます。外部からの変更による競合には、検査で確認する状態と検査のタイミングを明確にして備えます。`
+when the surrounding paragraph establishes both methods. Preserve the scope of
+the controlled operations; neither ordering nor checking guarantees prevention
+of every external change. If the original also names the inspected state and
+timing, retain them in the revised paragraph.
+
+Compare the full paragraph before replacing the verb. Resolve vague subjects,
+comparison axes, repeated guidance and the relationship between methods and
+outcomes; exchanging `示します` for `説明します` alone may leave those problems
+unchanged. Keep valid figure/table introductions and state indications after a
+specific comparison, not because all occurrences must share one ending. Check
+related authorized tables, figures and alternative text without inventing
+actors, processing, evidence, guarantees or successful checks.
+
+These criteria add no detector, automatic replacement or scoring change.
+Existing sessions retain their saved criteria; mechanical verification remains
+separate from meaning review and does not measure AI proofreading quality.
 
 ## Give weak predicates a concrete action or consequence
 

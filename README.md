@@ -57,6 +57,8 @@ The development checkout also adds contextual Japanese comparisons for
 retention, input inclusion, representation and state indication; see
 [retention and representation wording](docs/writing.md#retention-and-representation-wording-unreleased).
 These unreleased criteria do not add automatic replacements or change scoring.
+The checkout also compares `示す` by explanatory role; see
+[explanation, presentation and state indication](docs/writing.md#explanation-presentation-and-state-indication-unreleased).
 
 ## Available features
 

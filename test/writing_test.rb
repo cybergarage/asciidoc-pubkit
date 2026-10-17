@@ -43,6 +43,9 @@ class WritingTest < Minitest::Test
 
   def test_figure_introduction_guidance_reaches_writing_and_saved_review_prompts
     criteria = AsciidocPubkit::Writing.criteria('ja')
+    role_guidance = criteria.split("## Distinguish explanation, presentation, and state indication\n", 2).fetch(1)
+                            .split("## Give weak predicates", 2).first
+    refute_empty role_guidance.strip
     guidance = criteria.split("### Introduce figures and tables by their explanatory role\n", 2).last
                        .split("File paths and type names belong", 2).first
     assert_includes criteria, '### Introduce figures and tables by their explanatory role'
@@ -52,6 +55,7 @@ class WritingTest < Minitest::Test
     %w[criteria prompt].each do |command|
       code, output, error = cli('writing', command, '--lang', 'ja')
       assert_equal 0, code, error
+      assert_includes output, role_guidance
       assert_includes output, guidance
     end
 
@@ -68,6 +72,7 @@ class WritingTest < Minitest::Test
         assert_equal AsciidocPubkit::Writing.prompt_criteria('ja'), saved
         code, prompt, error = cli('review', 'prompt', session)
         assert_equal 0, code, error
+        assert_includes prompt, role_guidance
         assert_includes prompt, guidance
         assert_equal source, File.read(manuscript)
       end
