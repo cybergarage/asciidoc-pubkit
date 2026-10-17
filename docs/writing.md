@@ -281,3 +281,20 @@ Writing commands and new Japanese heading, prose and list sessions include the
 guidance; existing sessions retain their saved criteria. No detector, automatic
 replacement, score or semantic-verification behavior changes. Delivery tests
 check prompt contents and source preservation, not AI proofreading quality.
+
+
+## JSON identifiers and explanatory strings (Unreleased)
+
+The [Japanese](../data/writing/ja/criteria.md#preserve-json-identifiers-and-explanatory-strings)
+and [English](../data/writing/en/criteria.md#preserve-json-identifiers-and-explanatory-strings)
+criteria distinguish JSON keys, schema keywords and technical values from
+natural-language descriptions. Compare examples with their explanations,
+including field/value ownership, nesting, required arguments, string/object
+representation and request/result IDs. Follow the book's notation rather than
+requiring emphasis or monospace. JSON/code blocks remain protected in prose
+review; translation of explanatory strings requires its own assigned scope.
+
+Writing commands and new review sessions include these comparisons. Existing
+sessions retain their saved criteria. This is prompt guidance, not an automatic
+JSON inventory or rewriting command; parsing and preservation checks do not
+establish semantic correctness or translation fidelity.

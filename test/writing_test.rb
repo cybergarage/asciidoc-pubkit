@@ -6,6 +6,61 @@ require 'stringio'
 require 'asciidoc_pubkit'
 
 class WritingTest < Minitest::Test
+  def test_json_comparisons_reach_both_languages_and_remain_saved_without_source_edits
+    Dir.mktmpdir('pubkit-json-guidance-') do |directory|
+      manuscript = File.join(directory, 'book.adoc')
+      source = <<~ADOC
+        = Example
+
+        == Tool definition
+
+        The description field explains the fetch_record tool.
+
+        * The id connects a request to its result.
+
+        [source,json]
+        ----
+        {"name":"fetch_record","description":"Read a record","parameters":{"type":"object"}}
+        ----
+      ADOC
+      File.write(manuscript, source)
+      %w[ja en].each do |language|
+        criteria = AsciidocPubkit::Writing.criteria(language)
+        guidance = criteria.split("## Preserve JSON identifiers and explanatory strings\n", 2).fetch(1)
+                           .split("\n## ", 2).first.strip
+        %w[criteria prompt].each do |command|
+          code, output, error = cli('writing', command, '--lang', language)
+          assert_equal 0, code, error
+          assert_includes output, guidance
+        end
+        %w[headings prose lists].each do |scope|
+          session = File.join(directory, "#{language}-#{scope}")
+          args = ['review', 'scan', manuscript, '--scope', scope, '--lang', language,
+                  '--output', session, '--no-input']
+          args += ['--tokenizer', 'literal'] if language == 'ja'
+          code, _, error = cli(*args)
+          assert_equal 0, code, error
+          saved = JSON.parse(File.read(File.join(session, 'manifest.json')))['writing_criteria']
+          assert_includes saved, guidance
+          original = AsciidocPubkit::Writing.method(:prompt_criteria)
+          begin
+            AsciidocPubkit::Writing.define_singleton_method(:prompt_criteria) { |*_args| 'Replacement criteria must not leak' }
+            code, prompt, error = cli('review', 'prompt', session, '--lang', language)
+            assert_equal 0, code, error
+            assert_includes prompt, saved
+            refute_includes prompt, 'Replacement criteria must not leak'
+          ensure
+            AsciidocPubkit::Writing.define_singleton_method(:prompt_criteria, original)
+          end
+          code, output, error = cli('review', 'verify', session, '--lang', language)
+          assert_equal 0, code, error
+          assert_equal false, JSON.parse(output)['meaning_verified']
+          assert_equal source.b, File.binread(manuscript)
+        end
+      end
+    end
+  end
+
   def test_arrival_guidance_is_saved_in_all_review_scopes_without_rewriting_sources
     expected = ['Distinguish arrival wording by the actual operation',
                 '進捗通知を受信しない', '外部から入力されるJSON', 'parseで入力値を検査する',

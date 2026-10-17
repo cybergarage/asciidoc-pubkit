@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add Japanese and English JSON example/prose comparisons for keys, schema
+  keywords, fixed values, explanatory strings and request/result references.
+  Follow each project's notation and edit scope; no universal emphasis policy,
+  detector, automatic inventory command, replacement or scoring change. New
+  sessions save the guidance; existing sessions retain their recorded criteria.
+  Prompt-delivery tests do not measure AI editing or translation quality.
+
 - Clarify Japanese `示す` comparisons by explanatory role, with direct
   method/outcome explanations, retained artifact/state examples and explicit
   continuation targets. Deliver the guidance through writing and saved review

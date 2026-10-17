@@ -43,6 +43,39 @@ Words such as contract, boundary and robust can have specific technical meanings
 Do not infer AI authorship from vocabulary. A phrase candidate is an invitation
 to inspect, not a replacement instruction or a proven defect.
 
+## Preserve JSON identifiers and explanatory strings
+
+When prose explains a JSON example, distinguish keys, JSON Schema keywords,
+fixed protocol values, tool names and example IDs from natural-language strings.
+For example, in `{"name":"fetch_record","description":"Read a record"}`,
+`name` and `description` are keys, `fetch_record` is the example tool name, and
+`Read a record` describes its purpose. A string's JSON type alone does not make
+it translatable or immutable. Resolve that role from the example and its use.
+
+Keep each technical literal's spelling, case and separators, including compound
+references such as `function.parameters` and JSON-RPC method names. Distinguish
+`type` as a JSON key from a language keyword or ordinary prose, and distinguish
+a schema keyword from a user-defined property with the same spelling. Record
+the owning API, specification, implementation or example; do not assign another
+project's identifiers to the book's implementation.
+
+Compare the example with adjacent explanations and authorized tables/lists:
+which field contains which value, whether an argument is required, where it is
+nested, whether it is a JSON string or object, and how request/result IDs match.
+Include later unmarked mentions. An occurrence inventory can help locate uses;
+it must not infer roles by spelling alone, insert unused example fields into
+prose, or turn every string into a fixed term. Record corrections, retained
+uses and unresolved referents within the assignment's existing review evidence.
+
+Follow the project's inline notation; no universal bold or monospace policy is
+implied. Do not insert prose markup inside JSON/code blocks or change protected
+blocks during prose review. Where an assigned translation explicitly permits
+localizing explanatory strings, keep keys, technical values, structure and prose
+references aligned; otherwise preserve the block and report the proposed change.
+Keep parsing/block-preservation checks separate from meaning and translation
+review. These comparisons add no detector or automatic replacement rule and do
+not expand the session's editable scope.
+
 ## Honor the book's conventions
 
 Preserve spelling variants unless the book specifies a locale. Follow its voice,

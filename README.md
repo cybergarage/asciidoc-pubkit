@@ -60,6 +60,10 @@ These unreleased criteria do not add automatic replacements or change scoring.
 The checkout also compares `示す` by explanatory role; see
 [explanation, presentation and state indication](docs/writing.md#explanation-presentation-and-state-indication-unreleased).
 
+Unreleased Japanese and English criteria also compare JSON examples with their
+prose explanations while preserving each project's notation and edit scope;
+see [JSON identifiers and explanatory strings](docs/writing.md#json-identifiers-and-explanatory-strings-unreleased).
+
 ## Available features
 
 The following commands are available in version 1.3.1.
