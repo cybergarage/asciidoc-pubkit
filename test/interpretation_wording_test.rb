@@ -70,7 +70,7 @@ class InterpretationWordingTest < Minitest::Test
                              '--tokenizer', 'literal', '--output', old, '--no-input')
         assert_equal 0, code, error
         manifest = File.binread(File.join(old, 'manifest.json'))
-        saved = JSON.parse(manifest).fetch('writing_criteria')
+        saved = JSON.parse(manifest.dup).fetch('writing_criteria')
         GUIDANCE.each { |item| assert_includes saved, item }
         original = AsciidocPubkit::Writing.method(:criteria)
         begin

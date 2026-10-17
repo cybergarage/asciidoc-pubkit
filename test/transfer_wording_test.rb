@@ -32,7 +32,7 @@ class TransferWordingTest < Minitest::Test
                              '--tokenizer', 'literal', '--output', session, '--no-input')
         assert_equal 0, code, error
         manifest = File.binread(File.join(session, 'manifest.json'))
-        saved = JSON.parse(manifest).fetch('writing_criteria')
+        saved = JSON.parse(manifest.dup).fetch('writing_criteria')
         GUIDANCE.each { |text| assert_includes saved, text }
         code, prompt, error = cli('review', 'prompt', session)
         assert_equal 0, code, error

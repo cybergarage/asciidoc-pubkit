@@ -29,7 +29,7 @@ class ActorClarityTest < Minitest::Test
         assert_equal [passage], document.fetch('paragraphs').map { |p| p.fetch('text') }
         manifest_path = File.join(session, 'manifest.json')
         manifest_bytes = File.binread(manifest_path)
-        saved = JSON.parse(manifest_bytes).fetch('writing_criteria')
+        saved = JSON.parse(manifest_bytes.dup).fetch('writing_criteria')
         code, prompt, error = cli('review', 'prompt', session)
         assert_equal 0, code, error
         assert_includes prompt, saved
