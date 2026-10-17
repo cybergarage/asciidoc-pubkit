@@ -977,15 +977,15 @@
     },
     {
       "id": "ending-transfer-operation-kept",
-      "source": "実行側はツール結果をモデルへ戻します。",
-      "revision": "実行側はツール結果をモデルへ戻します。",
+      "source": "エージェントと評価器を分け、前者を実行側と呼びます。実行側はツール結果をモデルへ戻します。",
+      "revision": "エージェントと評価器を分け、前者を実行側と呼びます。実行側はツール結果をモデルへ戻します。",
       "expected_disposition": "accept",
       "review_axes": [
         "actor",
         "action",
         "recipient"
       ],
-      "reason": "The plain verb states an actual transfer with an explicit actor, object, and recipient; no jargon is needed."
+      "reason": "The preceding definition identifies the agent as the execution role; repeating its name adds no distinction. Separately, the plain verb describes the transfer accurately. This does not endorse undefined actor labels."
     },
     {
       "id": "ending-capability-kept",
@@ -1905,6 +1905,125 @@
       "editorial_constraints": [
         "Prefer a faithful direct predicate over とはみなしません when it explains the same evidence limit."
       ]
+    },
+    {
+      "id": "explicit-actor-agent",
+      "source": "エージェントがツール要求を検査します。実行側は対象への操作が許可されるかを判定します。",
+      "revision": "エージェントがツール要求を検査します。エージェントは対象への操作が許可されるかを判定します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "responsibility",
+        "permission-owner"
+      ],
+      "reason": "Names the established validator while preserving its permission decision."
+    },
+    {
+      "id": "explicit-actor-internal-recipient",
+      "source": "エージェント内部のツール実行処理が要求を検査します。エージェントは要求を実行側へ引き渡します。",
+      "revision": "エージェント内部のツール実行処理が要求を検査します。エージェントは要求をツール実行処理へ引き渡します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "recipient",
+        "responsibility-level"
+      ],
+      "reason": "Names the internal recipient rather than the enclosing system."
+    },
+    {
+      "id": "explicit-actor-self-handoff",
+      "source": "エージェント内部のツール実行処理が要求を検査します。エージェントは要求を実行側へ引き渡します。",
+      "revision": "エージェント内部のツール実行処理が要求を検査します。エージェントは要求をエージェントへ引き渡します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "recipient",
+        "responsibility-level"
+      ],
+      "reason": "Changes the established internal recipient into the enclosing agent itself."
+    },
+    {
+      "id": "explicit-actor-environment",
+      "source": "評価対象のモデルがコマンドを選択し、環境内の処理が実行します。実行側は終了コードを返します。",
+      "revision": "評価対象のモデルがコマンドを選択し、環境内の処理が実行します。環境側の実行処理は終了コードを返します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "environment",
+        "responsibility"
+      ],
+      "reason": "Names the established environment operation without assigning it to the model."
+    },
+    {
+      "id": "explicit-actor-environment-made-agent",
+      "source": "評価対象のモデルがコマンドを選択し、環境内の処理が実行します。実行側は終了コードを返します。",
+      "revision": "評価対象のモデルがコマンドを選択し、環境内の処理が実行します。評価対象のエージェントは終了コードを返します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "environment",
+        "responsibility"
+      ],
+      "reason": "Transfers the environment operation to the evaluated system contrary to the stated division."
+    },
+    {
+      "id": "explicit-actor-peer",
+      "source": "クライアントとサーバーは、どちらも要求を受信できます。実行側は結果を応答として送信します。",
+      "revision": "クライアントとサーバーは、どちらも要求を受信できます。要求を受信した相手は結果を応答として送信します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "communication-peer",
+        "scope"
+      ],
+      "reason": "Identifies the request recipient without narrowing its endpoint role."
+    },
+    {
+      "id": "explicit-actor-unknown-owner",
+      "source": "実行側は入力を検査します。",
+      "revision": "エージェントは入力を検査します。",
+      "expected_disposition": "needs-evidence",
+      "review_axes": [
+        "actor",
+        "unsupported-addition"
+      ],
+      "reason": "The passage provides no evidence that the validator is an agent."
+    },
+    {
+      "id": "explicit-actor-defined-role-kept",
+      "source": "エージェントと評価器を分け、前者を実行側と呼びます。実行側はツール結果をモデルへ戻します。",
+      "revision": "エージェントと評価器を分け、前者を実行側と呼びます。実行側はツール結果をモデルへ戻します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "defined-role",
+        "action"
+      ],
+      "reason": "The explicit preceding definition identifies the role; the accurate return verb is judged separately."
+    },
+    {
+      "id": "explicit-actor-actor-changed-verb-kept",
+      "source": "エージェントがツールの結果を取得します。実行側はツール結果をモデルへ戻します。",
+      "revision": "エージェントがツールの結果を取得します。エージェントはツール結果をモデルへ戻します。",
+      "expected_disposition": "accept",
+      "review_axes": [
+        "actor",
+        "action",
+        "recipient"
+      ],
+      "reason": "Clarifies the established actor while retaining the accurate transfer verb."
+    },
+    {
+      "id": "explicit-actor-configuration-owner-changed",
+      "source": "運用者が規則を設定し、インタープリターがその規則を適用します。実行側は規則に従って送信を拒否します。",
+      "revision": "運用者が規則を設定し、インタープリターがその規則を適用します。インタープリターが設定した規則に従って送信を拒否します。",
+      "expected_disposition": "reject",
+      "review_axes": [
+        "actor",
+        "modifier-target",
+        "configuration-owner"
+      ],
+      "reason": "Naming the rule applier also makes it the rule author, contradicting the established operator ownership."
     }
   ]
 }

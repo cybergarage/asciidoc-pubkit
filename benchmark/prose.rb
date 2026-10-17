@@ -118,6 +118,15 @@ module ProseBenchmark
     subjects and table roles without forcing repetition. A newly assigned actor or
     approver requires evidence; actor clarification must not add automatic checks,
     change permission ownership, or claim that a request completed.
+    Assess explicit role names such as 実行側 as well as missing subjects.
+    Compare the supported system, internal component, execution environment or
+    communication peer, without assigning every role to an agent or product.
+    Distinguish actor specificity from verb accuracy; either can need revision
+    while the other remains valid. Check the full revised sentence for unintended
+    self-handoffs, repeated words, particle relationships and modifier targets.
+    Applying a rule does not establish ownership of its configuration. Preserve
+    defined role labels when a concrete comparison supports them; an unknown
+    owner must stay unresolved instead of becoming a plausible automatic actor.
     For calibration pairs, choose accept, reject, or needs-evidence: reject an
     omitted or changed established fact or violated explicit editorial constraint;
     needs-evidence for newly asserted details that cannot be established;

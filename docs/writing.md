@@ -1,5 +1,13 @@
 # Writing commands
 
+The development checkout extends the [actor criteria](../data/writing/ja/criteria.md#compare-explicit-actor-names-with-the-actual-responsibility)
+to explicit but vague role names such as `実行側` and `処理側`. Compare the
+evidenced system, internal component, execution environment or communication
+peer, and judge actor specificity separately from verb accuracy. Recheck the
+whole sentence for self-handoffs and changed modifier or configuration ownership.
+These are contextual instructions, with no new detector or replacement rules;
+saved sessions retain their original criteria.
+
 The v1.2.3 [actor-change criteria](../data/writing/ja/criteria.md#clarify-omitted-subjects-when-actors-change)
 compare omitted and explicit subjects across clauses, sentences and table roles.
 They distinguish requesting, approving, executing and investigating, preserve

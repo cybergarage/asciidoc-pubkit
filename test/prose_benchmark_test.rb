@@ -92,7 +92,7 @@ class ProseBenchmarkTest < Minitest::Test
       assert_empty item.fetch('targets'), id
     end
     pairs = JSON.parse(File.read(ProseBenchmark::CALIBRATION)).fetch('manual_revision_cases')
-    assert_equal 155, pairs.length
+    assert_equal 165, pairs.length
     assert_equal pairs.length, pairs.map { |item| item.fetch('id') }.uniq.length
     quantity = pairs.find { |item| item['id'] == 'quantity-target-changed' }
     assert_equal quantity.fetch('source').scan(/\d+/), quantity.fetch('revision').scan(/\d+/)

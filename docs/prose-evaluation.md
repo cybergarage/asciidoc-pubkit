@@ -26,6 +26,18 @@ limits. This implementation uses pubkit's own selected AsciiDoc scope and
 preservation contracts; upstream performance and model-evaluation results are
 not measurements of pubkit.
 
+## Explicit actor names (Unreleased)
+
+Ten additional calibration pairs compare explicit role names with the supported
+system, internal component, execution environment or communication peer. They
+include valid defined roles, accurate return verbs, unintended self-handoffs,
+unsupported owners and a rule applier incorrectly made its configuration owner.
+The existing retained-transfer example now defines its actor first; its historical
+ID remains unchanged. Judge actor specificity independently from verb accuracy.
+Tests cover fixture integrity, writing and saved prompts in all three review
+scopes, immutable session criteria and unchanged sources. They do not invoke an
+AI evaluator, measure editing quality or establish semantic correctness.
+
 ## Actor clarity comparisons (v1.2.3)
 
 Twelve additional calibration pairs cover conditional actor changes, user refusal
@@ -43,7 +55,7 @@ readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
 This guide describes the development checkout, including the
-`technical-prose-v3` corpus and 155 revision calibration pairs. The sentence-ending
+`technical-prose-v3` corpus and 165 revision calibration pairs. The sentence-ending
 criteria and twelve additional pairs, plus the flow guidance and four further
 pairs, are included in version 1.2.0.
 The evaluation runner is not an
@@ -111,7 +123,7 @@ of Japanese writing.
 | [prose_benchmark.ja.adoc](../test/fixtures/prose_benchmark.ja.adoc) | 26 paragraphs used as the actual AsciiDoc input |
 | [prose_benchmark.ja.json](../test/fixtures/prose_benchmark.ja.json) | Matching paragraph IDs and text, 11 annotated detector targets, and preservation checklists |
 | [prose_benchmark.yml](../test/fixtures/prose_benchmark.yml) | Fixed empty configuration that isolates the benchmark from discovered manuscript settings |
-| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 155 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
+| [prose_evaluation.ja.json](../test/fixtures/prose_evaluation.ja.json) | Detection examples and 165 manual revision pairs with expected `accept`, `reject`, or `needs-evidence` dispositions |
 
 The corpus includes framing such as `重要なのは`, metaphorical operations such
 as `地味に効く`, inflected and negative forms, and repeated endings. Controls

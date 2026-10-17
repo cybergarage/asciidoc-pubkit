@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Extend Japanese actor comparisons to explicit but vague role names, separating
+  system, internal recipient, execution environment and communication peer from
+  verb accuracy. Add ten calibration pairs, qualify the retained-return example,
+  and test writing/saved-review delivery without changing historical sessions.
+  No detector, replacement or scoring changes; AI editing quality is unmeasured.
+
 - Add contextual Japanese retention/inclusion/storage/assignment and
   representation/state-indication comparisons, including valid retained wording
   and evidence-strength limits. Add manual comparison fixtures and saved-prompt

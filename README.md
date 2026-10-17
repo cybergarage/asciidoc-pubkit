@@ -30,6 +30,10 @@ Version 1.2.3 also compares `渡す` and `受け渡し` by their actual
 operation; see [input, transmission, and handoff](docs/writing.md#input-transmission-and-handoff-v123).
 These comparisons and skill routing do not automatically replace manuscript text.
 
+The development checkout also compares explicit but vague actor names by their
+actual responsibility; see [actor wording](docs/writing.md). This unreleased
+guidance adds no detector or automatic replacement rules.
+
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
 

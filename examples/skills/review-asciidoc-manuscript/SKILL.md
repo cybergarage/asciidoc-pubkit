@@ -80,6 +80,11 @@ without forcing repetition. Inspect related authorized table/figure roles in the
 own scopes; report missing actor evidence rather than assigning a plausible role.
 If the selected CLI lacks the actor-change examples, report that criteria limitation
 and retain saved sessions; keep the canonical examples in pubkit.
+Review explicit actor names through those criteria too, recording the supported
+responsibility and recipient rather than treating a written subject as sufficient.
+Assess actor specificity and verb accuracy separately and compare the full revised
+sentence before finalizing the decision; preserve defined roles and unresolved
+owners. Do not copy book-specific actor replacements into this shared skill.
 
 For an assigned content guide or learning objective, record the whole-paragraph
 viewpoint and any repeated guidance along with the source, alternative and reason.

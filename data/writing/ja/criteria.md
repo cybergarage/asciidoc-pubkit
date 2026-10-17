@@ -112,6 +112,37 @@ conditions, partial negation, capability, and the difference between a request
 and its completion. Record the original, faithful alternative, and specific reason
 for revising or retaining each assigned passage, even without detector candidates.
 
+### Compare explicit actor names with the actual responsibility
+
+A written subject can still hide its owner or role. Compare terms such as
+`実行側` and `処理側` with the evidenced system, internal component, execution
+environment, or communication peer. Establish the level of responsibility from
+the full paragraph and implementation evidence before choosing a name. A system
+name can suit behavior shared across its components; a component name can suit
+an internal handoff. Neither is universally more precise.
+
+| Passage and supported context | Comparison |
+| --- | --- |
+| The agent validates tool requests: `実行側は対象への操作が許可されるかを判定します。` | Compare `エージェントは対象への操作が許可されるかを判定します。`; preserve the target and permission owner. |
+| A request is delegated inside the agent: `エージェントは要求を実行側へ引き渡します。` | Compare `エージェントは要求をツール実行処理へ引き渡します。` when that internal recipient is established; replacing the recipient with the same agent obscures the handoff. |
+| The benchmark's environment executes commands: `実行側がコマンドを実行します。` | Compare `環境側の実行処理がコマンドを実行します。`; do not assign environment execution to the evaluated model or agent without evidence. |
+| A request recipient sends a response: `実行側が結果を応答として送信します。` | Compare `要求を受信した相手が結果を応答として送信します。`; do not narrow the peer to a server if either endpoint can receive requests. |
+| A preceding definition names one component `実行側` | Compare repeating the component's name, and retain the defined role when it identifies the same responsibility clearly and no author terminology preference requires a change. |
+
+Do not replace every occurrence with `エージェント`, a product name, or
+`実行処理`. Name only roles established by the assigned passage; keep formal
+identifiers, book-specific terms, and other systems' ownership. Compare actor
+specificity separately from whether a verb such as `戻します` describes the
+correct operation. A valid verb does not settle an ambiguous actor, and a clear
+actor does not settle an imprecise verb.
+
+Compare the complete revised sentence and its neighbors after changing a name.
+Check subject-predicate and particle relationships, modifier targets, repeated
+words and unintended self-handoffs. In particular, naming the component applying
+a configured rule must not also make it the component that configured the rule.
+Retain conditions, capability, permission ownership and processing order. Record
+the actual alternative and reason; missing actor evidence remains unresolved.
+
 ## Identify human actors by their supported roles
 
 Treat `人` as a cue to identify the actor, not as a forbidden word or a
@@ -699,8 +730,10 @@ outcome is not an established failure.
 `利用者は候補Aと候補Bから選択できます` retains that choice while using technical
 selection wording. Compare this faithful alternative before keeping the plain verb.
 `利用者は候補Aと候補Bから選びます` would instead assert that selection occurs. Retain
-`実行側はツール結果をモデルへ戻します` when it describes the transfer;
-`実行結果のフィードバック` would lose the sentence's actor and predicate.
+the verb `戻します` in `実行側はツール結果をモデルへ戻します` when it
+accurately describes the transfer; assess `実行側` separately using the actor
+criteria above. `実行結果のフィードバック` would lose the sentence's actor
+and predicate.
 
 Do not mechanically convert `別です` to `とは限りません`. For example,
 `AはJSONを、BはCSVを受け付けます。両者の入力形式は別です` establishes a
