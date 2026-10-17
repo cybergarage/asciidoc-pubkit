@@ -27,10 +27,36 @@
 - Remove generated-prose patterns without flattening the meaning
 - Preserve exact technical terminology
 - Revise the complete paragraph
+- Compare revisions before delivery and respect passage roles
 - Headings and the relation to figures and code
 
 Apply these criteria in context. They identify patterns that deserve inspection,
 not words that must always be removed.
+
+## Compare revisions before delivery and respect passage roles
+
+For each proposed revision, compare the topic and claim, affirmation and negation,
+actor and recipient, scope and conditions, certainty and capability, and quantities,
+names and timing with the original and supported context. Include relative weight,
+units, per-item versus aggregate limits, and completed versus planned actions.
+If a comparison fails, reject that alternative; consider a faithful alternative
+or retain the original with a passage-specific reason. Deletion must retain any
+unique claim or condition elsewhere in the authorized scope. Evidence-backed
+factual corrections require separate author authorization and an explicit source;
+do not silently treat them as stylistic revisions.
+
+Identify each passage's role from its content. Explanations describe actual
+behavior; procedures may repeat imperative endings and numbered steps; warnings
+retain prohibition and requirement strength. Do not remove necessary repetition,
+merge distinct steps, or soften warnings merely to vary style. Document genre
+alone does not establish the actor, authority, or required sentence ending.
+
+Inspect all edited passages against the original, including edits with no
+detector candidates. Lexical counts can stay unchanged despite a reversed
+condition, exchanged actors, or an invented fact. Keep automatic preservation,
+execution of the final checks, and editorial judgments separate. If supporting
+material suggests a missing fact, report the proposed addition with its exact
+source and scope; do not insert it as part of an unrequested prose correction.
 
 ## Start with the paragraph's technical purpose
 

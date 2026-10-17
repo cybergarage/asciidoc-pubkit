@@ -1,5 +1,31 @@
 # Prose evaluation
 
+## Japanese verification workflow evaluation (1.3.1)
+
+Japanese change-review regressions check that edits are visible without lexical
+candidates, split paragraphs are not falsely paired, protected text is masked
+for cues, scope boundaries remain intact, and saved verification records detect
+later source/session/implementation changes. Real MeCab tests and literal-mode
+tests have different coverage. They do not measure editorial improvement.
+
+For a future explicitly authorized model trial, retain the actual source and
+revision, saved session and final verification report, criteria/implementation
+identities, exact model/host configuration and raw tool execution records.
+Measure separately (1) whether required checks ran on the delivered source,
+(2) candidate detection against independently annotated changed passages, and
+(3) readability and fact retention judged from actual revisions. Include
+actor additions, same-number scope changes, condition reversals and legitimate
+procedure/warning repetitions, including changes without lexical cues. Compare
+compatible configurations over repeated trials; adjudicate reviewer disagreements.
+A fresh report, fewer candidates or a successful freshness comparison cannot
+substitute for those judgments. No such model trial has been run for this change.
+
+Design reference: [yomiyasu 2.0.1](https://github.com/nanaism/yomiyasu/tree/v2.0.1),
+especially its final-source record, revision-comparison procedure and documented
+limits. This implementation uses pubkit's own selected AsciiDoc scope and
+preservation contracts; upstream performance and model-evaluation results are
+not measurements of pubkit.
+
 ## Actor clarity comparisons (v1.2.3)
 
 Twelve additional calibration pairs cover conditional actor changes, user refusal

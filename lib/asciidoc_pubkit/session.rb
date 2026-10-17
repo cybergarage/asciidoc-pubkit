@@ -273,7 +273,21 @@ module AsciidocPubkit
       instructions
     end
 
-    def verify
+    def verify(checked_report: nil)
+      if checked_report && language != 'ja'
+        raise Error, '--checked-report supports Japanese sessions only.'
+      end
+      recorded = JapaneseVerification.read_report(checked_report) if checked_report
+      result = verify_current
+      if recorded && result['verification_record'] != recorded
+        result['issues'] << { 'kind' => 'checked-report-stale',
+                              'message' => 'The checked report does not match the current sources, session or implementation. Save a new verification report and review it.' }
+        result['passed'] = false
+      end
+      result
+    end
+
+    def verify_current
       document = Document.new(@manifest.fetch('entry'), @manifest.fetch('settings'), only: @manifest['only'])
       issues = []
       document.diagnostics.each { |d| issues << { 'kind' => 'parse-diagnostic', 'message' => d['message'] } }
@@ -303,11 +317,13 @@ module AsciidocPubkit
       if analysis != @manifest['analysis']
         issues << { 'kind' => 'analyzer-changed', 'message' => 'The analysis engine, version, dictionary or configuration changed. Finish verification with the original analyzer or start a new review pass.' }
       end
-      {
+      result = {
         'passed' => issues.empty?, 'meaning_verified' => false, 'changed_files' => changed,
         'issues' => issues, 'notices' => notices, 'coverage' => document.coverage,
         'analysis' => analysis, 'findings' => self.class.scan_candidates(document, @manifest['settings'], tokenizer)
       }
+      JapaneseVerification.attach(result, document, @document, @manifest, @directory) if language == 'ja'
+      result
     rescue Error, Errno::ENOENT => e
       { 'passed' => false, 'meaning_verified' => false, 'issues' => [{ 'kind' => 'verification-error', 'message' => e.message }],
         'notices' => [], 'findings' => [], 'coverage' => [] }
@@ -454,7 +470,7 @@ module AsciidocPubkit
     end
 
     def review_process(unit, mode)
-      <<~TEXT
+      text = <<~TEXT
         ## Review decisions and completion
 
         Keep manifest.json, document.json, findings.json, and every baseline/ snapshot immutable. Restrict editing and formatting tools to the authorized source spans; never run them over the session directory.
@@ -472,6 +488,12 @@ module AsciidocPubkit
         Check related tables, figures and alternative text when terminology changes affect them. Report updates outside this session's edit scope separately; this prompt does not authorize those edits. Preserve the original baseline and phase-end verification when separately authorized synchronization follows.
         Mechanical verification does not read or validate these decision records. Its passed result and candidate counts do not establish review completion or writing quality; meaning_verified remains false. Do not claim semantic correctness from those checks.
       TEXT
+      if language == 'ja' && mode == 'revise'
+        text += <<~TEXT
+          For Japanese sessions, save completion verification with --output to a new report file. Read japanese_change_review before reporting completion: compare all before/after selected text, including changes without lexical review candidates. These file-level inventories do not align sentences or certify meaning. Immediately before delivery, run review verify with this session and --checked-report pointing to that saved report. If any source changes, save and inspect a new report, then repeat the comparison. Do not edit sources after the final comparison. Record execution status, lexical candidates, and human or model quality judgments separately; the report is not proof of approval or semantic review.
+        TEXT
+      end
+      text
     end
 
     def prompt_data(data, language)

@@ -16,7 +16,7 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.3.0 provides document inspection, explicit prose-only mechanical
+Version 1.3.1 provides document inspection, explicit prose-only mechanical
 replacements, and Japanese and English manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
@@ -51,7 +51,7 @@ is added.
 
 ## Available features
 
-The following commands are available in version 1.3.0.
+The following commands are available in version 1.3.1.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
@@ -69,6 +69,12 @@ The following commands are available in version 1.3.0.
 | [Manuscript scoring](docs/scoring.md#score-an-asciidoc-manuscript) | `review score` | Report a prose candidate-density score; explicit `--agent codex` or `--agent claude` optionally invokes a local AI CLI for readability ratings |
 | [Writing criteria and prompts](docs/writing.md#writing-commands) | `writing criteria`, `writing prompt` | Print Japanese prose criteria or generate a writing prompt without a manuscript or MeCab |
 | [Skill registration](docs/skill-commands.md) | `skill list`, `skill install`, `skill status`, `skill upgrade` | Register bundled skills for Codex or Claude and inspect or upgrade managed copies while protecting local changes |
+
+Version 1.3.1: Japanese verification also shows selected text before/after edits
+and advisory lexical change candidates. Save a report with `--output`, inspect
+the changes, then use `--checked-report FILE` to detect subsequent source,
+session or implementation changes. English behavior and scoring are unchanged.
+See [Japanese verification records](docs/review-workflow.md#japanese-change-review-and-final-source-records-131).
 
 The 1.2.0 [sentence-ending guidance](docs/writing.md#writing-commands)
 adds contextual revision and keep examples, preserving capabilities, uncertainty,
@@ -215,7 +221,7 @@ asciidoc-pubkit writing prompt --lang ja --output writing-prompt.md
 
 Existing review sessions require the exact tool version that created them.
 Before upgrading, finish ongoing reviews with that version or preserve their
-baselines and start a new review in a separate directory with v1.3.0. A new
+baselines and start a new review in a separate directory with v1.3.1. A new
 scan cannot verify preservation relative to an earlier baseline.
 
 ## Documentation

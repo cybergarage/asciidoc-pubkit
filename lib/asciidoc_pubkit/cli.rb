@@ -97,6 +97,8 @@ module AsciidocPubkit
         elsif group == 'review' && command == 'prompt'
           opts.on('--mode MODE', 'revise (default) or diagnose') { |v| options[:mode] = v }
           opts.on('--view VIEW', 'full (default) or outline; outline requires a heading session') { |v| options[:view] = v }
+        elsif group == 'review' && command == 'verify'
+          opts.on('--checked-report FILE', 'Compare current Japanese sources and session with a saved successful verification report') { |v| options[:checked_report] = v }
         end
         opts.on('-h', '--help', 'Show command help') { options[:help] = true }
       end
@@ -168,7 +170,7 @@ module AsciidocPubkit
         output(session.prompt(options.fetch(:mode, 'revise'), view: options.fetch(:view, 'full')), options[:output], out)
         return 0
       end
-      result = session.verify
+      result = session.verify(checked_report: options[:checked_report])
       output(JSON.pretty_generate(result) + "\n", options[:output], out)
       result['passed'] ? 0 : 1
     rescue Error, OptionParser::ParseError, SystemCallError, Psych::Exception, ArgumentError => e

@@ -335,10 +335,55 @@ not read candidate decision records or certify editorial completion. A passing
 mechanical result must be reported separately from the reviewer's quality and
 completion assessment.
 
+#### Japanese change review and final-source records (1.3.1)
+
+Japanese sessions additionally return `japanese_change_review` before the final
+`verification_record` in the JSON result. `changes` contains each changed file's
+complete selected text before and after editing, with source lines on each side.
+These are file-level inventories, not guessed paragraph or sentence pairs.
+Prose, heading and list sessions retain their separate edit scopes. Unselected
+and protected blocks are not included; inline protected tokens remain visible
+in excerpts but are masked when collecting lexical cues.
+
+Each changed file includes advisory `review_candidates` for changed inventories
+of Japanese negation, condition, certainty, capability and actor/topic expressions.
+`actor-topic` is a lexical cue around `は` and `が`, not grammatical subject/object
+analysis. Inflections and paraphrases can be missed, legitimate rewrites can
+produce candidates, and equal counts can hide changes between sentences. These
+candidates do not change exit codes or certify meaning. Review all before/after
+text, including changes without candidates. Numeric notices retain their existing
+meaning. No score formula changes are included.
+
+Save the completed check, inspect the change review, and compare the current
+sources with that saved result immediately before delivery:
+
+```sh
+asciidoc-pubkit review verify .pubkit/review --output verification-final.json
+# Read the report and complete the editorial comparison before delivery.
+asciidoc-pubkit review verify .pubkit/review --checked-report verification-final.json
+```
+
+`--checked-report` accepts a successful Japanese report containing a
+`pubkit-ja-verification-v1` record. It reruns preservation checks and compares
+source hashes, the session manifest hash, tool version and Ruby implementation
+fingerprint with the record. Changed sources, session or implementation produce
+`checked-report-stale` and exit 1. A malformed, missing, unsuccessful or legacy
+report, or use with an English session, is an input error (exit 2). The original
+baseline is never reset. If sources change after checking, save a new report to
+a new filename, inspect it and compare again. Do not edit after the final check.
+The command never overwrites an existing output or checked report.
+
+The record identifies the source content inspected by the checker. It is not
+tamper-proof, a human approval record, proof that the report was read, or a
+semantic review result. No timestamp or hook enforces delivery order. A report
+can match an earlier identical source state; a newer scan cannot prove
+preservation against a discarded baseline. English verification output is
+unchanged. All results retain `meaning_verified: false`.
+
 | Exit code | Meaning |
 | --- | --- |
 | `0` | Command completed; verification found no mechanical violations |
-| `1` | Verification found protected-content, structure, source, or parsing issues |
+| `1` | Verification found protected-content, structure, source, parsing, or checked-report freshness issues |
 | `2` | Invalid arguments, configuration, session, scan input, or output failure |
 
 [Back to README](../README.md)

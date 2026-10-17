@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 1.3.1 - 2026-10-17
+
+- Add Japanese-only selected-text before/after inventories and advisory lexical
+  negation, condition, certainty, capability and actor/topic change candidates
+  to verification. Save source/session/implementation fingerprints and compare
+  a successful saved report using `review verify --checked-report FILE`.
+  Stale records fail verification; lexical candidates do not. Preserve English
+  output, score formulas, baselines and `meaning_verified: false`.
+- Add Japanese revision-comparison and explanation/procedure/warning guidance,
+  plus final-report comparison instructions for Japanese revision prompts.
+  Regression tests check implementation and prompt delivery; no AI editing
+  quality improvement or independent semantic validation is claimed.
+- Sessions require their exact creating tool version. Preserve ongoing 1.3.0
+  baselines with 1.3.0 and create separate sessions for 1.3.1.
+
 ## 1.3.0 - 2026-10-17
 
 - Add 120 original English regression paragraphs split by document, exact span
