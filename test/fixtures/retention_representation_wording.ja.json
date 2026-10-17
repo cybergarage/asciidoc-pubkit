@@ -1,0 +1,194 @@
+[
+  {
+    "id": "input-inclusion",
+    "topic": "retention",
+    "source": "成否の情報も入力へ保持します。",
+    "revision": "成否の情報も入力に含めます。",
+    "expected_disposition": "accept",
+    "reason": "Names input composition without adding persistence."
+  },
+  {
+    "id": "summary-content",
+    "topic": "retention",
+    "source": "すべての情報を要約に保持する必要はありません。",
+    "revision": "すべての情報を要約に含める必要はありません。",
+    "expected_disposition": "accept",
+    "reason": "Preserves the negated necessity and summary contents."
+  },
+  {
+    "id": "new-value-storage",
+    "topic": "retention",
+    "source": "取得した名前を結果用の変数に保持します。",
+    "revision": "取得した名前を結果用の変数に格納します。",
+    "expected_disposition": "accept",
+    "reason": "Describes inserting the retrieved value into the stated container."
+  },
+  {
+    "id": "identifier-assignment",
+    "topic": "retention",
+    "source": "結果へ新しい識別子を付けます。",
+    "revision": "結果へ新しい識別子を付与します。",
+    "expected_disposition": "accept",
+    "reason": "Names the same explicit new-identifier assignment."
+  },
+  {
+    "id": "note-recording",
+    "topic": "retention",
+    "source": "ノートに取得時刻を保持します。",
+    "revision": "ノートに取得時刻を記録します。",
+    "expected_disposition": "accept",
+    "reason": "Names recording the timestamp, without inventing a storage medium."
+  },
+  {
+    "id": "response-continuity-kept",
+    "topic": "retention",
+    "source": "元の応答を保持し、次の呼び出しへ引き継ぎます。",
+    "revision": "元の応答を保持し、次の呼び出しへ引き継ぎます。",
+    "expected_disposition": "accept",
+    "reason": "Retention connects reception with later reuse; inclusion alone loses continuity."
+  },
+  {
+    "id": "lock-kept",
+    "topic": "retention",
+    "source": "処理の終了までロックを保持します。",
+    "revision": "処理の終了までロックを保持します。",
+    "expected_disposition": "accept",
+    "reason": "Holding a lock until release is the operation, not input construction."
+  },
+  {
+    "id": "snapshot-capability-kept",
+    "topic": "retention",
+    "source": "同じスナップショットを実行中は保持できます。",
+    "revision": "同じスナップショットを実行中は保持できます。",
+    "expected_disposition": "accept",
+    "reason": "Preserves identity, duration and capability."
+  },
+  {
+    "id": "invented-file-persistence",
+    "topic": "retention",
+    "source": "今回の入力に成否の情報を保持します。",
+    "revision": "成否の情報をファイルへ永続化します。",
+    "expected_disposition": "reject",
+    "reason": "Adds a storage destination and lifetime not established by input composition."
+  },
+  {
+    "id": "assignment-for-original",
+    "topic": "retention",
+    "source": "復元後も元の識別子を保持します。",
+    "revision": "復元時に新しい識別子を付与します。",
+    "expected_disposition": "reject",
+    "reason": "Replaces identity preservation with a new identifier."
+  },
+  {
+    "id": "lost-lock-lifetime",
+    "topic": "retention",
+    "source": "終了するまでロックを保持します。",
+    "revision": "開始時だけロックを保持します。",
+    "expected_disposition": "reject",
+    "reason": "Shortens ownership from the entire execution to startup."
+  },
+  {
+    "id": "inclusion-not-transmission",
+    "topic": "retention",
+    "source": "必要な場合は情報を入力に含められます。",
+    "revision": "情報を必ずモデルへ送信します。",
+    "expected_disposition": "reject",
+    "reason": "Changes capability and condition into mandatory transmission."
+  },
+  {
+    "id": "failure-indication",
+    "topic": "representation",
+    "source": "失敗を表す結果も入力に加えます。",
+    "revision": "失敗を示す結果も入力に加えます。",
+    "expected_disposition": "accept",
+    "reason": "Indicates the same failure without stronger proof."
+  },
+  {
+    "id": "status-information",
+    "topic": "representation",
+    "source": "ツールの成否を表す情報を入力に含めます。",
+    "revision": "ツールの成否を示す情報を入力に含めます。",
+    "expected_disposition": "accept",
+    "reason": "Preserves success/failure information and input construction."
+  },
+  {
+    "id": "request-evidence-limit",
+    "topic": "representation",
+    "source": "要求の記録は、操作を要求したことを表します。実行済みとは判断できません。",
+    "revision": "要求の記録は、操作を要求したことを示します。実行済みとは判断できません。",
+    "expected_disposition": "accept",
+    "reason": "Retains the limit on what request evidence establishes."
+  },
+  {
+    "id": "result-contents",
+    "topic": "representation",
+    "source": "結果が表す情報を一覧にします。",
+    "revision": "結果に含まれる情報を一覧にします。",
+    "expected_disposition": "accept",
+    "reason": "Uses contents wording for the data listed in the result."
+  },
+  {
+    "id": "graph-kept",
+    "topic": "representation",
+    "source": "工程をノード、接続をエッジとして表します。",
+    "revision": "工程をノード、接続をエッジとして表します。",
+    "expected_disposition": "accept",
+    "reason": "Defines a graph representation rather than evidence of execution."
+  },
+  {
+    "id": "json-kept",
+    "topic": "representation",
+    "source": "引数をJSONで表せます。",
+    "revision": "引数をJSONで表せます。",
+    "expected_disposition": "accept",
+    "reason": "Representation and capability remain accurate."
+  },
+  {
+    "id": "symbol-kept",
+    "topic": "representation",
+    "source": "利用者をUと表します。",
+    "revision": "利用者をUと表します。",
+    "expected_disposition": "accept",
+    "reason": "Defines notation, not a measured outcome."
+  },
+  {
+    "id": "unknown-not-failure",
+    "topic": "representation",
+    "source": "結果は成否不明の状態を示します。",
+    "revision": "結果は失敗を示します。",
+    "expected_disposition": "reject",
+    "reason": "An unknown state is not confirmed failure."
+  },
+  {
+    "id": "request-not-success",
+    "topic": "representation",
+    "source": "記録は要求を受け付けたことを示します。",
+    "revision": "記録は処理の成功を裏付けます。",
+    "expected_disposition": "reject",
+    "reason": "Acceptance is strengthened into evidence of successful execution."
+  },
+  {
+    "id": "correlation-not-causation",
+    "topic": "representation",
+    "source": "測定結果は二つの値の相関を示します。",
+    "revision": "測定結果は一方が他方の原因であることを裏付けます。",
+    "expected_disposition": "reject",
+    "reason": "Adds causation and stronger evidential weight."
+  },
+  {
+    "id": "lost-indication-capability",
+    "topic": "representation",
+    "source": "条件を満たせば、結果から失敗を示せます。",
+    "revision": "結果は常に失敗を示します。",
+    "expected_disposition": "reject",
+    "reason": "Drops the condition and changes capability into universal behavior."
+  },
+  {
+    "id": "representation-not-execution",
+    "topic": "representation",
+    "source": "工程をグラフで表します。",
+    "revision": "グラフにした工程はすべて実行済みです。",
+    "expected_disposition": "reject",
+    "reason": "Encoding a workflow does not establish execution."
+  }
+]

@@ -241,3 +241,19 @@ their scope. The bundled review skill routes these assignments to the saved
 criteria. Writing commands and new heading, prose and list sessions include the
 guidance; existing sessions keep their original criteria. Regression checks cover
 criteria delivery and source preservation, not measured AI proofreading quality.
+
+
+## Retention and representation wording (Unreleased)
+
+The shared Japanese criteria now compare `保持` with input inclusion, container
+storage, recording and attribute assignment, and `表す` with state indication,
+evidence and contents. Preserve valid retention of history, original values,
+locks and snapshots, and valid representation by symbols, JSON, code or graphs.
+See [retention](../data/writing/ja/criteria.md#distinguish-retention-from-inclusion-storage-and-assignment)
+and [representation](../data/writing/ja/criteria.md#distinguish-representation-from-evidence-and-state-indication).
+
+These are contextual comparisons, not blanket replacements or new detector rules.
+They reach writing commands and new Japanese heading, prose and list sessions;
+existing sessions keep their saved criteria. English guidance, scoring and
+mechanical verification are unchanged. Manual comparison fixtures and delivery
+regressions do not measure AI editing quality or semantic correctness.

@@ -468,3 +468,15 @@ of criteria to writing and saved review prompts, including historical-session
 preservation; they do not establish AI judgment accuracy. The updated judge rubric
 requires a compatible fresh baseline for future AI comparisons. No AI evaluation
 was run; improvement remains unmeasured and `meaning_verified` remains false.
+
+
+## Retention and representation comparisons (Unreleased)
+
+`test/fixtures/retention_representation_wording.ja.json` contains 24 manually
+labeled comparisons covering input inclusion, storage, recording, assignment,
+retained history/locks/snapshots, result/state indication and valid notation.
+Rejection examples cover invented persistence, lost identity or lifetime,
+capability changes, unknown results treated as failure, and stronger evidence
+or causation claims. The fixture is separate from the evaluation runner's corpus.
+Its tests check data integrity and saved-prompt behavior, not the correctness of
+these language judgments. No model judge or AI-quality measurement is run.

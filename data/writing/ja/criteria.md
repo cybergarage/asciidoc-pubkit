@@ -10,6 +10,8 @@
 - Distinguish stopping, cancellation requests, and non-execution
 - Distinguish decisions by the actual operation
 - Distinguish rules, definitions, and configured values
+- Distinguish retention from inclusion, storage, and assignment
+- Distinguish representation from evidence and state indication
 - Distinguish receiving, returning, and their actual operations
 - Distinguish communication responses from function returns
 - Distinguish arrival wording by the actual operation
@@ -302,6 +304,56 @@ Record the original, faithful alternative, and passage-specific reason even when
 no detector candidate is emitted. Synchronize related authorized tables, figures,
 and alternative text separately from protected review scopes. Existing sessions
 retain their saved criteria; these comparisons add no detector or replacement rule.
+
+## Distinguish retention from inclusion, storage, and assignment
+
+Compare `保持する` with the operation actually described. Identify the owner,
+container, lifetime and processing stage. Input construction, storing a newly
+obtained value, assigning an attribute, and keeping existing state are different
+operations; do not replace them with one universal verb.
+
+| Context | Faithful comparison when supported |
+| --- | --- |
+| Input construction | `成否の情報も入力へ保持します` → `成否の情報も入力に含めます`; supplying input does not establish storage across calls. |
+| Contents of a summary | `すべての情報を要約に保持する必要はありません` → `すべての情報を要約に含める必要はありません`; preserve the necessity and negation. |
+| Putting a retrieved value in a container | `取得した名前を結果用の変数に保持します` → `取得した名前を結果用の変数に格納します` when the insertion is the subject. |
+| Assigning an identifier | `結果へ識別子を付与します` describes assignment; retaining an existing identifier is a different operation. |
+| Adding information to a record | Compare `ノートに時刻を記録します` or `検索結果に出典を添えます` when recording or attachment is established. |
+| Keeping original data or state | Retain `元の応答を保持し、次の呼び出しへ引き継ぎます` and `ロックを終了まで保持します`; inclusion or insertion alone loses continuity or ownership. |
+
+Compare complete sentences, including retained uses. `入力に含めます` does not
+mean `モデルへ送信します`; `格納します` does not establish file persistence.
+A type declaring fields does not itself execute storage or assignment. Use
+`付与` for an established attribute or identifier assignment, not as a blanket
+replacement for input inclusion. Keep original values, duration, negation,
+conditions, ownership and capability; do not add persistence, delete history,
+or shorten the lifetime of a lock or snapshot. Keeping source facts does not
+require keeping the word `保持`; record the actual alternative and reason.
+
+## Distinguish representation from evidence and state indication
+
+For `表す` and its inflections, identify whether the passage describes a
+representation (notation, format, role or data model), contents, or a result
+indicating a fact or state. Compare `示す` for the latter, honoring the author's
+terminology preference without treating all uses of `表す` as unnatural.
+
+| Context | Faithful comparison when supported |
+| --- | --- |
+| A result indicating failure | `失敗を表す結果` → `失敗を示す結果`; do not turn failure into an unknown outcome or vice versa. |
+| Status information | `成否を表す情報` → `成否を示す情報` when information indicates success or failure. |
+| What a record establishes | `要求の記録は、操作を要求したことを表します` → `要求の記録は、操作を要求したことを示します`; a request record alone does not establish execution. |
+| Contents of a result | Compare `結果に含まれる情報` with `結果が表す情報` when describing included data rather than its interpretation. |
+| Symbolic or structural representation | Retain `工程をノードで表します`, `引数をJSONで表します` and `利用者をUと表します`; `示す` is not required for notation or encoding. |
+
+`裏付ける` may make a stronger evidence claim than `示す`. Use it only when the
+source establishes that evidential role; do not upgrade a reported state into
+proof, a correlation into causation, or request acceptance into successful work.
+Preserve uncertainty, negation, conditions, actors and capability. Review the
+whole paragraph and related authorized tables, figures and alternative text;
+record each original, alternative and reason. These comparisons add no detector
+or automatic replacement rule, do not change scoring or mechanical verification,
+and do not measure AI proofreading quality. Existing sessions keep their saved
+criteria; use a separate new session for updated guidance.
 
 ## Give weak predicates a concrete action or consequence
 

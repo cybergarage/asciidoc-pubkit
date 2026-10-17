@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add contextual Japanese retention/inclusion/storage/assignment and
+  representation/state-indication comparisons, including valid retained wording
+  and evidence-strength limits. Add manual comparison fixtures and saved-prompt
+  delivery regressions. No new detector rules, automatic replacements, scoring
+  changes or AI proofreading-quality claims.
+
 ## 1.3.1 - 2026-10-17
 
 - Add Japanese-only selected-text before/after inventories and advisory lexical

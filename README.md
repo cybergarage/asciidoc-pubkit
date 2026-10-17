@@ -49,6 +49,11 @@ for `わけではありません`; see [direct negation](docs/writing.md#direct-
 Existing sessions retain their saved rules and criteria. No automatic rewriting
 is added.
 
+The development checkout also adds contextual Japanese comparisons for
+retention, input inclusion, representation and state indication; see
+[retention and representation wording](docs/writing.md#retention-and-representation-wording-unreleased).
+These unreleased criteria do not add automatic replacements or change scoring.
+
 ## Available features
 
 The following commands are available in version 1.3.1.
