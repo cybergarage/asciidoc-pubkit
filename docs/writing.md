@@ -1,6 +1,6 @@
 # Writing commands
 
-The development checkout extends the [actor criteria](../data/writing/ja/criteria.md#compare-explicit-actor-names-with-the-actual-responsibility)
+Version 1.4.0 extends the [actor criteria](../data/writing/ja/criteria.md#compare-explicit-actor-names-with-the-actual-responsibility)
 to explicit but vague role names such as `実行側` and `処理側`. Compare the
 evidenced system, internal component, execution environment or communication
 peer, and judge actor specificity separately from verb accuracy. Recheck the
@@ -251,7 +251,9 @@ guidance; existing sessions keep their original criteria. Regression checks cove
 criteria delivery and source preservation, not measured AI proofreading quality.
 
 
-## Retention and representation wording (Unreleased)
+<a id="retention-and-representation-wording-unreleased"></a>
+
+## Retention and representation wording (v1.4.0)
 
 The shared Japanese criteria now compare `保持` with input inclusion, container
 storage, recording and attribute assignment, and `表す` with state indication,
@@ -267,7 +269,9 @@ mechanical verification are unchanged. Manual comparison fixtures and delivery
 regressions do not measure AI editing quality or semantic correctness.
 
 
-## Explanation, presentation and state indication (Unreleased)
+<a id="explanation-presentation-and-state-indication-unreleased"></a>
+
+## Explanation, presentation and state indication (v1.4.0)
 
 The [shared Japanese criteria](../data/writing/ja/criteria.md#distinguish-explanation-presentation-and-state-indication)
 compare `示す` by its role: announcing an explanation, stating technical behavior,
@@ -283,7 +287,9 @@ replacement, score or semantic-verification behavior changes. Delivery tests
 check prompt contents and source preservation, not AI proofreading quality.
 
 
-## JSON identifiers and explanatory strings (Unreleased)
+<a id="json-identifiers-and-explanatory-strings-unreleased"></a>
+
+## JSON identifiers and explanatory strings (v1.4.0)
 
 The [Japanese](../data/writing/ja/criteria.md#preserve-json-identifiers-and-explanatory-strings)
 and [English](../data/writing/en/criteria.md#preserve-json-identifiers-and-explanatory-strings)

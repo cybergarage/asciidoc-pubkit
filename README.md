@@ -16,8 +16,9 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.3.1 provides document inspection, explicit prose-only mechanical
-replacements, and Japanese and English manuscript review. Inspect a book's outline,
+Version 1.4.0 provides document-based image inspection and display sizing,
+document inspection, explicit prose-only mechanical replacements, and Japanese
+and English manuscript review. Inspect a book's outline,
 metadata, and local cross-references; preview and apply your replacement rules;
 then review and verify edits against a saved baseline.
 
@@ -30,17 +31,16 @@ Version 1.2.3 also compares `渡す` and `受け渡し` by their actual
 operation; see [input, transmission, and handoff](docs/writing.md#input-transmission-and-handoff-v123).
 These comparisons and skill routing do not automatically replace manuscript text.
 
-The development checkout also compares explicit but vague actor names by their
-actual responsibility; see [actor wording](docs/writing.md). This unreleased
-guidance adds no detector or automatic replacement rules.
+Version 1.4.0 also compares explicit but vague actor names by their actual
+responsibility; see [actor wording](docs/writing.md). This guidance adds no
+detector or automatic replacement rules.
 
-The v1.4.0 development checkout adds document-based `image list`, `image stats`
+Version 1.4.0 adds document-based `image list`, `image stats`
 and `image width`. Collect images referenced by `book.adoc`, summarize their
 pixel dimensions and file sizes, or explicitly update source `scaledwidth`
 attributes from aspect ratios. Image pixels are unchanged. See
 [image commands](docs/image-commands.md) for selection, tuning, ImageMagick
-requirements, preservation rules and Make integration. Version 1.4.0 is not yet
-published; released version 1.3.1 does not include these commands.
+requirements, preservation rules and Make integration.
 
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
@@ -61,20 +61,20 @@ for `わけではありません`; see [direct negation](docs/writing.md#direct-
 Existing sessions retain their saved rules and criteria. No automatic rewriting
 is added.
 
-The development checkout also adds contextual Japanese comparisons for
+Version 1.4.0 also adds contextual Japanese comparisons for
 retention, input inclusion, representation and state indication; see
-[retention and representation wording](docs/writing.md#retention-and-representation-wording-unreleased).
-These unreleased criteria do not add automatic replacements or change scoring.
-The checkout also compares `示す` by explanatory role; see
-[explanation, presentation and state indication](docs/writing.md#explanation-presentation-and-state-indication-unreleased).
+[retention and representation wording](docs/writing.md#retention-and-representation-wording-v140).
+These criteria do not add automatic replacements or change scoring.
+Version 1.4.0 also compares `示す` by explanatory role; see
+[explanation, presentation and state indication](docs/writing.md#explanation-presentation-and-state-indication-v140).
 
-Unreleased Japanese and English criteria also compare JSON examples with their
+Version 1.4.0 Japanese and English criteria also compare JSON examples with their
 prose explanations while preserving each project's notation and edit scope;
-see [JSON identifiers and explanatory strings](docs/writing.md#json-identifiers-and-explanatory-strings-unreleased).
+see [JSON identifiers and explanatory strings](docs/writing.md#json-identifiers-and-explanatory-strings-v140).
 
 ## Available features
 
-The following commands are implemented in the v1.4.0 checkout. See the changelog for released versions.
+The following commands are available in version 1.4.0.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |

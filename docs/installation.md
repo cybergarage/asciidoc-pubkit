@@ -10,8 +10,7 @@ asciidoc-pubkit --help
 
 The v1.4.0 `image list`, `image stats` and `image width` commands additionally
 require ImageMagick 7 (`magick`) or 6 (`identify`). They do not require Python or
-MeCab. See [image commands](image-commands.md). Version 1.4.0 is currently in the
-development checkout; these commands are not in released version 1.3.1.
+MeCab. See [image commands](image-commands.md).
 
 Ruby 3.2 or later is required. RubyGems installs the required Ruby dependencies;
 no repository clone or Node.js installation is needed. MeCab and IPADIC must be
@@ -46,7 +45,7 @@ Add the gem to your project's `Gemfile` to manage its version with Bundler:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'asciidoc-pubkit', '~> 1.2.0'
+gem 'asciidoc-pubkit', '~> 1.4.0'
 ```
 
 Then install dependencies and run the CLI through Bundler:

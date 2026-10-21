@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.0 (unreleased)
+## 1.4.0 - 2026-10-22
 
 - Add document-based `image list`, `image stats` and `image width`. Resolve active
   AsciiDoc includes, attributes, conditionals and per-image `imagesdir`; collect

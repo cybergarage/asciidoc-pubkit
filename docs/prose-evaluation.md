@@ -26,7 +26,9 @@ limits. This implementation uses pubkit's own selected AsciiDoc scope and
 preservation contracts; upstream performance and model-evaluation results are
 not measurements of pubkit.
 
-## Explicit actor names (Unreleased)
+<a id="explicit-actor-names-unreleased"></a>
+
+## Explicit actor names (v1.4.0)
 
 Ten additional calibration pairs compare explicit role names with the supported
 system, internal component, execution environment or communication peer. They
@@ -54,7 +56,7 @@ criteria changes against a project-defined baseline. Keep detection performance,
 readability, and meaning preservation separate so that a clearer rewrite cannot
 hide a lost condition or invented fact.
 
-This guide describes the development checkout, including the
+This guide describes version 1.4.0, including the
 `technical-prose-v3` corpus and 165 revision calibration pairs. The sentence-ending
 criteria and twelve additional pairs, plus the flow guidance and four further
 pairs, are included in version 1.2.0.
@@ -482,7 +484,9 @@ requires a compatible fresh baseline for future AI comparisons. No AI evaluation
 was run; improvement remains unmeasured and `meaning_verified` remains false.
 
 
-## Retention and representation comparisons (Unreleased)
+<a id="retention-and-representation-comparisons-unreleased"></a>
+
+## Retention and representation comparisons (v1.4.0)
 
 `test/fixtures/retention_representation_wording.ja.json` contains 24 manually
 labeled comparisons covering input inclusion, storage, recording, assignment,
