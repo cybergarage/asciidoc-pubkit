@@ -14,6 +14,7 @@ module AsciidocPubkit
         document info FILE     Extract book metadata
         document check-xrefs FILE  Report unresolved local cross-references
         document index DIRECTORY  Generate an English-title AsciiDoc index
+        epub image-width FILE  Preview or explicitly apply aspect-ratio-based body figure widths
         writing criteria      Print the shared Japanese or English prose criteria
         writing prompt        Generate a technical writing prompt
         review scan FILE       Collect Japanese or English prose, headings, or list text and review candidates
@@ -46,11 +47,12 @@ module AsciidocPubkit
         out.puts VERSION
         return 0
       end
-      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace document skill].any? { |group| args == [group, '--help'] }
+      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace document skill epub].any? { |group| args == [group, '--help'] }
         out.puts HELP
         return 0
       end
       group, command = args.shift(2)
+      return EpubCommands.run(command, args, out: out, err: err) if group == 'epub'
       return SkillCommands.run(command, args, out: out, err: err) if group == 'skill'
       if group == 'document' && %w[toc info check-xrefs index].include?(command)
         return DocumentCommands.run(command, args, out: out, err: err)

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/cybergarage/asciidoc-pubkit'
   spec.metadata = { 'source_code_uri' => spec.homepage, 'changelog_uri' => "#{spec.homepage}/blob/main/CHANGELOG.md" }
   spec.required_ruby_version = '>= 3.2'
-  spec.files = Dir['data/**/*.yml', 'data/**/*.md', 'lib/**/*.rb', 'exe/*', 'README.md', 'docs/**/*.md', 'LICENSE', 'CHANGELOG.md', 'examples/**/*']
+  spec.files = Dir['data/**/*.py', 'data/**/*.yml', 'data/**/*.md', 'lib/**/*.rb', 'exe/*', 'README.md', 'docs/**/*.md', 'LICENSE', 'CHANGELOG.md', 'examples/**/*']
   spec.bindir = 'exe'
   spec.executables = ['asciidoc-pubkit']
   spec.require_paths = ['lib']

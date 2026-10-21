@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Add `epub image-width` for generated Asciidoctor EPUBs, using a packaged Python
+  helper and ImageMagick to calculate body figure widths from image aspect ratios.
+  Exclude covers, documented title-page/portrait filename patterns and inline
+  images. Preview by default; require `--in-place` or a new `--output` for writes.
+  Add configurable height/width coefficient, minimum/maximum width, repeated
+  exclusions, JSON reports and Make examples. Preserve image pixels and inputs
+  on analysis failure. Rendering and publication readiness require separate checks.
+
 - Add Japanese and English JSON example/prose comparisons for keys, schema
   keywords, fixed values, explanatory strings and request/result references.
   Follow each project's notation and edit scope; no universal emphasis policy,

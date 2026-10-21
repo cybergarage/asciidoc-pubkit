@@ -9,7 +9,10 @@ running prose, and verifies edited manuscripts
 against a baseline. Only `review score --agent` invokes an installed Codex or
 Claude CLI for optional readability evaluation; that CLI may call its configured
 model provider. Explicit `replace apply` applies author-supplied mechanical rules to mapped prose;
-review and scoring do not rewrite manuscripts. It does not publish books. Do not describe
+review and scoring do not rewrite manuscripts. The explicit `epub image-width` command previews or applies display-size changes to
+generated EPUB body figures through the packaged Python helper; it never edits
+AsciiDoc manuscripts or image pixels. Its dependencies and output contracts are
+in `docs/epub-image-width.md`. It does not publish books. Do not describe
 planned publishing features as available functionality.
 
 - [README.md](README.md) owns the feature overview and quick start; its linked

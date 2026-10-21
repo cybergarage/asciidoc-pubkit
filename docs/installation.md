@@ -8,6 +8,10 @@ asciidoc-pubkit --version
 asciidoc-pubkit --help
 ```
 
+The unreleased `epub image-width` command additionally requires Python 3 and
+ImageMagick 7 (`magick`) or 6 (`identify`); see [EPUB figure widths](epub-image-width.md).
+These external tools are optional for other commands.
+
 Ruby 3.2 or later is required. RubyGems installs the required Ruby dependencies;
 no repository clone or Node.js installation is needed. MeCab and IPADIC must be
 installed separately when using Japanese review or scoring in the default mode.

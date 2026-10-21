@@ -34,6 +34,13 @@ The development checkout also compares explicit but vague actor names by their
 actual responsibility; see [actor wording](docs/writing.md). This unreleased
 guidance adds no detector or automatic replacement rules.
 
+The development checkout also adds `epub image-width` to preview or explicitly
+apply aspect-ratio-based body figure widths to a generated EPUB. It preserves
+image pixels and excludes cover, title-page and portrait images by their documented
+selection rules. See [EPUB figure widths](docs/epub-image-width.md) for tuning,
+Python/ImageMagick requirements, output modes, and Make integration. This command
+is not included in released version 1.3.1.
+
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
 
