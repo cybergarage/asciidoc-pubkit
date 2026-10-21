@@ -14,7 +14,9 @@ module AsciidocPubkit
         document info FILE     Extract book metadata
         document check-xrefs FILE  Report unresolved local cross-references
         document index DIRECTORY  Generate an English-title AsciiDoc index
-        epub image-width FILE  Preview or explicitly apply aspect-ratio-based body figure widths
+        image list FILE        List images referenced by an AsciiDoc document
+        image stats FILE       Summarize document-referenced image dimensions and sizes
+        image width FILE       Preview or explicitly apply display widths to source image macros
         writing criteria      Print the shared Japanese or English prose criteria
         writing prompt        Generate a technical writing prompt
         review scan FILE       Collect Japanese or English prose, headings, or list text and review candidates
@@ -32,7 +34,7 @@ module AsciidocPubkit
       Use --lang ja (default) or en with writing commands and review commands. Other
       languages and regional tags are unsupported and return an error.
       skill install and upgrade write only the selected skill directory.
-      Only replace apply edits manuscripts. review score --agent explicitly invokes a
+      replace apply and image width --in-place explicitly edit manuscript sources. review score --agent explicitly invokes a
       local Codex or Claude CLI, which may connect to its configured AI service.
     TEXT
 
@@ -47,12 +49,12 @@ module AsciidocPubkit
         out.puts VERSION
         return 0
       end
-      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace document skill epub].any? { |group| args == [group, '--help'] }
+      if args.empty? || args == ['--help'] || args == ['-h'] || %w[review writing replace document skill image].any? { |group| args == [group, '--help'] }
         out.puts HELP
         return 0
       end
       group, command = args.shift(2)
-      return EpubCommands.run(command, args, out: out, err: err) if group == 'epub'
+      return ImageCommands.run(command, args, out: out, err: err) if group == 'image'
       return SkillCommands.run(command, args, out: out, err: err) if group == 'skill'
       if group == 'document' && %w[toc info check-xrefs index].include?(command)
         return DocumentCommands.run(command, args, out: out, err: err)

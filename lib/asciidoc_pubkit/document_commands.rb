@@ -95,6 +95,7 @@ module AsciidocPubkit
           owner.check_source(args[1], root) if args[1] && File.file?(args[1])
           super(*args)
         end
+        yield doc if block_given?
         doc.parse
       ensure
         Asciidoctor::LoggerManager.logger = previous

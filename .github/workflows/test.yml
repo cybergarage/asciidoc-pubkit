@@ -10,8 +10,8 @@ jobs:
         ruby: ['3.2', '3.3', '3.4', '4.0']
     steps:
       - uses: actions/checkout@v4
-      - name: Install MeCab, UTF-8 IPADIC and EPUB image tools
-        run: sudo apt-get update && sudo apt-get install -y mecab mecab-ipadic-utf8 imagemagick python3
+      - name: Install MeCab, UTF-8 IPADIC and ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y mecab mecab-ipadic-utf8 imagemagick
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}

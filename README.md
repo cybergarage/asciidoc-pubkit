@@ -34,12 +34,13 @@ The development checkout also compares explicit but vague actor names by their
 actual responsibility; see [actor wording](docs/writing.md). This unreleased
 guidance adds no detector or automatic replacement rules.
 
-The development checkout also adds `epub image-width` to preview or explicitly
-apply aspect-ratio-based body figure widths to a generated EPUB. It preserves
-image pixels and excludes cover, title-page and portrait images by their documented
-selection rules. See [EPUB figure widths](docs/epub-image-width.md) for tuning,
-Python/ImageMagick requirements, output modes, and Make integration. This command
-is not included in released version 1.3.1.
+The v1.4.0 development checkout adds document-based `image list`, `image stats`
+and `image width`. Collect images referenced by `book.adoc`, summarize their
+pixel dimensions and file sizes, or explicitly update source `scaledwidth`
+attributes from aspect ratios. Image pixels are unchanged. See
+[image commands](docs/image-commands.md) for selection, tuning, ImageMagick
+requirements, preservation rules and Make integration. Version 1.4.0 is not yet
+published; released version 1.3.1 does not include these commands.
 
 The CLI, diagnostics, documentation, and generated instructions are in English.
 Japanese manuscript excerpts and rule terms retain their original text.
@@ -73,10 +74,11 @@ see [JSON identifiers and explanatory strings](docs/writing.md#json-identifiers-
 
 ## Available features
 
-The following commands are available in version 1.3.1.
+The following commands are implemented in the v1.4.0 checkout. See the changelog for released versions.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
+| [Document images](docs/image-commands.md) | `image list`, `image stats`, `image width` | Inspect referenced block images; preview or explicitly apply source display widths |
 | [Document outline](docs/document-commands.md#document-commands) | `document toc` | Print parsed section titles as text or JSON, including source locations, with optional depth and outline numbering |
 | [Book metadata](docs/document-commands.md#document-commands) | `document info` | Extract book attributes as text or JSON |
 | [Cross-reference checks](docs/document-commands.md#document-commands) | `document check-xrefs` | Report unresolved local cross-references with source locations |

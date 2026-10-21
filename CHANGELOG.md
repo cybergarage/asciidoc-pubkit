@@ -1,14 +1,20 @@
 # Changelog
 
-## Unreleased
+## 1.4.0 (unreleased)
 
-- Add `epub image-width` for generated Asciidoctor EPUBs, using a packaged Python
-  helper and ImageMagick to calculate body figure widths from image aspect ratios.
-  Exclude covers, documented title-page/portrait filename patterns and inline
-  images. Preview by default; require `--in-place` or a new `--output` for writes.
-  Add configurable height/width coefficient, minimum/maximum width, repeated
-  exclusions, JSON reports and Make examples. Preserve image pixels and inputs
-  on analysis failure. Rendering and publication readiness require separate checks.
+- Add document-based `image list`, `image stats` and `image width`. Resolve active
+  AsciiDoc includes, attributes, conditionals and per-image `imagesdir`; collect
+  referenced local block images and deduplicate physical files. Exclude artwork
+  by default with configurable selection. Report dimensions, aspect ratios,
+  file sizes and source references; summarize unique image statistics.
+- Calculate `scaledwidth` from a configurable height/width coefficient and width
+  bounds. Preview by default, support JSON and unified diffs, and require explicit
+  `--in-place` to update source macros. Preserve image pixels and unrelated source
+  text, reject ambiguous reused references, stage multi-file edits and roll back
+  failed replacements. Replace the unreleased `epub image-width` prototype.
+- Require ImageMagick 7 or 6 for image inspection; no Python dependency remains.
+  Image-file processing planned for v1.4.1 is tracked in
+  [issue #1](https://github.com/cybergarage/asciidoc-pubkit/issues/1).
 
 - Add Japanese and English JSON example/prose comparisons for keys, schema
   keywords, fixed values, explanatory strings and request/result references.
