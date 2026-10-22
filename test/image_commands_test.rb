@@ -41,6 +41,105 @@ class ImageCommandsTest < Minitest::Test
     JSON.parse(out)
   end
 
+  def test_find_orientation_ratios_and_inclusive_bounds
+    assert_equal ['tall.png'], json('find', '--portrait')['images'].map { |i| File.basename(i['path']) }
+    assert_equal ['wide.png'], json('find', '--landscape')['images'].map { |i| File.basename(i['path']) }
+    result = json('find', '--min-aspect-ratio', '0.5', '--max-aspect-ratio', '1')
+    assert_equal %w[square.png tall.png], result['images'].map { |i| File.basename(i['path']) }
+    assert_equal 3, result['selected_image_count']
+    assert_equal 2, result['image_count']
+    assert_equal 0, json('find', '--portrait', '--min-aspect-ratio', '1')['image_count']
+    assert_equal 1, json('find', '--min-aspect-ratio', '0.50001', '--max-aspect-ratio', '1')['image_count']
+  end
+
+  def test_find_numeric_metrics_and_unit_parsing
+    %w[pixels pixel-width pixel-height bytes].each do |metric|
+      key = { 'pixel-width' => 'width', 'pixel-height' => 'height' }.fetch(metric, metric)
+      json('find')['images'].each do |image|
+        value = image.fetch(key)
+        result = json('find', "--min-#{metric}", value.to_s, "--max-#{metric}", value.to_s)
+        assert_includes result['images'].map { |i| i['path'] }, image['path']
+        assert result['images'].all? { |i| i[key] == value }
+      end
+    end
+    { 'B' => 1, 'KB' => 1000, 'MB' => 1000000, 'KiB' => 1024, 'MiB' => 1048576 }.each do |unit, multiplier|
+      result = json('find', '--max-bytes', "2#{unit}")
+      assert_equal 2 * multiplier, result['filters']['max-bytes']
+      assert result['images'].all? { |i| i['bytes'] <= 2 * multiplier }
+    end
+    assert_equal 0, json('find', '--max-bytes', '0')['image_count']
+    assert_equal 1, json('find', '--min-pixels', '10000', '--max-pixel-width', '100')['image_count']
+    assert_equal 0, json('find', '--min-pixels', '999999999999999999999')['image_count']
+  end
+
+  def test_find_order_deduplication_locations_and_preservation
+    File.open(@book, 'a') { |f| f.puts "\nimage::tall.png[Again]" }
+    before = Dir[File.join(@dir, '**/*')].select { |f| File.file?(f) }.to_h { |f| [f, File.binread(f)] }
+    result = json('find')
+    assert_equal %w[wide.png square.png tall.png], result['images'].map { |i| File.basename(i['path']) }
+    assert_equal 4, result['selected_reference_count']
+    assert_equal 2, json('find', '--portrait')['reference_count']
+    AsciidocPubkit::ImageCommands::FIND_METRICS.each do |metric, key|
+      sorted = json('find', '--sort', metric)['images'].map { |i| i[key] }
+      assert_equal sorted.sort.reverse, sorted
+      ascending = json('find', '--sort', metric, '--order', 'asc')['images'].map { |i| i[key] }
+      assert_equal ascending.sort, ascending
+    end
+    tied = json('find', '--sort', 'pixel-height')['images']
+    assert_equal result['images'].map { |i| i['path'] }, tied.map { |i| i['path'] }
+    code, out, err = cli('find', '--portrait')
+    assert_equal 0, code, err
+    assert_includes out, "#{@book}:8"
+    assert_includes out, "#{@book}:10"
+    assert_includes out, 'Matched images: 1 / 3; matched references: 2'
+    before.each { |file, bytes| assert_equal bytes, File.binread(file) }
+  end
+
+  def test_find_selection_exclusions_and_inspection_failures
+    image('chapter-1.png', 50, 100)
+    File.open(@book, 'a') { |f| f.puts "\nimage::chapter-1.png[]\n\nimage::https://example.com/remote.png[]" }
+    assert_equal 3, json('find')['selected_image_count']
+    assert_equal 2, json('find', '--include-artwork', '--portrait')['image_count']
+    assert_equal 1, json('find', '--include', 'chapter-*', '--portrait')['image_count']
+    assert_equal 0, json('find', '--include', 'chapter-*', '--exclude', 'chapter-*')['image_count']
+    result = json('find', '--include', 'absent*')
+    assert_equal 0, result['selected_image_count']
+    assert_empty result['images']
+    assert_equal 5, result['excluded'].length
+    chapter = File.join(@dir, 'chapter.adoc')
+    File.write(chapter, "image::tall.png[]\n")
+    File.open(@book, 'a') { |f| f.puts "\ninclude::chapter.adoc[]" }
+    assert_equal 1, json('find', '--only', chapter)['reference_count']
+    File.unlink(File.join(@dir, 'img/wide.png'))
+    assert_equal 2, cli('find', '--portrait')[0]
+    assert_equal 1, json('find', '--include', 'tall.png')['image_count']
+    File.write(File.join(@dir, 'img/tall.png'), 'invalid image')
+    assert_equal 2, cli('find', '--include', 'tall.png')[0]
+  end
+
+  def test_find_rejects_invalid_options
+    bad = [%w[--portrait --landscape], %w[--sort unknown], %w[--sort bytes --order sideways],
+           %w[--order asc], %w[--in-place], %w[--width 50]]
+    %w[pixels pixel-width pixel-height aspect-ratio bytes].each do |metric|
+      bad << ["--min-#{metric}", '2', "--max-#{metric}", '1']
+      values = metric == 'bytes' ? %w[-1 1.5 1GB NaN Infinity] : %w[0 -1 NaN Infinity]
+      values += %w[1.5 1px] unless metric == 'aspect-ratio'
+      values.each do |value|
+        %w[min max].each { |bound| bad << ["--#{bound}-#{metric}", value] }
+      end
+    end
+    bad.each do |args|
+      code, out, err = cli('find', *args)
+      assert_equal 2, code, args.inspect
+      assert_empty out
+      refute_empty err
+    end
+    code, out, err = cli('find', '--help')
+    assert_equal 0, code, err
+    assert_includes out, '--landscape'
+    assert_includes out, '--min-aspect-ratio'
+  end
+
   def test_include_patterns_select_artwork_and_explicit_exclusions_win
     image('chapter-1.png', 50, 100)
     image('part-1.png', 50, 100)

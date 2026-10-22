@@ -1,6 +1,11 @@
 # Changelog
 
-## 1.4.1 - Unreleased
+## 1.4.1 - 2026-10-22
+
+- Add read-only `image find` with inclusive file-size, total-pixel, pixel-dimension
+  and aspect-ratio bounds; portrait/landscape selection; stable metric sorting;
+  source locations and JSON reports. Reuse document image discovery and selection,
+  inspect all selected images before filtering, and preserve sources and pixels.
 
 - Add opt-in `image scale --mode book`: scan selected unique document images,
   calibrate median display height and area, and bound scaling with adjustable

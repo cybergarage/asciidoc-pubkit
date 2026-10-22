@@ -50,7 +50,7 @@ module AsciidocPubkit
     end
 
     def self.run(command, args, out:, err:)
-      raise Error, 'Unknown image command. Use --help.' unless %w[list stats scale].include?(command)
+      raise Error, 'Unknown image command. Use --help.' unless %w[list stats scale find].include?(command)
       options = { attributes: {}, include: [], exclude: [], ratio: 0.8, min: 40.0, max: 100.0, mode: 'automatic', scale_factor: 0.9, height_factor: 1.0, area_factor: 0.8 }
       parser = OptionParser.new do |opts|
         opts.banner = "Usage: asciidoc-pubkit image #{command} DOCUMENT.adoc [options]"
@@ -66,6 +66,7 @@ module AsciidocPubkit
         opts.on('--exclude GLOB', 'Exclude image basename or document-relative path; repeatable') { |v| options[:exclude] << v }
         opts.on('--include-artwork', 'Include block images matching default artwork exclusions') { options[:artwork] = true }
         opts.on('--json', 'Print a structured report') { options[:json] = true }
+        add_find_options(opts, options) if command == 'find'
         if command == 'scale'
           opts.on('--mode MODE', 'Sizing mode: automatic (default) or book') { |v| options[:mode] = v; options[:automatic_options] = true }
           opts.on('--scale-factor NUMBER', Float, 'Book-mode overall multiplier (default: 0.9)') { |v| options[:scale_factor] = v; options[:book_options] = true }
@@ -110,8 +111,9 @@ module AsciidocPubkit
         raise Error, '--in-place cannot be combined with --dry-run or --diff.' if options[:in_place] && (options[:dry_run] || options[:diff])
         raise Error, '--diff cannot be combined with --json.' if options[:diff] && options[:json]
       end
+      validate_find_options(options) if command == 'find'
       tool = new(args.first, options, err)
-      report = command == 'stats' ? tool.stats : command == 'scale' ? tool.scale : tool.report
+      report = command == 'stats' ? tool.stats : command == 'scale' ? tool.scale : command == 'find' ? tool.find : tool.report
       if options[:diff]
         out.write(tool.diff)
       elsif options[:json]
@@ -120,6 +122,54 @@ module AsciidocPubkit
         out.write(tool.format(command, report))
       end
       0
+    end
+
+    FIND_METRICS = {
+      'bytes' => 'bytes', 'pixels' => 'pixels', 'pixel-width' => 'width',
+      'pixel-height' => 'height', 'aspect-ratio' => 'aspect_ratio'
+    }.freeze
+
+    def self.add_find_options(opts, options)
+      options[:filters] = {}
+      FIND_METRICS.each_key do |metric|
+        %w[min max].each do |bound|
+          name = "#{bound}-#{metric}"
+          opts.on("--#{name} VALUE", "Inclusive #{bound}imum #{metric}") do |value|
+            parsed = if metric == 'bytes'
+                       match = value.match(/\A([0-9]+)(B|KB|MB|KiB|MiB)?\z/)
+                       raise Error, "Invalid byte size: #{value}" unless match
+                       match[1].to_i * { nil => 1, 'B' => 1, 'KB' => 1000, 'MB' => 1000**2,
+                                         'KiB' => 1024, 'MiB' => 1024**2 }.fetch(match[2])
+                     elsif metric == 'aspect-ratio'
+                       Float(value)
+                     else
+                       raise Error, "#{name} must be a positive integer." unless value.match?(/\A[0-9]+\z/)
+                       value.to_i
+                     end
+            options[:filters][name] = parsed
+          end
+        end
+      end
+      opts.on('--portrait', 'Select height > width; exclude squares') { options[:portrait] = true }
+      opts.on('--landscape', 'Select width > height; exclude squares') { options[:landscape] = true }
+      opts.on('--sort METRIC', "Sort by #{FIND_METRICS.keys.join(', ')} (default: document order)") { |v| options[:sort] = v }
+      opts.on('--order ORDER', 'asc or desc (default with --sort: desc)') { |v| options[:order] = v }
+    end
+
+    def self.validate_find_options(options)
+      raise Error, '--portrait and --landscape cannot be combined.' if options[:portrait] && options[:landscape]
+      raise Error, "Unknown sort metric: #{options[:sort]}" if options[:sort] && !FIND_METRICS.key?(options[:sort])
+      raise Error, 'Order must be asc or desc.' if options[:order] && !%w[asc desc].include?(options[:order])
+      raise Error, '--order requires --sort.' if options[:order] && !options[:sort]
+      options[:filters].each do |name, value|
+        unless value.finite? && (name.end_with?('-bytes') ? value >= 0 : value > 0)
+          raise Error, "#{name} must be finite and #{name.end_with?('-bytes') ? 'nonnegative' : 'positive'}."
+        end
+      end
+      FIND_METRICS.each_key do |metric|
+        lower, upper = options[:filters].values_at("min-#{metric}", "max-#{metric}")
+        raise Error, "min-#{metric} cannot exceed max-#{metric}." if lower && upper && lower > upper
+      end
     end
 
     def initialize(entry, options, err)
@@ -218,6 +268,30 @@ module AsciidocPubkit
       { 'document' => @entry, 'base_dir' => @root, 'images' => @images.values,
         'image_count' => @images.length, 'reference_count' => @images.values.sum { |i| i['references'].length },
         'excluded' => @excluded, 'scope' => 'parsed block image macros; inline images are not included' }
+    end
+
+    def find
+      result = report
+      images = @images.values.map { |image| image.merge('pixels' => image['width'] * image['height']) }
+      images.select! do |image|
+        (!@options[:portrait] || image['height'] > image['width']) &&
+          (!@options[:landscape] || image['width'] > image['height']) &&
+          @options[:filters].all? do |name, threshold|
+            bound, metric = name.split('-', 2)
+            value = image.fetch(FIND_METRICS.fetch(metric))
+            bound == 'min' ? value >= threshold : value <= threshold
+          end
+      end
+      if @options[:sort]
+        key = FIND_METRICS.fetch(@options[:sort])
+        direction = @options[:order] == 'asc' ? 1 : -1
+        images = images.each_with_index.sort_by { |image, index| [direction * image[key], index] }.map(&:first)
+      end
+      result.merge('images' => images, 'selected_image_count' => result['image_count'],
+                   'selected_reference_count' => result['reference_count'],
+                   'image_count' => images.length, 'reference_count' => images.sum { |i| i['references'].length },
+                   'filters' => @options[:filters].merge('portrait' => !!@options[:portrait], 'landscape' => !!@options[:landscape]),
+                   'sort' => @options[:sort], 'order' => @options[:sort] && (@options[:order] || 'desc'))
     end
 
     def stats
@@ -430,7 +504,12 @@ module AsciidocPubkit
     end
 
     def format(command, result)
-      if command == 'stats'
+      if command == 'find'
+        result['images'].map do |image|
+          "#{image['path']}\t#{image['width']}x#{image['height']}\taspect=#{image['aspect_ratio'].round(4)}\tpixels=#{image['pixels']}\tbytes=#{image['bytes']}\treferences=#{image['references'].length}\n" +
+            image['references'].map { |ref| "  #{ref['file'] || '(unmapped)'}:#{ref['line'] || '?'}\n" }.join
+        end.join + "Matched images: #{result['image_count']} / #{result['selected_image_count']}; matched references: #{result['reference_count']}; excluded: #{@excluded.length}\n"
+      elsif command == 'stats'
         "Images: #{result['image_count']}; references: #{result['reference_count']}; bytes: #{result['total_bytes']}\n" +
           %w[width height aspect_ratio bytes].map { |key| "#{key}: #{result[key].to_json}\n" }.join
       else

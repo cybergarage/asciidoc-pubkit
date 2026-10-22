@@ -9,13 +9,14 @@ No Python, MeCab, AI, network fetch, or pixel modification is involved.
 asciidoc-pubkit image list book.adoc
 asciidoc-pubkit image list book.adoc --json
 asciidoc-pubkit image stats book.adoc --json
+asciidoc-pubkit image find book.adoc --portrait
 asciidoc-pubkit image scale book.adoc
 asciidoc-pubkit image scale book.adoc --diff
 asciidoc-pubkit image scale book.adoc --in-place
 ```
 
 `image scale` replaces the v1.4.0 `image width` command. The old name is no
-longer accepted. This version is not yet published.
+longer accepted.
 
 ## Discovery and selection
 
@@ -45,7 +46,7 @@ patterns. Repeat `--include GLOB` to select only images matching any supplied
 pattern (OR). Explicit inclusion overrides built-in artwork exclusions, including
 cover asset references; explicit `--exclude` patterns still win. Matching uses the
 same basename or base-relative path rules as exclusion. Without `--include`, the
-existing default selection remains in effect. The filter applies to list, stats
+existing default selection remains in effect. The filter applies to list, stats, find
 and scale; an unmatched include selects zero images without modifying sources.
 `--only FILE` selects references from one included source; it does not
 mean one image, and the file must be part of the parsed document.
@@ -69,6 +70,73 @@ sum of unique image bytes and minimum, maximum and arithmetic mean of width,
 height, aspect ratio and bytes. Repeated references are not counted twice in
 image statistics. With no selected images, totals are zero and min/max/mean are
 null. Both commands are read-only; redirect stdout to save their reports.
+
+## Find images (v1.4.1)
+
+`image find` is read-only. It applies the shared document selection above first,
+then filters the selected physical images by file size, pixel dimensions, total
+pixels and aspect ratio. It does not measure rendered page size or interpret
+image contents. No condition means all selected images.
+
+```sh
+asciidoc-pubkit image find book.adoc --min-bytes 1MiB
+asciidoc-pubkit image find book.adoc --min-pixels 4000000
+asciidoc-pubkit image find book.adoc --min-pixel-height 2000
+asciidoc-pubkit image find book.adoc --portrait
+asciidoc-pubkit image find book.adoc --landscape
+asciidoc-pubkit image find book.adoc --max-aspect-ratio 0.5
+asciidoc-pubkit image find book.adoc --min-aspect-ratio 2
+asciidoc-pubkit image find book.adoc --min-aspect-ratio 0.5 --max-aspect-ratio 0.8
+asciidoc-pubkit image find book.adoc --min-bytes 1MiB --portrait --sort bytes --order desc --json
+```
+
+| Options | Measurement |
+| --- | --- |
+| `--min-bytes SIZE`, `--max-bytes SIZE` | File size in bytes |
+| `--min-pixels N`, `--max-pixels N` | Pixel width multiplied by pixel height |
+| `--min-pixel-width N`, `--max-pixel-width N` | Pixel width, distinct from scale's display-width percentage |
+| `--min-pixel-height N`, `--max-pixel-height N` | Pixel height |
+| `--min-aspect-ratio R`, `--max-aspect-ratio R` | Pixel width divided by pixel height |
+| `--portrait` | Height strictly greater than width |
+| `--landscape` | Width strictly greater than height |
+
+All numeric bounds are inclusive and all conditions combine with AND. A smaller
+aspect ratio means a taller image: `--max-aspect-ratio 0.5` selects images at least
+twice as tall as they are wide. Ratios use unrounded values for filtering.
+Portrait and landscape exclude squares and cannot be supplied together.
+Combining orientation with incompatible numeric bounds simply matches no images.
+
+Byte sizes accept nonnegative integers, optionally followed immediately by
+case-sensitive `B`, `KB`, `MB`, `KiB` or `MiB`. KB/MB use powers of 1000;
+KiB/MiB use powers of 1024. Bare integers are bytes. Fractional byte sizes are
+not accepted. Pixel counts and dimensions must be positive integers; aspect
+ratios must be finite positive numbers. A minimum greater than its maximum is
+an argument error.
+
+Default output follows first-reference order. `--sort` accepts `bytes`, `pixels`,
+`pixel-width`, `pixel-height` or `aspect-ratio`. With a sort metric, the default
+order is `desc`; `--order asc` selects ascending order. Equal values retain
+first-reference order in either direction. `--order` requires `--sort`.
+
+Text output reports each matching physical image once, with dimensions, aspect
+ratio, total pixels, bytes, reference count, and each selected reference's source
+file and line. Unmapped locations are marked as unknown. The summary distinguishes
+matching images from the selected population before numeric/orientation filtering.
+
+JSON retains the inventory's `images`, `image_count`, `reference_count`, `excluded`,
+document, boundary and scope fields. Image/reference counts describe matches;
+`selected_image_count` and `selected_reference_count` describe the population
+before numeric/orientation filtering. Each matching image adds `pixels` to the
+normal inventory fields and retains its selected references. `filters` records
+normalized numeric bounds in bytes/pixels/ratios and explicit orientation
+booleans. `sort` and `order` are null in document order, otherwise they record the
+metric and effective direction. Numeric nonmatches are not added to `excluded`,
+which continues to describe shared discovery/selection exclusions.
+
+All selected images are inspected before numeric/orientation filtering. Missing
+or unsupported selected images fail with exit 2 even if they might not match;
+inspection failures are never hidden as nonmatches. Successful empty searches
+return 0. No source or pixel writes, AI calls, or network fetches occur.
 
 ## Display scaling and source edits
 

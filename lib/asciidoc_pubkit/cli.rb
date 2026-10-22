@@ -15,6 +15,7 @@ module AsciidocPubkit
         document check-xrefs FILE  Report unresolved local cross-references
         document index DIRECTORY  Generate an English-title AsciiDoc index
         image list FILE        List images referenced by an AsciiDoc document
+        image find FILE        Find document images by size, dimensions or aspect ratio
         image stats FILE       Summarize document-referenced image dimensions and sizes
         image scale FILE       Preview or explicitly apply display widths to source image macros
         writing criteria      Print the shared Japanese or English prose criteria

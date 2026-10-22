@@ -35,13 +35,15 @@ Version 1.4.0 also compares explicit but vague actor names by their actual
 responsibility; see [actor wording](docs/writing.md). This guidance adds no
 detector or automatic replacement rules.
 
-Version 1.4.1 provides document-based `image list`, `image stats`
-and `image scale` (renamed from `image width`, without a compatibility alias). Use
+Version 1.4.1 provides document-based `image list`, `image stats`,
+`image find` and `image scale` (renamed from `image width`, without a compatibility alias). Use
 `--include` to select images and `--width` for a fixed percentage; omit `--width`
 for automatic aspect-ratio sizing. `--mode book` uses document-wide median
 height/area budgets, with review reports for conflicting minimum widths. Collect images referenced by `book.adoc`, summarize their
 pixel dimensions and file sizes, or explicitly update source `scaledwidth`
-attributes from aspect ratios. Image pixels are unchanged. See
+attributes from aspect ratios. Use `image find` to filter by byte size, total pixels,
+pixel dimensions, portrait/landscape orientation or aspect-ratio bounds, with
+optional sorting and JSON output. Image pixels are unchanged. See
 [image commands](docs/image-commands.md) for selection, tuning, ImageMagick
 requirements, preservation rules and Make integration.
 
@@ -81,7 +83,7 @@ The following commands are available in version 1.4.1.
 
 | Feature | Commands | Behavior |
 | --- | --- | --- |
-| [Document images](docs/image-commands.md) | `image list`, `image stats`, `image scale` | Inspect referenced block images; preview or explicitly apply source display widths |
+| [Document images](docs/image-commands.md) | `image list`, `image stats`, `image find`, `image scale` | Inspect and filter referenced block images; preview or explicitly apply source display widths |
 | [Document outline](docs/document-commands.md#document-commands) | `document toc` | Print parsed section titles as text or JSON, including source locations, with optional depth and outline numbering |
 | [Book metadata](docs/document-commands.md#document-commands) | `document info` | Extract book attributes as text or JSON |
 | [Cross-reference checks](docs/document-commands.md#document-commands) | `document check-xrefs` | Report unresolved local cross-references with source locations |

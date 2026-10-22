@@ -9,7 +9,7 @@ running prose, and verifies edited manuscripts
 against a baseline. Only `review score --agent` invokes an installed Codex or
 Claude CLI for optional readability evaluation; that CLI may call its configured
 model provider. Explicit `replace apply` applies author-supplied mechanical rules to mapped prose;
-review and scoring do not rewrite manuscripts. The `image list`, `image stats`, and `image scale` commands collect images through
+review and scoring do not rewrite manuscripts. The `image list`, `image stats`, `image find`, and `image scale` commands collect images through
 an AsciiDoc entry document. Only `image scale --in-place` edits source image
 macros; no image command modifies pixels. Selection, dependencies and
 source-preservation contracts are in `docs/image-commands.md`. Future pixel
@@ -68,7 +68,7 @@ verification of a MeCab session requires the analyzer and reports backend drift.
 | File | Responsibility |
 | --- | --- |
 | `exe/asciidoc-pubkit`, `lib/asciidoc_pubkit/cli.rb` | Entry point, arguments, confirmation, output, exit codes |
-| `lib/asciidoc_pubkit/image_commands.rb`, `test/image_commands_test.rb` | Document-referenced image inventory, statistics, safe source-width updates; reference: `docs/image-commands.md` |
+| `lib/asciidoc_pubkit/image_commands.rb`, `test/image_commands_test.rb` | Document-referenced image inventory, filtering, statistics, safe source-width updates; reference: `docs/image-commands.md` |
 | `lib/asciidoc_pubkit/skill_commands.rb` | Bundled-skill registration, status, protected upgrades and staged replacement; reference: `docs/skill-commands.md` |
 | `lib/asciidoc_pubkit/settings.rb` | Configuration discovery, path resolution, option precedence |
 | `lib/asciidoc_pubkit/document.rb` | Asciidoctor parsing, source mapping, prose selection, structure |
