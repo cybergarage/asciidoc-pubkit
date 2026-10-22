@@ -16,67 +16,6 @@ and books on health, exercise, and sports science published under
 The experience informs the toolkit's writing criteria, contextual review prompts,
 and checks for preserving manuscript content during revision.
 
-Version 1.4.1 provides document-based image inspection and display sizing,
-document inspection, explicit prose-only mechanical replacements, and Japanese
-and English manuscript review. Inspect a book's outline,
-metadata, and local cross-references; preview and apply your replacement rules;
-then review and verify edits against a saved baseline.
-
-Version 1.2.3 compares `分かれます` with classification, responsibility
-sharing, branching and partitioning by context; see
-[classification and related relationships](docs/writing.md#classification-and-related-relationships-v123).
-These prompt criteria add no detector or automatic replacement rules.
-
-Version 1.2.3 also compares `渡す` and `受け渡し` by their actual
-operation; see [input, transmission, and handoff](docs/writing.md#input-transmission-and-handoff-v123).
-These comparisons and skill routing do not automatically replace manuscript text.
-
-Version 1.4.0 also compares explicit but vague actor names by their actual
-responsibility; see [actor wording](docs/writing.md). This guidance adds no
-detector or automatic replacement rules.
-
-Version 1.4.1 provides document-based `image list`, `image stats`,
-`image find` and `image scale` (renamed from `image width`, without a compatibility alias). Use
-`--include` to select images and `--width` for a fixed percentage; omit `--width`
-for automatic aspect-ratio sizing. `--mode book` uses document-wide median
-height/area budgets, with review reports for conflicting minimum widths. Collect images referenced by `book.adoc`, summarize their
-pixel dimensions and file sizes, or explicitly update source `scaledwidth`
-attributes from aspect ratios. Use `image find` to filter by byte size, total pixels,
-pixel dimensions, portrait/landscape orientation or aspect-ratio bounds, with
-optional sorting and JSON output. Image pixels are unchanged. See
-[image commands](docs/image-commands.md) for selection, tuning, ImageMagick
-requirements, preservation rules and Make integration.
-
-The CLI, diagnostics, documentation, and generated instructions are in English.
-Japanese manuscript excerpts and rule terms retain their original text.
-
-Version 1.2.3 also detects `行う` as an advisory operation-wording
-cue. Compare direct actions with responsibilities rather than applying a fixed
-replacement; see [general operation wording](docs/rules-and-coverage.md#general-operation-wording-v123).
-
-Version 1.2.3 adds advisory `届く` candidates and operation-specific
-arrival comparisons; see [arrival wording](docs/rules-and-coverage.md#arrival-wording-v123).
-These hints do not automatically replace text or establish writing quality.
-
-Version 1.2.3 also compares `定める` with `規定する`, `定義する`, and
-`設定する` by the actual operation; see [rule wording](docs/writing.md#rules-definitions-and-configured-values).
-
-Version 1.2.3 adds direct-negation comparisons and advisory variants
-for `わけではありません`; see [direct negation](docs/writing.md#direct-negation-and-inference-limits-v123).
-Existing sessions retain their saved rules and criteria. No automatic rewriting
-is added.
-
-Version 1.4.0 also adds contextual Japanese comparisons for
-retention, input inclusion, representation and state indication; see
-[retention and representation wording](docs/writing.md#retention-and-representation-wording-v140).
-These criteria do not add automatic replacements or change scoring.
-Version 1.4.0 also compares `示す` by explanatory role; see
-[explanation, presentation and state indication](docs/writing.md#explanation-presentation-and-state-indication-v140).
-
-Version 1.4.0 Japanese and English criteria also compare JSON examples with their
-prose explanations while preserving each project's notation and edit scope;
-see [JSON identifiers and explanatory strings](docs/writing.md#json-identifiers-and-explanatory-strings-v140).
-
 ## Available features
 
 The following commands are available in version 1.4.1.
