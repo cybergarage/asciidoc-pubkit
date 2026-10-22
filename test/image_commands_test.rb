@@ -83,6 +83,84 @@ class ImageCommandsTest < Minitest::Test
     assert_equal 'automatic', json('scale')['settings']['mode']
   end
 
+  def test_book_mode_calibrates_unique_images_and_applies_idempotently
+    File.open(@book, 'a') { |f| f.puts "\nimage::square.png[Again]" }
+    before = File.binread(@book)
+    pixels = Dir[File.join(@dir, 'img/*')].to_h { |f| [f, File.binread(f)] }
+    result = json('scale', '--mode', 'book', '--min-width', '20')
+    assert_equal 'book', result['settings']['mode']
+    assert_equal 3, result['calibration']['image_count']
+    assert_in_delta 0.8, result['calibration']['median_height'], 1e-10
+    assert_in_delta 0.5, result['calibration']['median_area'], 1e-10
+    assert_equal [89.4, 63.2, 36.0], result['images'].map { |i| i['width_percent'] }
+    assert_empty result['conflicts']
+    assert_equal before, File.binread(@book)
+    result['images'].each do |i|
+      assert_operator i['display_height'], :<=, result['calibration']['height_cap']
+      assert_operator i['display_area'], :<=, result['calibration']['area_cap']
+    end
+    code, diff, = cli('scale', '--mode', 'book', '--min-width', '20', '--diff')
+    assert_equal 0, code
+    assert_includes diff, 'scaledwidth=63.2%'
+    result = json('scale', '--mode', 'book', '--min-width', '20', '--in-place')
+    assert result['applied']
+    assert_empty json('scale', '--mode', 'book', '--min-width', '20')['changes']
+    pixels.each { |f, bytes| assert_equal bytes, File.binread(f) }
+  end
+
+  def test_book_conflicts_are_reported_and_block_all_source_writes
+    before = File.binread(@book)
+    code, out, err = cli('scale', '--mode', 'book', '--json')
+    assert_equal 0, code
+    assert_includes err, 'require review'
+    report = JSON.parse(out)
+    assert_equal 1, report['conflicts'].length
+    assert_equal 36.0, report['conflicts'][0]['proposed_width_percent']
+    assert report['images'].last['requires_review']
+    assert_equal 2, report['changes'].length
+    assert_equal 2, cli('scale', '--mode', 'book', '--in-place')[0]
+    assert_equal before, File.binread(@book)
+    code, text, = cli('scale', '--mode', 'book')
+    assert_equal 0, code
+    assert_includes text, 'requires review; proposed width=36%'
+  end
+
+  def test_book_mode_even_medians_empty_set_and_selected_scope
+    result = json('scale', '--mode', 'book', '--exclude', 'tall.png')
+    assert_in_delta 0.65, result['calibration']['median_height'], 1e-10
+    assert_in_delta 0.57, result['calibration']['median_area'], 1e-10
+    empty = json('scale', '--mode', 'book', '--include', 'absent*', '--in-place')
+    assert_nil empty['calibration']['median_height']
+    assert_nil empty['calibration']['area_cap']
+    assert_empty empty['changes']
+    image('chapter-1.png', 50, 100)
+    File.open(@book, 'a') { |f| f.puts "\nimage::chapter-1.png[]" }
+    assert_equal 3, json('scale', '--mode', 'book', '--min-width', '20')['calibration']['image_count']
+  end
+
+  def test_book_factors_and_unsafe_combinations_are_validated
+    before = File.binread(@book)
+    bad = [%w[--mode invalid], %w[--mode book --width 100], %w[--area-factor 0.8],
+           ['--mode', 'book', '--only', @book]]
+    %w[--scale-factor --height-factor --area-factor].each do |flag|
+      %w[0 -1 1.1 NaN Infinity].each { |value| bad << ['--mode', 'book', flag, value] }
+    end
+    bad.each { |args| assert_equal 2, cli('scale', *args, '--in-place')[0], args.inspect }
+    assert_equal before, File.binread(@book)
+    result = json('scale', '--mode', 'book', '--min-width', '10', '--scale-factor', '0.8',
+                  '--height-factor', '0.75', '--area-factor', '0.6')
+    assert_in_delta 0.6, result['calibration']['height_cap'], 1e-10
+    assert_in_delta 0.3, result['calibration']['area_cap'], 1e-10
+  end
+
+  def test_book_mode_preserves_fractional_budget_caps_by_rounding_down
+    result = json('scale', '--mode', 'book', '--min-width', '10', '--area-factor', '0.797')
+    result['images'].each do |i|
+      assert_operator i['display_area'], :<=, result['calibration']['area_cap']
+      assert_operator i['width_percent'], :<=, i['baseline_width_percent'] * 0.9
+    end
+  end
+
   def test_inventory_and_statistics_deduplicate_physical_images
     File.open(@book, 'a') { |f| f.puts "\nimage::square.png[Again]" }
     before = File.binread(@book)

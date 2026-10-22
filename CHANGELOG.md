@@ -2,6 +2,11 @@
 
 ## 1.4.1 - Unreleased
 
+- Add opt-in `image scale --mode book`: scan selected unique document images,
+  calibrate median display height and area, and bound scaling with adjustable
+  overall, height and area factors. Report minimum-width conflicts and refuse
+  source application until resolved; never shrink existing widths cumulatively.
+
 - Rename `image width` to `image scale`, without a compatibility alias.
 - Add repeatable `--include` patterns to image list, stats and scale. Explicit
   inclusion selects artwork; explicit exclusions still take precedence.

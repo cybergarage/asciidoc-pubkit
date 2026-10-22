@@ -51,7 +51,7 @@ module AsciidocPubkit
 
     def self.run(command, args, out:, err:)
       raise Error, 'Unknown image command. Use --help.' unless %w[list stats scale].include?(command)
-      options = { attributes: {}, include: [], exclude: [], ratio: 0.8, min: 40.0, max: 100.0 }
+      options = { attributes: {}, include: [], exclude: [], ratio: 0.8, min: 40.0, max: 100.0, mode: 'automatic', scale_factor: 0.9, height_factor: 1.0, area_factor: 0.8 }
       parser = OptionParser.new do |opts|
         opts.banner = "Usage: asciidoc-pubkit image #{command} DOCUMENT.adoc [options]"
         opts.on('--base-dir DIR', 'Local include and image boundary (default: document directory)') { |v| options[:base_dir] = v }
@@ -67,6 +67,10 @@ module AsciidocPubkit
         opts.on('--include-artwork', 'Include block images matching default artwork exclusions') { options[:artwork] = true }
         opts.on('--json', 'Print a structured report') { options[:json] = true }
         if command == 'scale'
+          opts.on('--mode MODE', 'Sizing mode: automatic (default) or book') { |v| options[:mode] = v; options[:automatic_options] = true }
+          opts.on('--scale-factor NUMBER', Float, 'Book-mode overall multiplier (default: 0.9)') { |v| options[:scale_factor] = v; options[:book_options] = true }
+          opts.on('--height-factor NUMBER', Float, 'Book-mode median height multiplier (default: 1)') { |v| options[:height_factor] = v; options[:book_options] = true }
+          opts.on('--area-factor NUMBER', Float, 'Book-mode median area multiplier (default: 0.8)') { |v| options[:area_factor] = v; options[:book_options] = true }
           opts.on('--width PERCENT', Float, 'Fixed scaledwidth percentage instead of automatic calculation') { |v| options[:width] = v }
           opts.on('--height-width-ratio NUMBER', Float, 'Target image height / text width (default: 0.8)') { |v| options[:ratio] = v; options[:automatic_options] = true }
           opts.on('--min-width PERCENT', Float, 'Minimum display width (default: 40)') { |v| options[:min] = v; options[:automatic_options] = true }
@@ -85,6 +89,16 @@ module AsciidocPubkit
       raise Error, 'Exactly one AsciiDoc document is required.' unless args.length == 1
       raise Error, 'Expected an AsciiDoc document (.adoc or .asciidoc), not an image.' unless %w[.adoc .asciidoc].include?(File.extname(args.first).downcase)
       if command == 'scale'
+        raise Error, 'Mode must be automatic or book.' unless %w[automatic book].include?(options[:mode])
+        if options[:book_options] && (options[:mode] != 'book' || options[:width])
+          raise Error, 'Book factor options require --mode book without --width.'
+        end
+        if options[:mode] == 'book'
+          raise Error, '--only cannot be used with book mode; calibrate the entire selected image set.' if options[:only]
+          unless %i[scale_factor height_factor area_factor].all? { |key| options[key].finite? && options[key].positive? && options[key] <= 1 }
+            raise Error, 'Book factors must be finite and greater than 0 and at most 1.'
+          end
+        end
         if options[:width]
           raise Error, 'Require finite 0 < width <= 100.' unless options[:width].finite? && options[:width].positive? && options[:width] <= 100
           raise Error, '--width cannot be combined with automatic sizing options.' if options[:automatic_options]
@@ -267,13 +281,58 @@ module AsciidocPubkit
       value.to_s.delete_suffix('.0')
     end
 
+    def automatic_width(image)
+      raw = 100 * @options[:ratio] * image['aspect_ratio']
+      [[[[raw, @options[:min]].max, @options[:max]].min.round(1), @options[:min]].max, @options[:max]].min
+    end
+
+    def median(values)
+      return nil if values.empty?
+      values = values.sort
+      middle = values.length / 2
+      values.length.odd? ? values[middle] : (values[middle - 1] + values[middle]) / 2.0
+    end
+
+    def book_calibration
+      images = @images.values
+      heights = images.map { |i| automatic_width(i) / 100.0 / i['aspect_ratio'] }
+      areas = images.map { |i| (automatic_width(i) / 100.0)**2 / i['aspect_ratio'] }
+      height, area = median(heights), median(areas)
+      { 'image_count' => images.length, 'median_height' => height, 'median_area' => area,
+        'height_cap' => height && height * @options[:height_factor],
+        'area_cap' => area && area * @options[:area_factor],
+        'scale_factor' => @options[:scale_factor], 'height_factor' => @options[:height_factor],
+        'area_factor' => @options[:area_factor], 'units' => 'height: text width; area: text width squared' }
+    end
+
     def scale
       desired = {}
+      book = @options[:mode] == 'book'
+      calibration = book_calibration if book
+      conflicts = []
       @images.each_value do |image|
         raw = 100 * @options[:ratio] * image['aspect_ratio']
-        value = [[[[raw, @options[:min]].max, @options[:max]].min.round(1), @options[:min]].max, @options[:max]].min
-        value = @options[:width] if @options[:width]
+        baseline = automatic_width(image)
+        value = @options[:width] || baseline
         image['width_percent'], image['minimum_limited'] = value, !@options[:width] && raw < @options[:min]
+        if book
+          ratio = image['aspect_ratio']
+          candidate = [baseline * @options[:scale_factor],
+                       100 * calibration['height_cap'] * ratio,
+                       100 * Math.sqrt(calibration['area_cap'] * ratio)].min.floor(1)
+          image['baseline_width_percent'] = baseline
+          image['proposed_width_percent'] = candidate
+          if candidate < @options[:min] || candidate <= 0
+            image['requires_review'] = true
+            conflicts << { 'image' => image['path'], 'proposed_width_percent' => candidate,
+                           'min_width' => @options[:min], 'reason' => 'minimum width conflicts with book size budgets' }
+            next
+          end
+          value = candidate
+          image['width_percent'], image['minimum_limited'] = value, false
+          image['display_height'] = value / 100.0 / ratio
+          image['display_area'] = (value / 100.0)**2 / ratio
+        end
         image['references'].each do |reference|
           match = source_macro(reference)
           raise Error, "Cannot safely map image macro: #{reference['file']}:#{reference['line']}" unless match
@@ -297,11 +356,16 @@ module AsciidocPubkit
         changes.each { |c| lines[c['line'] - 1] = c['after'] }
         @revised[file] = lines.join
       end
+      if book && !conflicts.empty?
+        @err.puts "Book scaling: #{conflicts.length} image(s) require review; minimum width conflicts with size budgets. No source is changed in preview."
+        raise Error, 'Book scaling has unresolved size conflicts; no sources were changed. Lower --min-width or revise the selection/budgets, then preview again.' if @options[:in_place]
+      end
       apply if @options[:in_place]
-      report.merge('settings' => { 'mode' => @options[:width] ? 'fixed' : 'automatic', 'width' => @options[:width],
+      report.merge('settings' => { 'mode' => @options[:width] ? 'fixed' : (book ? 'book' : 'automatic'), 'width' => @options[:width],
                                         'height_width_ratio' => @options[:width] ? nil : @options[:ratio],
                                         'min_width' => @options[:width] ? nil : @options[:min],
                                         'max_width' => @options[:width] ? nil : @options[:max] },
+                   'calibration' => calibration, 'conflicts' => conflicts,
                    'changes' => @changes, 'changed_files' => @revised.keys, 'applied' => !!@options[:in_place])
     end
 
@@ -372,7 +436,7 @@ module AsciidocPubkit
       else
         result['images'].map do |image|
           "#{image['path']}\t#{image['width']}x#{image['height']}\taspect=#{image['aspect_ratio'].round(4)}\tbytes=#{image['bytes']}\treferences=#{image['references'].length}" +
-            (command == 'scale' ? "\twidth=#{number(image['width_percent'])}%#{image['minimum_limited'] ? ' (minimum width reached; height may exceed target)' : ''}" : '') + "\n"
+            (command == 'scale' ? "\twidth=#{number(image['width_percent'])}%#{image['requires_review'] ? ' (requires review; proposed width=' + number(image['proposed_width_percent']) + '%; source unchanged)' : ''}#{image['minimum_limited'] ? ' (minimum width reached; height may exceed target)' : ''}" : '') + "\n"
         end.join + "Images: #{result['image_count']}; references: #{result['reference_count']}; excluded: #{@excluded.length}" +
           (command == 'scale' ? "; changes: #{@changes.length}; #{result['applied'] ? 'applied' : 'preview'}" : '') + "\n"
       end

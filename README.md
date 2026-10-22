@@ -38,7 +38,8 @@ detector or automatic replacement rules.
 Version 1.4.1 provides document-based `image list`, `image stats`
 and `image scale` (renamed from `image width`, without a compatibility alias). Use
 `--include` to select images and `--width` for a fixed percentage; omit `--width`
-for automatic aspect-ratio sizing. Collect images referenced by `book.adoc`, summarize their
+for automatic aspect-ratio sizing. `--mode book` uses document-wide median
+height/area budgets, with review reports for conflicting minimum widths. Collect images referenced by `book.adoc`, summarize their
 pixel dimensions and file sizes, or explicitly update source `scaledwidth`
 attributes from aspect ratios. Image pixels are unchanged. See
 [image commands](docs/image-commands.md) for selection, tuning, ImageMagick

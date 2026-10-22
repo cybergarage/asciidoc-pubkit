@@ -157,6 +157,62 @@ Successful commands, previews and empty collections return 0. Invalid arguments,
 parse errors, missing images and unsafe/unwritable source edits return 2. This
 does not replace manuscript review verification or establish publication readiness.
 
+## Book-wide sizing
+
+Opt in with `--mode book`; the default remains `--mode automatic`. Fixed
+`--width` cannot be combined with a mode or automatic-sizing options.
+
+```sh
+asciidoc-pubkit image scale book.adoc --mode book --json
+asciidoc-pubkit image scale book.adoc --mode book --min-width 30 --diff
+asciidoc-pubkit image scale book.adoc --mode book --min-width 30 --in-place
+```
+
+First compute baseline fractions `s` from the automatic formula above for every
+selected unique physical image. For aspect ratio `r = pixel width / pixel height`,
+compute baseline height `s/r` and area `s*s/r`. Use their medians (the arithmetic
+mean of the two middle values for an even count), without weighting repeated
+references. Artwork remains excluded by default, so run fixed artwork scaling
+separately. Explicit selection changes the calibration population. This mode
+rejects `--only` to avoid accidentally calibrating a single included source.
+It measures all selected images from the document, not the filesystem directory.
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `--scale-factor NUMBER` | 0.9 | Multiply each baseline width |
+| `--height-factor NUMBER` | 1 | Multiply median baseline height for the height cap |
+| `--area-factor NUMBER` | 0.8 | Multiply median baseline area for the area cap |
+
+These factors require `--mode book` and must be finite, positive and at most 1.
+The automatic coefficient and bounds still determine the baseline. Each new
+fractional width is:
+
+```text
+height_cap = median(s/r) * height_factor
+area_cap = median(s*s/r) * area_factor
+new_s = min(s * scale_factor, height_cap * r, sqrt(area_cap * r))
+```
+
+Convert to percent and round down to one decimal so rounding never exceeds a
+budget. Recalculate baselines from image dimensions on each run; never shrink
+existing `scaledwidth` values cumulatively. Changing the image population or
+options intentionally changes the result. An empty population has null medians
+and caps and does not edit any source.
+
+A candidate below `--min-width` (or zero after rounding) is a conflict. Previews
+return success, print a notice on stderr, and report every conflict in JSON
+(`conflicts`, `requires_review`, `proposed_width_percent`). Conflicted references
+are not included in the proposed source diff; their sources stay unchanged.
+`--in-place` fails with exit 2 before any source write if any conflict exists.
+Lower the minimum width or revise the selection/factors and preview again; no
+minimum is silently forced above the height/area caps. Normal reports show
+candidate widths and review notices; JSON additionally includes calibration
+medians, caps, baseline widths, and predicted display heights/areas.
+
+All heights use text-area width as the unit; areas use text-area width squared.
+These are not percentages of viewport height or guarantees of Kindle pagination.
+Image pixels, whitespace, flow direction and text legibility are not interpreted.
+
 ## Make integration
 
 Call width adjustment before the converter reads the source document:
