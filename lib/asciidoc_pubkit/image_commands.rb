@@ -50,8 +50,8 @@ module AsciidocPubkit
     end
 
     def self.run(command, args, out:, err:)
-      raise Error, 'Unknown image command. Use --help.' unless %w[list stats width].include?(command)
-      options = { attributes: {}, exclude: [], ratio: 0.8, min: 40.0, max: 100.0 }
+      raise Error, 'Unknown image command. Use --help.' unless %w[list stats scale].include?(command)
+      options = { attributes: {}, include: [], exclude: [], ratio: 0.8, min: 40.0, max: 100.0 }
       parser = OptionParser.new do |opts|
         opts.banner = "Usage: asciidoc-pubkit image #{command} DOCUMENT.adoc [options]"
         opts.on('--base-dir DIR', 'Local include and image boundary (default: document directory)') { |v| options[:base_dir] = v }
@@ -62,13 +62,15 @@ module AsciidocPubkit
           options[:attributes][key] = value || ''
         end
         opts.on('--only FILE', 'Select image references from one included source file') { |v| options[:only] = v }
+        opts.on('--include GLOB', 'Select matching image basename or document-relative path; repeatable') { |v| options[:include] << v }
         opts.on('--exclude GLOB', 'Exclude image basename or document-relative path; repeatable') { |v| options[:exclude] << v }
         opts.on('--include-artwork', 'Include block images matching default artwork exclusions') { options[:artwork] = true }
         opts.on('--json', 'Print a structured report') { options[:json] = true }
-        if command == 'width'
-          opts.on('--height-width-ratio NUMBER', Float, 'Target image height / text width (default: 0.8)') { |v| options[:ratio] = v }
-          opts.on('--min-width PERCENT', Float, 'Minimum display width (default: 40)') { |v| options[:min] = v }
-          opts.on('--max-width PERCENT', Float, 'Maximum display width (default: 100)') { |v| options[:max] = v }
+        if command == 'scale'
+          opts.on('--width PERCENT', Float, 'Fixed scaledwidth percentage instead of automatic calculation') { |v| options[:width] = v }
+          opts.on('--height-width-ratio NUMBER', Float, 'Target image height / text width (default: 0.8)') { |v| options[:ratio] = v; options[:automatic_options] = true }
+          opts.on('--min-width PERCENT', Float, 'Minimum display width (default: 40)') { |v| options[:min] = v; options[:automatic_options] = true }
+          opts.on('--max-width PERCENT', Float, 'Maximum display width (default: 100)') { |v| options[:max] = v; options[:automatic_options] = true }
           opts.on('--dry-run', 'Preview only (default)') { options[:dry_run] = true }
           opts.on('--diff', 'Preview a unified source diff') { options[:diff] = true }
           opts.on('--in-place', 'Explicitly update source image macros') { options[:in_place] = true }
@@ -82,7 +84,11 @@ module AsciidocPubkit
       end
       raise Error, 'Exactly one AsciiDoc document is required.' unless args.length == 1
       raise Error, 'Expected an AsciiDoc document (.adoc or .asciidoc), not an image.' unless %w[.adoc .asciidoc].include?(File.extname(args.first).downcase)
-      if command == 'width'
+      if command == 'scale'
+        if options[:width]
+          raise Error, 'Require finite 0 < width <= 100.' unless options[:width].finite? && options[:width].positive? && options[:width] <= 100
+          raise Error, '--width cannot be combined with automatic sizing options.' if options[:automatic_options]
+        end
         unless [options[:ratio], options[:min], options[:max]].all?(&:finite?) &&
                options[:ratio].positive? && options[:min].positive? && options[:min] <= options[:max] && options[:max] <= 100
           raise Error, 'Require finite ratio > 0 and 0 < min-width <= max-width <= 100.'
@@ -91,7 +97,7 @@ module AsciidocPubkit
         raise Error, '--diff cannot be combined with --json.' if options[:diff] && options[:json]
       end
       tool = new(args.first, options, err)
-      report = command == 'stats' ? tool.stats : command == 'width' ? tool.width : tool.report
+      report = command == 'stats' ? tool.stats : command == 'scale' ? tool.scale : tool.report
       if options[:diff]
         out.write(tool.diff)
       elsif options[:json]
@@ -135,10 +141,13 @@ module AsciidocPubkit
           path = resolve_image(target, directory)
           reference['image'] = path
           relative = Pathname.new(path).relative_path_from(Pathname.new(@root)).to_s
-          if !options[:artwork] && (covers.include?(path) || ARTWORK.any? { |glob| File.fnmatch?(glob, File.basename(path)) })
-            reason = 'artwork'
-          elsif options[:exclude].any? { |glob| File.fnmatch?(glob, File.basename(path)) || File.fnmatch?(glob, relative, File::FNM_PATHNAME | File::FNM_EXTGLOB) }
+          included = options.fetch(:include, []).any? { |glob| matches?(glob, path, relative) }
+          if options[:exclude].any? { |glob| matches?(glob, path, relative) }
             reason = 'excluded by pattern'
+          elsif !options.fetch(:include, []).empty? && !included
+            reason = 'outside --include patterns'
+          elsif !included && !options[:artwork] && (covers.include?(path) || ARTWORK.any? { |glob| File.fnmatch?(glob, File.basename(path)) })
+            reason = 'artwork'
           end
         end
         if reason
@@ -155,6 +164,10 @@ module AsciidocPubkit
         reference['editable'] = !!source_macro(reference)
         image['references'] << reference
       end
+    end
+
+    def matches?(glob, path, relative)
+      File.fnmatch?(glob, File.basename(path)) || File.fnmatch?(glob, relative, File::FNM_PATHNAME | File::FNM_EXTGLOB)
     end
 
     def remote?(path)
@@ -254,12 +267,13 @@ module AsciidocPubkit
       value.to_s.delete_suffix('.0')
     end
 
-    def width
+    def scale
       desired = {}
       @images.each_value do |image|
         raw = 100 * @options[:ratio] * image['aspect_ratio']
         value = [[[[raw, @options[:min]].max, @options[:max]].min.round(1), @options[:min]].max, @options[:max]].min
-        image['width_percent'], image['minimum_limited'] = value, raw < @options[:min]
+        value = @options[:width] if @options[:width]
+        image['width_percent'], image['minimum_limited'] = value, !@options[:width] && raw < @options[:min]
         image['references'].each do |reference|
           match = source_macro(reference)
           raise Error, "Cannot safely map image macro: #{reference['file']}:#{reference['line']}" unless match
@@ -284,7 +298,10 @@ module AsciidocPubkit
         @revised[file] = lines.join
       end
       apply if @options[:in_place]
-      report.merge('settings' => { 'height_width_ratio' => @options[:ratio], 'min_width' => @options[:min], 'max_width' => @options[:max] },
+      report.merge('settings' => { 'mode' => @options[:width] ? 'fixed' : 'automatic', 'width' => @options[:width],
+                                        'height_width_ratio' => @options[:width] ? nil : @options[:ratio],
+                                        'min_width' => @options[:width] ? nil : @options[:min],
+                                        'max_width' => @options[:width] ? nil : @options[:max] },
                    'changes' => @changes, 'changed_files' => @revised.keys, 'applied' => !!@options[:in_place])
     end
 
@@ -355,9 +372,9 @@ module AsciidocPubkit
       else
         result['images'].map do |image|
           "#{image['path']}\t#{image['width']}x#{image['height']}\taspect=#{image['aspect_ratio'].round(4)}\tbytes=#{image['bytes']}\treferences=#{image['references'].length}" +
-            (command == 'width' ? "\twidth=#{number(image['width_percent'])}%" : '') + "\n"
+            (command == 'scale' ? "\twidth=#{number(image['width_percent'])}%#{image['minimum_limited'] ? ' (minimum width reached; height may exceed target)' : ''}" : '') + "\n"
         end.join + "Images: #{result['image_count']}; references: #{result['reference_count']}; excluded: #{@excluded.length}" +
-          (command == 'width' ? "; changes: #{@changes.length}; #{result['applied'] ? 'applied' : 'preview'}" : '') + "\n"
+          (command == 'scale' ? "; changes: #{@changes.length}; #{result['applied'] ? 'applied' : 'preview'}" : '') + "\n"
       end
     end
   end

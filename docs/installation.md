@@ -8,7 +8,7 @@ asciidoc-pubkit --version
 asciidoc-pubkit --help
 ```
 
-The v1.4.0 `image list`, `image stats` and `image width` commands additionally
+The v1.4.1 `image list`, `image stats` and `image scale` commands additionally
 require ImageMagick 7 (`magick`) or 6 (`identify`). They do not require Python or
 MeCab. See [image commands](image-commands.md).
 

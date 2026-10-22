@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.1 - Unreleased
+
+- Rename `image width` to `image scale`, without a compatibility alias.
+- Add repeatable `--include` patterns to image list, stats and scale. Explicit
+  inclusion selects artwork; explicit exclusions still take precedence.
+- Add `image scale --width PERCENT` for fixed source `scaledwidth` values.
+  Reject mixing fixed width with automatic coefficient or bound options.
+- Preserve preview, diff, explicit application and safe source editing behavior.
+
 ## 1.4.0 - 2026-10-22
 
 - Add document-based `image list`, `image stats` and `image width`. Resolve active

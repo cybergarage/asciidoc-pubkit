@@ -16,7 +16,7 @@ module AsciidocPubkit
         document index DIRECTORY  Generate an English-title AsciiDoc index
         image list FILE        List images referenced by an AsciiDoc document
         image stats FILE       Summarize document-referenced image dimensions and sizes
-        image width FILE       Preview or explicitly apply display widths to source image macros
+        image scale FILE       Preview or explicitly apply display widths to source image macros
         writing criteria      Print the shared Japanese or English prose criteria
         writing prompt        Generate a technical writing prompt
         review scan FILE       Collect Japanese or English prose, headings, or list text and review candidates
@@ -34,7 +34,7 @@ module AsciidocPubkit
       Use --lang ja (default) or en with writing commands and review commands. Other
       languages and regional tags are unsupported and return an error.
       skill install and upgrade write only the selected skill directory.
-      replace apply and image width --in-place explicitly edit manuscript sources. review score --agent explicitly invokes a
+      replace apply and image scale --in-place explicitly edit manuscript sources. review score --agent explicitly invokes a
       local Codex or Claude CLI, which may connect to its configured AI service.
     TEXT
 

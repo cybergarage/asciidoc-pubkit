@@ -41,6 +41,48 @@ class ImageCommandsTest < Minitest::Test
     JSON.parse(out)
   end
 
+  def test_include_patterns_select_artwork_and_explicit_exclusions_win
+    image('chapter-1.png', 50, 100)
+    image('part-1.png', 50, 100)
+    File.open(@book, 'a') { |f| f.puts "\nimage::chapter-1.png[]\n\nimage::part-1.png[]" }
+    args = ['--include', 'chapter-*', '--include', 'img/part-*']
+    assert_equal 2, json('list', *args)['image_count']
+    assert_equal 2, json('stats', *args)['image_count']
+    assert_equal 1, json('list', *args, '--exclude', 'part-*')['image_count']
+    assert_equal 0, json('list', '--include', 'absent*')['image_count']
+    result = json('scale', *args, '--width', '100', '--in-place')
+    assert_equal [100.0, 100.0], result['images'].map { |i| i['width_percent'] }
+    assert_equal 'fixed', result['settings']['mode']
+    assert_includes File.read(@book), 'image::chapter-1.png[scaledwidth=100%]'
+    assert_includes File.read(@book), 'image::part-1.png[scaledwidth=100%]'
+    assert_includes File.read(@book), 'image::square.png[Square]'
+    assert_empty json('scale', *args, '--width', '100')['changes']
+  end
+
+  def test_fixed_width_preserves_fraction_and_ignores_default_automatic_bounds
+    result = json('scale', '--width', '25.25', '--in-place')
+    assert_equal [25.25] * 3, result['images'].map { |i| i['width_percent'] }
+    assert result['images'].none? { |i| i['minimum_limited'] }
+    assert_includes File.read(@book), 'scaledwidth=25.25%'
+  end
+
+  def test_fixed_width_rejects_invalid_or_mixed_options_without_writes
+    before = File.binread(@book)
+    %w[0 -1 101 NaN Infinity].each { |n| assert_equal 2, cli('scale', '--width', n, '--in-place')[0] }
+    %w[--height-width-ratio --min-width --max-width].each do |option|
+      assert_equal 2, cli('scale', '--width', '80', option, '1', '--in-place')[0]
+    end
+    assert_equal before, File.binread(@book)
+    assert_equal 2, cli('width')[0]
+  end
+
+  def test_minimum_width_notice_in_text_preview
+    code, out, = cli('scale', '--min-width', '60')
+    assert_equal 0, code
+    assert_includes out, 'minimum width reached; height may exceed target'
+    assert_equal 'automatic', json('scale')['settings']['mode']
+  end
+
   def test_inventory_and_statistics_deduplicate_physical_images
     File.open(@book, 'a') { |f| f.puts "\nimage::square.png[Again]" }
     before = File.binread(@book)
@@ -60,15 +102,15 @@ class ImageCommandsTest < Minitest::Test
   def test_width_preview_apply_and_idempotency_preserve_images
     before = File.binread(@book)
     pixels = Dir[File.join(@dir, 'img/*')].to_h { |f| [f, File.binread(f)] }
-    result = json('width')
+    result = json('scale')
     assert_equal [100.0, 80.0, 40.0], result['images'].map { |i| i['width_percent'] }
     assert_equal 3, result['changes'].length
     refute result['applied']
     assert_equal before, File.binread(@book)
-    result = json('width', '--in-place')
+    result = json('scale', '--in-place')
     assert result['applied']
     assert_includes File.read(@book), 'image::square.png[Square,scaledwidth=80%]'
-    assert_empty json('width')['changes']
+    assert_empty json('scale')['changes']
     pixels.each { |f, bytes| assert_equal bytes, File.binread(f) }
   end
 
@@ -82,7 +124,7 @@ class ImageCommandsTest < Minitest::Test
     assert_equal [File.join(@dir, 'img/wide.png'), File.join(@dir, 'other/tall.png')], result['images'].map { |i| i['path'] }
     assert_equal chapter, result['images'][0]['references'][0]['file']
     assert_equal 2, cli('list', '-a', 'extra')[0]
-    result = json('width', '--in-place')
+    result = json('scale', '--in-place')
     assert_equal [chapter], result['changed_files']
     assert_includes File.read(chapter), 'image::{name}.png[First,scaledwidth=100%]'
   end
@@ -95,7 +137,7 @@ class ImageCommandsTest < Minitest::Test
     assert_equal 1, result['image_count']
     assert_equal 6, result['excluded'].length
     assert_equal 2, cli('list', '--include-artwork')[0] # Artwork files intentionally do not exist.
-    json('width', '--in-place')
+    json('scale', '--in-place')
     assert_includes File.read(@book), 'image::chapter-1.png[]'
     assert_includes File.read(@book), 'Text image:inline.png[Icon].'
   end
@@ -104,37 +146,37 @@ class ImageCommandsTest < Minitest::Test
     chapter = File.join(@dir, 'chapter.adoc')
     File.write(chapter, "image::tall.png[Tall]\n")
     File.open(@book, 'a') { |f| f.puts "\ninclude::chapter.adoc[]" }
-    result = json('width', '--only', chapter, '--in-place')
+    result = json('scale', '--only', chapter, '--in-place')
     assert_equal 1, result['changes'].length
     refute_includes File.read(@book), 'scaledwidth='
     assert_equal 1, json('list', '--exclude', 'square*', '--exclude', 'img/tall.png')['image_count']
     File.write(File.join(@dir, 'unused.adoc'), '')
-    assert_equal 2, cli('width', '--only', File.join(@dir, 'unused.adoc'))[0]
+    assert_equal 2, cli('scale', '--only', File.join(@dir, 'unused.adoc'))[0]
   end
 
   def test_preserves_quoted_alt_commas_existing_sizes_and_crlf
     File.binwrite(@book, "= Book\r\n:imagesdir: img\r\n\r\nimage::square.png[\"図, A\",100,200, align=center, scaledwidth = \"65%\" ]\r\n")
     before = File.binread(@book)
-    json('width', '--in-place')
+    json('scale', '--in-place')
     assert_equal before.sub('"65%"', '"80%"'), File.binread(@book)
   end
 
   def test_unquoted_apostrophe_and_quoted_named_attributes
     File.write(@book, "= Book\n:imagesdir: img\n\nimage::square.png[O'Reilly example,title=\"First, second\",scaledwidth='50%']\n")
     before = File.read(@book)
-    json('width', '--in-place')
+    json('scale', '--in-place')
     assert_equal before.sub("scaledwidth='50%'", "scaledwidth='80%'"), File.read(@book)
   end
 
   def test_custom_coefficients_bounds_and_minimum_flag
-    result = json('width', '--height-width-ratio', '0.5', '--min-width', '30', '--max-width', '90')
+    result = json('scale', '--height-width-ratio', '0.5', '--min-width', '30', '--max-width', '90')
     assert_equal [90.0, 50.0, 30.0], result['images'].map { |i| i['width_percent'] }
     assert result['images'].last['minimum_limited']
   end
 
   def test_diff_does_not_change_sources
     before = File.binread(@book)
-    code, out, err = cli('width', '--diff')
+    code, out, err = cli('scale', '--diff')
     assert_equal 0, code, err
     assert_includes out, '--- a/book.adoc'
     assert_includes out, '+image::square.png[Square,scaledwidth=80%]'
@@ -144,10 +186,10 @@ class ImageCommandsTest < Minitest::Test
   def test_missing_or_invalid_images_fail_before_writes
     before = File.binread(@book)
     File.delete(File.join(@dir, 'img/tall.png'))
-    assert_equal 2, cli('width', '--in-place')[0]
+    assert_equal 2, cli('scale', '--in-place')[0]
     assert_equal before, File.binread(@book)
     File.write(File.join(@dir, 'img/tall.png'), 'invalid')
-    assert_equal 2, cli('width', '--in-place')[0]
+    assert_equal 2, cli('scale', '--in-place')[0]
     assert_equal before, File.binread(@book)
   end
 
@@ -157,7 +199,7 @@ class ImageCommandsTest < Minitest::Test
     File.write(@book, "= Book\n:imagesdir: img\n:name: wide\n\ninclude::template.adoc[]\n\n:name: square\ninclude::template.adoc[]\n")
     before = File.binread(template)
     assert_equal 2, json('list')['image_count']
-    assert_equal 2, cli('width', '--in-place')[0]
+    assert_equal 2, cli('scale', '--in-place')[0]
     assert_equal before, File.binread(template)
   end
 
@@ -165,7 +207,7 @@ class ImageCommandsTest < Minitest::Test
     template = File.join(@dir, 'template.adoc')
     File.write(template, "image::square.png[Template]\n")
     File.write(@book, "= Book\n:imagesdir: img\n\ninclude::template.adoc[]\n\ninclude::template.adoc[]\n")
-    result = json('width', '--in-place')
+    result = json('scale', '--in-place')
     assert_equal 1, result['image_count']
     assert_equal 2, result['reference_count']
     assert_equal 1, result['changes'].length
@@ -175,7 +217,7 @@ class ImageCommandsTest < Minitest::Test
     template = File.join(@dir, 'template.adoc')
     File.write(template, "image::{name}.png[Template]\n")
     File.write(@book, "= Book\n:imagesdir: img\n:name: wide\n\ninclude::template.adoc[]\n\n:name: chapter-1\ninclude::template.adoc[]\n")
-    assert_equal 2, cli('width', '--in-place')[0]
+    assert_equal 2, cli('scale', '--in-place')[0]
     refute_includes File.read(template), 'scaledwidth='
   end
 
@@ -208,18 +250,18 @@ class ImageCommandsTest < Minitest::Test
   def test_invalid_options_and_input_types
     before = File.binread(@book)
     [%w[--min-width 101], %w[--max-width 0], %w[--height-width-ratio NaN], %w[--in-place --dry-run],
-     %w[--in-place --diff], %w[--diff --json]].each { |args| assert_equal 2, cli('width', *args)[0], args.inspect }
+     %w[--in-place --diff], %w[--diff --json]].each { |args| assert_equal 2, cli('scale', *args)[0], args.inspect }
     assert_equal 2, cli('list', '--in-place')[0]
     assert_equal 2, cli('resize')[0]
     out, err = StringIO.new, StringIO.new
-    assert_equal 2, AsciidocPubkit::CLI.run(['image', 'width', File.join(@dir, 'img/wide.png')], out: out, err: err)
+    assert_equal 2, AsciidocPubkit::CLI.run(['image', 'scale', File.join(@dir, 'img/wide.png')], out: out, err: err)
     assert_equal before, File.binread(@book)
-    %w[list stats width].each { |cmd| assert_equal 0, cli(cmd, '--help')[0] }
+    %w[list stats scale].each { |cmd| assert_equal 0, cli(cmd, '--help')[0] }
   end
 
   def test_listing_blocks_are_not_selected_and_attribute_blocks_are_preserved
     File.write(@book, "= Book\n:imagesdir: img\n\n----\nimage::missing.png[Code]\n----\n\n[scaledwidth=50%,role=example]\nimage::square.png[Square]\n")
-    result = json('width', '--in-place')
+    result = json('scale', '--in-place')
     assert_equal 1, result['image_count']
     assert_includes File.read(@book), 'image::missing.png[Code]'
     assert_includes File.read(@book), '[scaledwidth=50%,role=example]'
@@ -231,7 +273,7 @@ class ImageCommandsTest < Minitest::Test
     chapter = File.join(@dir, 'chapter.adoc')
     File.write(chapter, "// tag::figure[]\nimage::wide.png[Wide]\n// end::figure[]\n\nimage::missing.png[Not included]\n")
     File.write(@book, "= Book\n:imagesdir: img\n\ninclude::chapter.adoc[tag=figure]\n")
-    result = json('width', '--max-width', '99.95', '--in-place')
+    result = json('scale', '--max-width', '99.95', '--in-place')
     assert_equal 2, result['changes'][0]['line']
     assert_includes File.read(chapter), 'scaledwidth=99.95%'
     assert_includes File.read(chapter), 'image::missing.png[Not included]'
@@ -241,7 +283,7 @@ class ImageCommandsTest < Minitest::Test
     link = File.join(@dir, 'linked.adoc')
     File.symlink(@book, link)
     out, err = StringIO.new, StringIO.new
-    code = AsciidocPubkit::CLI.run(['image', 'width', link, '--in-place'], out: out, err: err)
+    code = AsciidocPubkit::CLI.run(['image', 'scale', link, '--in-place'], out: out, err: err)
     assert_equal 2, code
     assert_includes err.string, 'Symlinked source'
     refute_includes File.read(@book), 'scaledwidth='
@@ -252,7 +294,7 @@ class ImageCommandsTest < Minitest::Test
     tool = AsciidocPubkit::ImageCommands.new(@book, options, StringIO.new)
     File.open(@book, 'a') { |f| f.puts 'A later author edit.' }
     saved = File.binread(@book)
-    assert_raises(AsciidocPubkit::Error) { tool.width }
+    assert_raises(AsciidocPubkit::Error) { tool.scale }
     assert_equal saved, File.binread(@book)
   end
 
@@ -272,7 +314,7 @@ class ImageCommandsTest < Minitest::Test
     end
     begin
       File.define_singleton_method(:rename, replacement)
-      assert_equal 2, cli('width', '--in-place')[0]
+      assert_equal 2, cli('scale', '--in-place')[0]
     ensure
       File.define_singleton_method(:rename, rename)
     end

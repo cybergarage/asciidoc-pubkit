@@ -9,10 +9,10 @@ running prose, and verifies edited manuscripts
 against a baseline. Only `review score --agent` invokes an installed Codex or
 Claude CLI for optional readability evaluation; that CLI may call its configured
 model provider. Explicit `replace apply` applies author-supplied mechanical rules to mapped prose;
-review and scoring do not rewrite manuscripts. The `image list`, `image stats`, and `image width` commands collect images through
-an AsciiDoc entry document. Only `image width --in-place` edits source image
-macros; no image command modifies pixels in v1.4.0. Selection, dependencies and
-source-preservation contracts are in `docs/image-commands.md`. v1.4.1 pixel
+review and scoring do not rewrite manuscripts. The `image list`, `image stats`, and `image scale` commands collect images through
+an AsciiDoc entry document. Only `image scale --in-place` edits source image
+macros; no image command modifies pixels. Selection, dependencies and
+source-preservation contracts are in `docs/image-commands.md`. Future pixel
 processing is tracked in GitHub issue #1. It does not publish books. Do not describe
 planned publishing features as available functionality.
 

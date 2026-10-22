@@ -1,4 +1,4 @@
-# Document-based image commands (v1.4.0)
+# Document-based image commands (v1.4.1)
 
 All commands take an AsciiDoc entry document, such as `book.adoc`. They do not
 accept a standalone image file or scan an arbitrary directory. They require Ruby
@@ -9,10 +9,13 @@ No Python, MeCab, AI, network fetch, or pixel modification is involved.
 asciidoc-pubkit image list book.adoc
 asciidoc-pubkit image list book.adoc --json
 asciidoc-pubkit image stats book.adoc --json
-asciidoc-pubkit image width book.adoc
-asciidoc-pubkit image width book.adoc --diff
-asciidoc-pubkit image width book.adoc --in-place
+asciidoc-pubkit image scale book.adoc
+asciidoc-pubkit image scale book.adoc --diff
+asciidoc-pubkit image scale book.adoc --in-place
 ```
+
+`image scale` replaces the v1.4.0 `image width` command. The old name is no
+longer accepted. This version is not yet published.
 
 ## Discovery and selection
 
@@ -21,7 +24,7 @@ Asciidoctor resolves active includes, attributes, conditional directives, and th
 directory, as in Asciidoctor, rather than each included file. Only parsed block
 `image::` macros are collected. Inline `image:` macros, image text inside code or
 comments, cover attributes without a block reference, and unreferenced files are
-outside the v1.4.0 collection scope. An AsciiDoc table's separate inner documents
+outside the collection scope. An AsciiDoc table's separate inner documents
 are not traversed in this version.
 
 The default boundary is the entry document's directory. `--base-dir DIR` changes
@@ -38,12 +41,18 @@ or `title-logo-image` assets, are excluded. `--include-artwork` disables these
 built-in artwork exclusions; it does not collect assets that only appear in
 attributes. Use `--exclude` for artwork with other names. Patterns match an image
 basename or its path relative to the base directory. Repeat the flag for multiple
-patterns. `--only FILE` selects references from one included source; it does not
+patterns. Repeat `--include GLOB` to select only images matching any supplied
+pattern (OR). Explicit inclusion overrides built-in artwork exclusions, including
+cover asset references; explicit `--exclude` patterns still win. Matching uses the
+same basename or base-relative path rules as exclusion. Without `--include`, the
+existing default selection remains in effect. The filter applies to list, stats
+and scale; an unmatched include selects zero images without modifying sources.
+`--only FILE` selects references from one included source; it does not
 mean one image, and the file must be part of the parsed document.
 
 ```sh
 asciidoc-pubkit image list book.adoc --exclude 'special-*.png' --json
-asciidoc-pubkit image width book.adoc --only chapters/intro.adoc --diff
+asciidoc-pubkit image scale book.adoc --only chapters/intro.adoc --diff
 asciidoc-pubkit image list book.adoc -a edition-en -a diagrams=1
 ```
 
@@ -61,7 +70,19 @@ height, aspect ratio and bytes. Repeated references are not counted twice in
 image statistics. With no selected images, totals are zero and min/max/mean are
 null. Both commands are read-only; redirect stdout to save their reports.
 
-## Width calculation and source edits
+## Display scaling and source edits
+
+Use `--width PERCENT` for a fixed `scaledwidth` (finite, greater than 0 and at most
+100). Preserve fractional values. It cannot be combined with explicitly supplied
+`--height-width-ratio`, `--min-width`, or `--max-width`. Default automatic bounds
+do not restrict fixed widths. Omit `--width` for automatic aspect-ratio sizing.
+
+```sh
+asciidoc-pubkit image scale book.adoc --include 'part-*' --include 'chapter-*' \
+  --width 100 --diff
+```
+
+### Automatic calculation
 
 ```text
 raw width (%) = 100 × height-width-ratio × pixel width / pixel height
@@ -76,6 +97,7 @@ minimum 40%, maximum 100%. A square uses 80%, a 3:4 image 60%, and width/height
 
 | Option | Default | Behavior |
 | --- | --- | --- |
+| `--width PERCENT` | unset | Fixed width; disables automatic sizing |
 | `--height-width-ratio NUMBER` | `0.8` | Display height / text-area width coefficient |
 | `--min-width PERCENT` | `40` | Smallest permitted display width |
 | `--max-width PERCENT` | `100` | Largest permitted display width |
@@ -89,7 +111,7 @@ Coefficients must be finite and positive, and widths must satisfy
 `--dry-run` or `--diff`; `--diff` cannot be combined with `--json`.
 
 ```sh
-asciidoc-pubkit image width book.adoc --height-width-ratio 0.7 \
+asciidoc-pubkit image scale book.adoc --height-width-ratio 0.7 \
   --min-width 50 --max-width 100 --exclude 'manual.png' --diff
 ```
 
@@ -108,7 +130,7 @@ conversion; this does not impose a universal CSS width on every backend.
 Source provenance is attached only in the parser's memory before include
 lookahead can lose its location. No internal metadata is written to source.
 Unsupported or unmapped source forms are not guessed: list/stats can report them,
-but width refuses an unsafe edit. Duplicate `scaledwidth` declarations are rejected.
+but scale refuses an unsafe edit. Duplicate `scaledwidth` declarations are rejected.
 A reused source macro can be edited once when all references request the same
 result; conflicting expansions or an excluded reuse block the edit. Separate
 attributes or macros across multiple lines are not reconstructed.
@@ -118,10 +140,15 @@ staged in their own directories with their modes preserved. Source snapshots
 are checked for concurrent changes. A failed multi-file replacement rolls back
 already installed changes, without overwriting a later concurrent writer's edits.
 Repeated execution with the same inputs is idempotent. There is no `--output`
-or `--output-dir` mode in v1.4.0; a single output file cannot represent updates
+or `--output-dir` mode; a single output file cannot represent updates
 across several included files. Use preview/diff to review changes first.
 
-Image whitespace is included in the pixel dimensions. At the minimum width a
+JSON settings report `mode: fixed` with `width`, or `mode: automatic` with the
+coefficient and bounds. A `minimum_limited` image also gets a notice in text
+previews: its minimum display width can make its height exceed the target.
+
+Image whitespace is included in the pixel dimensions. The algorithm does not
+infer flow direction, text density or legibility from the pixels. At the minimum width a
 very tall figure can still exceed a page, and text may require a larger width.
 The coefficient and bounds are tuning values, not KDP requirements. Run the
 book build, EPUBCheck and Kindle Previewer after applying source changes.
@@ -140,18 +167,19 @@ IMAGE_HEIGHT_WIDTH_RATIO ?= 0.8
 IMAGE_MIN_WIDTH ?= 40
 IMAGE_MAX_WIDTH ?= 100
 IMAGE_SELECTION_OPTS ?=
-IMAGE_WIDTH_OPTS = --height-width-ratio $(IMAGE_HEIGHT_WIDTH_RATIO) --min-width $(IMAGE_MIN_WIDTH) --max-width $(IMAGE_MAX_WIDTH) $(IMAGE_SELECTION_OPTS)
+IMAGE_SCALE_OPTS = --height-width-ratio $(IMAGE_HEIGHT_WIDTH_RATIO) --min-width $(IMAGE_MIN_WIDTH) --max-width $(IMAGE_MAX_WIDTH) $(IMAGE_SELECTION_OPTS)
 
-.PHONY: image-list image-stats image-width
+.PHONY: image-list image-stats image-scale
 image-list:
 	$(ASCIIDOC_PUBKIT) image list book.adoc $(IMAGE_SELECTION_OPTS)
 image-stats:
 	$(ASCIIDOC_PUBKIT) image stats book.adoc $(IMAGE_SELECTION_OPTS)
-image-width:
-	$(ASCIIDOC_PUBKIT) image width book.adoc $(IMAGE_WIDTH_OPTS) --in-place
+image-scale:
+	$(ASCIIDOC_PUBKIT) image scale book.adoc --include 'part-*' --include 'chapter-*' --width 100 --in-place
+	$(ASCIIDOC_PUBKIT) image scale book.adoc $(IMAGE_SCALE_OPTS) --in-place
 ```
 
-Use your build's pre-generation prerequisite hook to run `image-width`. It must
+Use your build's pre-generation prerequisite hook to run `image-scale`. It must
 finish before conversion, rather than running alongside the converter. No EPUB
 postprocessing is needed. The earlier unreleased `epub image-width` prototype is
 replaced by this document-based interface; it was not a released public command.
@@ -159,7 +187,7 @@ replaced by this document-based interface; it was not a released public command.
 ## Later scope
 
 Image-file processing (`resize`, `trim`, `pad`, `quantize`, and possible composite
-preparation) is planned for v1.4.1 and tracked in
+preparation) is planned for a later release and tracked in
 [GitHub issue #1](https://github.com/cybergarage/asciidoc-pubkit/issues/1).
-Those commands are not implemented in v1.4.0. Their input will also be the
+Those commands are not implemented in v1.4.1. Their input will also be the
 AsciiDoc document, rather than a standalone image.
